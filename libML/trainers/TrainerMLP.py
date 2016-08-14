@@ -8,11 +8,10 @@ class TrainerMLP:
     def __init__(self, classifier, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
                  initial_learning_rate=1.0, initial_momentum_rate=0.9,
                  kernel_size=T.constant(1.0), rho=0.95, fudge_factor=1e-6):
+
         self.classifier = classifier
         mlp_input = T.matrix('mlp_input')  # float matrix
         mlp_target = T.matrix('mlp_target')  # float vector
-
-        self.mlp_output = function([mlp_input], classifier.predict(mlp_input))
 
         reg_cons_L2 = T.scalar('lambdaL2', dtype=config.floatX)
         reg_cons_L1 = T.scalar('lambdaL1', dtype=config.floatX)
@@ -66,10 +65,8 @@ class TrainerMLP:
         self.mlp_test = function([mlp_input, mlp_target, reg_cons_L1, reg_cons_L2], cost_function,
                                  on_unused_input='ignore')
 
-    def reset(self):
-        self.classifier.reset()
-
     def minibach_eval(self, data, labels, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
+
         averaged_cost = 0.0
         N = len(data)
         for NN, (start, end) in enumerate(
@@ -82,34 +79,37 @@ class TrainerMLP:
                                                reg_L1 * (end - start) / N)
         return averaged_cost / NN
 
-    def trainer(self, data_train, label_train, data_test, label_test,
+    def trainer(self, input_train, target_train, input_test, target_test,
                 max_epoch=100, reg_L1=0.01, reg_L2=0.01, batch_size=32,
                 validation_jump=5, early_stop_th=4):
+
+        target_train = self.classifier.get_target(target_train)
+        target_test = self.classifier.get_target(target_test)
 
         train_cost = np.zeros(max_epoch)
         test_cost = np.zeros(int(max_epoch / validation_jump))
 
-        test_cost[0] = self.minibach_eval(data_test, label_test, reg_L2, reg_L1, batch_size, train=False)
+        test_cost[0] = self.minibach_eval(input_test, target_test, reg_L2, reg_L1, batch_size, train=False)
         best_test_cost = test_cost[0]
-        best_test_output = self.mlp_output(data_test)
+        best_test_output = self.classifier.output(input_test)
 
         for epoch in range(0, max_epoch):
             # Present mini-batches in different order
-            rand_perm = np.random.permutation(len(label_train))
-            data_train = data_train[rand_perm]
-            label_train = label_train[rand_perm]
+            rand_perm = np.random.permutation(len(target_train))
+            input_train = input_train[rand_perm]
+            target_train = target_train[rand_perm]
 
             # Train minibatches
-            train_cost[epoch] = self.minibach_eval(data_train, label_train, reg_L2, reg_L1, batch_size,
+            train_cost[epoch] = self.minibach_eval(input_train, target_train, reg_L2, reg_L1, batch_size,
                                                    train=True)
             # Early stopping
             if epoch > 0 and np.mod(epoch, validation_jump) == 0:
                 val_ind = int(epoch / validation_jump)
-                test_cost[val_ind] = self.minibach_eval(data_test, label_test, reg_L2, reg_L1, batch_size,
+                test_cost[val_ind] = self.minibach_eval(input_test, target_test, reg_L2, reg_L1, batch_size,
                                                         train=False)
                 if test_cost[val_ind] <= best_test_cost:
                     best_test_cost = test_cost[val_ind]
-                    best_test_output = self.mlp_output(data_test)
+                    best_test_output = self.classifier.output(input_test)
                     best_iteration = epoch
 
                 # Lutz Prechelt, Early stopping ... but when
@@ -123,4 +123,4 @@ class TrainerMLP:
                     train_cost[epoch] = train_cost[epoch]
                     break
 
-        return train_cost, test_cost, best_iteration, best_test_cost, best_test_output
+        return train_cost, test_cost, self.classifier.translate_output(best_test_output)

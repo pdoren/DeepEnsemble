@@ -3,9 +3,8 @@ import theano.tensor as T
 
 class MLearn:
 
-    def __init__(self, type_output="classifier"):
+    def __init__(self):
         self.params = []
-        self.type_output = type_output
 
     def reset(self):
         """
@@ -13,15 +12,17 @@ class MLearn:
         """
         raise NotImplementedError
 
+    def get_target(self, _target):
+        return _target
+
     def output(self, _input):
         raise NotImplementedError
 
-    def predict_classifier(self, _input, threshold=0.5):
+    def predict(self, _input):
         raise NotImplementedError
 
-    def predict(self, _input, threshold=0.5):
-        return (self.predict_classifier(_input, threshold) if self.type_output is "classifier"
-                else self.output(_input))
+    def fit(self, _input, _target):
+        raise NotImplementedError
 
     def get_cost_function(self, cost, _input, _target, kernel_size):
         if cost == "MSE":

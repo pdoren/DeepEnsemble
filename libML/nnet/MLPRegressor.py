@@ -1,11 +1,11 @@
 import theano.tensor as T
-import libML.MLearn as MLearn
+from libML.MLearn import MLearn
 from libML.nnet.Layer import Layer
 
 
-class MLP(MLearn):
-    def __init__(self, n_input, n_hidden, n_output, output_activation=T.nnet.sigmoid, hidden_activation=None,
-                 type_output="classifier"):
+class MLPRegressor(MLearn):
+
+    def __init__(self, n_input, n_hidden, n_output, output_activation=T.nnet.sigmoid, hidden_activation=None):
         """
         Multi-Layer Perceptron (MLP)
 
@@ -23,7 +23,8 @@ class MLP(MLearn):
         :type hidden_activation: array
         :param hidden_activation: Non linearity to be applied in the hidden Layers
         """
-        super().__init__(type_output=type_output)
+        super(MLPRegressor, self).__init__()
+
         self.layers = []
         self.N_output = n_output
 
@@ -77,7 +78,7 @@ class MLP(MLearn):
 
     def output(self, _input):
         """
-        Prediction of MLP
+        Output of MLP
 
         :type _input: theano.tensor.dmatrix
         :param _input: input
@@ -87,9 +88,18 @@ class MLP(MLearn):
             _input = layer.output(_input)
         return _input
 
-    def predict_classifier(self, _input, threshold=0.5):
-        return (self.predict_binary(_input, threshold) if self.N_output < 2
-                else self.predict_multiclass(_input))
+    def predict(self, _input):
+        """
+        Prediction of MLP
+
+        :type _input: theano.tensor.dmatrix
+        :param _input: input
+        :return: direct output of MLP
+        """
+        return self.translate_output(self.output(_input))
+
+    def translate_output(self, _output):
+        return self.output.eval()
 
     def reset(self):
         """
@@ -97,29 +107,3 @@ class MLP(MLearn):
         """
         for layer in self.layers:
             layer.initialize_parameters()
-
-    def predict_binary(self, _input, threshold=0.5):
-        """
-        Binary prediction with MLP (2 classes)
-
-        :type _input: theano.tensor.dmatrix
-        :param _input: input
-        :type threshold: float
-        :param threshold: Threshold for get to classification
-        :return: Return true or false or number of class (1 or 0)
-        """
-        for layer in self.layers:
-            _input = layer.output(_input)
-        return _input > threshold
-
-    def predict_multiclass(self, _input):
-        """
-        Multiclass prediction with MLP
-
-        :type _input: theano.tensor.dmatrix
-        :param _input: input
-        :return: Return number of class
-        """
-        for layer in self.layers:
-            _input = layer.output(_input)
-        return T.argmax(_input, axis=1)
