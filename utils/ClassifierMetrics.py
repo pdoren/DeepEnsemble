@@ -7,12 +7,14 @@ class ClassifierMetrics:
     def __init__(self, target_names):
         self.metrics = []
         self.cm = []
-        self.n = 0
+        self.train_cost = []
+        self.test_cost = []
         self.W = 3
         self.target_names = target_names
 
-    def append(self, y_true, y_pred):
+    def append_pred(self, y_true, y_pred):
         cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self.target_names)
+
         self.cm.append(cm)
 
         TP = cm[0, 0]
@@ -26,19 +28,29 @@ class ClassifierMetrics:
         metrics[0, 2] = FP / (FP + TN)
         metrics[0, 3] = TP ** 2 / ((TP + self.W * FP) * (TP + FN))
 
-        if self.n == 0:
+        if len(self.metrics) == 0:
             self.metrics = metrics
         else:
             self.metrics = np.append(self.metrics, metrics, axis=0)
-        self.n += 1
+
+    def append_cost(self, train_cost, test_cost):
+
+        if len(self.train_cost) == 0 and len(self.test_cost) == 0:
+            self.train_cost = train_cost
+            self.test_cost = test_cost
+        else:
+            self.train_cost = np.vstack([self.train_cost, train_cost])
+            self.test_cost = np.vstack([self.test_cost,  test_cost])
 
     def reset(self):
         self.metrics = []
         self.cm = []
-        self.n = 0
+        self.train_cost = []
+        self.test_cost = []
 
     def print(self):
-        if self.n == 1:
+
+        if len(self.cm) == 0:
             print(self.cm)
         else:
             print(np.average(self.cm, axis=0))
@@ -51,11 +63,12 @@ class ClassifierMetrics:
 
     def plot_confusion_matrix(self, title='Confusion matrix', cmap=plt.cm.Blues):
 
-        if self.n == 1:
+        if len(self.cm) == 0:
             cm = self.cm
         else:
             cm = np.average(self.cm, axis=0)
 
+        plt.figure()
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
@@ -66,16 +79,43 @@ class ClassifierMetrics:
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
 
+    def plot_cost(self, max_epoch, log_scale=False, train_title='Train Cost', test_title='Test Cost'):
+        fig = plt.figure(figsize=(12, 6))
+        ax = fig.add_subplot(2, 1, 1)
+        train_cost = np.transpose(self.train_cost)
+        ax.plot(np.linspace(0.0, max_epoch, num=len(train_cost)), train_cost)
+        ax.set_title(train_title)
+        if log_scale:
+            ax.set_xscale('log')
+        plt.grid()
+        ax = fig.add_subplot(2, 1, 2)
+        test_cost = np.transpose(self.test_cost)
+        ax.plot(np.linspace(0.0, max_epoch, num=len(test_cost)), test_cost)
+        ax.set_title(test_title)
+        if log_scale:
+            ax.set_xscale('log')
+        plt.grid()
+
 
 def test():
-    metrics = ClassifierMetrics(3)
+    metrics = ClassifierMetrics([0, 1, 2])
     y_true = [2, 0, 2, 2, 0, 1]
     y_pred = [0, 0, 2, 2, 0, 2]
-    metrics.append(y_true, y_pred)
+    train_cost = [5, 4, 3, 1, 0.3, 0.2, 0.1]
+    test_cost  = [15, 20, 5, 1, 0.3, 0.2, 0.1]
+    metrics.append_pred(y_true, y_pred)
+    metrics.append_cost(train_cost, test_cost)
     y_true = [2, 0, 2, 2, 0, 1]
     y_pred = [0, 1, 2, 1, 0, 1]
-    metrics.append(y_true, y_pred)
+    train_cost = [5, 4, 3, 1, 0.3, 0.2, 0.1]
+    test_cost = [5, 2, 5, 7, 0.3, 0.2, 0.1]
+    metrics.append_pred(y_true, y_pred)
+    metrics.append_cost(train_cost, test_cost)
     metrics.print()
+    metrics.plot_confusion_matrix()
+    metrics.plot_cost(7)
+
+    plt.show()
 
 
 if __name__ == "__main__":
