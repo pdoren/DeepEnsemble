@@ -4,7 +4,6 @@ from libML.nnet.Layer import Layer
 
 
 class MLPRegressor(MLearn):
-
     def __init__(self, n_input, n_hidden, n_output, output_activation=T.nnet.sigmoid, hidden_activation=None):
         """
         Multi-Layer Perceptron (MLP)
@@ -23,10 +22,9 @@ class MLPRegressor(MLearn):
         :type hidden_activation: array
         :param hidden_activation: Non linearity to be applied in the hidden Layers
         """
-        super(MLPRegressor, self).__init__()
+        super(MLPRegressor, self).__init__(n_input=n_input, n_output=n_output, type_learner='regressor')
 
         self.layers = []
-        self.N_output = n_output
 
         if hidden_activation is None:
             functions_activation = []
@@ -37,7 +35,7 @@ class MLPRegressor(MLearn):
             functions_activation.append(T.tanh)  # default tanh
 
         # input layer
-        self.layers.append(Layer(n_input, n_hidden[0], functions_activation[0]))
+        self.layers.append(Layer(self.N_input, n_hidden[0], functions_activation[0]))
 
         # hidden layers
         for i in range(1, len(n_hidden)):

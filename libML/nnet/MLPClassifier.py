@@ -16,6 +16,8 @@ class MLPClassifier(MLPRegressor):
         super(MLPClassifier, self).__init__(n_input=n_input, n_hidden=n_hidden, n_output=self.N_classes,
                                             output_activation=output_activation, hidden_activation=hidden_activation)
 
+        self.type_learner = "classifier"
+
     def predict(self, _input):
         output = super(MLPClassifier, self).output(_input)
         return self.translate_output(output)

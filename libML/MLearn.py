@@ -2,9 +2,22 @@ import theano.tensor as T
 
 
 class MLearn:
+    def __init__(self, n_input, n_output, type_learner='classifier'):
 
-    def __init__(self):
+        self.N_input = n_input
+        self.N_output = n_output
+        self.type_learner = type_learner
         self.params = []
+
+    def __eq__(self, other):
+        if isinstance(other, MLearn):
+            return (self.N_input == other.N_input) and (self.N_output == other.N_output) and (
+                self.type_learner is other.type_learner)
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def reset(self):
         """

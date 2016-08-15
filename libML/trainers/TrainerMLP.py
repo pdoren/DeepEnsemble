@@ -1,39 +1,42 @@
 import theano.tensor as T
 import numpy as np
+from libML.trainers.Trainer import Trainer
 from theano import shared, config, function
 from collections import OrderedDict
 
 
-class TrainerMLP:
-    def __init__(self, classifier, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
+class TrainerMLP(Trainer):
+
+    def __init__(self, learner, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
                  initial_learning_rate=1.0, initial_momentum_rate=0.9,
                  kernel_size=T.constant(1.0), rho=0.95, fudge_factor=1e-6):
 
-        self.classifier = classifier
+        super(TrainerMLP, self).__init__(learner=learner)
+
         mlp_input = T.matrix('mlp_input')  # float matrix
         mlp_target = T.matrix('mlp_target')  # float vector
 
         reg_cons_L2 = T.scalar('lambdaL2', dtype=config.floatX)
         reg_cons_L1 = T.scalar('lambdaL1', dtype=config.floatX)
 
-        cost_function = classifier.get_cost_function(cost, mlp_input, mlp_target, kernel_size)
+        cost_function = learner.get_cost_function(cost, mlp_input, mlp_target, kernel_size)
 
         if regularizer == "L1":
-            cost_function += classifier.L1(reg_cons_L1)
+            cost_function += learner.L1(reg_cons_L1)
         elif regularizer == "L2":
-            cost_function += classifier.sqr_L2(reg_cons_L2)
+            cost_function += learner.sqr_L2(reg_cons_L2)
         elif regularizer == "L2+L1":
-            cost_function += classifier.sqr_L2(reg_cons_L2) + classifier.L1(reg_cons_L1)
+            cost_function += learner.sqr_L2(reg_cons_L2) + learner.L1(reg_cons_L1)
         elif regularizer is None:
             pass
         else:
             raise ValueError("Incorrect regularizer, options are L1, L2, L2+L1 or None")
 
         updates = OrderedDict()
-        gparams = [T.grad(cost_function, param) for param in classifier.params]
+        gparams = [T.grad(cost_function, param) for param in learner.params]
 
         one = T.constant(1)
-        for param, grad in zip(classifier.params, gparams):
+        for param, grad in zip(learner.params, gparams):
             # https://github.com/Lasagne/Lasagne/:
             value = param.get_value(borrow=True)
             accu = shared(np.zeros(value.shape, dtype=value.dtype), broadcastable=param.broadcastable)
