@@ -1,11 +1,11 @@
 class Trainer:
-    def __init__(self, learner):
+    def __init__(self, model):
 
-        self.learner = learner
+        self.model = model
 
     def __eq__(self, other):
         if isinstance(other, Trainer):
-            return self.learner == other.learner
+            return self.model == other.model
         else:
             return False
 

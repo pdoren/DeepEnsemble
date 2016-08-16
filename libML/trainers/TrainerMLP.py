@@ -7,11 +7,11 @@ from collections import OrderedDict
 
 class TrainerMLP(Trainer):
 
-    def __init__(self, learner, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
+    def __init__(self, model, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
                  initial_learning_rate=1.0, initial_momentum_rate=0.9,
                  kernel_size=T.constant(1.0), rho=0.95, fudge_factor=1e-6):
 
-        super(TrainerMLP, self).__init__(learner=learner)
+        super(TrainerMLP, self).__init__(model=model)
 
         mlp_input = T.matrix('mlp_input')  # float matrix
         mlp_target = T.matrix('mlp_target')  # float vector
@@ -19,24 +19,24 @@ class TrainerMLP(Trainer):
         reg_cons_L2 = T.scalar('lambdaL2', dtype=config.floatX)
         reg_cons_L1 = T.scalar('lambdaL1', dtype=config.floatX)
 
-        cost_function = learner.get_cost_function(cost, mlp_input, mlp_target, kernel_size)
+        cost_function = model.get_cost_function(cost, mlp_input, mlp_target, kernel_size)
 
         if regularizer == "L1":
-            cost_function += learner.L1(reg_cons_L1)
+            cost_function += model.L1(reg_cons_L1)
         elif regularizer == "L2":
-            cost_function += learner.sqr_L2(reg_cons_L2)
+            cost_function += model.sqr_L2(reg_cons_L2)
         elif regularizer == "L2+L1":
-            cost_function += learner.sqr_L2(reg_cons_L2) + learner.L1(reg_cons_L1)
+            cost_function += model.sqr_L2(reg_cons_L2) + model.L1(reg_cons_L1)
         elif regularizer is None:
             pass
         else:
             raise ValueError("Incorrect regularizer, options are L1, L2, L2+L1 or None")
 
         updates = OrderedDict()
-        gparams = [T.grad(cost_function, param) for param in learner.params]
+        gparams = [T.grad(cost_function, param) for param in model.params]
 
         one = T.constant(1)
-        for param, grad in zip(learner.params, gparams):
+        for param, grad in zip(model.params, gparams):
             # https://github.com/Lasagne/Lasagne/:
             value = param.get_value(borrow=True)
             accu = shared(np.zeros(value.shape, dtype=value.dtype), broadcastable=param.broadcastable)
@@ -72,6 +72,7 @@ class TrainerMLP(Trainer):
 
         averaged_cost = 0.0
         N = len(data)
+        NN = 1
         for NN, (start, end) in enumerate(
                 zip(range(0, len(data), batch_size), range(batch_size, len(data), batch_size))):
             if train:
@@ -86,15 +87,16 @@ class TrainerMLP(Trainer):
                 max_epoch=100, reg_L1=0.01, reg_L2=0.01, batch_size=32,
                 validation_jump=5, early_stop_th=4):
 
-        target_train = self.classifier.get_target(target_train)
-        target_test = self.classifier.get_target(target_test)
+        target_train = self.model.translate_target(target_train)
+        target_test = self.model.translate_target(target_test)
 
         train_cost = np.zeros(max_epoch)
         test_cost = np.zeros(int(max_epoch / validation_jump))
 
         test_cost[0] = self.minibach_eval(input_test, target_test, reg_L2, reg_L1, batch_size, train=False)
         best_test_cost = test_cost[0]
-        best_test_output = self.classifier.output(input_test)
+        best_test_output = self.model.output(input_test)
+        best_iteration = 0
 
         for epoch in range(0, max_epoch):
             # Present mini-batches in different order
@@ -112,7 +114,7 @@ class TrainerMLP(Trainer):
                                                         train=False)
                 if test_cost[val_ind] <= best_test_cost:
                     best_test_cost = test_cost[val_ind]
-                    best_test_output = self.classifier.output(input_test)
+                    best_test_output = self.model.output(input_test)
                     best_iteration = epoch
 
                 # Lutz Prechelt, Early stopping ... but when
@@ -126,4 +128,4 @@ class TrainerMLP(Trainer):
                     train_cost[epoch] = train_cost[epoch]
                     break
 
-        return train_cost, test_cost, self.classifier.translate_output(best_test_output)
+        return train_cost, test_cost, self.model.translate_output(best_test_output)

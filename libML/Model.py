@@ -1,18 +1,19 @@
 import theano.tensor as T
 
 
-class MLearn:
-    def __init__(self, n_input, n_output, type_learner='classifier'):
+class Model:
+    def __init__(self, n_input, n_output, type_model='classifier'):
 
-        self.N_input = n_input
-        self.N_output = n_output
-        self.type_learner = type_learner
+        self.n_input = n_input
+        self.n_output = n_output
+        self.type_model = type_model
         self.params = []
+        self.target_labels = []
 
     def __eq__(self, other):
-        if isinstance(other, MLearn):
-            return (self.N_input == other.N_input) and (self.N_output == other.N_output) and (
-                self.type_learner is other.type_learner)
+        if isinstance(other, Model):
+            return (self.n_input == other.n_input) and (self.n_output == other.n_output) and (
+                self.type_model is other.type_model) and (list(self.target_labels) == list(other.target_labels))
         else:
             return False
 
@@ -25,17 +26,18 @@ class MLearn:
         """
         raise NotImplementedError
 
-    def get_target(self, _target):
+    def translate_target(self, _target):
         return _target
 
     def output(self, _input):
         raise NotImplementedError
 
-    def predict(self, _input):
+    def translate_output(self, _output):
         raise NotImplementedError
 
-    def fit(self, _input, _target):
-        raise NotImplementedError
+    def predict(self, _input):
+        output = self.output(_input)
+        return self.translate_output(output)
 
     def get_cost_function(self, cost, _input, _target, kernel_size):
         if cost == "MSE":
