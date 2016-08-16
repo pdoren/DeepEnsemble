@@ -5,15 +5,13 @@ import numpy as np
 
 class Layer:
     def __init__(self, n_input, n_neurons, activation=None):
-        """
-        Typical Layer of MLP
+        """ Typical Layer of MLP
 
-        :type n_input: int
-        :param n_input: Dimensionality of input
-        :type n_neurons: int
-        :param n_neurons: Numbers of Neurons
-        :type activation: tensor.Op or function
-        :param activation: Non linearity to be applied in the layer
+        Parameters
+        ----------
+        n_input
+        n_neurons
+        activation
         """
         self.N_input = n_input
         self.N_neurons = n_neurons
@@ -24,14 +22,11 @@ class Layer:
         self.params = [self.W, self.b]
 
     def initialize_parameters(self):
-        """
-        Initialize neurons params of layer
-        Note : optimal initialization of weights is dependent on the
-               activation function used (among other things).
-               For example, results presented in [Xavier10] suggest that you
-               should use 4 times larger initial weights for sigmoid
-               compared to tanh  We have no info for other function,
-               so we use the same as tanh.
+        """ Initialize neurons params of layer
+
+        Returns
+        -------
+
         """
         W = np.array(np.random.uniform(low=-np.sqrt(6.0 / (self.N_input + self.N_neurons)),
                                        high=np.sqrt(6.0 / (self.N_input + self.N_neurons)),
@@ -43,13 +38,15 @@ class Layer:
         self.b.set_value(np.zeros(shape=(self.N_neurons,), dtype=config.floatX))
 
     def output(self, x):
-        """
-        Return output of layer
+        """ Return output of layer
 
-        :type x: theano.tensor.dmatrix
-        :param x: a symbolic tensor of shape (n_examples, n_inputs)
+        Parameters
+        ----------
+        x
 
-        :return: return output Layer
+        Returns
+        -------
+
         """
         lin_output = T.dot(x, self.W) + self.b
 

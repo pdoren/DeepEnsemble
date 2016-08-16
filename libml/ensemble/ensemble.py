@@ -1,5 +1,5 @@
-from libML.Model import Model
-from libML.ensemble.PairModelTrainer import PairModelTrainer
+from libml.model import Model
+from libml.ensemble.pairmodeltrainer import PairModelTrainer
 
 
 class Ensemble(Model):
@@ -49,9 +49,9 @@ class Ensemble(Model):
 
 
 def test1():
-    from libML.nnet.MLPClassifier import MLPClassifier
-    from libML.trainers.TrainerMLP import TrainerMLP
-    from libML.ensemble.combiner.ModelCombiner import ModelCombiner
+    from libml.nnet.mlpclassifier import MLPClassifier
+    from libml.trainers.trainermlp import TrainerMLP
+    from libml.ensemble.combiner.modelcombiner import ModelCombiner
     import theano
     import numpy as np
     import theano.tensor as T

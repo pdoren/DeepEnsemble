@@ -1,6 +1,6 @@
 import theano.tensor as T
-from libML.Model import Model
-from libML.nnet.Layer import Layer
+from libml.model import Model
+from libml.nnet.layer import Layer
 
 
 class MLPRegressor(Model):
@@ -29,7 +29,7 @@ class MLPRegressor(Model):
             functions_activation = hidden_activation
 
         while len(functions_activation) != len(n_hidden):
-            functions_activation.append(T.tanh)  # default tanh
+            functions_activation.append(T.tanh)  # default activation function
 
         # input layer
         self.layers.append(Layer(self.n_input, n_hidden[0], functions_activation[0]))

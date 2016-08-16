@@ -1,6 +1,6 @@
 import theano.tensor as T
 import numpy as np
-from libML.trainers.Trainer import Trainer
+from libml.trainers.trainer import Trainer
 from theano import shared, config, function
 from collections import OrderedDict
 
@@ -68,7 +68,7 @@ class TrainerMLP(Trainer):
         self.mlp_test = function([mlp_input, mlp_target, reg_cons_L1, reg_cons_L2], cost_function,
                                  on_unused_input='ignore')
 
-    def minibach_eval(self, data, labels, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
+    def minibatch_eval(self, data, labels, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
 
         averaged_cost = 0.0
         N = len(data)
@@ -93,7 +93,7 @@ class TrainerMLP(Trainer):
         train_cost = np.zeros(max_epoch)
         test_cost = np.zeros(int(max_epoch / validation_jump))
 
-        test_cost[0] = self.minibach_eval(input_test, target_test, reg_L2, reg_L1, batch_size, train=False)
+        test_cost[0] = self.minibatch_eval(input_test, target_test, reg_L2, reg_L1, batch_size, train=False)
         best_test_cost = test_cost[0]
         best_test_output = self.model.output(input_test)
         best_iteration = 0
@@ -105,13 +105,13 @@ class TrainerMLP(Trainer):
             target_train = target_train[rand_perm]
 
             # Train minibatches
-            train_cost[epoch] = self.minibach_eval(input_train, target_train, reg_L2, reg_L1, batch_size,
-                                                   train=True)
+            train_cost[epoch] = self.minibatch_eval(input_train, target_train, reg_L2, reg_L1, batch_size,
+                                                    train=True)
             # Early stopping
             if epoch > 0 and np.mod(epoch, validation_jump) == 0:
                 val_ind = int(epoch / validation_jump)
-                test_cost[val_ind] = self.minibach_eval(input_test, target_test, reg_L2, reg_L1, batch_size,
-                                                        train=False)
+                test_cost[val_ind] = self.minibatch_eval(input_test, target_test, reg_L2, reg_L1, batch_size,
+                                                         train=False)
                 if test_cost[val_ind] <= best_test_cost:
                     best_test_cost = test_cost[val_ind]
                     best_test_output = self.model.output(input_test)

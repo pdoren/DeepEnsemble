@@ -1,7 +1,7 @@
 import theano
 import theano.tensor as T
 import numpy as np
-from libML.nnet.MLPRegressor import MLPRegressor
+from libml.nnet.mlpregressor import MLPRegressor
 
 
 class MLPClassifier(MLPRegressor):

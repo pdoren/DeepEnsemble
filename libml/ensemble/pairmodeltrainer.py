@@ -1,5 +1,5 @@
-from libML.Model import Model
-from libML.trainers.Trainer import Trainer
+from libml.model import Model
+from libml.trainers.trainer import Trainer
 
 
 class PairModelTrainer:

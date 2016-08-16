@@ -31,11 +31,11 @@ import time
 
 sys.path.insert(0, r'../../')
 
-from libML.nnet.MLPClassifier import MLPClassifier
-from libML.trainers.TrainerMLP import TrainerMLP
+from libml.nnet.mlpclassifier import MLPClassifier
+from libml.trainers.trainermlp import TrainerMLP
 
 from sklearn.cross_validation import ShuffleSplit
-from utils.ClassifierMetrics import ClassifierMetrics
+from utils.classifiermetrics import ClassifierMetrics
 
 classifier = MLPClassifier(data_input.shape[1], [5], classes_names,
                            output_activation=T.tanh,
