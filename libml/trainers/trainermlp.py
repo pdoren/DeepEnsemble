@@ -1,6 +1,7 @@
+import theano
 import theano.tensor as T
 import numpy as np
-from libml.trainers.trainer import Trainer
+from .trainer import Trainer
 from theano import shared, config, function
 from collections import OrderedDict
 
@@ -35,9 +36,10 @@ class TrainerMLP(Trainer):
         updates = OrderedDict()
         gparams = [T.grad(cost_function, param) for param in model.params]
 
+        # Using theano constant to prevent upcasting of float32
         one = T.constant(1)
+
         for param, grad in zip(model.params, gparams):
-            # https://github.com/Lasagne/Lasagne/:
             value = param.get_value(borrow=True)
             accu = shared(np.zeros(value.shape, dtype=value.dtype), broadcastable=param.broadcastable)
             delta_accu = shared(np.zeros(value.shape, dtype=value.dtype), broadcastable=param.broadcastable)
@@ -84,8 +86,7 @@ class TrainerMLP(Trainer):
         return averaged_cost / NN
 
     def trainer(self, input_train, target_train, input_test, target_test,
-                max_epoch=100, reg_L1=0.01, reg_L2=0.01, batch_size=32,
-                validation_jump=5, early_stop_th=4):
+                max_epoch=100, validation_jump=5, reg_L1=0.01, reg_L2=0.01, batch_size=32, early_stop_th=4):
 
         target_train = self.model.translate_target(target_train)
         target_test = self.model.translate_target(target_test)

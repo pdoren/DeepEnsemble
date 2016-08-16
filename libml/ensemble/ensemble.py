@@ -45,33 +45,89 @@ class Ensemble(Model):
         if len(self.list_models_ensemble) != 0:
             return self.list_models_ensemble[0].model.translate_output(_output)
         else:
-            raise ValueError('')
+            raise ValueError('No exist models in ensemble')
 
 
 def test1():
+    import theano
+    import time
+    import numpy as np
+    import theano.tensor as T
+    import matplotlib.pylab as plt
+    from sklearn.datasets import load_iris
+    from theano.sandbox import cuda
+    from sklearn import cross_validation
+    from utils.classifiermetrics import ClassifierMetrics
     from libml.nnet.mlpclassifier import MLPClassifier
     from libml.trainers.trainermlp import TrainerMLP
     from libml.ensemble.combiner.modelcombiner import ModelCombiner
-    import theano
-    import numpy as np
-    import theano.tensor as T
+    from libml.trainers.trainerensemble import TrainerEnsemble
 
-    classes_names = np.array(['class 1', 'class2'])
-    mlp1 = MLPClassifier(3, [5], classes_names, output_activation=T.tanh, hidden_activation=[T.tanh])
+    theano.config.floatX = 'float32'
+    cuda.use('gpu')
+    theano.config.compute_test_value = 'off'
 
-    mlp2 = MLPClassifier(3, [5, 2], classes_names, output_activation=T.tanh, hidden_activation=[T.tanh, T.tanh])
+    # Load Data
+
+    iris = load_iris()
+
+    data_input = np.asarray(iris.data, dtype=theano.config.floatX)
+    data_target = iris.target_names[iris.target]
+    classes_names = iris.target_names
+
+    # Create models
+
+    mlp1 = MLPClassifier(data_input.shape[1], [3], classes_names, output_activation=T.tanh,
+                         hidden_activation=[T.tanh])
+
+    mlp2 = MLPClassifier(data_input.shape[1], [5], classes_names, output_activation=T.tanh,
+                         hidden_activation=[T.tanh])
+
+    # Create Ensemble
 
     ensemble = Ensemble(ModelCombiner())
+
+    trainerEnsemble = TrainerEnsemble(ensemble)
 
     ensemble.append_model(mlp1, TrainerMLP, cost="MSE", lr_adapt="CONS",
                           initial_learning_rate=0.05, initial_momentum_rate=0.9, regularizer="L2+L1")
 
-    ensemble.append_model(mlp2, TrainerMLP, cost="MSE", lr_adapt="CONS",
-                          initial_learning_rate=0.05, initial_momentum_rate=0.9, regularizer="L2+L1")
+    ensemble.append_model(mlp2, TrainerMLP, cost="MSE", lr_adapt="ADAGRAD",
+                          initial_learning_rate=0.15, initial_momentum_rate=0.9, regularizer="L2+L1")
 
+    # Generate data train and test
+    max_epoch = 200
+    validation_jump = 5
+
+    input_train, input_test, target_train, target_test = cross_validation.train_test_split(
+        data_input, data_target, test_size=0.4, random_state=0)
+
+    # Initialize metrics
+    metrics = ClassifierMetrics(classes_names)
+
+    # Training
+
+    tic = time.time()
+    train_cost, test_cost, best_test_predict = \
+        trainerEnsemble.trainer(input_train, target_train, input_test, target_test,
+                                max_epoch=max_epoch, reg_L1=1e-2, reg_L2=1e-3, batch_size=32,
+                                validation_jump=validation_jump, early_stop_th=4)
+    toc = time.time()
+
+    print("Elapsed time [s]: %f" % (toc - tic))
+
+    # Compute metrics
+    metrics.append_pred(target_test, ensemble.predict(input_test))
+    metrics.append_cost(train_cost[:, 1], test_cost[:, 1])
+
+    # Reset parameters
     ensemble.reset()
-    _input = np.asarray([[1, 1, 1], [1, 0, 5]], dtype=theano.config.floatX)
-    print('Prediction: ', ensemble.predict(_input))
+
+    metrics.print()
+    metrics.plot_confusion_matrix()
+    metrics.plot_cost(max_epoch)
+
+    plt.show()
 
     print('TEST 1 OK')
 

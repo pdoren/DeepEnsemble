@@ -1,12 +1,3 @@
-# coding: utf-8
-
-# # Iris
-
-# ## Data
-#
-
-# In[1]:
-
 import theano
 import theano.tensor as T
 import numpy as np
@@ -21,10 +12,6 @@ iris = load_iris()
 data_input = np.asarray(iris.data, dtype=theano.config.floatX)
 data_target = iris.target_names[iris.target]
 classes_names = iris.target_names
-
-# ## Training
-
-# In[2]:
 
 import sys
 import time
@@ -78,10 +65,6 @@ for i, (train_set, test_set) in enumerate(sss):
 
 print("FINISHED!")
 
-# ## Results
-
-# In[ ]:
-
 import matplotlib.pylab as plt
 
 metrics.print()
@@ -90,5 +73,3 @@ metrics.plot_cost(max_epoch)
 
 plt.show()
 
-
-# In[ ]:
