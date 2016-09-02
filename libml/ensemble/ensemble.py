@@ -1,5 +1,5 @@
-from libml.model import Model
 from libml.ensemble.pairmodeltrainer import PairModelTrainer
+from libml.model import Model
 
 
 class Ensemble(Model):
@@ -57,8 +57,8 @@ def test1():
     from sklearn.datasets import load_iris
     from theano.sandbox import cuda
     from sklearn import cross_validation
-    from utils.classifiermetrics import ClassifierMetrics
-    from libml.nnet.mlpclassifier import MLPClassifier
+    from utils.metrics.classifiermetrics import ClassifierMetrics
+    from libml.nnet.mlp.mlpclassifier import MLPClassifier
     from libml.trainers.trainermlp import TrainerMLP
     from libml.ensemble.combiner.modelcombiner import ModelCombiner
     from libml.trainers.trainerensemble import TrainerEnsemble
@@ -77,10 +77,10 @@ def test1():
 
     # Create models
 
-    mlp1 = MLPClassifier(data_input.shape[1], [3], classes_names, output_activation=T.tanh,
+    mlp1 = MLPClassifier(data_input.shape[1], [3], classes_names, output_activation=T.nnet.softmax,
                          hidden_activation=[T.tanh])
 
-    mlp2 = MLPClassifier(data_input.shape[1], [5], classes_names, output_activation=T.tanh,
+    mlp2 = MLPClassifier(data_input.shape[1], [3], classes_names, output_activation=T.nnet.softmax,
                          hidden_activation=[T.tanh])
 
     # Create Ensemble

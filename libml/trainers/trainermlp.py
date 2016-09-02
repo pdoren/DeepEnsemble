@@ -1,4 +1,3 @@
-import theano
 import theano.tensor as T
 import numpy as np
 from .trainer import Trainer
@@ -70,18 +69,18 @@ class TrainerMLP(Trainer):
         self.mlp_test = function([mlp_input, mlp_target, reg_cons_L1, reg_cons_L2], cost_function,
                                  on_unused_input='ignore')
 
-    def minibatch_eval(self, data, labels, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
+    def minibatch_eval(self, _input, _output, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
 
         averaged_cost = 0.0
-        N = len(data)
+        N = len(_input)
         NN = 1
         for NN, (start, end) in enumerate(
-                zip(range(0, len(data), batch_size), range(batch_size, len(data), batch_size))):
+                zip(range(0, len(_input), batch_size), range(batch_size, len(_input), batch_size))):
             if train:
-                averaged_cost += self.mlp_train(data[start:end], labels[start:end], reg_L2 * (end - start) / N,
+                averaged_cost += self.mlp_train(_input[start:end], _output[start:end], reg_L2 * (end - start) / N,
                                                 reg_L1 * (end - start) / N)
             else:
-                averaged_cost += self.mlp_test(data[start:end], labels[start:end], reg_L2 * (end - start) / N,
+                averaged_cost += self.mlp_test(_input[start:end], _output[start:end], reg_L2 * (end - start) / N,
                                                reg_L1 * (end - start) / N)
         return averaged_cost / NN
 

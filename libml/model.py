@@ -21,8 +21,7 @@ class Model:
         return not self.__eq__(other)
 
     def reset(self):
-        """
-        Reset params
+        """ Reset params
         """
         raise NotImplementedError
 
