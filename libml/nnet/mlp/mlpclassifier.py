@@ -1,7 +1,7 @@
 import numpy as np
 import theano
 import theano.tensor as T
-from libml.nnet.mlp.mlpmodel import MLPModel
+from .mlpmodel import MLPModel
 
 
 class MLPClassifier(MLPModel):
@@ -14,11 +14,21 @@ class MLPClassifier(MLPModel):
 
         Parameters
         ----------
-        n_input
-        n_hidden
-        target_labels
-        output_activation
-        hidden_activation
+        n_input: int
+            Number of input for MLP net.
+
+        n_hidden: int or list
+            Number of hidden Layers.
+
+        target_labels: list or numpy.array
+            Target labels.
+
+        output_activation: theano.tensor
+            Function of activation for output layer.
+
+        hidden_activation: theano.tensor or list
+            Functions of activation for hidden layers.
+
         """
         if target_labels is None:
             raise ValueError("Incorrect labels target")
@@ -39,10 +49,13 @@ class MLPClassifier(MLPModel):
 
         Parameters
         ----------
-        _target
+        _target: numpy.array
+            Target sample.
 
         Returns
         -------
+        numpy.array
+        Returns the '_target' translated according to target labels.
 
         """
         target = np.zeros(shape=(len(_target), self.n_output), dtype=theano.config.floatX)
@@ -51,14 +64,17 @@ class MLPClassifier(MLPModel):
         return target
 
     def output(self, _input):
-        """ Output of MLP
+        """ Output of MLP.
 
         Parameters
         ----------
-        _input
+        _input: theano.tensor.matrix
+            Input sample.
 
         Returns
         -------
+        theano.tensor.matrix
+        Returns the output or prediction of MLP net.
 
         """
         for layer in self.layers:
@@ -66,14 +82,16 @@ class MLPClassifier(MLPModel):
         return _input
 
     def translate_output(self, _output):
-        """ Evaluating _output of MLP
+        """ Evaluating _output of MLP.
 
         Parameters
         ----------
-        _output
+        _output: theano.tensor.matrix
+            Output MLP.
 
         Returns
         -------
+        Returns the translation of '_output' according to target labels.
 
         """
         return self.target_labels[T.argmax(_output, axis=1).eval()]

@@ -1,15 +1,38 @@
 from libml.ensemble.pairmodeltrainer import PairModelTrainer
+from libml.trainers.trainer import Trainer
 from libml.model import Model
 
 
-class Ensemble(Model):
+class EnsembleModel(Model):
     def __init__(self, combiner):
-        super(Ensemble, self).__init__(n_input=0, n_output=0)
+        """ Base class Ensemble Model.
+
+        Parameters
+        ----------
+        combiner: Combiner
+            Function for mixing outputs models of ensemble.
+        """
+        super(EnsembleModel, self).__init__(n_input=0, n_output=0)
         self.combiner = combiner
         self.list_models_ensemble = []
 
     def append_model(self, model, class_trainer, **kwargs):
+        """ Add model to ensemble.
 
+        Parameters
+        ----------
+        model: Model
+            Model.
+        class_trainer: Trainer
+            Trainer for model.
+        kwargs:
+            Another parameters.
+
+        Raises
+        ------
+        If the model is the different type of the current list the models, it is generated an error.
+
+        """
         new_model = PairModelTrainer(model, class_trainer, **kwargs)
         if len(self.list_models_ensemble) == 0:
             # copy data model
@@ -35,17 +58,53 @@ class Ensemble(Model):
             raise ValueError('Incorrect Learner: ' + str_error[0:-2] + '.')
 
     def reset(self):
+        """ Reset parameters of the ensemble's models.
+        """
         for model in self.list_models_ensemble:
             model.reset()
 
     def output(self, _input):
+        """ Output of ensemble model.
+
+        Parameters
+        ----------
+        _input: theano.tensor.matrix
+            Input sample.
+
+        Returns
+        -------
+        theano.tensor.matrix
+        Returns of combiner the outputs of the different the ensemble's models.
+
+        """
         return self.combiner.output(self.list_models_ensemble, _input)
 
     def translate_output(self, _output):
+        """ Translate '_output' according to labels in case of the classifier ensemble,
+        for regressor ensemble return '_output' without changes.
+
+        Parameters
+        ----------
+        _output: theano.tensor.matrix
+            Prediction or output of ensemble.
+
+        Returns
+        -------
+        numpy.array
+        It will depend of the type ensemble's models:
+
+         - Classifier models: the translation of '_output' according to target labels.
+         - Regressor models: the same '_output' array (evaluated).
+
+        """
         if len(self.list_models_ensemble) != 0:
             return self.list_models_ensemble[0].model.translate_output(_output)
         else:
             raise ValueError('No exist models in ensemble')
+
+#
+# TEST
+#
 
 
 def test1():
@@ -60,7 +119,7 @@ def test1():
     from utils.metrics.classifiermetrics import ClassifierMetrics
     from libml.nnet.mlp.mlpclassifier import MLPClassifier
     from libml.trainers.trainermlp import TrainerMLP
-    from libml.ensemble.combiner.modelcombiner import ModelCombiner
+    from libml.ensemble.combiner.averagecombiner import AverageCombiner
     from libml.trainers.trainerensemble import TrainerEnsemble
 
     theano.config.floatX = 'float32'
@@ -85,7 +144,7 @@ def test1():
 
     # Create Ensemble
 
-    ensemble = Ensemble(ModelCombiner())
+    ensemble = EnsembleModel(AverageCombiner())
 
     trainerEnsemble = TrainerEnsemble(ensemble)
 

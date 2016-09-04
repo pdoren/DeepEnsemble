@@ -1,14 +1,24 @@
-import theano.tensor as T
-
-
 class ModelCombiner:
     def __init__(self):
+        """ Base class for mixing output of models.
+        """
         pass
 
-    # noinspection PyMethodMayBeStatic
     def output(self, list_models_ensemble, _input):
-        output = 0.0
-        for pair in list_models_ensemble:
-            output += pair.model.output(_input)
-        n = T.constant(len(list_models_ensemble))
-        return output / n
+        """ Mixing the output or prediction of ensemble's models.
+
+        Parameters
+        ----------
+        list_models_ensemble: list
+            List of models.
+
+        _input: theano.tensor.matrix
+            Input sample.
+
+        Returns
+        -------
+        numpy.array
+        Returns the mixing prediction of ensemble's models.
+
+        """
+        pass

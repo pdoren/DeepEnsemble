@@ -5,13 +5,23 @@ import numpy as np
 
 class Layer:
     def __init__(self, n_input, n_neurons, activation=None):
-        """ Typical Layer of MLP
+        """ Typical Layer of MLP.
+
+        .. math::  Layer(x) = activation(Wx + b)
+
+        where :math:`x \in \mathbb{R}^{N}`, :math:`N = n_neurons`, :math:`W = weights` and :math:`b = bias`.
 
         Parameters
         ----------
-        n_input
-        n_neurons
-        activation
+        n_input: int
+            Number of input.
+
+        n_neurons: int
+            Number of neurons.
+
+        activation: theano.tensor
+            Activation function.
+
         """
         self.N_input = n_input
         self.N_neurons = n_neurons
@@ -23,10 +33,6 @@ class Layer:
 
     def initialize_parameters(self):
         """ Initialize neurons params of layer
-
-        Returns
-        -------
-
         """
         W = np.array(np.random.uniform(low=-np.sqrt(6.0 / (self.N_input + self.N_neurons)),
                                        high=np.sqrt(6.0 / (self.N_input + self.N_neurons)),
@@ -42,10 +48,15 @@ class Layer:
 
         Parameters
         ----------
-        x
+        x: theano.tensor.matrix
+            Input sample
 
         Returns
         -------
+        theano.tensor.floatX
+        Returns the output layer according to above equation:
+
+        .. math::  Layer(x) = activation(Wx + b)
 
         """
         lin_output = T.dot(x, self.W) + self.b

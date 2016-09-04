@@ -3,6 +3,7 @@ import numpy as np
 from .trainer import Trainer
 from theano import shared, config, function
 from collections import OrderedDict
+from libml.nnet.mlp.mlpmodel import MLPModel
 
 
 class TrainerMLP(Trainer):
@@ -10,7 +11,38 @@ class TrainerMLP(Trainer):
     def __init__(self, model, cost='MSE', regularizer=None, lr_adapt="ADADELTA",
                  initial_learning_rate=1.0, initial_momentum_rate=0.9,
                  kernel_size=T.constant(1.0), rho=0.95, fudge_factor=1e-6):
+        """ Class for training MLP net.
 
+        Parameters
+        ----------
+        model: MLPModel
+            Model MLP.
+
+        cost: str
+            Type of cost function.
+
+        regularizer: str
+            Type of regularization.
+
+        lr_adapt: str
+            Type the adaptive learning rate.
+
+        initial_learning_rate: float or double
+            Initial learning rate.
+
+        initial_momentum_rate: float or double
+            Initial momentum rate.
+
+        kernel_size: float or double
+            Size of kernel for cost function MCC and MEE.
+
+        rho: float or double
+            Ratio for ADADELTA.
+
+        fudge_factor:
+            Parameter for ADADELTA.
+
+        """
         super(TrainerMLP, self).__init__(model=model)
 
         mlp_input = T.matrix('mlp_input')  # float matrix
@@ -69,24 +101,89 @@ class TrainerMLP(Trainer):
         self.mlp_test = function([mlp_input, mlp_target, reg_cons_L1, reg_cons_L2], cost_function,
                                  on_unused_input='ignore')
 
-    def minibatch_eval(self, _input, _output, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
+    def minibatch_eval(self, _input, _target, reg_L1=0.0, reg_L2=0.0, batch_size=32, train=True):
+        """ Evaluate cost mini batch.
 
+        Parameters
+        ----------
+        _input: theano.tensor.matrix
+            Input sample.
+
+        _target: theano.tensor.matrix
+            Target sample.
+
+        reg_L1: float or double
+            Ratio for regularization L1.
+
+        reg_L2: float or double
+            Ratio for regularization L2.
+
+        batch_size: int
+            Size of batch.
+
+        train: bool
+            Flag for knowing if the evaluation of batch is for training or testing.
+
+        Returns
+        -------
+        theano.tensor.floatX
+        Returns evaluation cost of mini batch.
+
+        """
         averaged_cost = 0.0
         N = len(_input)
         NN = 1
         for NN, (start, end) in enumerate(
                 zip(range(0, len(_input), batch_size), range(batch_size, len(_input), batch_size))):
             if train:
-                averaged_cost += self.mlp_train(_input[start:end], _output[start:end], reg_L2 * (end - start) / N,
+                averaged_cost += self.mlp_train(_input[start:end], _target[start:end], reg_L2 * (end - start) / N,
                                                 reg_L1 * (end - start) / N)
             else:
-                averaged_cost += self.mlp_test(_input[start:end], _output[start:end], reg_L2 * (end - start) / N,
+                averaged_cost += self.mlp_test(_input[start:end], _target[start:end], reg_L2 * (end - start) / N,
                                                reg_L1 * (end - start) / N)
         return averaged_cost / NN
 
     def trainer(self, input_train, target_train, input_test, target_test,
                 max_epoch=100, validation_jump=5, reg_L1=0.01, reg_L2=0.01, batch_size=32, early_stop_th=4):
+        """ Trainer the MLP model.
 
+        Parameters
+        ----------
+        input_train: theano.tensor.matrix
+            Input training samples.
+
+        target_train: theano.tensor.matrix
+            Target training samples.
+
+        input_test: theano.tensor.matrix
+            Input testing samples.
+
+        target_test: theano.tensor.matrix
+            Target testing samples.
+
+        max_epoch: int
+            Number of epoch for training.
+
+        validation_jump: int
+            Number of times until doing validation jump.
+
+        reg_L1: float or double
+            Ratio for regularization L1.
+
+        reg_L2: float or double
+            Ratio for regularization L2.
+
+        batch_size: int
+            Size of batch.
+
+        early_stop_th: int
+
+        Returns
+        -------
+        tuple
+        Returns the training cost, testing cost and the best testing prediction.
+
+        """
         target_train = self.model.translate_target(target_train)
         target_test = self.model.translate_target(target_test)
 
