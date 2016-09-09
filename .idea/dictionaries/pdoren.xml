@@ -1,15 +1,30 @@
 <component name="ProjectDictionaryState">
   <dictionary name="pdoren">
     <words>
+      <w>aaai</w>
+      <w>accu</w>
       <w>adadelta</w>
       <w>adagrad</w>
+      <w>cmap</w>
       <w>feedforward</w>
+      <w>gparams</w>
+      <w>interscience</w>
+      <w>kuncheva</w>
+      <w>ludmila</w>
+      <w>lutz</w>
+      <w>mathbb</w>
       <w>minibach</w>
       <w>minibatch</w>
       <w>minibatches</w>
       <w>perceptron</w>
+      <w>prechelt</w>
+      <w>proc</w>
       <w>regressor</w>
       <w>regularizer</w>
+      <w>skalak</w>
+      <w>theano</w>
+      <w>upcasting</w>
+      <w>zhou</w>
     </words>
   </dictionary>
 </component>

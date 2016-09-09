@@ -3,11 +3,10 @@ from .modelcombiner import ModelCombiner
 
 
 class AverageCombiner(ModelCombiner):
-
     def __init__(self):
         """ Class for compute the average the output models.
         """
-        pass
+        super().__init__()
 
     # noinspection PyMethodMayBeStatic
     def output(self, list_models_ensemble, _input):
@@ -15,7 +14,7 @@ class AverageCombiner(ModelCombiner):
 
         Parameters
         ----------
-        list_models_ensemble: list
+        list_models_ensemble: numpy.array
             List of models.
 
         _input: theano.tensor.matrix
@@ -28,7 +27,21 @@ class AverageCombiner(ModelCombiner):
 
         """
         output = 0.0
-        for pair in list_models_ensemble:
-            output += pair.model.output(_input)
+        for model in list_models_ensemble:
+            output += model.output(_input)
         n = T.constant(len(list_models_ensemble))
         return output / n
+
+    def update_parameters(self, error_models):
+        """ Update internal parameters.
+
+        Notes
+        -----
+        Nothing is done because this class does'nt have parameters.
+
+        Parameters
+        ----------
+        error_models: theano.tensor.matrix
+            Training error models.
+        """
+        pass

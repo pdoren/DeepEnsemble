@@ -18,7 +18,16 @@ class ModelCombiner:
         Returns
         -------
         numpy.array
-        Returns the mixing prediction of ensemble's models.
-
+            Returns the mixing prediction of ensemble's models.
         """
-        pass
+        raise NotImplementedError
+
+    def update_parameters(self, error_models):
+        """ Update internal parameters.
+
+        Parameters
+        ----------
+        error_models: theano.tensor.matrix
+            Training error models.
+        """
+        raise NotImplementedError
