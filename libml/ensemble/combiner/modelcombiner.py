@@ -22,12 +22,18 @@ class ModelCombiner:
         """
         raise NotImplementedError
 
-    def update_parameters(self, error_models):
+    def update_parameters(self, ensemble_model, _input, _target):
         """ Update internal parameters.
 
         Parameters
         ----------
-        error_models: theano.tensor.matrix
-            Training error models.
+        ensemble_model: EnsembleModel
+            Ensemble Model it uses for get ensemble's models.
+
+        _input: theano.tensor.matrix
+            Input sample.
+
+        _target: theano.tensor.matrix
+            Target sample.
         """
-        raise NotImplementedError
+        pass

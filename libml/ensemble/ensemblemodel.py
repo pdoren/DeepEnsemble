@@ -133,6 +133,7 @@ class EnsembleModel(Model):
             train_cost[:, i] = model.fit(_input=_input, _target=_target, max_epoch=max_epoch,
                                          validation_jump=validation_jump, **kwargs)
 
+        self.combiner.update_parameters(self, _input=_input, _target=_target)
         return train_cost
 
     def add_cost_ensemble(self, fun_cost, **kwargs):

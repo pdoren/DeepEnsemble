@@ -1,6 +1,8 @@
 import theano.tensor as T
 from .modelcombiner import ModelCombiner
 
+__all__ = ['AverageCombiner']
+
 
 class AverageCombiner(ModelCombiner):
     def __init__(self):
@@ -31,17 +33,3 @@ class AverageCombiner(ModelCombiner):
             output += model.output(_input)
         n = T.constant(len(list_models_ensemble))
         return output / n
-
-    def update_parameters(self, error_models):
-        """ Update internal parameters.
-
-        Notes
-        -----
-        Nothing is done because this class does'nt have parameters.
-
-        Parameters
-        ----------
-        error_models: theano.tensor.matrix
-            Training error models.
-        """
-        pass
