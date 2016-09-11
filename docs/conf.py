@@ -349,8 +349,6 @@ theano.config = Mock(device='gpu')
 theano.sandbox.cuda.cuda_enabled = True
 theano.sandbox.cuda.dnn = Mock(dnn_available=lambda: True)
 
-import sys
-
 sys.modules['pylearn2'] = Mock()
 sys.modules['pylearn2.sandbox'] = Mock()
 sys.modules['pylearn2.sandbox.cuda_convnet'] = Mock()
