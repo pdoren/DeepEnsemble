@@ -1,6 +1,6 @@
 import theano.tensor as T
 from .modelcombiner import ModelCombiner
-from ...utils.utils_classifiers import translate_target
+from ...utils import translate_target
 from theano import shared
 
 __all__ = ['WeightAverageCombiner']
