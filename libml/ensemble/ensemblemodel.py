@@ -1,9 +1,9 @@
 import time
 from .combiner.averagecombiner import AverageCombiner
 from .combiner.modelcombiner import ModelCombiner
-from libml.utils.metrics.classifiermetrics import EnsembleClassifierMetrics
-from libml.utils.metrics.regressionmetrics import EnsembleRegressionMetrics
-from libml.models.model import Model
+from ..utils.metrics.classifiermetrics import EnsembleClassifierMetrics
+from ..utils.metrics.regressionmetrics import EnsembleRegressionMetrics
+from ..models.model import Model
 
 __all__ = ['EnsembleModel']
 

@@ -1,9 +1,9 @@
 from theano import function
 import numpy as np
 from .model import Model
-from libml.utils.utils_classifiers import *
-from libml.utils.metrics.classifiermetrics import ClassifierMetrics
-from libml.utils.metrics.regressionmetrics import RegressionMetrics
+from ..utils.utils_classifiers import *
+from ..utils.metrics.classifiermetrics import ClassifierMetrics
+from ..utils.metrics.regressionmetrics import RegressionMetrics
 
 
 class Sequential(Model):

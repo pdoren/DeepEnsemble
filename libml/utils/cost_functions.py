@@ -1,5 +1,5 @@
 import theano.tensor as T
-from libml.models.model import Model
+from ..models.model import Model
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr']
 

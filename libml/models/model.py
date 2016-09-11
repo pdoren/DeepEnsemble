@@ -2,9 +2,9 @@ import theano.tensor as T
 from theano import config
 import numpy as np
 import pickle
-from libml.utils.utils_classifiers import *
-from libml.utils.metrics.classifiermetrics import *
-from libml.utils.metrics.regressionmetrics import *
+from ..utils.utils_classifiers import *
+from ..utils.metrics.classifiermetrics import *
+from ..utils.metrics.regressionmetrics import *
 
 
 class Model:
