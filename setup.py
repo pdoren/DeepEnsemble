@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='libml',
-    version='0.1',
+    version='0.1-dev1',
     packages=find_packages(),
     url='https://github.com/pdoren/correntropy-and-ensembles-in-deep-learning',
     license='MIT',

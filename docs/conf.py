@@ -22,7 +22,7 @@ import libml
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -134,7 +134,7 @@ def linkcode_resolve(domain, info):
     if domain != 'py' or not info['module']:
         return None
     try:
-        filename = '%s#L%d-L%d' % find_source()
+        filename = 'libml/%s#L%d-L%d' % find_source()
     except Exception:
         filename = info['module'].replace('.', '/') + '.py'
     tag = 'master' if 'dev' in release else ('v' + release)
