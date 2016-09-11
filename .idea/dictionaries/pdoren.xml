@@ -6,10 +6,14 @@
       <w>adadelta</w>
       <w>adagrad</w>
       <w>cmap</w>
+      <w>duchi</w>
       <w>feedforward</w>
       <w>gparams</w>
+      <w>hazan</w>
       <w>interscience</w>
+      <w>jmlr</w>
       <w>kuncheva</w>
+      <w>lasagne</w>
       <w>ludmila</w>
       <w>lutz</w>
       <w>mathbb</w>
@@ -18,12 +22,15 @@
       <w>minibatches</w>
       <w>perceptron</w>
       <w>prechelt</w>
+      <w>preprint</w>
       <w>proc</w>
       <w>regressor</w>
       <w>regularizer</w>
       <w>skalak</w>
+      <w>subgradient</w>
       <w>theano</w>
       <w>upcasting</w>
+      <w>zeiler</w>
       <w>zhou</w>
     </words>
   </dictionary>

@@ -1,5 +1,4 @@
 import theano.tensor as T
-from libml.ensemble.ensemblemodel import EnsembleModel
 from libml.models.model import Model
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr']

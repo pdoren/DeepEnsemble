@@ -1,15 +1,30 @@
 import time
-from libml.ensemble.combiner.averagecombiner import AverageCombiner
-from libml.ensemble.combiner.modelcombiner import ModelCombiner
-from libml.utils.metrics.classifiermetrics import *
-from libml.utils.metrics.regressionmetrics import *
+from .combiner.averagecombiner import AverageCombiner
+from .combiner.modelcombiner import ModelCombiner
+from libml.utils.metrics.classifiermetrics import EnsembleClassifierMetrics
+from libml.utils.metrics.regressionmetrics import EnsembleRegressionMetrics
 from libml.models.model import Model
+
+__all__ = ['EnsembleModel']
 
 
 class EnsembleModel(Model):
+    """ Base class Ensemble Model.
+
+    Attributes
+    ----------
+    combiner : AverageCombiner
+        The class combiner allows to mix the models outputs.
+
+    list_models_ensemble : list
+        List of the ensemble's models.
+
+    Parameters
+    ----------
+    name : str, "ensemble" by default
+        Ensemble's name.
+    """
     def __init__(self, name="ensemble"):
-        """ Base class Ensemble Model.
-        """
         super(EnsembleModel, self).__init__(n_input=0, n_output=0, name=name)
         self.combiner = AverageCombiner()
         self.list_models_ensemble = []

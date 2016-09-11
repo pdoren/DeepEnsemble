@@ -73,3 +73,23 @@ Regression Metrics
 
 .. autoclass:: EnsembleMetrics
    :members:
+
+Diversity
+=========
+
+.. automodule:: libml.utils.metrics.diversitymetrics
+
+Utils
+-----
+
+.. autofunction:: oracle
+.. autofunction:: contingency_table
+
+Pairwise metrics
+----------------
+
+.. autofunction:: correlation_coefficient
+.. autofunction:: disagreement_measure
+.. autofunction:: double_fault_measure
+.. autofunction:: kappa_statistic
+.. autofunction:: q_statistic
