@@ -12,7 +12,9 @@ from libml.ensemble.combiner import *
 from libml.models.sequential import Sequential
 from libml.layers.dense import Dense
 
-from libml.utils import *
+from libml.utils.cost_functions import *
+from libml.utils.regularizer_functions import *
+from libml.utils.update_functions import *
 
 
 def test1():
