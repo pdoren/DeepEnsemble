@@ -10,6 +10,9 @@ setup(
     author='pdoren',
     author_email='pablo.saavedra@ug.uchile.cl',
     description='Library for working with Ensemble Models.',
+    keywords="",
+    include_package_data=False,
+    zip_safe=False,
     install_requires=['numpy'],
     extras_require={
         'testing': [
