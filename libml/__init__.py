@@ -1,6 +1,6 @@
-from .ensemble import *
-from .layers import *
-from .models import *
-from .utils import *
+from . import ensemble
+from . import layers
+from . import models
+from . import utils
 
 __version__ = "0.1"
