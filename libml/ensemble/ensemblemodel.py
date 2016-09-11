@@ -1,14 +1,16 @@
+import time
 from libml.ensemble.combiner.averagecombiner import AverageCombiner
 from libml.ensemble.combiner.modelcombiner import ModelCombiner
+from libml.utils.metrics.classifiermetrics import *
+from libml.utils.metrics.regressionmetrics import *
 from libml.models.model import Model
-import numpy as np
 
 
 class EnsembleModel(Model):
-    def __init__(self):
+    def __init__(self, name="ensemble"):
         """ Base class Ensemble Model.
         """
-        super(EnsembleModel, self).__init__(n_input=0, n_output=0)
+        super(EnsembleModel, self).__init__(n_input=0, n_output=0, name=name)
         self.combiner = AverageCombiner()
         self.list_models_ensemble = []
 
@@ -17,7 +19,7 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        combiner: ModelCombiner
+        combiner : ModelCombiner
             Object ModelCombiner for combining model outputs in ensemble.
         """
         self.combiner = combiner
@@ -27,13 +29,12 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        new_model: Model
+        new_model : Model
             Model.
 
         Raises
         ------
         If the model is the different type of the current list the models, it is generated an error.
-
         """
         if len(self.list_models_ensemble) == 0:
             # copy data model
@@ -79,14 +80,13 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input sample.
 
         Returns
         -------
         theano.tensor.matrix
-        Returns of combiner the outputs of the different the ensemble's models.
-
+            Returns of combiner the outputs of the different the ensemble's models.
         """
         return self.combiner.output(self.list_models_ensemble, _input)
 
@@ -101,7 +101,7 @@ class EnsembleModel(Model):
         for model in self.list_models_ensemble:
             model.compile(**kwargs)
 
-    def fit(self, _input, _target, max_epoch, validation_jump, **kwargs):
+    def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, **kwargs):
         """ Training ensemble.
 
         Parameters
@@ -112,11 +112,14 @@ class EnsembleModel(Model):
         _target : theano.tensor.matrix
             Training Target sample.
 
-        max_epoch: int
+        max_epoch : int
             Number of epoch for training.
 
-        validation_jump: int
+        validation_jump : int
             Number of times until doing validation jump.
+
+        verbose : bool, False by default
+            Flag for show training information.
 
         kwargs
             Other parameters.
@@ -126,22 +129,37 @@ class EnsembleModel(Model):
         numpy.array[float]
             Returns training cost for each batch.
         """
-        n_models = len(self.list_models_ensemble)
-        train_cost = np.zeros(shape=(max_epoch, n_models))
+        if self.type_model is "classifier":
+            metrics = EnsembleClassifierMetrics(self)
+        else:
+            metrics = EnsembleRegressionMetrics(self)
+
+        tic_m, tic = 0.0, 0.0  # Warning PEP8
+        if verbose:
+            tic = time.time()
+            tic_m = tic
 
         for i, model in enumerate(self.list_models_ensemble):
-            train_cost[:, i] = model.fit(_input=_input, _target=_target, max_epoch=max_epoch,
-                                         validation_jump=validation_jump, **kwargs)
 
+            metrics.append_metric(model.fit(_input=_input, _target=_target, max_epoch=max_epoch,
+                                            validation_jump=validation_jump, **kwargs))
+            if verbose:
+                toc_m = time.time()
+                print("model %i Ok: %f[s]" % (i, toc_m - tic_m))
+                tic_m = toc_m
+
+        if verbose:
+            toc = time.time()
+            print("Elapsed time [s]: %f" % (toc - tic))
         self.combiner.update_parameters(self, _input=_input, _target=_target)
-        return train_cost
+        return metrics
 
     def add_cost_ensemble(self, fun_cost, **kwargs):
         """ Adds cost function for each models in Ensemble.
 
         Parameters
         ----------
-        fun_cost: str
+        fun_cost : str
             Name of cost function.
 
         kwargs

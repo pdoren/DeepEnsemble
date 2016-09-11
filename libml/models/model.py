@@ -2,10 +2,13 @@ import theano.tensor as T
 from theano import config
 import numpy as np
 import pickle
+from libml.utils.utils_classifiers import *
+from libml.utils.metrics.classifiermetrics import *
+from libml.utils.metrics.regressionmetrics import *
 
 
 class Model:
-    def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier'):
+    def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier', name="model"):
         """ Base class for models.
 
         Parameters
@@ -19,8 +22,11 @@ class Model:
         target_labels: list or numpy.array
             Target labels.
 
-        type_model : str
+        type_model : str, "classifier" by default
             Type of model: classifier or regressor.
+
+        name : str, "model" by default
+            Name of model.
         """
         self.n_input = n_input
         self.n_output = n_output
@@ -36,6 +42,9 @@ class Model:
         self.reg_function = None
         self.reg_function_list = []
         self.updates = None
+        self.score = None
+
+        self.name = name
 
         self.batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)
 
@@ -120,7 +129,7 @@ class Model:
         if self.type_model is 'regressor':
             return output.eval()
         else:
-            return self.target_labels[T.argmax(output, axis=1).eval()]
+            return self.target_labels[get_index_label_classes(output)]
 
     def fit(self, _input, _target, max_epoch, validation_jump, **kwargs):
         """ Training model.
@@ -152,14 +161,18 @@ class Model:
     def compile(self):
         """ Prepare training.
         """
-        raise NotImplementedError
+        if self.type_model is "classifier":
+            self.score = score_accuracy(translate_output(self.output(self.model_input), self.n_output),
+                                        self.model_target)
+        else:
+            self.score = score_rms(self.output(self.model_input), self.model_target)
 
     def append_cost(self, fun_cost, **kwargs):
         """ Adds an extra item in the cost function.
 
         Parameters
         ----------
-        fun_cost
+        fun_cost : theano.function
             Function of cost
 
         **kwargs
@@ -177,7 +190,7 @@ class Model:
 
         Parameters
         ----------
-        fun_reg
+        fun_reg : theano.function
             Function of regularization
 
         **kwargs
@@ -195,7 +208,7 @@ class Model:
 
         Parameters
         ----------
-        fun_update
+        fun_update : theano.function
             Function of update parameters of models.
 
         **kwargs

@@ -1,4 +1,6 @@
 import theano.tensor as T
+from libml.ensemble.ensemblemodel import EnsembleModel
+from libml.models.model import Model
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr']
 
@@ -8,7 +10,7 @@ def mse(model, _input, _target):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
     _input : theano.tensor.matrix
@@ -31,7 +33,7 @@ def mcc(model, _input, _target, s):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
     _input : theano.tensor.matrix
@@ -40,7 +42,7 @@ def mcc(model, _input, _target, s):
     _target : theano.tensor.matrix
         Target sample.
 
-    s : float or double
+    s : float
         Kernel's Parameter.
 
     Returns
@@ -57,7 +59,7 @@ def mee(model, _input, _target, s):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
     _input : theano.tensor.matrix
@@ -66,7 +68,7 @@ def mee(model, _input, _target, s):
     _target : theano.tensor.matrix
         Target sample.
 
-    s : float or double
+    s : float
         Kernel's Parameter.
 
     Returns
@@ -85,7 +87,7 @@ def neg_log_likelihood(model, _input, _target):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
     _input : theano.tensor.matrix
@@ -109,22 +111,22 @@ def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_cor
 
     Parameters
     ----------
-    model: theano.tensor.matrix
+    model : theano.tensor.matrix
         Model.
 
-    _input: theano.tensor.matrix
+    _input : theano.tensor.matrix
         Input sample.
 
     _target : theano.tensor.matrix
         Target sample.
 
-    index_current_model: int
+    index_current_model : int
         Index of current model in ensemble.
 
-    ensemble: EnsembleModel
+    ensemble : EnsembleModel
         Ensemble.
 
-    lamb_neg_corr : float or double
+    lamb_neg_corr : float, 0.5 by default
         Ratio negative correlation.
 
     Returns

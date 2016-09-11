@@ -9,10 +9,10 @@ class ModelCombiner:
 
         Parameters
         ----------
-        list_models_ensemble: list
+        list_models_ensemble : list[Model]
             List of models.
 
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input sample.
 
         Returns
@@ -27,13 +27,13 @@ class ModelCombiner:
 
         Parameters
         ----------
-        ensemble_model: EnsembleModel
+        ensemble_model : EnsembleModel
             Ensemble Model it uses for get ensemble's models.
 
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input sample.
 
-        _target: theano.tensor.matrix
+        _target : theano.tensor.matrix
             Target sample.
         """
         pass

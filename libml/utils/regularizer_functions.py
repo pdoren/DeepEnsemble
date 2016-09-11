@@ -8,20 +8,19 @@ def L2(model, lamb, batch_reg_ratio):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
-    batch_reg_ratio: float
+    batch_reg_ratio : float
         Ratio batch.
 
-    lamb: float or double
+    lamb : float
         Ratio regularization L2.
 
     Returns
     -------
-    float or double
-    Return regularization square L2.
-
+    float
+        Return regularization square L2.
     """
 
     sqrL2W = 0.0
@@ -35,20 +34,19 @@ def L1(model, lamb, batch_reg_ratio):
 
     Parameters
     ----------
-    model: Model
+    model : Model
         Model for generating output for compare with target sample.
 
-    batch_reg_ratio: float
+    batch_reg_ratio : float
         Ratio batch.
 
-    lamb: float or double
+    lamb : float
         Ratio regularization L1.
 
     Returns
     -------
-    float or double
-    Return regularization L1.
-
+    float
+        Return regularization L1.
     """
     L1W = 0.0
     for layer in model.layers:

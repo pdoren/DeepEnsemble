@@ -1,12 +1,13 @@
-from theano import function, config
-import theano.tensor as T
+from theano import function
 import numpy as np
 from .model import Model
 from libml.utils.utils_classifiers import *
+from libml.utils.metrics.classifiermetrics import ClassifierMetrics
+from libml.utils.metrics.regressionmetrics import RegressionMetrics
 
 
 class Sequential(Model):
-    def __init__(self, target_labels, type_model):
+    def __init__(self, target_labels, type_model, name):
         """ Base class for a generic model. This model is a sequence of layers.
 
         Parameters
@@ -16,8 +17,11 @@ class Sequential(Model):
 
         type_model: str
             Type of MLP model: classifier or regressor.
+
+        name: str
+            Name of model.
         """
-        super(Sequential, self).__init__(target_labels=target_labels, type_model=type_model)
+        super(Sequential, self).__init__(target_labels=target_labels, type_model=type_model, name=name)
         self.layers = []
         self.fun_train = None
         self.fun_test = None
@@ -65,18 +69,20 @@ class Sequential(Model):
     def compile(self):
         """ Prepare training.
         """
+        super(Sequential, self).compile()
+
         if self.reg_function is not None:
             self.cost_function += self.reg_function
 
         self.fun_train = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                  self.cost_function,
+                                  [self.cost_function, self.score],
                                   updates=self.updates, on_unused_input='ignore')
         self.fun_test = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                 self.cost_function,
+                                 [self.cost_function, self.score],
                                  on_unused_input='ignore')
 
     def minibatch_eval(self, _input, _target, batch_size=32, train=True):
-        """ Evaluate cost mini batch.
+        """ Evaluate cost and score in mini batch.
 
         Parameters
         ----------
@@ -94,42 +100,51 @@ class Sequential(Model):
 
         Returns
         -------
-        theano.tensor.floatX
-            Returns evaluation cost of mini batch.
+        tuple
+            Returns evaluation cost and score in mini batch.
         """
         averaged_cost = 0.0
+        averaged_score = 0.0
         N = len(_input)
-        NN = 1
-        for NN, (start, end) in enumerate(
-                zip(range(0, len(_input), batch_size), range(batch_size, len(_input), batch_size))):
+        NN = 0
+        for (start, end) in zip(range(0, len(_input), batch_size), range(batch_size, len(_input), batch_size)):
+            r = (end - start) / N
+            NN += 1
             if train:
-                averaged_cost += self.fun_train(_input[start:end], _target[start:end], (end - start) / N)
+                cost, score = self.fun_train(_input[start:end], _target[start:end], r)
+                averaged_cost += cost
+                averaged_score += score
             else:
-                averaged_cost += self.fun_test(_input[start:end], _target[start:end], (end - start) / N)
-        return averaged_cost / NN
+                cost, score = self.fun_test(_input[start:end], _target[start:end], r)
+                averaged_cost += cost
+                averaged_score += score
+        return averaged_cost / NN, averaged_score / NN
 
     def fit(self, _input, _target, max_epoch=100, validation_jump=5, batch_size=32,
-            early_stop_th=4):
+            early_stop_th=4, verbose=False):
         """
 
         Parameters
         ----------
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input training samples.
 
-        _target: theano.tensor.matrix
+        _target : theano.tensor.matrix
             Target training samples.
 
-        max_epoch: int
+        max_epoch : int, 100 by default
             Number of epoch for training.
 
-        validation_jump: int
+        validation_jump : int, 5  by default
             Number of times until doing validation jump.
 
-        batch_size: int
+        batch_size : int, 32 by default
             Size of batch.
 
-        early_stop_th: int
+        early_stop_th : int, 4 by default
+
+        verbose : bool, False by default
+            Flag for show training information.
 
         Returns
         -------
@@ -137,11 +152,15 @@ class Sequential(Model):
             Returns training cost for each batch.
 
         """
+        if self.type_model is "classifier":
+            metrics = ClassifierMetrics(self)
+        else:
+            metrics = RegressionMetrics(self)
+
         target_train = _target
         input_train = _input
         if self.type_model is 'classifier':
             target_train = translate_target(_target=_target, n_classes=self.n_output, target_labels=self.target_labels)
-        train_cost = np.zeros(max_epoch)
 
         for epoch in range(0, max_epoch):
             # Present mini-batches in different order
@@ -150,7 +169,12 @@ class Sequential(Model):
             target_train = target_train[rand_perm]
 
             # Train minibatches
-            train_cost[epoch] = self.minibatch_eval(_input=input_train, _target=target_train,
-                                                    batch_size=batch_size, train=True)
+            train_cost, train_score = self.minibatch_eval(_input=input_train, _target=target_train,
+                                                          batch_size=batch_size, train=True)
+            metrics.append_train_cost(train_cost)
+            metrics.append_train_score(train_score)
 
-        return train_cost
+            if verbose:
+                print("epoch %i" % epoch)
+
+        return metrics

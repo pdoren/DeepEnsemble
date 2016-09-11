@@ -1,4 +1,3 @@
-import time
 import theano
 import theano.tensor as T
 import numpy as np
@@ -9,12 +8,11 @@ from sklearn.datasets import load_iris
 from theano.sandbox import cuda
 
 from libml.ensemble.ensemblemodel import EnsembleModel
+from libml.ensemble.combiner import *
 from libml.models.sequential import Sequential
-from libml.layers.layer import Layer
-from libml.utils.cost_functions import *
-from libml.utils.update_functions import *
-from libml.utils.regularizer_function import *
-from libml.utils.metrics.classifiermetrics import ClassifierMetrics
+from libml.layers.dense import Dense
+
+from libml.utils import *
 
 
 def test1():
@@ -33,36 +31,36 @@ def test1():
 
     # Create models for ensemble
 
-    reg = 0.005
+    reg = 0.001
     lr = 0.1
 
-    mlp1 = Sequential(classes_names, "classifier")
-    mlp1.add_layer(Layer(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
-    mlp1.add_layer(Layer(n_output=len(classes_names), activation=T.nnet.softmax))
+    mlp1 = Sequential(classes_names, "classifier", "net1")
+    mlp1.add_layer(Dense(n_input=data_input.shape[1], n_output=8, activation=T.tanh))
+    mlp1.add_layer(Dense(n_output=len(classes_names), activation=T.nnet.softmax))
     mlp1.append_cost(mse)
     mlp1.append_reg(L1, lamb=reg)
     mlp1.append_reg(L2, lamb=reg)
     mlp1.set_update(sgd_momentum, learning_rate=lr, momentum_rate=0.9)
 
-    mlp2 = Sequential(classes_names, "classifier")
-    mlp2.add_layer(Layer(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
-    mlp2.add_layer(Layer(n_output=len(classes_names), activation=T.nnet.softmax))
+    mlp2 = Sequential(classes_names, "classifier", "net2")
+    mlp2.add_layer(Dense(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
+    mlp2.add_layer(Dense(n_output=len(classes_names), activation=T.nnet.softmax))
     mlp2.append_cost(mse)
     mlp2.append_reg(L1, lamb=reg)
     mlp2.append_reg(L2, lamb=reg)
     mlp2.set_update(sgd_momentum, learning_rate=lr, momentum_rate=0.9)
 
-    mlp3 = Sequential(classes_names, "classifier")
-    mlp3.add_layer(Layer(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
-    mlp3.add_layer(Layer(n_output=len(classes_names), activation=T.nnet.softmax))
+    mlp3 = Sequential(classes_names, "classifier", "net3")
+    mlp3.add_layer(Dense(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
+    mlp3.add_layer(Dense(n_output=len(classes_names), activation=T.nnet.softmax))
     mlp3.append_cost(mse)
     mlp3.append_reg(L1, lamb=reg)
     mlp3.append_reg(L2, lamb=reg)
     mlp3.set_update(sgd_momentum, learning_rate=lr, momentum_rate=0.9)
 
-    mlp4 = Sequential(classes_names, "classifier")
-    mlp4.add_layer(Layer(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
-    mlp4.add_layer(Layer(n_output=len(classes_names), activation=T.nnet.softmax))
+    mlp4 = Sequential(classes_names, "classifier", "net4")
+    mlp4.add_layer(Dense(n_input=data_input.shape[1], n_output=3, activation=T.tanh))
+    mlp4.add_layer(Dense(n_output=len(classes_names), activation=T.nnet.softmax))
     mlp4.append_cost(mse)
     mlp4.append_reg(L1, lamb=reg)
     mlp4.append_reg(L2, lamb=reg)
@@ -77,41 +75,27 @@ def test1():
     ensemble.append_model(mlp3)
     ensemble.append_model(mlp4)
 
+    ensemble.set_combiner(WeightAverageCombiner(4))
+
     # compile ensemble: update cost and update function
 
     ensemble.add_cost_ensemble(fun_cost=neg_corr, lamb_neg_corr=0.3)  # adds neg correlation in all models
     ensemble.compile()
-
-    # Initialize metrics
-    classifier_metrics = ClassifierMetrics(classes_names)
 
     # Training
 
     max_epoch = 200
     validation_jump = 5
 
-    tic = time.time()
-    train_cost = ensemble.fit(input_train, target_train,
-                              max_epoch=max_epoch, batch_size=32,
-                              validation_jump=validation_jump, early_stop_th=4)
-    toc = time.time()
+    classifier_metrics = ensemble.fit(input_train, target_train,
+                                      max_epoch=max_epoch, batch_size=32,
+                                      validation_jump=validation_jump, early_stop_th=4, verbose=True)
 
-    print("Elapsed time [s]: %f" % (toc - tic))
-
-    # Compute metrics
+    # Compute and Show metrics
     classifier_metrics.append_prediction(target_test, ensemble.predict(input_test))
-
-    classifier_metrics.append_cost(train_cost[:, 0])
-    classifier_metrics.append_cost(train_cost[:, 1])
-    classifier_metrics.append_cost(train_cost[:, 2])
-    classifier_metrics.append_cost(train_cost[:, 3])
-
-    # Reset parameters
-    ensemble.reset()
-
-    classifier_metrics.print()
     classifier_metrics.plot_confusion_matrix()
-    classifier_metrics.plot_cost(max_epoch)
+    classifier_metrics.plot_cost(max_epoch, "Cost ensemble")
+    classifier_metrics.plot_score(max_epoch, "Score ensemble")
 
     plt.show()
 

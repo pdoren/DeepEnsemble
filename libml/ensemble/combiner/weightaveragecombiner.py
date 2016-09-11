@@ -12,7 +12,7 @@ class WeightAverageCombiner(ModelCombiner):
 
         Parameters
         ----------
-        n_models: int
+        n_models : int
             Number of models of ensemble.
         """
         super().__init__()
@@ -29,17 +29,16 @@ class WeightAverageCombiner(ModelCombiner):
 
         Parameters
         ----------
-        list_models_ensemble: numpy.array
+        list_models_ensemble : numpy.array
             List of models.
 
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input sample.
 
         Returns
         -------
         numpy.array
-        Returns the average of the output models.
-
+            Returns the average of the output models.
         """
         output = 0.0
         # TODO: must be optimized performance
@@ -52,13 +51,13 @@ class WeightAverageCombiner(ModelCombiner):
 
         Parameters
         ----------
-        ensemble_model: EnsembleModel
+        ensemble_model : EnsembleModel
             Ensemble Model it uses for get ensemble's models.
 
-        _input: theano.tensor.matrix
+        _input : theano.tensor.matrix
             Input sample.
 
-        _target: theano.tensor.matrix
+        _target : theano.tensor.matrix
             Target sample.
         """
         if ensemble_model.type_model is 'classifier':

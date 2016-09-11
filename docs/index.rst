@@ -6,19 +6,28 @@
 Welcome to Ensemble Learning and Correntropy's documentation!
 =============================================================
 
-Contents:
+User Guide
+----------
 
 .. toctree::
-   :maxdepth: 2
+  :maxdepth: 2
 
-.. automodule:: libml.model
+  user/installation
+  user/tutorial
 
-.. autoclass:: libml.model.Model
-    :members:
+API Reference
+-------------
 
+.. toctree::
+  :maxdepth: 2
+
+  modules/ensemble
+  modules/layers
+  modules/models
+  modules/utils
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
