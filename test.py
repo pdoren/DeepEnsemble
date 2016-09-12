@@ -1,17 +1,15 @@
+import matplotlib.pylab as plt
+import numpy as np
 import theano
 import theano.tensor as T
-import numpy as np
-import matplotlib.pylab as plt
-
 from sklearn import cross_validation
 from sklearn.datasets import load_iris
 from theano.sandbox import cuda
 
+from libml.combiner.weightaveragecombiner import WeightAverageCombiner
 from libml.ensemble.ensemblemodel import EnsembleModel
-from libml.ensemble.combiner import *
-from libml.models.sequential import Sequential
 from libml.layers.dense import Dense
-
+from libml.models.sequential import Sequential
 from libml.utils import *
 
 

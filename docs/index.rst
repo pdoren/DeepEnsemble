@@ -22,6 +22,7 @@ API Reference
   :maxdepth: 2
 
   modules/ensemble
+  modules/combiner
   modules/layers
   modules/models
   modules/utils
