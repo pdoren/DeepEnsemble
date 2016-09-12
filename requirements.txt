@@ -11,3 +11,4 @@ sphinx_rtd_theme
 sphinxcontrib-napoleon
 numpydoc
 sklearn
+matplotlib
