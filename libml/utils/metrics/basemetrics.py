@@ -5,14 +5,23 @@ __all__ = ['BaseMetrics', 'EnsembleMetrics']
 
 
 class DataPlot:
-    def __init__(self, name="Model"):
-        """ Class for save data plot.
+    """ Class for save data plot.
 
-        Parameters
-        ----------
-        name : str, "Model" by default
-            Plot name.
-        """
+    Attributes
+    ----------
+
+    data : numpy.array
+        Array save plot's points.
+
+    name : str
+        Plot's name.
+
+    Parameters
+    ----------
+    name : str, "Model" by default
+        Plot's name.
+    """
+    def __init__(self, name="Model"):
         self.data = np.array([])
         self.name = name
 
@@ -50,14 +59,28 @@ class DataPlot:
 
 
 class BaseMetrics:
-    def __init__(self, model):
-        """ Base class generate metrics.
+    """ Base class generate metrics.
 
-        Parameters
-        ----------
-        model : Model
-            Model.
-        """
+    Attributes
+    ----------
+    model : Model
+        Handle of model.
+
+    train_cost : DataPlot
+        Plot of training cost.
+
+    train_score : DataPlot
+        Plot of prediction score.
+
+    test_cost : DataPlot
+        Plot of testing cost.
+
+    Parameters
+    ----------
+    model : Model
+        Model.
+    """
+    def __init__(self, model):
         self.model = model
         self.train_cost = []
         self.train_score = []
@@ -70,41 +93,41 @@ class BaseMetrics:
         self.train_score = []
         self.test_cost = []
 
-    def append_train_cost(self, train_cost):
+    def append_train_cost(self, point):
         """ Add cost of training.
 
         Parameters
         ----------
-        train_cost : numpy.array
+        point : float
             Training cost.
         """
         if len(self.train_cost) <= 0:
             self.train_cost.append(DataPlot(name="%s" % self.model.name))
-        self.train_cost[0].append(train_cost)
+        self.train_cost[0].append(point)
 
-    def append_train_score(self, train_score):
+    def append_train_score(self, point):
         """ Add score of training.
 
         Parameters
         ----------
-        train_score : numpy.array
+        point : float
             Training score.
         """
         if len(self.train_score) <= 0:
             self.train_score.append(DataPlot(name="%s" % self.model.name))
-        self.train_score[0].append(train_score)
+        self.train_score[0].append(point)
 
-    def append_test_cost(self, test_cost):
+    def append_test_cost(self, point):
         """ Add cost of testing.
 
         Parameters
         ----------
-        test_cost : numpy.array
+        point : float
             Training cost.
         """
         if len(self.test_cost) <= 0:
             self.test_cost.append(DataPlot(name="%s" % self.model.name))
-        self.test_cost[0].append(test_cost)
+        self.test_cost[0].append(point)
 
     def plot_cost(self, max_epoch, train_title='Train Cost', log_scale=False):
         """ Generate training cost plot.
@@ -120,14 +143,7 @@ class BaseMetrics:
         log_scale : bool
             Flag for show plot in logarithmic scale.
         """
-        f, ax = plt.subplots()
-        for dp in self.train_cost:
-            dp[0].plot(ax, max_epoch)
-        ax.set_title(train_title)
-        if log_scale:
-            ax.set_xscale('log')
-        ax.legend()
-        plt.grid()
+        self.plot(self.train_cost, max_epoch, train_title, log_scale)
 
     def plot_score(self, max_epoch, train_title='Train score', log_scale=False):
         """ Generate training score plot.
@@ -143,10 +159,34 @@ class BaseMetrics:
         log_scale : bool, False by default
             Flag for show plot in logarithmic scale.
         """
+        self.plot(self.train_score, max_epoch, train_title, log_scale)
+
+    @staticmethod
+    def plot(dps, max_epoch, title='Plot', log_scale=False):
+        """ Generate plot.
+
+        Parameters
+        ----------
+        dps : list[DataPlot]
+            List of DataPlots.
+
+        max_epoch : int
+            Number max epoch training.
+
+        title : str
+            Title model.
+
+        log_scale : bool
+            Flag for show plot in logarithmic scale.
+        """
         f, ax = plt.subplots()
-        for dp in self.train_score:
-            dp[0].plot(ax, max_epoch)
-        ax.set_title(train_title)
+        if len(dps) > 1:
+            for dp in dps:
+                dp[0].plot(ax, max_epoch)
+        else:
+            dps[0].plot(ax, max_epoch)
+        ax.set_title(title)
+        ax.xlabel('epoch')
         if log_scale:
             ax.set_xscale('log')
         ax.legend()
@@ -154,14 +194,14 @@ class BaseMetrics:
 
 
 class EnsembleMetrics(BaseMetrics):
-    def __init__(self, model):
-        """ Class for generate different metrics for ensemble models.
+    """ Class for generate different metrics for ensemble models.
 
-        Parameters
-        ----------
-        model : EnsembleModel
-            Ensemble Model.
-        """
+    Parameters
+    ----------
+    model : EnsembleModel
+        Ensemble Model.
+    """
+    def __init__(self, model):
         super(EnsembleMetrics, self).__init__(model=model)
 
     def append_metric(self, metric):
