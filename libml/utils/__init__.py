@@ -1,3 +1,5 @@
+""" Package utils.
+"""
 from .cost_functions import *
 from .regularizer_functions import *
 from .update_functions import *

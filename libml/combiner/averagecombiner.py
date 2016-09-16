@@ -5,10 +5,10 @@ __all__ = ['AverageCombiner']
 
 
 class AverageCombiner(ModelCombiner):
+    """ Class for compute the average the output models.
+    """
     def __init__(self):
-        """ Class for compute the average the output models.
-        """
-        super().__init__()
+        super(AverageCombiner, self).__init__()
 
     # noinspection PyMethodMayBeStatic
     def output(self, list_models_ensemble, _input):

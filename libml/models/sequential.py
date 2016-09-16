@@ -7,20 +7,37 @@ from ..utils.metrics.regressionmetrics import RegressionMetrics
 
 
 class Sequential(Model):
+    """ This model is a sequence of layers where all elements is interconnected.
+
+    Attributes
+    ----------
+    layers : list
+        List of layers.
+
+    fun_train : theano.function
+        This function is for training the model.
+
+    fun_test : theano.function
+        This function is for testing the model.
+
+    reg_L2 : float
+        Ratio of L2 regulation.
+
+    reg_L1 : float
+        Ratio of L1 regulation.
+
+    Parameters
+    ----------
+    target_labels: list or numpy.array
+        Target labels.
+
+    type_model: str
+        Type of MLP model: classifier or regressor.
+
+    name: str
+        Name of model.
+    """
     def __init__(self, target_labels, type_model, name):
-        """ Base class for a generic model. This model is a sequence of layers.
-
-        Parameters
-        ----------
-        target_labels: list or numpy.array
-            Target labels.
-
-        type_model: str
-            Type of MLP model: classifier or regressor.
-
-        name: str
-            Name of model.
-        """
         super(Sequential, self).__init__(target_labels=target_labels, type_model=type_model, name=name)
         self.layers = []
         self.fun_train = None
@@ -29,6 +46,13 @@ class Sequential(Model):
         self.reg_L1 = 0.0
 
     def add_layer(self, new_layer):
+        """ Adds new layer.
+
+        Parameters
+        ----------
+        new_layer : Layer
+            New layer.
+        """
         n = len(self.layers)
         if n <= 0:
             self.n_input = new_layer.n_input
@@ -51,8 +75,7 @@ class Sequential(Model):
         Returns
         -------
         theano.tensor.matrix
-        Returns the output sequential model.
-
+            Returns the output sequential model.
         """
         for layer in self.layers:
             _input = layer.output(_input)
@@ -122,7 +145,7 @@ class Sequential(Model):
 
     def fit(self, _input, _target, max_epoch=100, validation_jump=5, batch_size=32,
             early_stop_th=4, verbose=False):
-        """
+        """ Function for training sequential model.
 
         Parameters
         ----------
@@ -150,7 +173,6 @@ class Sequential(Model):
         -------
         numpy.array[float]
             Returns training cost for each batch.
-
         """
         if self.type_model is "classifier":
             metrics = ClassifierMetrics(self)

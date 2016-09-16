@@ -172,15 +172,16 @@ class BaseMetrics:
 
         Parameters
         ----------
-        list_points : list
+        list_points : list[DataPlot]
             List of points.
 
         point : float
             Point.
         """
-        if len(list_points) <= 0:
+        if list_points.__len__() <= 0:
             list_points.append(DataPlot(name="%s" % self.model.name))
-        list_points[0].add_point(point)
+        else:
+            list_points[0].add_point(point)
 
     @staticmethod
     def plot(dps, max_epoch, title='Plot', log_scale=False):

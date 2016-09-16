@@ -15,7 +15,7 @@ class WeightAverageCombiner(ModelCombiner):
         n_models : int
             Number of models of ensemble.
         """
-        super().__init__()
+        super(WeightAverageCombiner, self).__init__()
         self.n_models = n_models
 
         self.weight = []

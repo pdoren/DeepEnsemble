@@ -2,9 +2,9 @@ __all__ = ['ModelCombiner']
 
 
 class ModelCombiner:
+    """ Base class for mixing output of models.
+    """
     def __init__(self):
-        """ Base class for mixing output of models.
-        """
         pass
 
     def output(self, list_models_ensemble, _input):

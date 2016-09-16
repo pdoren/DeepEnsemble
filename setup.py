@@ -3,9 +3,10 @@ from setuptools import find_packages
 
 setup(
     name='libml',
-    version='0.1-dev1',
+    version='0.1-dev',
     packages=find_packages(),
     url='https://github.com/pdoren/correntropy-and-ensembles-in-deep-learning',
+    download_url='https://github.com/pdoren/correntropy-and-ensembles-in-deep-learning/tarball/0.1',
     license='MIT',
     author='pdoren',
     author_email='pablo.saavedra@ug.uchile.cl',
@@ -15,7 +16,7 @@ setup(
     zip_safe=False,
     install_requires=['numpy'],
     extras_require={
-        'testing': [
+            'testing': [
             'mock',
             'pytest',
             'pytest-cov',

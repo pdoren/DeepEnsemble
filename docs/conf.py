@@ -292,7 +292,7 @@ latex_documents = [
 # If true, show URL addresses after external links.
 #latex_show_urls = False
 
-# Documents to append as an appendix to all manuals.
+# Documents to add_point as an appendix to all manuals.
 #latex_appendices = []
 
 # If false, no module index is generated.
@@ -323,7 +323,7 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-# Documents to append as an appendix to all manuals.
+# Documents to add_point as an appendix to all manuals.
 #texinfo_appendices = []
 
 # If false, no module index is generated.

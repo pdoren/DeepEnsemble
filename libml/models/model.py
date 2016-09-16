@@ -8,26 +8,74 @@ from ..utils.metrics.regressionmetrics import *
 
 
 class Model:
+    """ Base class for models.
+
+    Attributes
+    ----------
+    n_input : int
+        Number of inputs of the model.
+
+    n_output : int
+        Number of output of the model.
+
+    type_model : str
+        Type of model: classifier or regressor.
+
+    target_labels : numpy.array
+        Labels of classes.
+
+    model_input : theano.tensor.matrix
+        Attribute for save input model.
+
+    model_target : theano.tensor.matrix
+        Attribute for save target model.
+
+    params : list
+        List of model's parameters.
+
+    cost_function : theano.function, None by default
+        Cost function, is defined when it called at compile function.
+
+    cost_function_list : list
+        List for saving the cost functions.
+
+    reg_function : theano.function, None by default
+        Regularization function, is defined when it called at compile function.
+
+    reg_function_list : list
+        List for saving the regularization functions.
+
+    updates : theano.function
+        This function allow to update the model's parameters.
+
+    score : theano.function
+        This is a function for compute a score to models, for classifier model is accuracy by default
+         and for regressor model is RMS by default.
+
+    name : str
+        This model's name is useful to identify it later.
+
+    batch_reg_ratio : theano.tensor.scalar
+        This variable is useful to batch training.
+
+    Parameters
+    ----------
+    n_input : int
+        Number of inputs of the model.
+
+    n_output : int
+        Number of output of the model.
+
+    target_labels: list or numpy.array
+        Target labels.
+
+    type_model : str, "classifier" by default
+        Type of model: classifier or regressor.
+
+    name : str, "model" by default
+        Name of model.
+    """
     def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier', name="model"):
-        """ Base class for models.
-
-        Parameters
-        ----------
-        n_input : int
-            Number of inputs of the model.
-
-        n_output : int
-            Number of output of the model.
-
-        target_labels: list or numpy.array
-            Target labels.
-
-        type_model : str, "classifier" by default
-            Type of model: classifier or regressor.
-
-        name : str, "model" by default
-            Name of model.
-        """
         self.n_input = n_input
         self.n_output = n_output
         self.type_model = type_model
