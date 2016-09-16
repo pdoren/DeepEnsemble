@@ -137,7 +137,14 @@ class BaseMetrics:
         log_scale : bool
             Flag for show plot in logarithmic scale.
         """
-        self.plot(self.train_cost, max_epoch, train_title, log_scale)
+        f, ax = plt.subplots()
+        self.plot(ax, self.train_cost, max_epoch)
+        ax.set_title(train_title)
+        if log_scale:
+            ax.set_xscale('log')
+        ax.legend()
+        plt.grid()
+        plt.xlabel('epoch')
 
     def plot_score(self, max_epoch, train_title='Train score', log_scale=False):
         """ Generate training score plot.
@@ -153,7 +160,14 @@ class BaseMetrics:
         log_scale : bool, False by default
             Flag for show plot in logarithmic scale.
         """
-        self.plot(self.train_score, max_epoch, train_title, log_scale)
+        f, ax = plt.subplots()
+        self.plot(ax, self.train_score, max_epoch)
+        ax.set_title(train_title)
+        if log_scale:
+            ax.set_xscale('log')
+        ax.legend()
+        plt.grid()
+        plt.xlabel('epoch')
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.
@@ -183,44 +197,36 @@ class BaseMetrics:
         else:
             list_points[0].add_point(point)
 
-    @staticmethod
-    def plot(dps, max_epoch, title='Plot', log_scale=False):
+    def plot(self, ax, dps, max_epoch):
         """ Generate plot.
 
         Parameters
         ----------
+        ax
+            Handle subplot.
+
         dps : list[DataPlot]
             List of DataPlots.
 
         max_epoch : int
             Number max epoch training.
-
-        title : str
-            Title model.
-
-        log_scale : bool
-            Flag for show plot in logarithmic scale.
         """
-        f, ax = plt.subplots()
-
         # Get average plots
-        dpa = DataPlot(dps[0].name)
+        dpa = DataPlot(self.model.name)
         dpa.data = np.zeros(dps[0].data.shape)
         for dp in dps:
             dpa.data += dp.data
         dpa.data /= len(dps)
         dpa.plot(ax, max_epoch)
 
-        ax.set_title(title)
-        if log_scale:
-            ax.set_xscale('log')
-        ax.legend()
-        plt.grid()
-        plt.xlabel('epoch')
-
 
 class EnsembleMetrics(BaseMetrics):
     """ Class for generate different metrics for ensemble models.
+
+    Attributes
+    ----------
+    metrics_models : Dict[BaseMetrics]
+        Dict of models' metrics.
 
     Parameters
     ----------
@@ -229,33 +235,76 @@ class EnsembleMetrics(BaseMetrics):
     """
     def __init__(self, model):
         super(EnsembleMetrics, self).__init__(model=model)
+        self.metrics_models = {}
 
-    @staticmethod
-    def plot(dps, max_epoch, title='Plot', log_scale=False):
-        """ Generate plot.
+    def append_metric(self, metric):
+        """ Adds metric of another metric model.
 
         Parameters
         ----------
-        dps : list[DataPlot]
-            List of DataPlots.
+        metric : EnsembleMetrics or BaseMetrics
+            Metric of another model.
+        """
+        if isinstance(metric, EnsembleMetrics):
+            self.metrics_models.update(metric.metrics_models)
+        else:
+            if metric.model.name is self.metrics_models:
+                self.metrics_models[metric.model.name].append_metric(metric)
+            else:
+                self.metrics_models[metric.model.name] = metric
 
+        self.train_cost += metric.train_cost
+        self.train_score += metric.train_score
+        self.test_cost += metric.test_cost
+
+    def plot_cost_models(self, max_epoch, train_title='Train Cost', log_scale=False):
+        """ Generate training cost plot for each models in Ensemble.
+
+        Parameters
+        ----------
         max_epoch : int
-            Number max epoch training.
+            Number of epoch of training.
 
-        title : str
-            Title model.
+        train_title : str
+            Plot title of training cost.
 
         log_scale : bool
             Flag for show plot in logarithmic scale.
         """
         f, ax = plt.subplots()
-
-        for dp in dps:
-            dp.plot(ax, max_epoch)
-
-        ax.set_title(title)
+        plt.hold(True)
+        for name in sorted(self.metrics_models):
+            self.metrics_models[name].plot(ax, self.metrics_models[name].train_cost, max_epoch)
+        ax.set_title(train_title)
         if log_scale:
             ax.set_xscale('log')
         ax.legend()
         plt.grid()
         plt.xlabel('epoch')
+        plt.hold(False)
+
+    def plot_score_models(self, max_epoch, train_title='Train score', log_scale=False):
+        """ Generate training score plot for each models in Ensemble.
+
+        Parameters
+        ----------
+        max_epoch : int
+            Number of epoch of training.
+
+        train_title : str, "Train score" by default
+            Plot title of training score.
+
+        log_scale : bool, False by default
+            Flag for show plot in logarithmic scale.
+        """
+        f, ax = plt.subplots()
+        plt.hold(True)
+        for name in sorted(self.metrics_models):
+            self.metrics_models[name].plot(ax, self.metrics_models[name].train_score, max_epoch)
+        ax.set_title(train_title)
+        if log_scale:
+            ax.set_xscale('log')
+        ax.legend()
+        plt.grid()
+        plt.xlabel('epoch')
+        plt.hold(False)

@@ -130,7 +130,6 @@ def test_ensemble():
     mlp4.set_update(sgd_momentum, learning_rate=lr, momentum_rate=0.9)
 
     # Create Ensemble
-
     ensemble = EnsembleModel()
 
     ensemble.append_model(mlp1)

@@ -95,12 +95,12 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        _input : theano.tensor.matrix
+        _input : :class:`theano.tensor.matrix`
             Input sample.
 
         Returns
         -------
-        theano.tensor.matrix
+        :class:`theano.tensor.matrix`
             Returns of combiner the outputs of the different the ensemble's models.
         """
         return self.combiner.output(self.list_models_ensemble, _input)
@@ -162,10 +162,12 @@ class EnsembleModel(Model):
                 print("model %i Ok: %f[s]" % (i, toc_m - tic_m))
                 tic_m = toc_m
 
+        # update parameters of combiner
+        self.combiner.update_parameters(self, _input=_input, _target=_target)
+
         if verbose:
             toc = time.time()
             print("Elapsed time [s]: %f" % (toc - tic))
-        self.combiner.update_parameters(self, _input=_input, _target=_target)
         return metrics
 
     def add_cost_ensemble(self, fun_cost, **kwargs):
