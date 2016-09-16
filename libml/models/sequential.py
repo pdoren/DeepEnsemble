@@ -171,8 +171,8 @@ class Sequential(Model):
             # Train minibatches
             train_cost, train_score = self.minibatch_eval(_input=input_train, _target=target_train,
                                                           batch_size=batch_size, train=True)
-            metrics.append_train_cost(train_cost)
-            metrics.append_train_score(train_score)
+            metrics.add_point_train_cost(train_cost)
+            metrics.add_point_train_score(train_score)
 
             if verbose:
                 print("epoch %i" % epoch)

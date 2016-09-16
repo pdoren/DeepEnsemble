@@ -30,7 +30,7 @@ class DataPlot:
         """
         self.data = np.array([])
 
-    def append(self, new_data):
+    def add_point(self, new_data):
         """ Adds data.
 
         Parameters
@@ -66,13 +66,13 @@ class BaseMetrics:
     model : Model
         Handle of model.
 
-    train_cost : DataPlot
+    train_cost : list[DataPlot]
         Plot of training cost.
 
-    train_score : DataPlot
+    train_score : list[DataPlot]
         Plot of prediction score.
 
-    test_cost : DataPlot
+    test_cost : list[DataPlot]
         Plot of testing cost.
 
     Parameters
@@ -93,7 +93,7 @@ class BaseMetrics:
         self.train_score = []
         self.test_cost = []
 
-    def append_train_cost(self, point):
+    def add_point_train_cost(self, point):
         """ Add cost of training.
 
         Parameters
@@ -101,11 +101,9 @@ class BaseMetrics:
         point : float
             Training cost.
         """
-        if len(self.train_cost) <= 0:
-            self.train_cost.append(DataPlot(name="%s" % self.model.name))
-        self.train_cost[0].append(point)
+        self.add_point(self.train_cost, point)
 
-    def append_train_score(self, point):
+    def add_point_train_score(self, point):
         """ Add score of training.
 
         Parameters
@@ -113,11 +111,9 @@ class BaseMetrics:
         point : float
             Training score.
         """
-        if len(self.train_score) <= 0:
-            self.train_score.append(DataPlot(name="%s" % self.model.name))
-        self.train_score[0].append(point)
+        self.add_point(self.train_score, point)
 
-    def append_test_cost(self, point):
+    def add_point_test_cost(self, point):
         """ Add cost of testing.
 
         Parameters
@@ -125,9 +121,7 @@ class BaseMetrics:
         point : float
             Training cost.
         """
-        if len(self.test_cost) <= 0:
-            self.test_cost.append(DataPlot(name="%s" % self.model.name))
-        self.test_cost[0].append(point)
+        self.add_point(self.test_cost, point)
 
     def plot_cost(self, max_epoch, train_title='Train Cost', log_scale=False):
         """ Generate training cost plot.
@@ -161,6 +155,33 @@ class BaseMetrics:
         """
         self.plot(self.train_score, max_epoch, train_title, log_scale)
 
+    def append_metric(self, metric):
+        """ Adds metric of another metric model.
+
+        Parameters
+        ----------
+        metric : BaseMetrics
+            Metric of another model.
+        """
+        self.train_cost += metric.train_cost
+        self.train_score += metric.train_score
+        self.test_cost += metric.test_cost
+
+    def add_point(self, list_points, point):
+        """ Add point a list.
+
+        Parameters
+        ----------
+        list_points : list
+            List of points.
+
+        point : float
+            Point.
+        """
+        if len(list_points) <= 0:
+            list_points.append(DataPlot(name="%s" % self.model.name))
+        list_points[0].add_point(point)
+
     @staticmethod
     def plot(dps, max_epoch, title='Plot', log_scale=False):
         """ Generate plot.
@@ -180,17 +201,21 @@ class BaseMetrics:
             Flag for show plot in logarithmic scale.
         """
         f, ax = plt.subplots()
-        if len(dps) > 1:
-            for dp in dps:
-                dp[0].plot(ax, max_epoch)
-        else:
-            dps[0].plot(ax, max_epoch)
+
+        # Get average plots
+        dpa = DataPlot(dps[0].name)
+        dpa.data = np.zeros(dps[0].data.shape)
+        for dp in dps:
+            dpa.data += dp.data
+        dpa.data /= len(dps)
+        dpa.plot(ax, max_epoch)
+
         ax.set_title(title)
-        ax.xlabel('epoch')
         if log_scale:
             ax.set_xscale('log')
         ax.legend()
         plt.grid()
+        plt.xlabel('epoch')
 
 
 class EnsembleMetrics(BaseMetrics):
@@ -204,14 +229,32 @@ class EnsembleMetrics(BaseMetrics):
     def __init__(self, model):
         super(EnsembleMetrics, self).__init__(model=model)
 
-    def append_metric(self, metric):
-        """ Adds metric of another metric model.
+    @staticmethod
+    def plot(dps, max_epoch, title='Plot', log_scale=False):
+        """ Generate plot.
 
         Parameters
         ----------
-        metric : BaseMetrics
-            Metric of another model.
+        dps : list[DataPlot]
+            List of DataPlots.
+
+        max_epoch : int
+            Number max epoch training.
+
+        title : str
+            Title model.
+
+        log_scale : bool
+            Flag for show plot in logarithmic scale.
         """
-        self.train_cost.append(metric.train_cost)
-        self.train_score.append(metric.train_score)
-        self.test_cost.append(metric.test_cost)
+        f, ax = plt.subplots()
+
+        for dp in dps:
+            dp.plot(ax, max_epoch)
+
+        ax.set_title(title)
+        if log_scale:
+            ax.set_xscale('log')
+        ax.legend()
+        plt.grid()
+        plt.xlabel('epoch')

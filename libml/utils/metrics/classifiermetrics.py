@@ -9,14 +9,19 @@ __all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics', 'score_accuracy']
 
 
 class ClassifierMetrics(BaseMetrics):
-    def __init__(self, model):
-        """ Class for generate different metrics for classifier models.
+    """ Class for generate different metrics for classifier models.
 
-        Parameters
-        ----------
-        model : Model
-            Model.
-        """
+    Attributes
+    ----------
+    cm : list[numpy.array]
+        List of Confusion Matrices.
+
+    Parameters
+    ----------
+    model : Model
+        Model.
+    """
+    def __init__(self, model):
         super(ClassifierMetrics, self).__init__(model=model)
         self.cm = []
 
@@ -52,15 +57,27 @@ class ClassifierMetrics(BaseMetrics):
         Show Confusion Matrix plot.
 
         """
+        # Get average of Confusion Matrices
         if len(self.cm) == 0:
             cm = self.cm
         else:
             cm = np.average(self.cm, axis=0)
 
-        plt.figure()
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        # normalize
+        row_sums = cm.sum(axis=1)
+        cm = cm / row_sums[:, np.newaxis]
+
+        f, ax = plt.subplots()
+        ax.set_aspect(1)
+        res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        width, height = cm.shape
+        for x in range(width):
+            for y in range(height):
+                ax.annotate("%*.*f" % (1, 2, cm[x][y]), xy=(y, x),
+                            horizontalalignment='center',
+                            verticalalignment='center')
+        f.colorbar(res)
         plt.title(title)
-        plt.colorbar()
         tick_marks = np.arange(len(self.model.target_labels))
         plt.xticks(tick_marks, self.model.target_labels, rotation=45)
         plt.yticks(tick_marks, self.model.target_labels)
@@ -70,14 +87,14 @@ class ClassifierMetrics(BaseMetrics):
 
 
 class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
-    def __init__(self, model):
-        """ Class for generate different metrics for ensemble classifier models.
+    """ Class for generate different metrics for ensemble classifier models.
 
-        Parameters
-        ----------
-        model : Ensemble Model
-            Ensemble Model.
-        """
+    Parameters
+    ----------
+    model : Ensemble Model
+        Ensemble Model.
+    """
+    def __init__(self, model):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 
 

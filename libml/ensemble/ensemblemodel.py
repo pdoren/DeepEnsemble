@@ -155,7 +155,6 @@ class EnsembleModel(Model):
             tic_m = tic
 
         for i, model in enumerate(self.list_models_ensemble):
-
             metrics.append_metric(model.fit(_input=_input, _target=_target, max_epoch=max_epoch,
                                             validation_jump=validation_jump, **kwargs))
             if verbose:
@@ -174,8 +173,8 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        fun_cost : str
-            Name of cost function.
+        fun_cost : theano.function
+            Cost function.
 
         kwargs
             Other parameters.
