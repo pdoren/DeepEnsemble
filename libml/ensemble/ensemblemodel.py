@@ -2,8 +2,10 @@ import time
 
 from ..combiner.averagecombiner import AverageCombiner
 from ..models.model import Model
-from ..utils.metrics.classifiermetrics import EnsembleClassifierMetrics
-from ..utils.metrics.regressionmetrics import EnsembleRegressionMetrics
+from ..utils.metrics.classifiermetrics import *
+from ..utils.metrics.regressionmetrics import *
+from ..utils.utils_classifiers import *
+import numpy as np
 
 __all__ = ['EnsembleModel']
 
@@ -24,6 +26,7 @@ class EnsembleModel(Model):
     name : str, "ensemble" by default
         Ensemble's name.
     """
+
     def __init__(self, name="ensemble"):
         super(EnsembleModel, self).__init__(n_input=0, n_output=0, name=name)
         self.combiner = AverageCombiner()
@@ -116,8 +119,81 @@ class EnsembleModel(Model):
         for model in self.list_models_ensemble:
             model.compile(**kwargs)
 
-    def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, **kwargs):
+    def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, batch_size=32, **kwargs):
         """ Training ensemble.
+
+        Parameters
+        ----------
+        _input : theano.tensor.matrix
+            Training Input sample.
+
+        _target : theano.tensor.matrix
+            Training Target sample.
+
+        max_epoch : int
+            Number of epoch for training.
+
+        validation_jump : int
+            Number of times until doing validation jump.
+
+        verbose : bool, False by default
+            Flag for show training information.
+
+        batch_size: int
+            Size of batch.
+
+        kwargs
+            Other parameters.
+
+        Returns
+        -------
+        numpy.array[float]
+            Returns training cost for each batch.
+        """
+        target_train = _target
+        input_train = _input
+        metrics = []
+        if self.type_model is "classifier":
+            metric_ensemble = EnsembleClassifierMetrics(self)
+            for model in self.list_models_ensemble:
+                metrics.append(ClassifierMetrics(model))
+            target_train = translate_target(_target=_target, n_classes=self.n_output,
+                                            target_labels=self.target_labels)
+        else:
+            metric_ensemble = EnsembleRegressionMetrics(self)
+            for model in self.list_models_ensemble:
+                metrics.append(ClassifierMetrics(model))
+
+        tic = 0.0  # Warning PEP8
+        if verbose:
+            tic = time.time()
+
+        # Present mini-batches in different order
+        rand_perm = np.random.permutation(len(target_train))
+        input_train = input_train[rand_perm]
+        target_train = target_train[rand_perm]
+
+        for epoch in range(0, max_epoch):
+            for i, model in enumerate(self.list_models_ensemble):
+                # Train minibatches
+                train_cost, train_score = model.minibatch_eval(_input=input_train, _target=target_train,
+                                                               batch_size=batch_size, train=True)
+                metrics[i].add_point_train_cost(train_cost)
+                metrics[i].add_point_train_score(train_score)
+
+        for metric in metrics:
+            metric_ensemble.append_metric(metric)
+
+        # update parameters of combiner
+        self.combiner.update_parameters(self, _input=_input, _target=_target)
+
+        if verbose:
+            toc = time.time()
+            print("Elapsed time [s]: %f" % (toc - tic))
+        return metric_ensemble
+
+    def fit_diff_training_set(self, _input, _target, max_epoch, validation_jump, verbose=False, **kwargs):
+        """ Training ensemble where each model is training with different training set.
 
         Parameters
         ----------

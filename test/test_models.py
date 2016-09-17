@@ -1,11 +1,9 @@
-import time
-import matplotlib.pylab as plt
 import numpy as np
 import theano
 import theano.tensor as T
+import matplotlib.pylab as plt
 from sklearn import cross_validation
 from sklearn.datasets import load_iris
-from theano.sandbox import cuda
 from sklearn.cross_validation import ShuffleSplit
 
 from libml.combiner.weightaveragecombiner import WeightAverageCombiner
@@ -15,15 +13,28 @@ from libml.models.sequential import Sequential
 from libml.utils import *
 
 
-def test_mlp():
-    """ Test MLP classifier with Iris data base.
+def load_data():
+    """ Load Iris data base.
+
+    Returns
+    -------
+    tuple
+        Returns Iris data base.
     """
     # Load Data
     iris = load_iris()
-
     data_input = np.asarray(iris.data, dtype=theano.config.floatX)
     data_target = iris.target_names[iris.target]
     classes_names = iris.target_names
+
+    return data_input, data_target, classes_names
+
+
+def test_mlp():
+    """ Test MLP classifier with Iris data base.
+    """
+
+    data_input, data_target, classes_names = load_data()
 
     # Create model MLP
     reg = 0.001
@@ -38,7 +49,7 @@ def test_mlp():
     mlp1.set_update(adagrad, initial_learning_rate=lr)
     mlp1.compile()
 
-    folds = 5
+    folds = 2
     sss = ShuffleSplit(data_input.shape[0], n_iter=folds, test_size=None, train_size=0.6, random_state=0)
     max_epoch = 400
     validation_jump = 5
@@ -52,12 +63,9 @@ def test_mlp():
         target_train = data_target[train_set]
         target_test = data_target[test_set]
 
-        # training
-        tic = time.time()
         metrics_mlp.append_metric(mlp1.fit(input_train, target_train,
                                            max_epoch=max_epoch, batch_size=32,
                                            validation_jump=validation_jump, early_stop_th=4))
-        toc = time.time()
 
         # Compute metrics
         metrics_mlp.append_prediction(target_test, mlp1.predict(input_test))
@@ -65,29 +73,19 @@ def test_mlp():
         # Reset parameters
         mlp1.reset()
 
-        print("%d Elapsed time [s]: %f" % (i, toc - tic))
-
-    print("FINISHED!")
-
     # Compute and Show metrics
     metrics_mlp.plot_confusion_matrix()
     metrics_mlp.plot_cost(max_epoch, "Cost MLP")
     metrics_mlp.plot_score(max_epoch, "Score MLP")
-
     plt.show()
-
     print('TEST MLP OK')
 
 
 def test_ensemble():
     """ Test Ensemble Neural Network classifier with Iris data base.
     """
-    # Load Data
-    iris = load_iris()
 
-    data_input = np.asarray(iris.data, dtype=theano.config.floatX)
-    data_target = iris.target_names[iris.target]
-    classes_names = iris.target_names
+    data_input, data_target, classes_names = load_data()
 
     # Generate data train and test
     input_train, input_test, target_train, target_test = cross_validation.train_test_split(
@@ -158,15 +156,5 @@ def test_ensemble():
     classifier_metrics.plot_confusion_matrix()
     classifier_metrics.plot_cost(max_epoch, "Cost ensemble")
     classifier_metrics.plot_score(max_epoch, "Score ensemble")
-
     plt.show()
 
-    print('TEST ENSEMBLE OK')
-
-
-if __name__ == "__main__":
-    theano.config.floatX = 'float32'
-    cuda.use('gpu')
-    theano.config.compute_test_value = 'off'
-
-    test_ensemble()

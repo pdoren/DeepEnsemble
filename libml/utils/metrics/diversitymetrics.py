@@ -66,7 +66,7 @@ def contingency_table(y, c1, c2):
     Returns
     -------
     tuple
-    Return a tuple with the elements of contingency table between two classifiers.
+        Returns a tuple with the elements of contingency table between two classifiers.
 
 
     References

@@ -14,7 +14,7 @@ setup(
     keywords="",
     include_package_data=False,
     zip_safe=False,
-    install_requires=['numpy'],
+    install_requires=['numpy', 'theano', 'scikit-learn', 'matplotlib'],
     extras_require={
             'testing': [
             'mock',

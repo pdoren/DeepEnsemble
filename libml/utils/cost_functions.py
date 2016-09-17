@@ -1,7 +1,7 @@
 import theano.tensor as T
 from ..models.model import Model
 
-__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr']
+__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'corrpy_cost']
 
 
 def mse(model, _input, _target):
@@ -103,6 +103,9 @@ def neg_log_likelihood(model, _input, _target):
     labels = T.argmax(_target, axis=1)
     return -T.mean(T.log(T.power(model.output(_input), 2.0))[T.arange(_target.shape[0]), labels])
 
+#
+# Cost Function only for Ensembles.
+#
 
 # noinspection PyUnusedLocal
 def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_corr=0.5):
@@ -141,3 +144,50 @@ def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_cor
         if i != index_current_model:
             sum_ee += model.output(_input) - ensemble.output(_input)
     return T.mean(T.constant(lamb_neg_corr) * e * sum_ee)
+
+
+# noinspection PyUnusedLocal
+def corrpy_cost(model, _input, _target, index_current_model, ensemble, lamb_corr=0.5, s=0.5):
+    """ Compute the Correntropy regularization in Ensemble.
+
+    Parameters
+    ----------
+    model : theano.tensor.matrix
+        Model.
+
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    index_current_model : int
+        Index of current model in ensemble.
+
+    ensemble : EnsembleModel
+        Ensemble.
+
+    lamb_corr : float, 0.5 by default
+        Ratio negative correlation.
+
+    s : float, 0.5 by default
+        Ratio kernel.
+
+    Returns
+    -------
+    theano.config.floatX
+        Return Negative Correlation.
+    """
+
+    # error current model
+    # e = ensemble.list_models_ensemble[index_current_model].output(_input) - ensemble.output(_input)
+    co = ensemble.list_models_ensemble[index_current_model].output(_input)
+    eo = ensemble.output(_input)
+    e = ensemble.output(_input) - _target
+    sum_ee = 0.0  # error sum of other models
+    for i, model in enumerate(ensemble.list_models_ensemble):
+        if i != index_current_model:
+            mo = model.output(_input)
+            ec = (co - mo)
+            sum_ee += T.power(ec, 2.0)
+    return T.mean(e * sum_ee) * lamb_corr

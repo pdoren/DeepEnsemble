@@ -6,6 +6,7 @@
       <w>adadelta</w>
       <w>adagrad</w>
       <w>cmap</w>
+      <w>correntropy</w>
       <w>duchi</w>
       <w>feedforward</w>
       <w>gparams</w>
