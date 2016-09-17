@@ -21,7 +21,7 @@ def oracle(y, c):
         Target sample.
 
     c : numpy.array
-        Array for comparing with ground true.
+        Output model for comparing with target.
 
     Notes
     -----
