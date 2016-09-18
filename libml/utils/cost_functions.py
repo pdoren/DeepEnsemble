@@ -1,7 +1,30 @@
 import theano.tensor as T
 from ..models.model import Model
+from ..utils.utils_classifiers import *
 
-__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'corrpy_cost']
+__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'corrpy_cost', 'cross_entropy']
+
+
+def cross_entropy(model, _input, _target):
+    """ Compute Cross Entropy between target and output prediction.
+
+    Parameters
+    ----------
+    model : Model
+        Model for generating output for compare with target sample.
+
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Return Cross Entropy.
+    """
+    return T.nnet.categorical_crossentropy(model.output(_input), _target).mean()
 
 
 def mse(model, _input, _target):
@@ -20,7 +43,7 @@ def mse(model, _input, _target):
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return MSE error.
     """
     e = model.output(_input) - _target
@@ -46,7 +69,7 @@ def mcc(model, _input, _target, s):
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return MCC.
     """
     e = model.output(_input) - _target
@@ -72,7 +95,7 @@ def mee(model, _input, _target, s):
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return MEE.
     """
     e = model.output(_input) - _target
@@ -97,7 +120,7 @@ def neg_log_likelihood(model, _input, _target):
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return negative logarithm likelihood.
     """
     labels = T.argmax(_target, axis=1)
@@ -134,7 +157,7 @@ def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_cor
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return Negative Correlation.
     """
 
@@ -176,7 +199,7 @@ def corrpy_cost(model, _input, _target, index_current_model, ensemble, lamb_corr
 
     Returns
     -------
-    theano.config.floatX
+    theano.tensor.matrix
         Return Negative Correlation.
     """
 

@@ -178,8 +178,8 @@ class EnsembleModel(Model):
         input_train = input_train[rand_perm]
         target_train = target_train[rand_perm]
 
-        for epoch in range(0, max_epoch):
-            for i, model in enumerate(self.list_models_ensemble):
+        for i, model in enumerate(self.list_models_ensemble):
+            for epoch in range(0, max_epoch):
                 # Train minibatches
                 train_cost, train_score = model.minibatch_eval(_input=input_train, _target=target_train,
                                                                batch_size=batch_size, train=True)
