@@ -43,6 +43,12 @@ class Model:
     update_function_args
         Arguments of update function.
 
+    fun_train : theano.function
+        This function is for training the model.
+
+    fun_test : theano.function
+        This function is for testing the model.
+
     name : str
         This model's name is useful to identify it later.
 
@@ -86,6 +92,9 @@ class Model:
         self.score_function_list = []
         self.update_function = None
         self.update_function_args = None
+
+        self.fun_train = None
+        self.fun_test = None
 
         self.minibatch_train_eval = None
         self.minibatch_test_eval = None
@@ -280,6 +289,52 @@ class Model:
         """
         self.update_function = fun_update
         self.update_function_args = kwargs
+
+    def get_cost_functions(self):
+        """ Gets cost function of model.
+
+        Returns
+        -------
+        theano.tensor.TensorVariable
+            Returns cost model include regularization.
+        """
+        cost = 0.0
+        for c in self.cost_function_list:
+            cost += c
+
+        for r in self.reg_function_list:
+            cost += r
+
+        return cost
+
+    def get_score_functions(self):
+        """ Gets score function of model.
+
+        Returns
+        -------
+        theano.tensor.TensorVariable
+            Returns score model.
+        """
+        score = 0.0
+        for s in self.score_function_list:
+            score += s
+
+        return score
+
+    def get_update_function(self, cost):
+        """ Gets dict for update model parameters.
+
+        Parameters
+        ----------
+        cost : theano.tensor.TensorVariable
+            Cost function.
+
+        Returns
+        -------
+        OrderedDict
+            A dictionary mapping each parameter to its update expression.
+        """
+        return self.update_function(cost, self.params, **self.update_function_args)
 
     def load(self, filename):
         """ Load model from file.

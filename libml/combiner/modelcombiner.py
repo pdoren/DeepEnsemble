@@ -1,19 +1,25 @@
+from collections import OrderedDict
 __all__ = ['ModelCombiner']
 
 
 class ModelCombiner:
     """ Base class for mixing output of models.
+
+    Attributes
+    ----------
+    params : theano.shared
+        Parameters of combiner method.
     """
     def __init__(self):
-        pass
+        self.params = None
 
-    def output(self, list_models_ensemble, _input):
+    def output(self, ensemble_model, _input):
         """ Mixing the output or prediction of ensemble's models.
 
         Parameters
         ----------
-        list_models_ensemble : list[Model]
-            List of models.
+        ensemble_model : EnsembleModel
+            Ensemble Model it uses for get ensemble's models.
 
         _input : theano.tensor.matrix or numpy.array
             Input sample.
@@ -38,5 +44,10 @@ class ModelCombiner:
 
         _target : theano.tensor.matrix
             Target sample.
+
+        Returns
+        -------
+        OrderedDict
+            A dictionary mapping each parameter to its update expression.
         """
-        pass
+        return None

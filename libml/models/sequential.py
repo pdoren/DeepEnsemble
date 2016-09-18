@@ -14,12 +14,6 @@ class Sequential(Model):
     layers : list
         List of layers.
 
-    fun_train : theano.function
-        This function is for training the model.
-
-    fun_test : theano.function
-        This function is for testing the model.
-
     reg_L2 : float
         Ratio of L2 regulation.
 
@@ -40,8 +34,6 @@ class Sequential(Model):
     def __init__(self, target_labels, type_model, name):
         super(Sequential, self).__init__(target_labels=target_labels, type_model=type_model, name=name)
         self.layers = []
-        self.fun_train = None
-        self.fun_test = None
         self.reg_L2 = 0.0
         self.reg_L1 = 0.0
 
@@ -109,27 +101,17 @@ class Sequential(Model):
             Compiling cost and regularization items without separating them.
         """
         super(Sequential, self).compile()
-
-        cost = 0.0
-        for c in self.cost_function_list:
-            cost += c
-
-        for r in self.reg_function_list:
-            cost += r
-
-        score = 0.0
-        for s in self.score_function_list:
-            score += s
+        cost = self.get_cost_functions()
+        score = self.get_score_functions()
 
         result = [cost, score]
-
         if not fast:
             result += self.cost_function_list
             if self.reg_function_list is not None:
                 result += self.reg_function_list
             result += self.score_function_list
 
-        updates = self.update_function(cost, self.params, **self.update_function_args)
+        updates = self.get_update_function(cost)
 
         self.fun_train = function([self.model_input, self.model_target, self.batch_reg_ratio],
                                   result, updates=updates, on_unused_input='ignore')

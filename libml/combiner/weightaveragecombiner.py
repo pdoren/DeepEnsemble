@@ -1,7 +1,8 @@
 import theano.tensor as T
 from .modelcombiner import ModelCombiner
-from ..utils import translate_target
-from theano import shared
+from theano import shared, config
+import numpy as np
+from collections import OrderedDict
 
 __all__ = ['WeightAverageCombiner']
 
@@ -17,20 +18,16 @@ class WeightAverageCombiner(ModelCombiner):
         """
         super(WeightAverageCombiner, self).__init__()
         self.n_models = n_models
-
-        self.weight = []
-
-        for i in range(n_models):
-            self.weight.append(shared(0.0))
+        self.params = shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True)
 
     # noinspection PyMethodMayBeStatic
-    def output(self, list_models_ensemble, _input):
+    def output(self, ensemble_model, _input):
         """ Average the output of the ensemble's models.
 
         Parameters
         ----------
-        list_models_ensemble : numpy.array
-            List of models.
+        ensemble_model : EnsembleModel
+            Ensemble Model it uses for get ensemble's models.
 
         _input : theano.tensor.matrix or numpy.array
             Input sample.
@@ -41,13 +38,19 @@ class WeightAverageCombiner(ModelCombiner):
             Returns the average of the output models.
         """
         output = 0.0
-        # TODO: must be optimized performance
-        for i, model in enumerate(list_models_ensemble):
-            output += model.output(_input) * self.weight[i]
+        if _input == ensemble_model.model_input:
+            for i, model in enumerate(ensemble_model.list_models_ensemble):
+                output += model.output(_input) * self.params[i]
+        else:
+            params = self.params.get_value()
+            for i, model in enumerate(ensemble_model.list_models_ensemble):
+                output += model.output(_input) * params[i]
         return output
 
     def update_parameters(self, ensemble_model, _input, _target):
         """  Update internal parameters.
+
+
 
         Parameters
         ----------
@@ -59,17 +62,40 @@ class WeightAverageCombiner(ModelCombiner):
 
         _target : theano.tensor.matrix
             Target sample.
+
+        Returns
+        -------
+        OrderedDict
+            A dictionary mapping each parameter to its update expression.
+
+        References
+        ----------
+        .. [1] Zhi-Hua Zhou. (2012), pp 70:
+               Ensemble Methods Foundations and Algorithms
+               Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
+
+        .. [2] M. P. Perrone and L. N. Cooper. When networks disagree: Ensemble method
+               for neural networks. In R. J.Mammone, editor, Artificial Neural Networks
+               for Spech and Vision, pages 126–142. Chapman & Hall, New York, NY,
+               1993.
         """
-        if ensemble_model.type_model is 'classifier':
-            _target = translate_target(_target=_target, n_classes=ensemble_model.n_output,
-                                       target_labels=ensemble_model.target_labels)
+        updates = OrderedDict()
+        errors = []
+        # TODO: must be optimized performance
+        for model in ensemble_model.list_models_ensemble:
+            errors.append(model.error(_input, _target))
 
-        sumW = 0.0
-        for i, model in enumerate(ensemble_model.list_models_ensemble):
-            e = model.error(_input, _target)
-            me = T.mean(e)
-            self.weight[i] += me
-            sumW += me
+        sum_inv_Cij = []
+        sum_sum_inv_Ckj = 0.0
+        sum_inv_Cj = 0.0
+        for j in range(self.n_models):
+            sum_inv_Cj += T.constant(1.0) / errors[j]
 
-        for i, model in enumerate(ensemble_model.list_models_ensemble):
-            self.weight[i] = T.constant(1.0) - self.weight[i] / sumW
+        for i in range(self.n_models):
+            d = sum_inv_Cj / errors[i]
+            sum_inv_Cij.append(d)
+            sum_sum_inv_Ckj += d
+
+        update_param = sum_inv_Cij / sum_sum_inv_Ckj
+        updates[self.params] = T.set_subtensor(self.params[:, 0], update_param[:, 0, 0])
+        return updates

@@ -1,10 +1,12 @@
 import time
+from theano import function
+import numpy as np
+from collections import OrderedDict
 from ..combiner.averagecombiner import AverageCombiner
 from ..models.model import Model
 from ..utils.metrics.classifiermetrics import *
 from ..utils.metrics.regressionmetrics import *
 from ..utils.utils_classifiers import *
-import numpy as np
 
 __all__ = ['EnsembleModel']
 
@@ -108,21 +110,83 @@ class EnsembleModel(Model):
         """
         if _input == self.model_input:
             if self._output is None:
-                self._output = self.combiner.output(self.list_models_ensemble, _input)
+                self._output = self.combiner.output(self, _input)
             return self._output
         else:
-            return self.combiner.output(self.list_models_ensemble, _input)
+            return self.combiner.output(self, _input)
 
-    def compile(self, **kwargs):
+    def compile(self, fast=False, **kwargs):
         """ Compile ensemble's models.
 
         Parameters
         ----------
+        fast : bool
+            Compiling cost and regularization items without separating them.
+
         kwargs
             Compilers parameters of models.
         """
+        super(EnsembleModel, self).compile()
+        cost = self.get_cost_functions()
+        score = self.get_score_functions()
+
+        sub_result = []
+        if not fast:
+            for model in self.list_models_ensemble:
+                cost_model = model.get_cost_functions()
+                score_model = self.get_score_functions()
+                cost += cost_model
+                sub_result += [model.get_cost_functions(), score_model]
+
+        result = [cost / self.get_num_models(), score] + sub_result
+        update_combiner = self.combiner.update_parameters(self, self.model_input, self.model_target)
+        updates = OrderedDict()
+        if update_combiner is not None:
+            updates = update_combiner
+
         for model in self.list_models_ensemble:
-            model.compile(**kwargs)
+            cost_model = model.get_cost_functions()
+            update_model = model.get_update_function(cost_model)
+            for key in update_model.keys():
+                updates[key] = update_model[key]
+
+        self.fun_train = function([self.model_input, self.model_target, self.batch_reg_ratio],
+                                  result, updates=updates, on_unused_input='ignore')
+
+        self.fun_test = function([self.model_input, self.model_target, self.batch_reg_ratio],
+                                 result, on_unused_input='ignore')
+
+    def minibatch_eval(self, _input, _target, batch_size=32, train=True):
+        """ Evaluate cost and score in mini batch.
+
+        Parameters
+        ----------
+        _input: theano.tensor.matrix
+            Input sample.
+
+        _target: theano.tensor.matrix
+            Target sample.
+
+        batch_size: int
+            Size of batch.
+
+        train: bool
+            Flag for knowing if the evaluation of batch is for training or testing.
+
+        Returns
+        -------
+        tuple
+            Returns evaluation cost and score in mini batch.
+        """
+        N = len(_input)
+        t_data = []
+        for (start, end) in zip(range(0, N, batch_size), range(batch_size, N, batch_size)):
+            r = (end - start) / N
+            if train:
+                t_data.append(self.fun_train(_input[start:end], _target[start:end], r))
+            else:
+                t_data.append(self.fun_test(_input[start:end], _target[start:end], r))
+        return np.mean(t_data, axis=0)
 
     def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, batch_size=32, **kwargs):
         """ Training ensemble.
@@ -178,19 +242,18 @@ class EnsembleModel(Model):
         input_train = input_train[rand_perm]
         target_train = target_train[rand_perm]
 
-        for i, model in enumerate(self.list_models_ensemble):
-            for epoch in range(0, max_epoch):
-                # Train minibatches
-                train_cost, train_score = model.minibatch_eval(_input=input_train, _target=target_train,
-                                                               batch_size=batch_size, train=True)
-                metrics[i].add_point_train_cost(train_cost)
-                metrics[i].add_point_train_score(train_score)
+        for epoch in range(0, max_epoch):
+            # Train minibatches
+            t_data = self.minibatch_eval(_input=input_train, _target=target_train,
+                                         batch_size=batch_size, train=True)
+            metric_ensemble.add_point_train_cost(t_data[0])
+            metric_ensemble.add_point_train_score(t_data[1])
+            for i, model in enumerate(self.list_models_ensemble):
+                metrics[i].add_point_train_cost(t_data[2 * i])
+                metrics[i].add_point_train_score(t_data[2 * (i + 1)])
 
         for metric in metrics:
             metric_ensemble.append_metric(metric)
-
-        # update parameters of combiner
-        self.combiner.update_parameters(self, _input=_input, _target=_target)
 
         if verbose:
             toc = time.time()

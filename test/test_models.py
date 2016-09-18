@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import theano
 import theano.tensor as T
@@ -63,15 +64,18 @@ def test_mlp():
         target_train = data_target[train_set]
         target_test = data_target[test_set]
 
+        tic = time.time()
         metrics_mlp.append_metric(mlp1.fit(input_train, target_train,
                                            max_epoch=max_epoch, batch_size=32,
                                            validation_jump=validation_jump, early_stop_th=4))
-
+        toc = time.time()
         # Compute metrics
         metrics_mlp.append_prediction(target_test, mlp1.predict(input_test))
 
         # Reset parameters
         mlp1.reset()
+
+        print("%d Elapsed time [s]: %f" % (i, toc - tic))
 
     # Compute and Show metrics
     metrics_mlp.plot_confusion_matrix()
