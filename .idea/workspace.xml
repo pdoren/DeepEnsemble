@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Fixed error">
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libml/ensemble/ensemblemodel.py" afterPath="$PROJECT_DIR$/libml/ensemble/ensemblemodel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libml/models/model.py" afterPath="$PROJECT_DIR$/libml/models/model.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libml/utils/metrics/basemetrics.py" afterPath="$PROJECT_DIR$/libml/utils/metrics/basemetrics.py" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
@@ -20,7 +18,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_theano.coverage" NAME="test_theano Coverage Results" MODIFIED="1474162467533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1474220208995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1474239060664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1474240645356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -68,8 +66,8 @@
       <file leaf-file-name="basemetrics.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/libml/utils/metrics/basemetrics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="299" column="11" selection-start-line="299" selection-start-column="11" selection-end-line="299" selection-end-column="11" />
+            <state relative-caret-position="219">
+              <caret line="278" column="34" selection-start-line="278" selection-start-column="34" selection-end-line="278" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -689,13 +687,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00011" summary="Changed how to construct a network, similar to Lasagne and Keras library.">
-      <created>1473393571269</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1473393571269</updated>
-    </task>
     <task id="LOCAL-00012" summary="Changed training function of ensemble for compute iternal data of the combiner method. Also it is added Weight Averaging method for output ensembles.">
       <created>1473513502758</created>
       <option name="number" value="00012" />
@@ -1032,7 +1023,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474236149085</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Fixed error in ensemble and metrics (error index in append point).">
+      <created>1474239518726</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1474239518726</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1087,7 +1085,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Test 6 ReadTheDocs." />
     <MESSAGE value="Test 7 ReadTheDocs." />
     <MESSAGE value="Test 8 ReadTheDocs.&#10;Added License MIT." />
     <MESSAGE value="Test 9 ReadTheDocs.&#10;Added License MIT.&#10;Changed setup." />
@@ -1112,7 +1109,8 @@
     <MESSAGE value="Optimized the fit ensemble.&#10;Added cross_entropy cost function." />
     <MESSAGE value="Added error function to each model." />
     <MESSAGE value="Updated Weight Average Combiner for Ensembles (Perrone and Cooper, 1993)." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated Weight Average Combiner for Ensembles (Perrone and Cooper, 1993)." />
+    <MESSAGE value="Fixed error in ensemble and metrics (error index in append point)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed error in ensemble and metrics (error index in append point)." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1526,8 +1524,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/libml/utils/metrics/basemetrics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="299" column="11" selection-start-line="299" selection-start-column="11" selection-end-line="299" selection-end-column="11" />
+        <state relative-caret-position="219">
+          <caret line="278" column="34" selection-start-line="278" selection-start-column="34" selection-end-line="278" selection-end-column="34" />
           <folding />
         </state>
       </provider>

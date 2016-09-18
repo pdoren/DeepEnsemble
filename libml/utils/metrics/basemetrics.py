@@ -273,13 +273,16 @@ class EnsembleMetrics(BaseMetrics):
         """
         f, ax = plt.subplots()
         plt.hold(True)
+        flag_legend = False
         for name in sorted(self.metrics_models):
             if len(self.metrics_models[name].train_cost) > 0:
+                flag_legend = True
                 self.metrics_models[name].plot(ax, self.metrics_models[name].train_cost, max_epoch)
         ax.set_title(train_title)
         if log_scale:
             ax.set_xscale('log')
-        ax.legend()
+        if flag_legend:
+            ax.legend()
         plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
@@ -300,13 +303,16 @@ class EnsembleMetrics(BaseMetrics):
         """
         f, ax = plt.subplots()
         plt.hold(True)
+        flag_legend = False
         for name in sorted(self.metrics_models):
             if len(self.metrics_models[name].train_score) > 0:
+                flag_legend = True
                 self.metrics_models[name].plot(ax, self.metrics_models[name].train_score, max_epoch)
         ax.set_title(train_title)
         if log_scale:
             ax.set_xscale('log')
-        ax.legend()
+        if flag_legend:
+            ax.legend()
         plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
