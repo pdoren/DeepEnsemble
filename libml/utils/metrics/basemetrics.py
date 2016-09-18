@@ -249,6 +249,7 @@ class EnsembleMetrics(BaseMetrics):
             self.metrics_models.update(metric.metrics_models)
             self.train_cost += metric.train_cost
             self.test_cost += metric.test_cost
+
             self.train_score += metric.train_score
         else:
             if metric.model.name is self.metrics_models:
@@ -273,7 +274,8 @@ class EnsembleMetrics(BaseMetrics):
         f, ax = plt.subplots()
         plt.hold(True)
         for name in sorted(self.metrics_models):
-            self.metrics_models[name].plot(ax, self.metrics_models[name].train_cost, max_epoch)
+            if len(self.metrics_models[name].train_cost) > 0:
+                self.metrics_models[name].plot(ax, self.metrics_models[name].train_cost, max_epoch)
         ax.set_title(train_title)
         if log_scale:
             ax.set_xscale('log')
@@ -299,7 +301,8 @@ class EnsembleMetrics(BaseMetrics):
         f, ax = plt.subplots()
         plt.hold(True)
         for name in sorted(self.metrics_models):
-            self.metrics_models[name].plot(ax, self.metrics_models[name].train_score, max_epoch)
+            if len(self.metrics_models[name].train_score) > 0:
+                self.metrics_models[name].plot(ax, self.metrics_models[name].train_score, max_epoch)
         ax.set_title(train_title)
         if log_scale:
             ax.set_xscale('log')

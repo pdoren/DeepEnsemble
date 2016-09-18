@@ -115,7 +115,7 @@ class EnsembleModel(Model):
         else:
             return self.combiner.output(self, _input)
 
-    def compile(self, fast=False, **kwargs):
+    def compile(self, fast=True, **kwargs):
         """ Compile ensemble's models.
 
         Parameters
@@ -129,16 +129,22 @@ class EnsembleModel(Model):
         super(EnsembleModel, self).compile()
         cost = self.get_cost_functions()
         score = self.get_score_functions()
-
+        result = []
         sub_result = []
-        if not fast:
+        if not fast:  # compute all the scores and costs of the models in ensemble
+            for model in self.list_models_ensemble:
+                model.set_default_score()
+                cost_model = model.get_cost_functions()
+                score_model = model.get_score_functions()
+                cost += cost_model
+                sub_result += [cost_model, score_model]
+            result = [cost / self.get_num_models(), score] + sub_result
+        else:  # compute only cost and score of ensemble
             for model in self.list_models_ensemble:
                 cost_model = model.get_cost_functions()
-                score_model = self.get_score_functions()
                 cost += cost_model
-                sub_result += [model.get_cost_functions(), score_model]
+            result = [cost / self.get_num_models(), score]
 
-        result = [cost / self.get_num_models(), score] + sub_result
         update_combiner = self.combiner.update_parameters(self, self.model_input, self.model_target)
         updates = OrderedDict()
         if update_combiner is not None:
@@ -248,9 +254,12 @@ class EnsembleModel(Model):
                                          batch_size=batch_size, train=True)
             metric_ensemble.add_point_train_cost(t_data[0])
             metric_ensemble.add_point_train_score(t_data[1])
-            for i, model in enumerate(self.list_models_ensemble):
-                metrics[i].add_point_train_cost(t_data[2 * i])
-                metrics[i].add_point_train_score(t_data[2 * (i + 1)])
+
+            if len(t_data) > 2:
+                for i, model in enumerate(self.list_models_ensemble):
+                    ind = 2 * (i + 1)
+                    metrics[i].add_point_train_cost(t_data[ind])
+                    metrics[i].add_point_train_score(t_data[ind + 1])
 
         for metric in metrics:
             metric_ensemble.append_metric(metric)
@@ -259,60 +268,6 @@ class EnsembleModel(Model):
             toc = time.time()
             print("Elapsed time [s]: %f" % (toc - tic))
         return metric_ensemble
-
-    def fit_diff_training_set(self, _input, _target, max_epoch, validation_jump, verbose=False, **kwargs):
-        """ Training ensemble where each model is training with different training set.
-
-        Parameters
-        ----------
-        _input : theano.tensor.matrix
-            Training Input sample.
-
-        _target : theano.tensor.matrix
-            Training Target sample.
-
-        max_epoch : int
-            Number of epoch for training.
-
-        validation_jump : int
-            Number of times until doing validation jump.
-
-        verbose : bool, False by default
-            Flag for show training information.
-
-        kwargs
-            Other parameters.
-
-        Returns
-        -------
-        numpy.array[float]
-            Returns training cost for each batch.
-        """
-        if self.type_model is "classifier":
-            metrics = EnsembleClassifierMetrics(self)
-        else:
-            metrics = EnsembleRegressionMetrics(self)
-
-        tic_m, tic = 0.0, 0.0  # Warning PEP8
-        if verbose:
-            tic = time.time()
-            tic_m = tic
-
-        for i, model in enumerate(self.list_models_ensemble):
-            metrics.append_metric(model.fit(_input=_input, _target=_target, max_epoch=max_epoch,
-                                            validation_jump=validation_jump, **kwargs))
-            if verbose:
-                toc_m = time.time()
-                print("model %i Ok: %f[s]" % (i, toc_m - tic_m))
-                tic_m = toc_m
-
-        # update parameters of combiner
-        self.combiner.update_parameters(self, _input=_input, _target=_target)
-
-        if verbose:
-            toc = time.time()
-            print("Elapsed time [s]: %f" % (toc - tic))
-        return metrics
 
     def add_cost_ensemble(self, fun_cost, **kwargs):
         """ Adds cost function for each models in Ensemble.

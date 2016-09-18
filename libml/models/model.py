@@ -242,6 +242,11 @@ class Model:
     def compile(self):
         """ Prepare training.
         """
+        self.set_default_score()
+
+    def set_default_score(self):
+        """ Setting default score in model.
+        """
         if self.type_model is "classifier":
             self.score_function_list.append(
                 score_accuracy(translate_output(self.output(self.model_input), self.n_output), self.model_target))
