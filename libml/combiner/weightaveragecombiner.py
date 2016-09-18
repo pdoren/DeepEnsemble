@@ -66,8 +66,8 @@ class WeightAverageCombiner(ModelCombiner):
 
         sumW = 0.0
         for i, model in enumerate(ensemble_model.list_models_ensemble):
-            _output = model.output(_input)
-            me = T.mean(_output - _target)
+            e = model.error(_input, _target)
+            me = T.mean(e)
             self.weight[i] += me
             sumW += me
 

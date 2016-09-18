@@ -46,7 +46,7 @@ def mse(model, _input, _target):
     theano.tensor.matrix
         Return MSE error.
     """
-    e = model.output(_input) - _target
+    e = model.error(_input, _target)
     return T.mean(T.power(e, 2.0))
 
 
@@ -72,7 +72,7 @@ def mcc(model, _input, _target, s):
     theano.tensor.matrix
         Return MCC.
     """
-    e = model.output(_input) - _target
+    e = model.error(_input, _target)
     return -T.mean(T.exp(-0.5 * T.power(e, 2.0) / s ** 2))
 
 
@@ -98,7 +98,7 @@ def mee(model, _input, _target, s):
     theano.tensor.matrix
         Return MEE.
     """
-    e = model.output(_input) - _target
+    e = model.error(_input,  _target)
     de = T.tile(e, (e.shape[0], 1, 1))
     de = de - T.transpose(de, axes=(1, 0, 2))
     return -T.log(T.mean(T.exp(-0.5 * T.power(de, 2.0) / s ** 2)))
@@ -207,7 +207,7 @@ def corrpy_cost(model, _input, _target, index_current_model, ensemble, lamb_corr
     # e = ensemble.list_models_ensemble[index_current_model].output(_input) - ensemble.output(_input)
     co = ensemble.list_models_ensemble[index_current_model].output(_input)
     eo = ensemble.output(_input)
-    e = ensemble.output(_input) - _target
+    e = ensemble.error(_input, _target)
     sum_ee = 0.0  # error sum of other models
     for i, model in enumerate(ensemble.list_models_ensemble):
         if i != index_current_model:

@@ -24,12 +24,6 @@ class Model:
     target_labels : numpy.array
         Labels of classes.
 
-    model_input : theano.tensor.matrix
-        Attribute for save input model.
-
-    model_target : theano.tensor.matrix
-        Attribute for save target model.
-
     params : list
         List of model's parameters.
 
@@ -77,8 +71,8 @@ class Model:
     """
 
     # static variables
-    model_input = T.matrix('model_input')
-    model_target = T.matrix('model_target')
+    model_input = T.matrix('model_input')  # Attribute for save input model.
+    model_target = T.matrix('model_target')  # Attribute for save target model.
 
     def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier', name="model"):
         self.n_input = n_input
@@ -100,6 +94,31 @@ class Model:
 
         self.batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)
         self._output = None
+        self._error = None
+
+    def error(self, _input, _target):
+        """ Compute the error prediction of model.
+
+        Parameters
+        ----------
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        _target : theano.tensor.matrix or numpy.array
+            Target sample.
+
+        Returns
+        -------
+        theano.tensor.matrix or numpy.array
+            Returns error of model prediction.
+
+        """
+        if _input == self.model_input and _target == self.model_target:
+            if self._error is None:
+                self._error = self.output(_input) - _target
+            return self._error
+        else:
+            return self.output(_input) - _target
 
     def __eq__(self, other):
         """ Evaluate if 'other' model has the same form. The items for the comparison are:

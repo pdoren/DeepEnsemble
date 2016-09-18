@@ -254,8 +254,9 @@ class EnsembleMetrics(BaseMetrics):
                 self.metrics_models[metric.model.name] = metric
 
         self.train_cost += metric.train_cost
-        self.train_score += metric.train_score
         self.test_cost += metric.test_cost
+
+        self.train_score += metric.train_score
 
     def plot_cost_models(self, max_epoch, train_title='Train Cost', log_scale=False):
         """ Generate training cost plot for each models in Ensemble.
