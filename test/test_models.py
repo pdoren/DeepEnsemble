@@ -158,3 +158,5 @@ def test_ensemble():
     classifier_metrics.plot_score(max_epoch, "Score ensemble")
     plt.show()
 
+test_mlp()
+

@@ -107,6 +107,7 @@ def neg_log_likelihood(model, _input, _target):
 # Cost Function only for Ensembles.
 #
 
+
 # noinspection PyUnusedLocal
 def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_corr=0.5):
     """ Compute the Negative Correlation in Ensemble.

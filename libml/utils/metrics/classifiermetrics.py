@@ -1,7 +1,6 @@
 from sklearn.metrics import confusion_matrix
 import matplotlib.pylab as plt
 import theano.tensor as T
-from theano import config
 import numpy as np
 from .basemetrics import *
 
@@ -114,4 +113,4 @@ def score_accuracy(_output, _target):
     theano.tensor.matrix
         Returns accuracy in a classifier models.
     """
-    return T.mean(T.eq(_output, _target), dtype=config.floatX)
+    return T.mean(T.eq(_output, _target))

@@ -1,5 +1,4 @@
 import time
-
 from ..combiner.averagecombiner import AverageCombiner
 from ..models.model import Model
 from ..utils.metrics.classifiermetrics import *
@@ -90,6 +89,7 @@ class EnsembleModel(Model):
     def reset(self):
         """ Reset parameters of the ensemble's models.
         """
+        super(EnsembleModel, self).reset()
         for model in self.list_models_ensemble:
             model.reset()
 
@@ -98,15 +98,20 @@ class EnsembleModel(Model):
 
         Parameters
         ----------
-        _input : :class:`theano.tensor.matrix`
+        _input : theano.tensor.matrix or numpy.array
             Input sample.
 
         Returns
         -------
-        :class:`theano.tensor.matrix`
+        theano.tensor.matrix or numpy.array
             Returns of combiner the outputs of the different the ensemble's models.
         """
-        return self.combiner.output(self.list_models_ensemble, _input)
+        if _input == self.model_input:
+            if self._output is None:
+                self._output = self.combiner.output(self.list_models_ensemble, _input)
+            return self._output
+        else:
+            return self.combiner.output(self.list_models_ensemble, _input)
 
     def compile(self, **kwargs):
         """ Compile ensemble's models.

@@ -33,30 +33,30 @@ class Model:
     params : list
         List of model's parameters.
 
-    cost_function : theano.function, None by default
-        Cost function, is defined when it called at compile function.
-
     cost_function_list : list
         List for saving the cost functions.
-
-    reg_function : theano.function, None by default
-        Regularization function, is defined when it called at compile function.
 
     reg_function_list : list
         List for saving the regularization functions.
 
-    updates : theano.function
+    score_function_list : list
+        This is a list of function for compute a score to models, for classifier model is accuracy by default
+         and for regressor model is RMS by default.
+
+    update_function : theano.function
         This function allow to update the model's parameters.
 
-    score : theano.function
-        This is a function for compute a score to models, for classifier model is accuracy by default
-         and for regressor model is RMS by default.
+    update_function_args
+        Arguments of update function.
 
     name : str
         This model's name is useful to identify it later.
 
     batch_reg_ratio : theano.tensor.scalar
         This variable is useful to batch training.
+
+    _output : TensorVariable
+        Output model (Theano).
 
     Parameters
     ----------
@@ -75,26 +75,31 @@ class Model:
     name : str, "model" by default
         Name of model.
     """
+
+    # static variables
+    model_input = T.matrix('model_input')
+    model_target = T.matrix('model_target')
+
     def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier', name="model"):
         self.n_input = n_input
         self.n_output = n_output
         self.type_model = type_model
         self.target_labels = np.array(target_labels)
 
-        self.model_input = T.matrix('model_input')
-        self.model_target = T.matrix('model_target')
-
         self.params = []
-        self.cost_function = None
         self.cost_function_list = []
-        self.reg_function = None
         self.reg_function_list = []
-        self.updates = None
-        self.score = None
+        self.score_function_list = []
+        self.update_function = None
+        self.update_function_args = None
+
+        self.minibatch_train_eval = None
+        self.minibatch_test_eval = None
 
         self.name = name
 
         self.batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)
+        self._output = None
 
     def __eq__(self, other):
         """ Evaluate if 'other' model has the same form. The items for the comparison are:
@@ -143,7 +148,7 @@ class Model:
     def reset(self):
         """ Reset params
         """
-        raise NotImplementedError
+        self._output = None
 
     def output(self, _input):
         """ Output model
@@ -155,7 +160,7 @@ class Model:
 
         Returns
         -------
-        theano.tensor.matrix
+        theano.tensor.matrix or numpy.array
             Prediction of model.
         """
         raise NotImplementedError
@@ -165,7 +170,7 @@ class Model:
 
         Parameters
         ----------
-        _input : theano.tensor.matrix
+        _input : theano.tensor.matrix or numpy.array
             Input sample.
 
         Returns
@@ -210,10 +215,10 @@ class Model:
         """ Prepare training.
         """
         if self.type_model is "classifier":
-            self.score = score_accuracy(translate_output(self.output(self.model_input), self.n_output),
-                                        self.model_target)
+            self.score_function_list.append(
+                score_accuracy(translate_output(self.output(self.model_input), self.n_output), self.model_target))
         else:
-            self.score = score_rms(self.output(self.model_input), self.model_target)
+            self.score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
 
     def append_cost(self, fun_cost, **kwargs):
         """ Adds an extra item in the cost function.
@@ -228,10 +233,6 @@ class Model:
         """
         c = fun_cost(model=self, _input=self.model_input, _target=self.model_target, **kwargs)
         self.cost_function_list.append(c)
-        if self.cost_function is None:
-            self.cost_function = c
-        else:
-            self.cost_function += c
 
     def append_reg(self, fun_reg, **kwargs):
         """ Adds an extra item in the cost function.
@@ -246,10 +247,6 @@ class Model:
         """
         c = fun_reg(model=self, batch_reg_ratio=self.batch_reg_ratio, **kwargs)
         self.reg_function_list.append(c)
-        if self.reg_function is None:
-            self.reg_function = c
-        else:
-            self.reg_function += c
 
     def set_update(self, fun_update, **kwargs):
         """ Adds an extra item in the cost function.
@@ -262,7 +259,8 @@ class Model:
         **kwargs
             Extra parameters of update function.
         """
-        self.updates = fun_update(self.cost_function, self.params, **kwargs)
+        self.update_function = fun_update
+        self.update_function_args = kwargs
 
     def load(self, filename):
         """ Load model from file.

@@ -15,7 +15,7 @@ class ModelCombiner:
         list_models_ensemble : list[Model]
             List of models.
 
-        _input : theano.tensor.matrix
+        _input : theano.tensor.matrix or numpy.array
             Input sample.
 
         Returns

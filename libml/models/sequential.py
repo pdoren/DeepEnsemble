@@ -69,40 +69,73 @@ class Sequential(Model):
 
         Parameters
         ----------
-        _input: theano.tensor.matrix
+        _input: theano.tensor.matrix or numpy.array
             Input sample.
 
         Returns
         -------
-        theano.tensor.matrix
+        theano.tensor.matrix or numpy.array
             Returns the output sequential model.
         """
-        for layer in self.layers:
-            _input = layer.output(_input)
-        return _input
+        if _input == self.model_input:
+            if self._output is None:
+                for layer in self.layers:
+                    _input = layer.output(_input)
+                self._output = _input
+
+            return self._output
+        else:
+            for layer in self.layers:
+                _input = layer.output(_input)
+            self._output = _input
+
+            return _input
 
     def reset(self):
         """ Reset parameters
         """
+        super(Sequential, self).reset()
         self.params = []
         for layer in self.layers:
             layer.initialize_parameters()
             self.params += layer.params
 
-    def compile(self):
+    def compile(self, fast=True):
         """ Prepare training.
+
+        Parameters
+        ----------
+        fast : bool
+            Compiling cost and regularization items without separating them.
         """
         super(Sequential, self).compile()
 
-        if self.reg_function is not None:
-            self.cost_function += self.reg_function
+        cost = 0.0
+        for c in self.cost_function_list:
+            cost += c
+
+        for r in self.reg_function_list:
+            cost += r
+
+        score = 0.0
+        for s in self.score_function_list:
+            score += s
+
+        result = [cost, score]
+
+        if not fast:
+            result += self.cost_function_list
+            if self.reg_function_list is not None:
+                result += self.reg_function_list
+            result += self.score_function_list
+
+        updates = self.update_function(cost, self.params, **self.update_function_args)
 
         self.fun_train = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                  [self.cost_function, self.score],
-                                  updates=self.updates, on_unused_input='ignore')
+                                  result, updates=updates, on_unused_input='ignore')
+
         self.fun_test = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                 [self.cost_function, self.score],
-                                 on_unused_input='ignore')
+                                 result, on_unused_input='ignore')
 
     def minibatch_eval(self, _input, _target, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
@@ -130,21 +163,21 @@ class Sequential(Model):
         averaged_score = 0.0
         N = len(_input)
         NN = 0
-        for (start, end) in zip(range(0, len(_input), batch_size), range(batch_size, len(_input), batch_size)):
+        for (start, end) in zip(range(0, N, batch_size), range(batch_size, N, batch_size)):
             r = (end - start) / N
             NN += 1
             if train:
-                cost, score = self.fun_train(_input[start:end], _target[start:end], r)
-                averaged_cost += cost
-                averaged_score += score
+                t_data = self.fun_train(_input[start:end], _target[start:end], r)
+                averaged_cost += t_data[0]
+                averaged_score += t_data[1]
             else:
-                cost, score = self.fun_test(_input[start:end], _target[start:end], r)
-                averaged_cost += cost
-                averaged_score += score
+                t_data = self.fun_test(_input[start:end], _target[start:end], r)
+                averaged_cost += t_data[0]
+                averaged_score += t_data[1]
         return averaged_cost / NN, averaged_score / NN
 
     def fit(self, _input, _target, max_epoch=100, validation_jump=5, batch_size=32,
-            early_stop_th=4, verbose=False):
+            early_stop_th=4, verbose=False, minibatch=True):
         """ Function for training sequential model.
 
         Parameters
@@ -169,6 +202,9 @@ class Sequential(Model):
         verbose : bool, False by default
             Flag for show training information.
 
+        minibatch : bool
+            Flag for indicate training with minibatch or not.
+
         Returns
         -------
         numpy.array[float]
@@ -190,9 +226,14 @@ class Sequential(Model):
             input_train = input_train[rand_perm]
             target_train = target_train[rand_perm]
 
-            # Train minibatches
-            train_cost, train_score = self.minibatch_eval(_input=input_train, _target=target_train,
-                                                          batch_size=batch_size, train=True)
+            if minibatch:
+                train_cost, train_score = self.minibatch_eval(_input=input_train, _target=target_train,
+                                                              batch_size=batch_size, train=True)
+            else:
+                t_data = self.fun_train(input_train, target_train, len(input_train))
+                train_cost = t_data[0]
+                train_score = t_data[1]
+
             metrics.add_point_train_cost(train_cost)
             metrics.add_point_train_score(train_score)
 
