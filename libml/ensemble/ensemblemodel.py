@@ -30,8 +30,9 @@ class EnsembleModel(Model):
 
     def __init__(self, name="ensemble"):
         super(EnsembleModel, self).__init__(n_input=0, n_output=0, name=name)
-        self.combiner = AverageCombiner()
+        self.combiner = None
         self.list_models_ensemble = []
+        self.list_cost_ensemble = []
 
     def set_combiner(self, combiner):
         """ Setter combiner.
@@ -40,8 +41,16 @@ class EnsembleModel(Model):
         ----------
         combiner : ModelCombiner
             Object ModelCombiner for combining model outputs in ensemble.
+
+        Raises
+        ------
+        ValueError
+            If the combiner method is not same type (regressor or classifier).
         """
-        self.combiner = combiner
+        if combiner.type_model is self.type_model:
+            self.combiner = combiner
+        else:
+            raise ValueError("Combiner method must be same type, in this case %s." % self.type_model)
 
     def append_model(self, new_model):
         """ Add model to ensemble.
@@ -115,6 +124,21 @@ class EnsembleModel(Model):
         else:
             return self.combiner.output(self, _input)
 
+    def predict(self, _input):
+        """ Compute the prediction of model.
+
+        Parameters
+        ----------
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        Returns
+        -------
+        numpy.array
+            Return the prediction of model.
+        """
+        return self.combiner.predict(self, _input)
+
     def compile(self, fast=True, **kwargs):
         """ Compile ensemble's models.
 
@@ -125,8 +149,22 @@ class EnsembleModel(Model):
 
         kwargs
             Compilers parameters of models.
+
+        Raises
+        ------
+        ValueError
+            If the combiner method not exists.
         """
+        if self.combiner is None:
+            raise ValueError("Not exists combiner method for %s." % self.name)
+
         super(EnsembleModel, self).compile()
+
+        if len(self.list_cost_ensemble) > 0:
+            for fun_cost, params_cost in self.list_cost_ensemble:
+                for i, model in enumerate(self.list_models_ensemble):
+                    model.append_cost(fun_cost=fun_cost, index_current_model=i, ensemble=self, **params_cost)
+
         cost = self.get_cost_functions()
         score = self.get_score_functions()
         sub_result = []
@@ -279,5 +317,4 @@ class EnsembleModel(Model):
         kwargs
             Other parameters.
         """
-        for i, model in enumerate(self.list_models_ensemble):
-            model.append_cost(fun_cost=fun_cost, index_current_model=i, ensemble=self, **kwargs)
+        self.list_cost_ensemble.append((fun_cost, kwargs))
