@@ -1,7 +1,7 @@
 import theano.tensor as T
 from ..models.model import Model
 
-__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'corrpy_cost', 'cross_entropy']
+__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'correntropy_cost', 'cross_entropy']
 
 
 def cross_entropy(model, _input, _target):
@@ -170,7 +170,7 @@ def neg_corr(model, _input, _target, index_current_model, ensemble, lamb_neg_cor
 
 
 # noinspection PyUnusedLocal
-def corrpy_cost(model, _input, _target, index_current_model, ensemble, lamb_corr=0.5, s=0.5):
+def correntropy_cost(model, _input, _target, index_current_model, ensemble, lamb_corr=0.5, s=0.5):
     """ Compute the Correntropy regularization in Ensemble.
 
     Parameters

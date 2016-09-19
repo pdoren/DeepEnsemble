@@ -94,8 +94,8 @@ class WeightAverageCombiner(ModelCombiner):
         for i in range(self.n_models):
             d = sum_inv_Cj / errors[i]
             sum_inv_Cij.append(d)
-            inv_sum_sum_inv_Ckj += 1 / d
+            inv_sum_sum_inv_Ckj += d
 
-        update_param = inv_sum_sum_inv_Ckj * sum_inv_Cij
+        update_param = (1.0 / inv_sum_sum_inv_Ckj) * sum_inv_Cij
         updates[self.params] = T.set_subtensor(self.params[:, 0], update_param[:, 0, 0])
         return updates
