@@ -1,6 +1,5 @@
 import theano.tensor as T
 from ..models.model import Model
-from ..utils.utils_classifiers import *
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood', 'neg_corr', 'corrpy_cost', 'cross_entropy']
 

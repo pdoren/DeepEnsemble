@@ -81,21 +81,21 @@ class WeightAverageCombiner(ModelCombiner):
         """
         updates = OrderedDict()
         errors = []
-        # TODO: must be optimized performance
+
         for model in ensemble_model.list_models_ensemble:
             errors.append(model.error(_input, _target))
 
-        sum_inv_Cij = []
-        sum_sum_inv_Ckj = 0.0
         sum_inv_Cj = 0.0
         for j in range(self.n_models):
             sum_inv_Cj += T.constant(1.0) / errors[j]
 
+        sum_inv_Cij = []
+        inv_sum_sum_inv_Ckj = 0.0
         for i in range(self.n_models):
             d = sum_inv_Cj / errors[i]
             sum_inv_Cij.append(d)
-            sum_sum_inv_Ckj += d
+            inv_sum_sum_inv_Ckj += 1 / d
 
-        update_param = sum_inv_Cij / sum_sum_inv_Ckj
+        update_param = inv_sum_sum_inv_Ckj * sum_inv_Cij
         updates[self.params] = T.set_subtensor(self.params[:, 0], update_param[:, 0, 0])
         return updates

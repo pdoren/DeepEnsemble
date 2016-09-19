@@ -129,7 +129,6 @@ class EnsembleModel(Model):
         super(EnsembleModel, self).compile()
         cost = self.get_cost_functions()
         score = self.get_score_functions()
-        result = []
         sub_result = []
         if not fast:  # compute all the scores and costs of the models in ensemble
             for model in self.list_models_ensemble:
@@ -181,7 +180,7 @@ class EnsembleModel(Model):
 
         Returns
         -------
-        tuple
+        numpy.array
             Returns evaluation cost and score in mini batch.
         """
         N = len(_input)

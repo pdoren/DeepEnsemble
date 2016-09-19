@@ -1,4 +1,3 @@
-import theano.tensor as T
 from .modelcombiner import ModelCombiner
 
 __all__ = ['AverageCombiner']
