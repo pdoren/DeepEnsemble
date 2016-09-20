@@ -1,14 +1,14 @@
-:mod:`libml.combiner`
+:mod:`deepensemble.combiner`
 
 Methods Combiner o Mixing Models
 --------------------------------
 
-.. currentmodule:: libml.combiner
+.. currentmodule:: deepensemble.combiner
 
 Base Class Combiner
 ^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: libml.combiner.modelcombiner
+.. automodule:: deepensemble.combiner.modelcombiner
 
 .. autoclass:: ModelCombiner
    :members:
@@ -16,12 +16,12 @@ Base Class Combiner
 Methods Combiner
 ^^^^^^^^^^^^^^^^
 
-.. automodule:: libml.combiner.averagecombiner
+.. automodule:: deepensemble.combiner.averagecombiner
 
 .. autoclass:: AverageCombiner
    :members:
 
-.. automodule:: libml.combiner.weightaveragecombiner
+.. automodule:: deepensemble.combiner.weightaveragecombiner
 
 .. autoclass:: WeightAverageCombiner
    :members:

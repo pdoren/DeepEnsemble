@@ -1,4 +1,4 @@
-:mod:`libml.utils`
+:mod:`deepensemble.utils`
 
 Utils Functions
 ===============
@@ -6,7 +6,7 @@ Utils Functions
 Cost Functions
 --------------
 
-.. automodule:: libml.utils.cost_functions
+.. automodule:: deepensemble.utils.cost_functions
 
 .. autofunction:: mse
 .. autofunction:: mcc
@@ -21,7 +21,7 @@ Cost Function for Ensemble Models
 Regularizer Functions
 ---------------------
 
-.. automodule:: libml.utils.regularizer_functions
+.. automodule:: deepensemble.utils.regularizer_functions
 
 .. autofunction:: L1
 .. autofunction:: L2
@@ -29,7 +29,7 @@ Regularizer Functions
 Update Functions
 ----------------
 
-.. automodule:: libml.utils.update_functions
+.. automodule:: deepensemble.utils.update_functions
 
 .. autofunction:: sgd
 .. autofunction:: sgd_momentum
@@ -39,12 +39,12 @@ Update Functions
 Metrics
 =======
 
-.. currentmodule:: libml.utils.metrics
+.. currentmodule:: deepensemble.utils.metrics
 
 Base Class Metrics
 ------------------
 
-.. automodule:: libml.utils.metrics.basemetrics
+.. automodule:: deepensemble.utils.metrics.basemetrics
 
 .. autoclass:: BaseMetrics
    :members:
@@ -55,7 +55,7 @@ Base Class Metrics
 Classifier Metrics
 ------------------
 
-.. automodule:: libml.utils.metrics.classifiermetrics
+.. automodule:: deepensemble.utils.metrics.classifiermetrics
 
 .. autoclass:: ClassifierMetrics
    :members:
@@ -66,7 +66,7 @@ Classifier Metrics
 Regression Metrics
 ------------------
 
-.. automodule:: libml.utils.metrics.regressionmetrics
+.. automodule:: deepensemble.utils.metrics.regressionmetrics
 
 .. autoclass:: RegressionMetrics
    :members:
@@ -77,7 +77,7 @@ Regression Metrics
 Diversity
 =========
 
-.. automodule:: libml.utils.metrics.diversitymetrics
+.. automodule:: deepensemble.utils.metrics.diversitymetrics
 
 Utils
 -----

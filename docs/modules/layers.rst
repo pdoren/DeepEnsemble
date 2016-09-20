@@ -1,14 +1,14 @@
-:mod:`libml.layers`
+:mod:`deepensemble.layers`
 
 Layers
 ======
 
-.. currentmodule:: libml.layers
+.. currentmodule:: deepensemble.layers
 
 Dense Layer
 -----------
 
-.. automodule:: libml.layers.dense
+.. automodule:: deepensemble.layers.dense
 
 .. autoclass:: Dense
    :members:
