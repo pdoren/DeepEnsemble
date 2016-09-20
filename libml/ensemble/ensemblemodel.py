@@ -231,7 +231,7 @@ class EnsembleModel(Model):
                 t_data.append(self.fun_test(_input[start:end], _target[start:end], r))
         return np.mean(t_data, axis=0)
 
-    def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, batch_size=32, **kwargs):
+    def fit(self, _input, _target, max_epoch, validation_jump, verbose=False, full_batch=True, batch_size=32, **kwargs):
         """ Training ensemble.
 
         Parameters
@@ -250,6 +250,9 @@ class EnsembleModel(Model):
 
         verbose : bool, False by default
             Flag for show training information.
+
+        full_batch : bool
+            Flag for training with full batch method.
 
         batch_size: int
             Size of batch.
@@ -286,9 +289,13 @@ class EnsembleModel(Model):
         target_train = target_train[rand_perm]
 
         for epoch in range(0, max_epoch):
-            # Train minibatches
-            t_data = self.minibatch_eval(_input=input_train, _target=target_train,
-                                         batch_size=batch_size, train=True)
+
+            if full_batch:  # Train minibatches
+                t_data = self.minibatch_eval(_input=input_train, _target=target_train,
+                                             batch_size=batch_size, train=True)
+            else:
+                t_data = self.fun_train(input_train, target_train, 1.0)
+
             metric_ensemble.add_point_train_cost(t_data[0])
             metric_ensemble.add_point_train_score(t_data[1])
 
