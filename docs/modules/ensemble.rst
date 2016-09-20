@@ -1,14 +1,14 @@
-:mod:`libml.ensemble`
+:mod:`deepensemble.ensemble`
 
 Ensemble
 ========
 
-.. currentmodule:: libml.ensemble
+.. currentmodule:: deepensemble.ensemble
 
 Ensemble Model
 --------------
 
-.. automodule:: libml.ensemble.ensemblemodel
+.. automodule:: deepensemble.ensemble.ensemblemodel
 
 .. autoclass:: EnsembleModel
    :members:

@@ -1,37 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Changed library name.&#10;Fixed double requirement of Theano.">
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/conf.py" afterPath="$PROJECT_DIR$/docs/conf.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/Australian Credit Card Assessment/main.ipynb" afterPath="$PROJECT_DIR$/examples/Australian Credit Card Assessment/main.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/Iris/main.ipynb" afterPath="$PROJECT_DIR$/examples/Iris/main.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test_models.py" afterPath="$PROJECT_DIR$/test/test_models.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/combiner/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/combiner/averagecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/combiner/modelcombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/modelcombiner.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/combiner/weightaveragecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/ensemble/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/ensemble/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/ensemble/ensemblemodel.py" afterPath="$PROJECT_DIR$/deepensemble/ensemble/ensemblemodel.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/layers/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/layers/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/layers/dense.py" afterPath="$PROJECT_DIR$/deepensemble/layers/dense.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/models/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/models/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/models/sequential.py" afterPath="$PROJECT_DIR$/deepensemble/models/sequential.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/utils/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/cost_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/metrics/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/utils/metrics/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/metrics/basemetrics.py" afterPath="$PROJECT_DIR$/deepensemble/utils/metrics/basemetrics.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/metrics/classifiermetrics.py" afterPath="$PROJECT_DIR$/deepensemble/utils/metrics/classifiermetrics.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/metrics/diversitymetrics.py" afterPath="$PROJECT_DIR$/deepensemble/utils/metrics/diversitymetrics.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/metrics/regressionmetrics.py" afterPath="$PROJECT_DIR$/deepensemble/utils/metrics/regressionmetrics.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/regularizer_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/regularizer_functions.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/update_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/libml/utils/utils_classifiers.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -56,18 +27,7 @@
     <favorites_list name="correntropy-and-ensembles-in-deep-learning" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="setup.cfg" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/setup.cfg">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -100,7 +60,6 @@
         <option value="$PROJECT_DIR$/examples/Iris/main.ipynb" />
         <option value="$PROJECT_DIR$/examples/Australian Credit Card Assessment/main.ipynb" />
         <option value="$PROJECT_DIR$/docs/modules/ensemble.rst" />
-        <option value="$PROJECT_DIR$/docs/modules/combiner.rst" />
         <option value="$PROJECT_DIR$/docs/index.rst" />
         <option value="$PROJECT_DIR$/setup.cfg" />
         <option value="$PROJECT_DIR$/libml/utils/metrics/regressionmetrics.py" />
@@ -134,6 +93,7 @@
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/docs/modules/combiner.rst" />
       </list>
     </option>
   </component>
@@ -634,20 +594,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00016" summary="Changed conf.py in docs for redirect source code to Github.">
-      <created>1473614611278</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1473614611278</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Changed requirements ReadTheDocs.">
-      <created>1473614755615</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1473614755615</updated>
-    </task>
     <task id="LOCAL-00018" summary="Changed requirements.">
       <created>1473615155035</created>
       <option name="number" value="00018" />
@@ -977,7 +923,21 @@
       <option name="project" value="LOCAL" />
       <updated>1474262863178</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Changed library name.&#10;Fixed double requirement of Theano.">
+      <created>1474334832936</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1474334832936</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Fixed some error for change of library name.">
+      <created>1474335333055</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1474335333055</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -998,15 +958,15 @@
     <frame x="-8" y="-8" width="1456" height="876" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22421204" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22421204" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30404463" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39748955" sideWeight="0.5101156" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914925" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32914925" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32635984" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32078102" sideWeight="0.49060693" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2496474" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32357043" sideWeight="0.49435824" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32357043" sideWeight="0.49435824" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39191073" sideWeight="0.4898844" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1032,8 +992,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Test 11 ReadTheDocs." />
-    <MESSAGE value="Test 12 ReadTheDocs." />
     <MESSAGE value="Test 13 ReadTheDocs." />
     <MESSAGE value="Test 14 ReadTheDocs." />
     <MESSAGE value="Test 15 ReadTheDocs." />
@@ -1057,7 +1015,9 @@
     <MESSAGE value="Fixed inspect error typo in Weight Average Combiner (PEP8)." />
     <MESSAGE value="Changed content LICENCE (MIT)." />
     <MESSAGE value="Added new combiner ensembles: Weight Voting and Plurality Voting." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added new combiner ensembles: Weight Voting and Plurality Voting." />
+    <MESSAGE value="Changed library name.&#10;Fixed double requirement of Theano." />
+    <MESSAGE value="Fixed some error for change of library name." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed some error for change of library name." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1088,13 +1048,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/metrics/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="20" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/layers/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1391,6 +1344,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="35" selection-start-line="0" selection-start-column="35" selection-end-line="0" selection-end-column="35" />
+          <folding>
+            <element signature="e#40#62#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1399,6 +1355,7 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="119">
             <caret line="7" column="52" selection-start-line="7" selection-start-column="52" selection-end-line="7" selection-end-column="52" />
+            <folding />
           </first_editor>
           <second_editor />
         </state>
@@ -1408,6 +1365,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="263" column="15" selection-start-line="263" selection-start-column="15" selection-end-line="263" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1445,6 +1403,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/modules/combiner.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

@@ -1,14 +1,14 @@
-:mod:`libml.models`
+:mod:`deepensemble.models`
 
 Models
 ======
 
-.. currentmodule:: libml.models
+.. currentmodule:: deepensemble.models
 
 Base class Model
 ----------------
 
-.. automodule:: libml.models.model
+.. automodule:: deepensemble.models.model
 
 .. autoclass:: Model
    :members:
@@ -16,7 +16,7 @@ Base class Model
 Sequential Model
 ----------------
 
-.. automodule:: libml.models.sequential
+.. automodule:: deepensemble.models.sequential
 
 .. autoclass:: Sequential
    :members:
