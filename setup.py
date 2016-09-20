@@ -1,10 +1,21 @@
 from distutils.core import setup
 from setuptools import find_packages
-import deepensemble
+import os
+import re
+
+here = os.path.abspath(os.path.dirname(__file__))
+try:
+    # obtain version string from __init__.py
+    # Read ASCII file with builtin open() so __version__ is str in Python 2 and 3
+    with open(os.path.join(here, 'deepensemble', '__init__.py'), 'r') as f:
+        init_py = f.read()
+    version = re.search('__version__ = "(.*)"', init_py).groups()[0]
+except Exception:
+    version = ''
 
 setup(
     name='deepensemble',
-    version=deepensemble.__version__,
+    version=version,
     packages=find_packages(),
     url='https://github.com/pdoren/DeepEnsemble',
     download_url='https://github.com/pdoren/DeepEnsemble/tarball/0.1',

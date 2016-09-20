@@ -38,8 +38,6 @@ def oracle(y, c):
            Combining Pattern Classifiers Methods and Algorithms
            A Wiley-Interscience publication, ISBN 0-471-21078-1 (cloth).
     """
-    if isinstance(y, np.array) and isinstance(c, np.array):
-        raise ValueError("Incorrect type of arrays, they must be numpy.array")
     if y.shape != c.shape:
         raise ValueError("Incorrect arrays size")
     return (y == c).astype(int)

@@ -38,6 +38,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="matplotlib.cm.Blues" />
+          <option value="y_output" />
         </list>
       </option>
     </inspection_tool>
