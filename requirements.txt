@@ -12,4 +12,3 @@ sphinxcontrib-napoleon
 numpydoc
 sklearn
 matplotlib
-theano

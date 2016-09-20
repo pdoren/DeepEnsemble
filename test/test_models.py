@@ -7,11 +7,11 @@ from sklearn import cross_validation
 from sklearn.datasets import load_iris
 from sklearn.cross_validation import ShuffleSplit
 
-from libml.combiner.weightaveragecombiner import WeightAverageCombiner
-from libml.ensemble.ensemblemodel import EnsembleModel
-from libml.layers.dense import Dense
-from libml.models.sequential import Sequential
-from libml.utils import *
+from deepensemble.combiner.weightaveragecombiner import WeightAverageCombiner
+from deepensemble.ensemble.ensemblemodel import EnsembleModel
+from deepensemble.layers.dense import Dense
+from deepensemble.models.sequential import Sequential
+from deepensemble.utils import *
 
 
 def load_data():
