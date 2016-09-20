@@ -111,7 +111,11 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 
     def diversity_report(self):
-        metrics = {'Correlation Coef': correlation_coefficient, 'Kappa static': kappa_statistic}
+        metrics = {'Correlation Coefficient': correlation_coefficient,
+                   'Kappa statistic': kappa_statistic,
+                   'Q statistic': q_statistic,
+                   'Double fault': double_fault_measure
+                   }
 
         len_cell = 0
         for model in self.model.list_models_ensemble:
