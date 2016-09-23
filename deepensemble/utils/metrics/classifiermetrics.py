@@ -5,6 +5,7 @@ import numpy as np
 from .basemetrics import *
 from .diversitymetrics import *
 from sklearn.metrics import classification_report
+from ...utils.logger import Logger
 
 __all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics', 'score_accuracy']
 
@@ -14,11 +15,11 @@ class ClassifierMetrics(BaseMetrics):
 
     Attributes
     ----------
-    y_true : numpy.array
-        Array with target samples.
+    y_true : list[numpy.array]
+        List of array with target samples.
 
-    y_pred : numpy.array
-        Array with output or prediction of model.
+    y_pred : list[numpy.array]
+        List of array with output or prediction of model.
 
     Parameters
     ----------
@@ -27,11 +28,14 @@ class ClassifierMetrics(BaseMetrics):
     """
     def __init__(self, model):
         super(ClassifierMetrics, self).__init__(model=model)
-        self.y_pred = None
-        self.y_true = None
+        self.y_pred = []
+        self.y_true = []
 
     def classification_report(self):
-        print(classification_report(self.y_true, self.y_pred, target_names=self.model.target_labels))
+        y_true = np.concatenate(tuple(self.y_true))
+        y_pred = np.concatenate(tuple(self.y_pred))
+
+        Logger().print(classification_report(y_true, y_pred, target_names=np.char.mod("%s", self.model.target_labels)))
 
     def append_prediction(self, _target, _output):
         """ Add a sample of prediction and target for generating metrics.
@@ -46,16 +50,10 @@ class ClassifierMetrics(BaseMetrics):
 
         """
         _output = np.squeeze(_output)
-        if self.y_pred is None:
-            self.y_pred = _output
-        else:
-            self.y_pred = np.concatenate((self.y_pred, _output))
+        self.y_pred += [_output]
 
         _target = np.squeeze(_target)
-        if self.y_true is None:
-            self.y_true = _target
-        else:
-            self.y_true = np.concatenate((self.y_true, _target))
+        self.y_true += [_target]
 
     def plot_confusion_matrix(self, title='Confusion matrix', cmap=plt.cm.Blues):
         """ Generate Confusion Matrix plot.
@@ -73,8 +71,10 @@ class ClassifierMetrics(BaseMetrics):
         Show Confusion Matrix plot.
 
         """
-        if self.y_pred is not None and self.y_true is not None:
-            cm = confusion_matrix(y_true=self.y_true, y_pred=self.y_pred, labels=self.model.target_labels)
+        if len(self.y_pred) > 0 and len(self.y_true) > 0:
+            y_true = np.concatenate(tuple(self.y_true))
+            y_pred = np.concatenate(tuple(self.y_pred))
+            cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self.model.target_labels)
             # normalize
             row_sums = cm.sum(axis=0)
             cm = cm / row_sums[:, np.newaxis]
@@ -114,7 +114,8 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         metrics = {'Correlation Coefficient': correlation_coefficient,
                    'Kappa statistic': kappa_statistic,
                    'Q statistic': q_statistic,
-                   'Double fault': double_fault_measure
+                   'Double fault': double_fault_measure,
+                   'Disagreement': disagreement_measure
                    }
 
         len_cell = 0
@@ -129,20 +130,28 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
             header += cell_format1.format(model.name)
         line = "-" * len(header)
 
-        for name_metric in metrics.keys():
-            print("%s:" % name_metric)
-            print(line)
-            print(header)
-            print(line)
+        for name_metric in sorted(metrics.keys()):
+            Logger().print("%s:" % name_metric)
+            Logger().print(line)
+            Logger().print(header)
+            Logger().print(line)
+            metric = metrics[name_metric]
             for model1 in self.model.list_models_ensemble:
-                print(cell_format1.format(model1.name), end="")
-                c1 = self.y_pred_per_model[model1.name]
+                Logger().print(cell_format1.format(model1.name), end="")
+                list_c1 = self.y_pred_per_model[model1.name]
                 for model2 in self.model.list_models_ensemble:
-                    c2 = self.y_pred_per_model[model2.name]
-                    value = "%*.*f" % (2, 4, metrics[name_metric](self.y_true_per_model, c1, c2))
-                    print(cell_format2.format(value), end="")
-                print("")  # new line
-            print("")  # new line
+                    list_c2 = self.y_pred_per_model[model2.name]
+                    value = "%*.*f" % (2, 4, (self.mean_metric(metric, self.y_true_per_model, list_c1, list_c2)))
+                    Logger().print(cell_format2.format(value), end="")
+                Logger().print("")  # new line
+            Logger().print("")  # new line
+
+    @staticmethod
+    def mean_metric(metric, list_target, list_c1, list_c2):
+        sum_m = 0.0
+        for i, target in enumerate(list_target):
+            sum_m += metric(target, list_c1[i], list_c2[i])
+        return sum_m / len(list_target)
 
 
 def score_accuracy(_output, _target):

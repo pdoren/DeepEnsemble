@@ -1,5 +1,5 @@
 import theano.tensor as T
-from theano import config
+from theano import config, shared
 import numpy as np
 import pickle
 from ..utils.utils_classifiers import *
@@ -43,29 +43,14 @@ class Model:
     update_function_args
         Arguments of update function.
 
-    fun_train : theano.function
-        This function is for training the model.
-
-    fun_test : theano.function
-        This function is for testing the model.
-
     name : str
         This model's name is useful to identify it later.
-
-    batch_reg_ratio : theano.tensor.scalar
-        This variable is useful to batch training.
 
     _output : TensorVariable
         Output model (Theano).
 
     Parameters
     ----------
-    n_input : int
-        Number of inputs of the model.
-
-    n_output : int
-        Number of output of the model.
-
     target_labels: list or numpy.array
         Target labels.
 
@@ -74,13 +59,20 @@ class Model:
 
     name : str, "model" by default
         Name of model.
+
+    n_input : int
+        Number of inputs of the model.
+
+    n_output : int
+        Number of output of the model.
     """
 
     # static variables
     model_input = T.matrix('model_input')  # Attribute for save input model.
     model_target = T.matrix('model_target')  # Attribute for save target model.
+    batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # Attribute related with regularization
 
-    def __init__(self, n_input=None, n_output=None, target_labels=None, type_model='classifier', name="model"):
+    def __init__(self, target_labels, type_model, name="model", n_input=None, n_output=None):
         self.n_input = n_input
         self.n_output = n_output
         self.type_model = type_model
@@ -93,15 +85,16 @@ class Model:
         self.update_function = None
         self.update_function_args = None
 
-        self.fun_train = None
-        self.fun_test = None
-
         self.minibatch_train_eval = None
         self.minibatch_test_eval = None
+        self.scan_minibatch = None
+        self.share_data_input_train = shared(np.zeros((1, 1), dtype=config.floatX))
+        self.share_data_input_test = shared(np.zeros((1, 1), dtype=config.floatX))
+        self.share_data_target_train = shared(np.zeros((1, 1), dtype=config.floatX))
+        self.share_data_target_test = shared(np.zeros((1, 1), dtype=config.floatX))
 
         self.name = name
 
-        self.batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)
         self._output = None
         self._error = None
 
@@ -149,7 +142,8 @@ class Model:
         """
         if isinstance(other, Model):
             return (self.n_input == other.n_input) and (self.n_output == other.n_output) and (
-                self.type_model is other.type_model) and (list(self.target_labels) == list(other.target_labels))
+                self.type_model is other.type_model) and (
+                   self.type_model is "regressor" or (list(self.target_labels) == list(other.target_labels)))
         else:
             return False
 
@@ -212,6 +206,40 @@ class Model:
         else:
             return self.target_labels[get_index_label_classes(output)]
 
+    def minibatch_eval(self, n_input, batch_size=32, train=True):
+        """ Evaluate cost and score in mini batch.
+
+        Parameters
+        ----------
+        n_input: int
+            Dimension Input.
+
+        batch_size: int
+            Size of batch.
+
+        train: bool
+            Flag for knowing if the evaluation of batch is for training or testing.
+
+        Returns
+        -------
+        numpy.array
+            Returns evaluation cost and score in mini batch.
+        """
+        if n_input > batch_size:
+            t_data = []
+            for (start, end) in zip(range(0, n_input, batch_size), range(batch_size, n_input, batch_size)):
+                r = (end - start) / n_input
+                if train:
+                    t_data.append(self.minibatch_train_eval(start, end, r))
+                else:
+                    t_data.append(self.minibatch_test_eval(start, end, r))
+            return np.mean(t_data, axis=0)
+        else:
+            if train:
+                return self.minibatch_train_eval(0, n_input, 1.0)
+            else:
+                return self.minibatch_test_eval(0, n_input, 1.0)
+
     def fit(self, _input, _target, max_epoch, validation_jump, **kwargs):
         """ Training model.
 
@@ -243,6 +271,15 @@ class Model:
         """ Prepare training.
         """
         self.set_default_score()
+
+    def prepare_data(self, _input, _target):
+        target_train = _target
+        input_train = _input
+        if self.type_model is 'classifier':
+            target_train = translate_target(_target=_target, n_classes=self.n_output, target_labels=self.target_labels)
+
+        self.share_data_input_train.set_value(input_train)
+        self.share_data_target_train.set_value(target_train)
 
     def set_default_score(self):
         """ Setting default score in model.

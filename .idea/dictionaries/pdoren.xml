@@ -14,8 +14,10 @@
       <w>hazan</w>
       <w>interscience</w>
       <w>jmlr</w>
+      <w>kullback</w>
       <w>kuncheva</w>
       <w>lasagne</w>
+      <w>leibler</w>
       <w>ludmila</w>
       <w>lutz</w>
       <w>mammone</w>
@@ -30,11 +32,14 @@
       <w>proc</w>
       <w>regressor</w>
       <w>regularizer</w>
+      <w>silverman</w>
       <w>skalak</w>
       <w>spech</w>
       <w>subgradient</w>
       <w>theano</w>
       <w>upcasting</w>
+      <w>vmax</w>
+      <w>vmin</w>
       <w>zeiler</w>
       <w>zhou</w>
     </words>

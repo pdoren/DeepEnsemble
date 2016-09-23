@@ -1,9 +1,7 @@
+import theano.tensor as T
 from theano import function
-import numpy as np
 from .model import Model
-from ..utils.utils_classifiers import *
-from ..utils.metrics.classifiermetrics import ClassifierMetrics
-from ..utils.metrics.regressionmetrics import RegressionMetrics
+from ..utils import *
 
 
 class Sequential(Model):
@@ -22,16 +20,16 @@ class Sequential(Model):
 
     Parameters
     ----------
-    target_labels: list or numpy.array
-        Target labels.
+    name: str
+        Name of model.
 
     type_model: str
         Type of MLP model: classifier or regressor.
 
-    name: str
-        Name of model.
+    target_labels: list or numpy.array
+        Target labels.
     """
-    def __init__(self, target_labels, type_model, name):
+    def __init__(self, name, type_model="regressor", target_labels=[]):
         super(Sequential, self).__init__(target_labels=target_labels, type_model=type_model, name=name)
         self.layers = []
         self.reg_L2 = 0.0
@@ -113,53 +111,22 @@ class Sequential(Model):
 
         updates = self.get_update_function(cost)
 
-        self.fun_train = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                  result, updates=updates, on_unused_input='ignore')
+        end = T.lscalar('end')
+        start = T.lscalar('start')
+        r = T.fscalar('r')
+        givens = {
+            self.model_input: self.share_data_input_train[start:end],
+            self.model_target: self.share_data_target_train[start:end],
+            self.batch_reg_ratio: r
+        }
 
-        self.fun_test = function([self.model_input, self.model_target, self.batch_reg_ratio],
-                                 result, on_unused_input='ignore')
-
-    def minibatch_eval(self, _input, _target, batch_size=32, train=True):
-        """ Evaluate cost and score in mini batch.
-
-        Parameters
-        ----------
-        _input: theano.tensor.matrix
-            Input sample.
-
-        _target: theano.tensor.matrix
-            Target sample.
-
-        batch_size: int
-            Size of batch.
-
-        train: bool
-            Flag for knowing if the evaluation of batch is for training or testing.
-
-        Returns
-        -------
-        tuple
-            Returns evaluation cost and score in mini batch.
-        """
-        averaged_cost = 0.0
-        averaged_score = 0.0
-        N = len(_input)
-        NN = 0
-        for (start, end) in zip(range(0, N, batch_size), range(batch_size, N, batch_size)):
-            r = (end - start) / N
-            NN += 1
-            if train:
-                t_data = self.fun_train(_input[start:end], _target[start:end], r)
-                averaged_cost += t_data[0]
-                averaged_score += t_data[1]
-            else:
-                t_data = self.fun_test(_input[start:end], _target[start:end], r)
-                averaged_cost += t_data[0]
-                averaged_score += t_data[1]
-        return averaged_cost / NN, averaged_score / NN
+        self.minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
+                                             givens=givens, on_unused_input='ignore')
+        self.minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
+                                            givens=givens, on_unused_input='ignore')
 
     def fit(self, _input, _target, max_epoch=100, validation_jump=5, batch_size=32,
-            early_stop_th=4, verbose=False, minibatch=True):
+            early_stop_th=4, minibatch=True):
         """ Function for training sequential model.
 
         Parameters
@@ -181,9 +148,6 @@ class Sequential(Model):
 
         early_stop_th : int, 4 by default
 
-        verbose : bool, False by default
-            Flag for show training information.
-
         minibatch : bool
             Flag for indicate training with minibatch or not.
 
@@ -193,33 +157,20 @@ class Sequential(Model):
             Returns training cost for each batch.
         """
         if self.type_model is "classifier":
-            metrics = ClassifierMetrics(self)
+            metric_model = ClassifierMetrics(self)
         else:
-            metrics = RegressionMetrics(self)
+            metric_model = RegressionMetrics(self)
 
-        target_train = _target
-        input_train = _input
-        if self.type_model is 'classifier':
-            target_train = translate_target(_target=_target, n_classes=self.n_output, target_labels=self.target_labels)
+        self.prepare_data(_input, _target)
 
-        for epoch in range(0, max_epoch):
-            # Present mini-batches in different order
-            rand_perm = np.random.permutation(len(target_train))
-            input_train = input_train[rand_perm]
-            target_train = target_train[rand_perm]
+        for _ in Logger().progressbar_training(max_epoch, self):
 
-            if minibatch:
-                train_cost, train_score = self.minibatch_eval(_input=input_train, _target=target_train,
-                                                              batch_size=batch_size, train=True)
+            if minibatch:  # Train minibatches
+                t_data = self.minibatch_eval(n_input=len(_input), batch_size=batch_size, train=True)
             else:
-                t_data = self.fun_train(input_train, target_train, len(input_train))
-                train_cost = t_data[0]
-                train_score = t_data[1]
+                t_data = self.minibatch_eval(n_input=len(_input), batch_size=len(_input), train=True)
 
-            metrics.add_point_train_cost(train_cost)
-            metrics.add_point_train_score(train_score)
+            metric_model.add_point_train_cost(t_data[0])
+            metric_model.add_point_train_score(t_data[1])
 
-            if verbose:
-                print("epoch %i" % epoch)
-
-        return metrics
+        return metric_model

@@ -146,7 +146,7 @@ class BaseMetrics:
         plt.grid()
         plt.xlabel('epoch')
 
-    def plot_score(self, max_epoch, train_title='Train score', log_scale=False):
+    def plot_score(self, max_epoch, train_title='Train score', log_scale=False, vmin=0, vmax=1):
         """ Generate training score plot.
 
         Parameters
@@ -159,6 +159,12 @@ class BaseMetrics:
 
         log_scale : bool, False by default
             Flag for show plot in logarithmic scale.
+
+        vmin : float
+            Minimum value shown on the y-axis.
+
+        vmax : float
+            Maximum value shown on the y-axis.
         """
         f, ax = plt.subplots()
         self.plot(ax, self.train_score, max_epoch)
@@ -166,6 +172,7 @@ class BaseMetrics:
         if log_scale:
             ax.set_xscale('log')
         ax.legend()
+        ax.set_ylim([vmin, vmax])
         plt.grid()
         plt.xlabel('epoch')
 
@@ -228,10 +235,10 @@ class EnsembleMetrics(BaseMetrics):
     metrics_models : Dict[BaseMetrics]
         Dictionary of models metrics.
 
-    y_true_per_model : numpy.array
+    y_true_per_model : list[numpy.array]
         Array for saving target of sample.
 
-    y_pred_per_model : dict
+    y_pred_per_model : dict[numpy.array]
         Dictionary for saving prediction of ensemble models.
 
     Parameters
@@ -242,22 +249,19 @@ class EnsembleMetrics(BaseMetrics):
     def __init__(self, model):
         super(EnsembleMetrics, self).__init__(model=model)
         self.metrics_models = {}
-        self.y_true_per_model = None
+        self.y_true_per_model = []
         self.y_pred_per_model = {}
 
     def append_prediction_per_model(self, _input, _target):
         _target = np.squeeze(_target)
-        if self.y_true_per_model is None:
-            self.y_true_per_model = _target
-        else:
-            self.y_true_per_model = np.concatenate((self.y_true_per_model, _target))
+
+        self.y_true_per_model += [_target]
 
         for model in self.model.list_models_ensemble:
             output = np.squeeze(model.predict(_input))
-            if model.name in self.y_pred_per_model:
-                self.y_pred_per_model[model.name] = np.concatenate((self.y_pred_per_model[model.name], output))
-            else:
-                self.y_pred_per_model[model.name] = output
+            if model.name not in self.y_pred_per_model:
+                self.y_pred_per_model[model.name] = []
+            self.y_pred_per_model[model.name] += [output]
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.
@@ -309,7 +313,7 @@ class EnsembleMetrics(BaseMetrics):
         plt.xlabel('epoch')
         plt.hold(False)
 
-    def plot_score_models(self, max_epoch, train_title='Train score', log_scale=False):
+    def plot_score_models(self, max_epoch, train_title='Train score', log_scale=False, vmin=0, vmax=1):
         """ Generate training score plot for each models in Ensemble.
 
         Parameters
@@ -322,6 +326,12 @@ class EnsembleMetrics(BaseMetrics):
 
         log_scale : bool, False by default
             Flag for show plot in logarithmic scale.
+
+        vmin : float
+            Minimum value shown on the y-axis.
+
+        vmax : float
+            Maximum value shown on the y-axis.
         """
         f, ax = plt.subplots()
         plt.hold(True)
@@ -335,6 +345,7 @@ class EnsembleMetrics(BaseMetrics):
             ax.set_xscale('log')
         if flag_legend:
             ax.legend()
+        ax.set_ylim([vmin, vmax])
         plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
