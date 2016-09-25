@@ -13,6 +13,14 @@ Base class Model
 .. autoclass:: Model
    :members:
 
+Ensemble Model
+--------------
+
+.. automodule:: deepensemble.models.ensemblemodel
+
+.. autoclass:: EnsembleModel
+   :members:
+
 Sequential Model
 ----------------
 

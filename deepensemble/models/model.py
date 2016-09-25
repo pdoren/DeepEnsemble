@@ -1,13 +1,16 @@
-import theano.tensor as T
-from theano import config, shared
-import numpy as np
 import pickle
-from ..utils.utils_classifiers import *
-from ..utils.metrics.classifiermetrics import *
-from ..utils.metrics.regressionmetrics import *
+import numpy as np
+import theano.tensor as T
+from sklearn import cross_validation
+
+from theano import config, shared
+from ..metrics import *
+from ..utils import *
+
+__all__ = ['Model']
 
 
-class Model:
+class Model(object):
     """ Base class for models.
 
     Attributes
@@ -24,23 +27,23 @@ class Model:
     target_labels : numpy.array
         Labels of classes.
 
-    params : list
+    _params : list
         List of model's parameters.
 
-    cost_function_list : list
+    _cost_function_list : list
         List for saving the cost functions.
 
-    reg_function_list : list
+    _reg_function_list : list
         List for saving the regularization functions.
 
-    score_function_list : list
+    _score_function_list : list
         This is a list of function for compute a score to models, for classifier model is accuracy by default
          and for regressor model is RMS by default.
 
-    update_function : theano.function
+    _update_function : theano.function
         This function allow to update the model's parameters.
 
-    update_function_args
+    _update_function_args
         Arguments of update function.
 
     name : str
@@ -73,30 +76,44 @@ class Model:
     batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # Attribute related with regularization
 
     def __init__(self, target_labels, type_model, name="model", n_input=None, n_output=None):
-        self.n_input = n_input
-        self.n_output = n_output
-        self.type_model = type_model
-        self.target_labels = np.array(target_labels)
+        self._n_input = n_input
+        self._n_output = n_output
+        self._type_model = type_model
+        self._target_labels = np.array(target_labels)
+        self._params = []
 
-        self.params = []
-        self.cost_function_list = []
-        self.reg_function_list = []
-        self.score_function_list = []
-        self.update_function = None
-        self.update_function_args = None
+        self._cost_function_list = []
+        self._reg_function_list = []
+        self._score_function_list = []
+        self._update_function = None
+        self._update_function_args = None
 
-        self.minibatch_train_eval = None
-        self.minibatch_test_eval = None
-        self.scan_minibatch = None
-        self.share_data_input_train = shared(np.zeros((1, 1), dtype=config.floatX))
-        self.share_data_input_test = shared(np.zeros((1, 1), dtype=config.floatX))
-        self.share_data_target_train = shared(np.zeros((1, 1), dtype=config.floatX))
-        self.share_data_target_test = shared(np.zeros((1, 1), dtype=config.floatX))
+        self._minibatch_train_eval = None
+        self._minibatch_test_eval = None
+        self._share_data_input_train = shared(np.zeros((1, 1), dtype=config.floatX))
+        self._share_data_input_test = shared(np.zeros((1, 1), dtype=config.floatX))
+        self._share_data_target_train = shared(np.zeros((1, 1), dtype=config.floatX))
+        self._share_data_target_test = shared(np.zeros((1, 1), dtype=config.floatX))
 
-        self.name = name
+        self._name = name
 
         self._output = None
         self._error = None
+
+    def get_name(self):
+        return self._name
+
+    def get_params(self):
+        return self._params
+
+    def get_score_function_list(self):
+        return self._score_function_list
+
+    def get_target_labels(self):
+        return self._target_labels
+
+    def get_new_metric(self):
+        raise NotImplementedError
 
     def error(self, _input, _target):
         """ Compute the error prediction of model.
@@ -141,9 +158,9 @@ class Model:
             Return True if the 'other' model has the same form, False otherwise.
         """
         if isinstance(other, Model):
-            return (self.n_input == other.n_input) and (self.n_output == other.n_output) and (
-                self.type_model is other.type_model) and (
-                   self.type_model is "regressor" or (list(self.target_labels) == list(other.target_labels)))
+            return (self._n_input == other._n_input) and (self._n_output == other._n_output) and (
+                self._type_model is other._type_model) and (
+                       self._type_model == "regressor" or (list(self._target_labels) == list(other._target_labels)))
         else:
             return False
 
@@ -201,10 +218,10 @@ class Model:
             Return the prediction of model.
         """
         output = self.output(_input)
-        if self.type_model is 'regressor':
+        if self._type_model is 'regressor':
             return output.eval()
         else:
-            return self.target_labels[get_index_label_classes(output)]
+            return self._target_labels[get_index_label_classes(output)]
 
     def minibatch_eval(self, n_input, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
@@ -230,65 +247,144 @@ class Model:
             for (start, end) in zip(range(0, n_input, batch_size), range(batch_size, n_input, batch_size)):
                 r = (end - start) / n_input
                 if train:
-                    t_data.append(self.minibatch_train_eval(start, end, r))
+                    t_data.append(self._minibatch_train_eval(start, end, r))
                 else:
-                    t_data.append(self.minibatch_test_eval(start, end, r))
+                    t_data.append(self._minibatch_test_eval(start, end, r))
             return np.mean(t_data, axis=0)
         else:
             if train:
-                return self.minibatch_train_eval(0, n_input, 1.0)
+                return self._minibatch_train_eval(0, n_input, 1.0)
             else:
-                return self.minibatch_test_eval(0, n_input, 1.0)
+                return self._minibatch_test_eval(0, n_input, 1.0)
 
-    def fit(self, _input, _target, max_epoch, validation_jump, **kwargs):
-        """ Training model.
+    def fit(self, _input, _target, max_epoch=100, batch_size=32,
+            improvement_threshold=0.995, minibatch=True):
+        """ Function for training sequential model.
 
         Parameters
         ----------
         _input : theano.tensor.matrix
-            Training Input sample.
+            Input training samples.
 
         _target : theano.tensor.matrix
-            Training Target sample.
+            Target training samples.
 
-        max_epoch: int
+        max_epoch : int, 100 by default
             Number of epoch for training.
 
-        validation_jump: int
-            Number of times until doing validation jump.
+        batch_size : int, 32 by default
+            Size of batch.
 
-        kwargs
-            Other parameters.
+        improvement_threshold : int, 0.995 by default
+
+        minibatch : bool
+            Flag for indicate training with minibatch or not.
 
         Returns
         -------
         numpy.array[float]
             Returns training cost for each batch.
         """
+        # create a specific metric
+        metric_model = FactoryMetrics().get_metric(self)
+
+        # save data in shared variables
+        self.prepare_data(_input, _target)
+        n_train = self._share_data_target_train.get_value(borrow=True).shape[0]
+        n_test = self._share_data_target_test.get_value(borrow=True).shape[0]
+
+        # parameters early stopping
+        best_params = None
+        best_validation_cost = np.inf
+        patience = max(max_epoch * n_train // 5, 5000)
+        validation_jump = min(patience // 100, max_epoch // 50)
+        patience_increase = 2
+
+        for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
+
+            if minibatch:  # Train minibatches
+                t_data_train = self.minibatch_eval(n_input=n_train, batch_size=batch_size, train=True)
+            else:
+                t_data_train = self.minibatch_eval(n_input=n_train, batch_size=n_train, train=True)
+
+            metric_model.append_data(t_data_train, epoch, type_set_data="train")
+
+            iteration = epoch * n_train
+
+            if epoch % validation_jump == 0:
+                # Evaluate test set
+                t_data_test = self.minibatch_eval(n_input=n_test, batch_size=n_test, train=False)
+                metric_model.append_data(t_data_test, epoch, type_set_data="test")
+                validation_cost = t_data_test[0]
+
+                if validation_cost < best_validation_cost:
+
+                    if validation_cost < best_validation_cost * improvement_threshold:
+                        patience = max(patience,  iteration * patience_increase)
+
+                    best_params = self._save_params()
+                    best_validation_cost = validation_cost
+
+            if patience <= iteration:
+                break
+
+        if best_params is not None:
+            self._load_params(best_params)
+
+        return metric_model
+
+    def _save_params(self):
+        return [i.get_value() for i in self.get_params()]
+
+    def _load_params(self, params):
+        for p, value in zip(self.get_params(), params):
+            p.set_value(value)
+
+    def _compile(self, fast=True, **kwargs):
+        """ Prepare training.
+
+        Parameters
+        ----------
+        fast : bool
+            Compiling cost and regularization items without separating them.
+        """
         raise NotImplementedError
 
-    def compile(self):
+    def compile(self, fast=True, **kwargs):
         """ Prepare training.
         """
-        self.set_default_score()
+        Logger().start_measure_time("Start Compile %s" % self._name)
 
-    def prepare_data(self, _input, _target):
-        target_train = _target
-        input_train = _input
-        if self.type_model is 'classifier':
-            target_train = translate_target(_target=_target, n_classes=self.n_output, target_labels=self.target_labels)
+        if len(self._score_function_list) <= 0:
+            self.set_default_score()
 
-        self.share_data_input_train.set_value(input_train)
-        self.share_data_target_train.set_value(target_train)
+        self._compile(fast=fast, **kwargs)
+
+        Logger().stop_measure_time()
+
+    def prepare_data(self, _input, _target, test_size=0.3):
+        input_train, input_test, target_train, target_test = \
+            cross_validation.train_test_split(_input, _target, test_size=test_size, random_state=0)
+
+        if self._type_model is 'classifier':
+            target_train = translate_target(_target=target_train, n_classes=self._n_output,
+                                            target_labels=self._target_labels)
+            target_test = translate_target(_target=target_test, n_classes=self._n_output,
+                                           target_labels=self._target_labels)
+
+        self._share_data_input_train.set_value(input_train)
+        self._share_data_target_train.set_value(target_train)
+        self._share_data_input_test.set_value(input_test)
+        self._share_data_target_test.set_value(target_test)
 
     def set_default_score(self):
         """ Setting default score in model.
         """
-        if self.type_model is "classifier":
-            self.score_function_list.append(
-                score_accuracy(translate_output(self.output(self.model_input), self.n_output), self.model_target))
+        if self._type_model == "classifier":
+            self._score_function_list.append(
+                score_accuracy(translate_output(self.output(self.model_input), self._n_output), self.model_target))
         else:
-            self.score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
+            self._score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
 
     def append_cost(self, fun_cost, **kwargs):
         """ Adds an extra item in the cost function.
@@ -302,7 +398,7 @@ class Model:
             Extra parameters of function cost.
         """
         c = fun_cost(model=self, _input=self.model_input, _target=self.model_target, **kwargs)
-        self.cost_function_list.append(c)
+        self._cost_function_list.append(c)
 
     def append_reg(self, fun_reg, **kwargs):
         """ Adds an extra item in the cost function.
@@ -316,7 +412,7 @@ class Model:
             Extra parameters of regularization function.
         """
         c = fun_reg(model=self, batch_reg_ratio=self.batch_reg_ratio, **kwargs)
-        self.reg_function_list.append(c)
+        self._reg_function_list.append(c)
 
     def set_update(self, fun_update, **kwargs):
         """ Adds an extra item in the cost function.
@@ -329,8 +425,8 @@ class Model:
         **kwargs
             Extra parameters of update function.
         """
-        self.update_function = fun_update
-        self.update_function_args = kwargs
+        self._update_function = fun_update
+        self._update_function_args = kwargs
 
     def get_cost_functions(self):
         """ Gets cost function of model.
@@ -341,10 +437,10 @@ class Model:
             Returns cost model include regularization.
         """
         cost = 0.0
-        for c in self.cost_function_list:
+        for c in self._cost_function_list:
             cost += c
 
-        for r in self.reg_function_list:
+        for r in self._reg_function_list:
             cost += r
 
         return cost
@@ -358,7 +454,7 @@ class Model:
             Returns score model.
         """
         score = 0.0
-        for s in self.score_function_list:
+        for s in self._score_function_list:
             score += s
 
         return score
@@ -376,7 +472,7 @@ class Model:
         OrderedDict
             A dictionary mapping each parameter to its update expression.
         """
-        return self.update_function(cost, self.params, **self.update_function_args)
+        return self._update_function(cost, self._params, **self._update_function_args)
 
     def load(self, filename):
         """ Load model from file.

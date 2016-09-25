@@ -1,5 +1,5 @@
 from .modelcombiner import ModelCombiner
-from ..utils.utils_classifiers import *
+from ..utils import get_index_label_classes
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
 
@@ -10,8 +10,8 @@ __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
 class AverageCombiner(ModelCombiner):
     """ Class for compute the average the output models.
     """
-    def __init__(self):
-        super(AverageCombiner, self).__init__()
+    def __init__(self, **kwargs):
+        super(AverageCombiner, self).__init__(**kwargs)
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input):
@@ -31,9 +31,9 @@ class AverageCombiner(ModelCombiner):
             Returns the average of the output models.
         """
         output = 0.0
-        for model in ensemble_model.list_models_ensemble:
+        for model in ensemble_model.get_models():
             output += model.output(_input)
-        n = len(ensemble_model.list_models_ensemble)
+        n = len(ensemble_model.get_models())
         return output / n
 
 
@@ -53,8 +53,7 @@ class PluralityVotingCombiner(AverageCombiner):
            Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
     """
     def __init__(self):
-        super(PluralityVotingCombiner, self).__init__()
-        self.type_model = "classifier"
+        super(PluralityVotingCombiner, self).__init__(type_model="classifier")
 
     def predict(self, model, _input):
         """ Returns the class with more votes.
@@ -72,4 +71,4 @@ class PluralityVotingCombiner(AverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return model.target_labels[get_index_label_classes(model.output(_input))]
+        return model.get_target_labels()[get_index_label_classes(model.output(_input))]

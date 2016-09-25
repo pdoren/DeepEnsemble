@@ -21,10 +21,10 @@ API Reference
 .. toctree::
   :maxdepth: 2
 
-  modules/ensemble
+  modules/models
   modules/combiner
   modules/layers
-  modules/models
+  modules/metrics
   modules/utils
 
 Indices and tables

@@ -3,7 +3,7 @@ from .modelcombiner import ModelCombiner
 from theano import shared, config
 import numpy as np
 from collections import OrderedDict
-from ..utils.utils_classifiers import *
+from ..utils.utils_classifiers import get_index_label_classes
 
 __all__ = ['WeightAverageCombiner', 'WeightedVotingCombiner']
 
@@ -38,10 +38,10 @@ class WeightAverageCombiner(ModelCombiner):
            for Spech and Vision, pages 126–142. Chapman & Hall, New York, NY,
            1993.
     """
-    def __init__(self, n_models):
-        super(WeightAverageCombiner, self).__init__()
+    def __init__(self, n_models, **kwargs):
+        super(WeightAverageCombiner, self).__init__(**kwargs)
         self.n_models = n_models
-        self.params = shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True)
+        self._params = shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True)
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input):
@@ -62,11 +62,11 @@ class WeightAverageCombiner(ModelCombiner):
         """
         output = 0.0
         if _input == ensemble_model.model_input:
-            for i, model in enumerate(ensemble_model.list_models_ensemble):
-                output += model.output(_input) * self.params[i, 0]  # index TensorVariable
+            for i, model in enumerate(ensemble_model.get_models()):
+                output += model.output(_input) * self._params[i, 0]  # index TensorVariable
         else:
-            params = self.params.get_value()
-            for i, model in enumerate(ensemble_model.list_models_ensemble):
+            params = self._params.get_value()
+            for i, model in enumerate(ensemble_model.get_models()):
                 output += model.output(_input) * params[i]
         return output
 
@@ -92,7 +92,7 @@ class WeightAverageCombiner(ModelCombiner):
         updates = OrderedDict()
         errors = []
 
-        for model in ensemble_model.list_models_ensemble:
+        for model in ensemble_model.get_models():
             errors.append(model.error(_input, _target))
 
         sum_Cj = 0.0
@@ -107,7 +107,7 @@ class WeightAverageCombiner(ModelCombiner):
             inv_sum_sum_inv_Ckj += d
 
         update_param = (1.0 / inv_sum_sum_inv_Ckj) * inv_sum_Cij
-        updates[self.params] = T.set_subtensor(self.params[:, 0], update_param[:])
+        updates[self._params] = T.set_subtensor(self._params[:, 0], update_param[:])
         return updates
 
 
@@ -129,8 +129,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
            Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
     """
     def __init__(self, n_models):
-        super(WeightedVotingCombiner, self).__init__(n_models=n_models)
-        self.type_model = "classifier"
+        super(WeightedVotingCombiner, self).__init__(n_models=n_models, type_model="classifier")
 
     def predict(self, model, _input):
         """ Returns the class with more votes.
@@ -148,4 +147,4 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return model.target_labels[get_index_label_classes(model.output(_input))]
+        return model.get_target_labels()[get_index_label_classes(model.output(_input))]

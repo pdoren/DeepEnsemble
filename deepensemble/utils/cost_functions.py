@@ -1,5 +1,4 @@
 import theano.tensor as T
-from ..models.model import Model
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'correntropy_cost', 'cross_entropy', 'correntropy_silverman_cost',
@@ -212,7 +211,7 @@ def neg_corr(model, _input, _target, ensemble, lamb_neg_corr=0.5):
     sum_err = 0.0
     output_current_model = model.output(_input)
     output_ensemble = ensemble.output(_input)
-    for model_j in ensemble.list_models_ensemble:
+    for model_j in ensemble.get_models():
         if model_j != model:
             sum_err += model_j.output(_input) - output_ensemble
     return T.mean(T.constant(-lamb_neg_corr) * (output_current_model - output_ensemble) * sum_err)
@@ -250,7 +249,7 @@ def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
     sum_err = 0.0
     output_current_model = model.output(_input)
     sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
-    for model_j in ensemble.list_models_ensemble:
+    for model_j in ensemble.get_models():
         if model_j != model:
             e = model_j.output(_input) - output_current_model
             sum_err += T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
@@ -303,8 +302,6 @@ def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
     theano.tensor.matrix
         Return Negative Correlation.
     """
-
-    # error current model
     d = T.constant(ensemble.n_output)
     N = T.sum(T.ones_like(_target)) / d
     e = model.output(_input) - ensemble.output(_input)

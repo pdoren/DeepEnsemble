@@ -30,8 +30,16 @@ class Logger(Singleton):
         if self.log_activate:
             print(str(message), **kwargs)
 
+    def start_measure_time(self, message="", **kwargs):
+        self.tic = time.time()
+        self.print(message="%s" % message, end="", **kwargs)
+
+    def stop_measure_time(self, message="", **kwargs):
+        self.toc = time.time()
+        self.print(message=" %s - elapsed: %.2f [s]" % (message, self.toc - self.tic), **kwargs)
+
     def progressbar_training(self, max_epoch, model, **kwargs):
-        return self.progressbar(it=range(0, max_epoch), prefix="%s - epoch:" % model.name, **kwargs)
+        return self.progressbar(it=range(0, max_epoch), prefix="%s - epoch:" % model.get_name(), **kwargs)
 
     def progressbar(self, it, prefix="", postfix="", end="", size=20):
         count = len(it)

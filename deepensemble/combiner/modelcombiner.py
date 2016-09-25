@@ -1,21 +1,37 @@
 from collections import OrderedDict
+from theano import shared
+
 __all__ = ['ModelCombiner']
 
 
-class ModelCombiner:
+class ModelCombiner(object):
     """ Base class for mixing output of models.
 
     Attributes
     ----------
+    _params : theano.shared
+        Parameters of combiner method.
+
+    _type_model : str, "regressor" by default
+        Type of model: regressor or classifier
+
+    Parameters
+    ----------
     params : theano.shared
         Parameters of combiner method.
 
-    type_model : str, "regressor" bt default
+    type_model : str
         Type of model: regressor or classifier
     """
-    def __init__(self):
-        self.params = None
-        self.type_model = "regressor"
+    def __init__(self, params=shared(0), type_model="regressor"):
+        self._params = params
+        self._type_model = type_model
+
+    def get_type_model(self):
+        return self._type_model
+
+    def get_params(self):
+        return self._params
 
     def output(self, ensemble_model, _input):
         """ Mixing the output or prediction of ensemble's models.

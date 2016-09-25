@@ -1,8 +1,8 @@
 """ Library for training ensembles.
 """
-from . import ensemble
 from . import combiner
 from . import layers
+from . import metrics
 from . import models
 from . import utils
 

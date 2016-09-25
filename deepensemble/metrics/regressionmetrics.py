@@ -1,5 +1,5 @@
 import theano.tensor as T
-from .basemetrics import *
+from .basemetrics import BaseMetrics, EnsembleMetrics
 
 __all__ = ['RegressionMetrics', 'EnsembleRegressionMetrics', 'score_rms']
 

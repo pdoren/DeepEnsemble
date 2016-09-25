@@ -24,8 +24,8 @@ def L2(model, lamb, batch_reg_ratio):
     """
 
     sqrL2W = 0.0
-    for layer in model.layers:
-        sqrL2W += T.sum(T.power(layer.get_parameters(), 2.0))
+    for layer in model.get_layers():
+        sqrL2W += T.sum(T.power(layer.get_W(), 2.0))
     return sqrL2W * (lamb * batch_reg_ratio)
 
 
@@ -49,6 +49,6 @@ def L1(model, lamb, batch_reg_ratio):
         Return regularization L1.
     """
     L1W = 0.0
-    for layer in model.layers:
-        L1W += T.sum(T.abs_(layer.get_parameters()))
+    for layer in model.get_layers():
+        L1W += T.sum(T.abs_(layer.get_W()))
     return L1W * (lamb * batch_reg_ratio)

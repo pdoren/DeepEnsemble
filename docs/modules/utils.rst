@@ -36,60 +36,10 @@ Update Functions
 .. autofunction:: adadelta
 .. autofunction:: adagrad
 
-Metrics
-=======
+Logger
+------
 
-.. currentmodule:: deepensemble.utils.metrics
+.. automodule:: deepensemble.utils.logger
 
-Base Class Metrics
-------------------
-
-.. automodule:: deepensemble.utils.metrics.basemetrics
-
-.. autoclass:: BaseMetrics
+.. autoclass:: Logger
    :members:
-
-.. autoclass:: EnsembleMetrics
-   :members:
-
-Classifier Metrics
-------------------
-
-.. automodule:: deepensemble.utils.metrics.classifiermetrics
-
-.. autoclass:: ClassifierMetrics
-   :members:
-
-.. autoclass:: EnsembleClassifierMetrics
-   :members:
-
-Regression Metrics
-------------------
-
-.. automodule:: deepensemble.utils.metrics.regressionmetrics
-
-.. autoclass:: RegressionMetrics
-   :members:
-
-.. autoclass:: EnsembleMetrics
-   :members:
-
-Diversity
-=========
-
-.. automodule:: deepensemble.utils.metrics.diversitymetrics
-
-Utils
------
-
-.. autofunction:: oracle
-.. autofunction:: contingency_table
-
-Pairwise metrics
-----------------
-
-.. autofunction:: correlation_coefficient
-.. autofunction:: disagreement_measure
-.. autofunction:: double_fault_measure
-.. autofunction:: kappa_statistic
-.. autofunction:: q_statistic

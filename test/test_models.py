@@ -1,15 +1,16 @@
 import time
+
+import matplotlib.pylab as plt
 import numpy as np
 import theano
 import theano.tensor as T
-import matplotlib.pylab as plt
 from sklearn import cross_validation
-from sklearn.datasets import load_iris
 from sklearn.cross_validation import ShuffleSplit
+from sklearn.datasets import load_iris
 
 from deepensemble.combiner.weightaveragecombiner import WeightAverageCombiner
-from deepensemble.ensemble.ensemblemodel import EnsembleModel
 from deepensemble.layers.dense import Dense
+from deepensemble.models.ensemblemodel import EnsembleModel
 from deepensemble.models.sequential import Sequential
 from deepensemble.utils import *
 
@@ -67,7 +68,7 @@ def test_mlp():
         tic = time.time()
         metrics_mlp.append_metric(mlp1.fit(input_train, target_train,
                                            max_epoch=max_epoch, batch_size=32,
-                                           validation_jump=validation_jump, early_stop_th=4))
+                                           validation_jump=validation_jump, improvement_threshold=4))
         toc = time.time()
         # Compute metrics
         metrics_mlp.append_prediction(target_test, mlp1.predict(input_test))
@@ -153,7 +154,7 @@ def test_ensemble():
 
     classifier_metrics = ensemble.fit(input_train, target_train,
                                       max_epoch=max_epoch, batch_size=32,
-                                      validation_jump=validation_jump, early_stop_th=4, verbose=True)
+                                      validation_jump=validation_jump, improvement_threshold=4, verbose=True)
 
     # Compute and Show metrics
     classifier_metrics.append_prediction(target_test, ensemble.predict(input_test))
