@@ -28,9 +28,23 @@ class ModelCombiner(object):
         self._type_model = type_model
 
     def get_type_model(self):
+        """ Get type of model.
+
+        Returns
+        -------
+        str
+            Returns one string with the type of model: "regressor" or "classifier"
+        """
         return self._type_model
 
     def get_params(self):
+        """ Getter model combinator parameters.
+
+        Returns
+        -------
+        theano.shared
+            Returns parameters.
+        """
         return self._params
 
     def output(self, ensemble_model, _input):

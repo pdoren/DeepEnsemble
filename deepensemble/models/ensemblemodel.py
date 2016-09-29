@@ -34,9 +34,27 @@ class EnsembleModel(Model):
         self._params.append(0)  # the first element is reserved for combiner parameters
 
     def get_models(self):
+        """ Getter list of ensemble models.
+
+        Returns
+        -------
+        list
+            Returns list of models.
+        """
         return self.__list_models_ensemble
 
     def get_new_metric(self):
+        """ Gets metric for this model, function necessary for FactoryMetrics.
+
+        Returns
+        -------
+        EnsembleMetrics
+            Returns ensemble metrics.
+
+        See Also
+        --------
+        FactoryMetrics
+        """
         if self._type_model == "classifier":
             return EnsembleClassifierMetrics(self)
         else:
@@ -220,9 +238,9 @@ class EnsembleModel(Model):
         }
 
         self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
-                                              givens=givens_train, on_unused_input='ignore')
+                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
         self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
-                                             givens=givens_test, on_unused_input='ignore')
+                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
 
     def add_cost_ensemble(self, fun_cost, **kwargs):
         """ Adds cost function for each models in Ensemble.

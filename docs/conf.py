@@ -40,6 +40,8 @@ extensions = [
     'numpydoc',
 ]
 
+numpydoc_show_class_members = False
+
 mathjax_path = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
 intersphinx_mapping = {

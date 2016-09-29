@@ -38,7 +38,7 @@ class Model(object):
 
     _score_function_list : list
         This is a list of function for compute a score to models, for classifier model is accuracy by default
-         and for regressor model is RMS by default.
+        and for regressor model is RMS by default.
 
     _update_function : theano.function
         This function allow to update the model's parameters.
@@ -49,7 +49,7 @@ class Model(object):
     name : str
         This model's name is useful to identify it later.
 
-    _output : TensorVariable
+    _output : theano.tensor.TensorVariable
         Output model (Theano).
 
     Parameters
@@ -101,18 +101,54 @@ class Model(object):
         self._error = None
 
     def get_name(self):
+        """ Getter name.
+
+        Returns
+        -------
+        str
+            Returns name of model.
+        """
         return self._name
 
     def get_params(self):
+        """ Getter model parameters.
+
+        Returns
+        -------
+        theano.shared
+            Returns model parameters.
+        """
         return self._params
 
     def get_score_function_list(self):
+        """ Getter list score.
+
+        Returns
+        -------
+        list[theano.Op]
+            Returns list of score functions.
+        """
         return self._score_function_list
 
     def get_target_labels(self):
+        """ Getter target labels.
+
+        Returns
+        -------
+        list
+            Returns one list with target labels of this model.
+        """
         return self._target_labels
 
     def get_new_metric(self):
+        """ Get metrics for respective model.
+
+        .. note:: This function is necessary implemented for uses FactoryMetrics.
+
+        See Also
+        --------
+        FactoryMetrics
+        """
         raise NotImplementedError
 
     def error(self, _input, _target):
@@ -223,7 +259,7 @@ class Model(object):
         else:
             return self._target_labels[get_index_label_classes(output)]
 
-    def minibatch_eval(self, n_input, batch_size=32, train=True):
+    def batch_eval(self, n_input, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
 
         Parameters
@@ -257,7 +293,7 @@ class Model(object):
             else:
                 return self._minibatch_test_eval(0, n_input, 1.0)
 
-    def fit(self, _input, _target, max_epoch=100, batch_size=32,
+    def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True,
             improvement_threshold=0.995, minibatch=True):
         """ Function for training sequential model.
 
@@ -274,6 +310,9 @@ class Model(object):
 
         batch_size : int, 32 by default
             Size of batch.
+
+        early_stop : bool, True by default
+            Flag for enabled early stop.
 
         improvement_threshold : int, 0.995 by default
 
@@ -303,9 +342,9 @@ class Model(object):
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
 
             if minibatch:  # Train minibatches
-                t_data_train = self.minibatch_eval(n_input=n_train, batch_size=batch_size, train=True)
+                t_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
             else:
-                t_data_train = self.minibatch_eval(n_input=n_train, batch_size=n_train, train=True)
+                t_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
 
             metric_model.append_data(t_data_train, epoch, type_set_data="train")
 
@@ -313,7 +352,7 @@ class Model(object):
 
             if epoch % validation_jump == 0:
                 # Evaluate test set
-                t_data_test = self.minibatch_eval(n_input=n_test, batch_size=n_test, train=False)
+                t_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
                 metric_model.append_data(t_data_test, epoch, type_set_data="test")
                 validation_cost = t_data_test[0]
 
@@ -325,7 +364,8 @@ class Model(object):
                     best_params = self._save_params()
                     best_validation_cost = validation_cost
 
-            if patience <= iteration:
+            if early_stop and patience <= iteration:
+                Logger().print()
                 break
 
         if best_params is not None:
@@ -363,6 +403,14 @@ class Model(object):
         Logger().stop_measure_time()
 
     def prepare_data(self, _input, _target, test_size=0.3):
+        """
+
+        Parameters
+        ----------
+        _input
+        _target
+        test_size
+        """
         input_train, input_test, target_train, target_test = \
             cross_validation.train_test_split(_input, _target, test_size=test_size, random_state=0)
 

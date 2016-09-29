@@ -207,7 +207,7 @@ class BaseMetrics:
         self._test_score = []
 
     def append_data(self, data, epoch, type_set_data):
-        """ Append data in each list.
+        """ Append metrics data.
 
         Parameters
         ----------
@@ -352,14 +352,69 @@ class BaseMetrics:
         """
         # Get average plots
         if len(dps) > 0:
-            dpa = DataPlot("%s %s" % (self._model.get_name(), dps[0].get_name()))
-            y = np.zeros((dps[0].len_data(),))
-            x = None
-            for dp in dps:
-                x, y1 = dp.get_data()
-                y += np.array(y1)
-            dpa.set_data(x, y / len(dps))
-            dpa.plot(ax)
+            label = "%s - %s" % (self._model.get_name(), dps[0].get_name())
+            x, y = self._get_data_per_col(dps)
+            _x = x[:, 0]
+            _y = np.nanmean(y, axis=1)
+            ax.plot(_x, _y, label=label)
+
+    @staticmethod
+    def _get_data_per_col(dps):
+        n = 0
+        x = None
+        y = None
+        for dp in dps:
+            x1, y1 = dp.get_data()
+            x1 = np.array(x1, dtype=float)
+            y1 = np.array(y1, dtype=float)
+            if x1.ndim == 1:
+                x1 = x1[:, np.newaxis]
+                y1 = y1[:, np.newaxis]
+
+            m = dp.len_data()
+            if y is None:
+                x = x1
+                y = y1
+            else:
+                if m > n:
+                    x = BaseMetrics._resize_rows(x, m)
+                    y = BaseMetrics._resize_rows(y, m)
+                elif m < n:
+                    x1 = BaseMetrics._resize_rows(x1, n)
+                    y1 = BaseMetrics._resize_rows(y1, n)
+
+                x = np.hstack((x, x1))
+                y = np.hstack((y, y1))
+
+            n = m
+        return x, y
+
+    @staticmethod
+    def _resize_rows(a, nr):
+        """ Resize rows in a array
+
+        Parameters
+        ----------
+        a : numpy.array
+            Array.
+
+        nr : int
+            New size of rows.
+
+        Returns
+        -------
+        numpy.array
+            Returns array with rows resize.
+        """
+        r = a.shape[0]
+        c = 1
+        if a.ndim > 1:
+            c = a.shape[1]
+        na = np.resize(a, (nr, c))
+        if r < nr:
+            na[r:nr, :] = np.NaN  # complete with nan
+
+        return na
 
 
 class EnsembleMetrics(BaseMetrics):
@@ -389,9 +444,27 @@ class EnsembleMetrics(BaseMetrics):
         self._y_pred_per_model = {}
 
     def append_data(self, data, epoch, type_set_data):
+        """ Append metrics data of ensemble.
+
+        Parameters
+        ----------
+        data : list
+            List of data.
+
+        epoch : int
+            Current epoch of training when was called this method.
+
+        type_set_data : str
+            This string means what kind of data is passed: train or test.
+
+        Returns
+        -------
+        int
+            Returns index of last item saved from data list.
+        """
         n = super(EnsembleMetrics, self).append_data(data, epoch, type_set_data=type_set_data)
 
-        if len(data) > n:
+        if data.__len__() > n:
             for model_ensemble in self._model.get_models():
                 s_model = model_ensemble.get_name()
                 if model_ensemble.get_name() not in self._metrics_models:
@@ -418,6 +491,20 @@ class EnsembleMetrics(BaseMetrics):
         return n
 
     def append_prediction_per_model(self, _input, _target):
+        """ Append prediction for each model in ensemble.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        Returns
+        -------
+        None
+        """
         _target = np.squeeze(_target)
 
         self._y_true_per_model += [_target]

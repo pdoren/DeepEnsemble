@@ -31,6 +31,12 @@ class ClassifierMetrics(BaseMetrics):
         self.__y_true = []
 
     def classification_report(self):
+        """ Generate a classification report (wrapper classification_report scikit)
+
+        Returns
+        -------
+        None
+        """
         y_true = np.concatenate(tuple(self.__y_true))
         y_pred = np.concatenate(tuple(self.__y_pred))
 
@@ -58,6 +64,8 @@ class ClassifierMetrics(BaseMetrics):
     def plot_confusion_matrix(self, title='Confusion matrix', cmap=plt.cm.Blues):
         """ Generate Confusion Matrix plot.
 
+        .. note:: Show Confusion Matrix plot.
+
         Parameters
         ----------
         title : str
@@ -65,11 +73,6 @@ class ClassifierMetrics(BaseMetrics):
 
         cmap : plt.cm
             Plot Color.
-
-        Notes
-        -----
-        Show Confusion Matrix plot.
-
         """
         if len(self.__y_pred) > 0 and len(self.__y_true) > 0:
             y_true = np.concatenate(tuple(self.__y_true))
@@ -111,6 +114,12 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 
     def diversity_report(self):
+        """ Generate diversity report of ensemble model.
+
+        Returns
+        -------
+        None
+        """
         metrics = {'Correlation Coefficient': correlation_coefficient,
                    'Kappa statistic': kappa_statistic,
                    'Q statistic': q_statistic,
@@ -148,10 +157,31 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
 
     @staticmethod
     def mean_metric(metric, list_target, list_c1, list_c2):
+        """
+
+        Parameters
+        ----------
+        metric
+            Diversity metric.
+
+        list_target : list
+            List of target.
+
+        list_c1 : list
+            Prediction first model.
+
+        list_c2 : list
+            Prediction second model.
+
+        Returns
+        -------
+        float
+            Returns average between two metric models.
+        """
         sum_m = 0.0
         for i, target in enumerate(list_target):
             sum_m += metric(target, list_c1[i], list_c2[i])
-        return sum_m / len(list_target)
+        return sum_m / list_target.__len__()
 
 
 def score_accuracy(_output, _target):

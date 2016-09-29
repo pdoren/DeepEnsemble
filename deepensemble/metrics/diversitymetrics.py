@@ -15,6 +15,8 @@ Different metrics for compute diversity
 def oracle(y, c):
     """ Compare between two arrays that represent the target and the output of a classifier.
 
+    .. note:: The input arrays must be same shape and type (numpy.array).
+
     Parameters
     ----------
     y : numpy.array
@@ -22,10 +24,6 @@ def oracle(y, c):
 
     c : numpy.array
         Output model for comparing with target.
-
-    Notes
-    -----
-    The input arrays must be same shape and type (numpy.array).
 
     Returns
     -------
@@ -46,6 +44,8 @@ def oracle(y, c):
 def contingency_table(y, c1, c2):
     """ Compute de contingency table.
 
+    .. note:: The input arrays must be same shape and type (numpy.array).
+
     Parameters
     ----------
     y : numpy.array
@@ -57,15 +57,10 @@ def contingency_table(y, c1, c2):
     c2 : numpy.array
         Output of the second classifier.
 
-    Notes
-    -----
-    The input arrays must be same shape and type (numpy.array).
-
     Returns
     -------
     tuple
         Returns a tuple with the elements of contingency table between two classifiers.
-
 
     References
     ----------

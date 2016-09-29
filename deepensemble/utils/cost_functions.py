@@ -2,7 +2,8 @@ import theano.tensor as T
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'correntropy_cost', 'cross_entropy', 'correntropy_silverman_cost',
-           'kullback_leibler', 'kullback_leibler_generalized']
+           'kullback_leibler', 'kullback_leibler_generalized',
+           'test_cost']
 
 
 def kullback_leibler_generalized(model, _input, _target):
@@ -174,7 +175,7 @@ def neg_log_likelihood(model, _input, _target):
         Return negative logarithm likelihood.
     """
     labels = T.argmax(_target, axis=1)
-    return -T.mean(T.log(T.power(model.output(_input), 2.0))[T.arange(_target.shape[0]), labels])
+    return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 
 #
@@ -244,7 +245,7 @@ def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
     Returns
     -------
     theano.tensor.matrix
-        Return Negative Correlation.
+        Return Negative Correntropy.
     """
     sum_err = 0.0
     output_current_model = model.output(_input)
@@ -254,27 +255,6 @@ def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
             e = model_j.output(_input) - output_current_model
             sum_err += T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
     return T.mean(T.constant(-lamb_corr) * sum_err)
-
-    """# error current model
-    e = model.output(_input) - ensemble.output(_input)
-    k = T.exp(-T.power(e, 2.0) / s)
-    return T.mean(-T.constant(lamb_corr) * k)"""
-
-    """mse_ensemble = T.mean(T.power(ensemble.error(_input, _target), 2.0))
-    k = T.exp(-s * mse_ensemble)
-    cost = 0.0
-    output_current_model = model.output(_input)
-    for model_j in ensemble.list_models_ensemble:
-        cost += output_current_model - model_j.output(_input)
-    return T.mean(T.constant(lamb_corr) * T.power(cost, 2.0) * k)"""
-
-    """eps = 0.0001
-    pt = model.output(_input)
-    sum_d = 0.0
-    for model_j in ensemble.list_models_ensemble:
-        pp = model_j.output(_input)
-        sum_d += T.sum((pt + eps) * (T.log((pt + eps) / (pp + eps)) - pt + pp))
-    return sum_d / ensemble.get_num_models()"""
 
 
 def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
@@ -300,7 +280,7 @@ def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
     Returns
     -------
     theano.tensor.matrix
-        Return Negative Correlation.
+        Return Negative Correntropy.
     """
     d = T.constant(ensemble.n_output)
     N = T.sum(T.ones_like(_target)) / d
@@ -310,3 +290,37 @@ def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
     sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
     return T.mean(
         T.constant(-lamb_corr) * T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s))
+
+
+def test_cost(model, _input, _target, ensemble, lamb=10):
+    params_model = [i for i in model.get_params()]
+    sum_d = 0.0
+    for model_j in ensemble.get_models():
+        params_model_j = [i for i in model_j.get_params()]
+        e = [i - j for i, j in zip(params_model, params_model_j)]
+        for e_i in e:
+            sum_d += T.power(T.sum(e_i), 2.0)
+
+    return T.constant(-lamb) * T.exp(-T.mean(sum_d))
+
+
+"""# error current model
+e = model.output(_input) - ensemble.output(_input)
+k = T.exp(-T.power(e, 2.0) / s)
+return T.mean(-T.constant(lamb_corr) * k)"""
+
+"""mse_ensemble = T.mean(T.power(ensemble.error(_input, _target), 2.0))
+k = T.exp(-s * mse_ensemble)
+cost = 0.0
+output_current_model = model.output(_input)
+for model_j in ensemble.list_models_ensemble:
+    cost += output_current_model - model_j.output(_input)
+return T.mean(T.constant(lamb_corr) * T.power(cost, 2.0) * k)"""
+
+"""eps = 0.0001
+pt = model.output(_input)
+sum_d = 0.0
+for model_j in ensemble.list_models_ensemble:
+    pp = model_j.output(_input)
+    sum_d += T.sum((pt + eps) * (T.log((pt + eps) / (pp + eps)) - pt + pp))
+return sum_d / ensemble.get_num_models()"""

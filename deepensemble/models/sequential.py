@@ -31,9 +31,23 @@ class Sequential(Model):
         self.__layers = []
 
     def get_layers(self):
+        """ Get list of layers.
+
+        Returns
+        -------
+        list
+            Returns a list of layers of this model.
+        """
         return self.__layers
 
     def get_new_metric(self):
+        """ Get metric of respective model.
+
+        Returns
+        -------
+        BaseMetrics
+            Returns a metric that will depend on type of model.
+        """
         if self._type_model == "classifier":
             return ClassifierMetrics(self)
         else:
@@ -130,6 +144,6 @@ class Sequential(Model):
         }
 
         self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
-                                              givens=givens_train, on_unused_input='ignore')
+                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
         self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
-                                             givens=givens_test, on_unused_input='ignore')
+                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
