@@ -116,10 +116,11 @@ class Sequential(Model):
         fast : bool
             Compiling cost and regularization items without separating them.
         """
+        error = T.mean(self.error(self.model_input, self.model_target))
         cost = self.get_cost_functions()
         score = self.get_score_functions()
 
-        result = [cost, score]
+        result = [error, cost, score]
         if not fast:
             result += self._cost_function_list
             if self._reg_function_list is not None:

@@ -193,6 +193,7 @@ class EnsembleModel(Model):
                 for i, model in enumerate(self.__list_models_ensemble):
                     model.append_cost(fun_cost=fun_cost, ensemble=self, **params_cost)
 
+        error = T.mean(self.error(self.model_input, self.model_target))
         cost = self.get_cost_functions()
         score = self.get_score_functions()
         m = self.get_num_models()
@@ -204,12 +205,12 @@ class EnsembleModel(Model):
                 score_model = model.get_score_functions()
                 cost += cost_model
                 sub_result += [cost_model, score_model]
-            result = [cost / m, score] + sub_result
+            result = [error, cost / m, score] + sub_result
         else:  # compute only cost and score of ensemble
             for model in self.__list_models_ensemble:
                 cost_model = model.get_cost_functions()
                 cost += cost_model
-            result = [cost / m, score]
+            result = [error, cost / m, score]
 
         update_combiner = self.__combiner.update_parameters(self, self.model_input, self.model_target)
         updates = OrderedDict()

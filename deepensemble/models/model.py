@@ -100,6 +100,61 @@ class Model(object):
         self._output = None
         self._error = None
 
+        self.__current_data_train = None
+        self.__current_data_test = None
+
+    def get_test_cost(self):
+        """ Gets current testing cost.
+
+        Returns
+        -------
+        float
+            Returns testing cost.
+        """
+        if self.__current_data_test is None:
+            return 0.0
+        else:
+            return self.__current_data_test[1]
+
+    def get_train_error(self):
+        """ Gets current training error.
+
+        Returns
+        -------
+        float
+            Returns average training error.
+        """
+        if self.__current_data_train is None:
+            return 0.0
+        else:
+            return self.__current_data_train[0]
+
+    def get_train_cost(self):
+        """ Gets current training cost.
+
+        Returns
+        -------
+        float
+            Returns training cost.
+        """
+        if self.__current_data_train is None:
+            return 0.0
+        else:
+            return self.__current_data_train[1]
+
+    def get_train_score(self):
+        """ Gets current training score.
+
+        Returns
+        -------
+        float
+            Returns training score.
+        """
+        if self.__current_data_train is None:
+            return 0.0
+        else:
+            return self.__current_data_train[2]
+
     def get_name(self):
         """ Getter name.
 
@@ -342,19 +397,19 @@ class Model(object):
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
 
             if minibatch:  # Train minibatches
-                t_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
+                self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
             else:
-                t_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
+                self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
 
-            metric_model.append_data(t_data_train, epoch, type_set_data="train")
+            metric_model.append_data(self.__current_data_train, epoch, type_set_data="train")
 
             iteration = epoch * n_train
 
             if epoch % validation_jump == 0:
                 # Evaluate test set
-                t_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
-                metric_model.append_data(t_data_test, epoch, type_set_data="test")
-                validation_cost = t_data_test[0]
+                self.__current_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
+                metric_model.append_data(self.__current_data_test, epoch, type_set_data="test")
+                validation_cost = self.get_test_cost()
 
                 if validation_cost < best_validation_cost:
 

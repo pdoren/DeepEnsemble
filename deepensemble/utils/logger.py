@@ -83,7 +83,7 @@ class Logger(Singleton):
         self.toc = time.time()
         self.print(message=" %s - elapsed: %.2f [s]" % (message, self.toc - self.tic), **kwargs)
 
-    def progressbar_training(self, max_epoch, model, **kwargs):
+    def progressbar_training(self, max_epoch, model):
         """ Show a progressbar (it is necessary called for increment counter).
 
         Parameters
@@ -94,14 +94,35 @@ class Logger(Singleton):
         model : Model
             Model used of training.
 
-        kwargs
-
         Returns
         -------
         iterator
             Returns a iterator each time is called.
         """
-        return self.progressbar(it=range(0, max_epoch), prefix="%s - epoch:" % model.get_name(), **kwargs)
+
+        it=range(0, max_epoch)
+        count = len(it)
+        prefix="%s - epoch:" % model.get_name()
+        size = 20
+        def _show(_i):
+            postfix = "| error: %.4f | score: %.4f" % (model.get_train_error(), model.get_train_score())
+            x = int(size * _i / count)
+            if _i == 1:
+                self.tic = time.time()
+            self.toc = time.time()
+            dt = self.toc - self.tic
+            eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
+            s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
+                prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
+            sys.stdout.write(s)
+            sys.stdout.flush()
+
+        _show(0)
+        for i, item in enumerate(it):
+            yield item
+            _show(i + 1)
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
     def progressbar(self, it, prefix="", postfix="", end="", size=20):
         """ Show a progressbar (it is necessary called for increment counter).

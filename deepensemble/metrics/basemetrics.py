@@ -225,14 +225,15 @@ class BaseMetrics:
         int
             Returns index of last item saved from data list.
         """
+        n = 1  # data[0] is the error
         if type_set_data == "train":
-            self.add_point(self._train_cost, epoch, data[0], "train")
+            self.add_point(self._train_cost, epoch, data[n], "train")
         elif type_set_data == "test":
-            self.add_point(self._test_cost, epoch, data[0], "test")
+            self.add_point(self._test_cost, epoch, data[n], "test")
         else:
             raise ValueError("The type set data must be 'train' or 'test'.")
 
-        n = 1
+        n += 1
         for _ in self._model.get_score_function_list():
             if type_set_data == "train":
                 self.add_point(self._train_score, epoch, data[n], "train")
@@ -243,7 +244,7 @@ class BaseMetrics:
             n += 1
         return n
 
-    def plot_cost(self, max_epoch, train_title='Train Cost', log_scale=False):
+    def plot_cost(self, max_epoch, train_title='Train Cost', log_xscale=False, log_yscale=False):
         """ Generate training cost plot.
 
         Parameters
@@ -254,23 +255,28 @@ class BaseMetrics:
         train_title : str
             Plot title of training cost.
 
-        log_scale : bool
-            Flag for show plot in logarithmic scale.
+        log_xscale : bool
+            Flag for show plot x-axis in logarithmic scale.
+
+        log_yscale : bool
+            Flag for show plot y-axis in logarithmic scale.
         """
         f, ax = plt.subplots()
         plt.hold(True)
         self.plot(ax, self._train_cost)
         self.plot(ax, self._test_cost)
         ax.set_title(train_title)
-        if log_scale:
+        if log_xscale:
             ax.set_xscale('log')
+        if log_yscale:
+            ax.set_yscale('log')
         ax.legend()
         ax.set_xlim([0, max_epoch])
         plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
 
-    def plot_score(self, max_epoch, train_title='Train score', log_scale=False, vmin=0, vmax=1):
+    def plot_score(self, max_epoch, train_title='Train score', log_xscale=False, log_yscale=False, vmin=0, vmax=1):
         """ Generate training score plot.
 
         Parameters
@@ -281,8 +287,11 @@ class BaseMetrics:
         train_title : str, "Train score" by default
             Plot title of training score.
 
-        log_scale : bool, False by default
-            Flag for show plot in logarithmic scale.
+        log_xscale : bool
+            Flag for show plot x-axis in logarithmic scale.
+
+        log_yscale : bool
+            Flag for show plot y-axis in logarithmic scale.
 
         vmin : float
             Minimum value shown on the y-axis.
@@ -295,8 +304,10 @@ class BaseMetrics:
         self.plot(ax, self._train_score)
         self.plot(ax, self._test_score)
         ax.set_title(train_title)
-        if log_scale:
+        if log_xscale:
             ax.set_xscale('log')
+        if log_yscale:
+            ax.set_yscale('log')
         ax.legend()
         ax.set_ylim([vmin, vmax])
         ax.set_xlim([0, max_epoch])
