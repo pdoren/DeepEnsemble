@@ -102,6 +102,7 @@ class Model(object):
 
         self.__current_data_train = None
         self.__current_data_test = None
+        self.__binary_classification = False
 
     def get_test_cost(self):
         """ Gets current testing cost.
@@ -312,7 +313,7 @@ class Model(object):
         if self._type_model is 'regressor':
             return output.eval()
         else:
-            return self._target_labels[get_index_label_classes(output)]
+            return self._target_labels[get_index_label_classes(output, self.is_binary_classification())]
 
     def batch_eval(self, n_input, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
@@ -414,7 +415,7 @@ class Model(object):
                 if validation_cost < best_validation_cost:
 
                     if validation_cost < best_validation_cost * improvement_threshold:
-                        patience = max(patience,  iteration * patience_increase)
+                        patience = max(patience, iteration * patience_increase)
 
                     best_params = self._save_params()
                     best_validation_cost = validation_cost
@@ -447,8 +448,16 @@ class Model(object):
 
     def compile(self, fast=True, **kwargs):
         """ Prepare training.
+
+        Raises
+        ------
+        If exist an inconsistency between output and count classes
         """
         Logger().start_measure_time("Start Compile %s" % self._name)
+
+        # review possibles mistakes
+        self.review_is_binary_classifier()
+        self.review_shape_output()
 
         if len(self._score_function_list) <= 0:
             self.set_default_score()
@@ -456,6 +465,23 @@ class Model(object):
         self._compile(fast=fast, **kwargs)
 
         Logger().stop_measure_time()
+
+    def review_shape_output(self):
+        """ Review if this model its dimension output is wrong.
+
+        Raises
+        ------
+        If exist an inconsistency in output.
+        """
+        if self._type_model == "classifier" and len(self._target_labels) != self._n_output and \
+                not self.__binary_classification:  # no is binary classifier
+                raise ValueError("Output net not is equals to count classes.")  # TODO: review translation
+
+    def review_is_binary_classifier(self):
+        """ Review this model is binary classifier
+        """
+        if self._type_model == "classifier" and len(self._target_labels) == 2 and self._n_output == 1:
+            self.__binary_classification = True
 
     def prepare_data(self, _input, _target, test_size=0.3):
         """
@@ -470,22 +496,52 @@ class Model(object):
             cross_validation.train_test_split(_input, _target, test_size=test_size, random_state=0)
 
         if self._type_model is 'classifier':
-            target_train = translate_target(_target=target_train, n_classes=self._n_output,
-                                            target_labels=self._target_labels)
-            target_test = translate_target(_target=target_test, n_classes=self._n_output,
-                                           target_labels=self._target_labels)
+            target_train = self.translate_target(_target=target_train, n_classes=self._n_output)
+            target_test = self.translate_target(_target=target_test, n_classes=self._n_output)
 
         self._share_data_input_train.set_value(input_train)
         self._share_data_target_train.set_value(target_train)
         self._share_data_input_test.set_value(input_test)
         self._share_data_target_test.set_value(target_test)
 
+    def translate_target(self, _target, n_classes):
+        """ Translate target.
+
+        Parameters
+        ----------
+        _target : numpy.array
+            Target sample.
+
+        n_classes : int
+            Number of classes.
+
+        Returns
+        -------
+        numpy.array
+            Returns the '_target' translated according to target labels.
+        """
+        if self.is_binary_classification():
+            return translate_binary_target(_target=_target, target_labels=self._target_labels)
+        else:
+            return translate_target(_target=_target, n_classes=n_classes, target_labels=self._target_labels)
+
+    def is_binary_classification(self):
+        """ Gets True if this model is a binary classifier, False otherwise.
+
+        Returns
+        -------
+        bool
+            Returns True if this model is a binary classifier, False otherwise.
+        """
+        return self.__binary_classification
+
     def set_default_score(self):
         """ Setting default score in model.
         """
         if self._type_model == "classifier":
             self._score_function_list.append(
-                score_accuracy(translate_output(self.output(self.model_input), self._n_output), self.model_target))
+                score_accuracy(translate_output(self.output(self.model_input),
+                                                self._n_output, self.is_binary_classification()), self.model_target))
         else:
             self._score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
 
@@ -500,8 +556,7 @@ class Model(object):
         **kwargs
             Extra parameters of function cost.
         """
-        c = fun_cost(model=self, _input=self.model_input, _target=self.model_target, **kwargs)
-        self._cost_function_list.append(c)
+        self._cost_function_list.append((fun_cost, kwargs))
 
     def append_reg(self, fun_reg, **kwargs):
         """ Adds an extra item in the cost function.
@@ -514,8 +569,7 @@ class Model(object):
         **kwargs
             Extra parameters of regularization function.
         """
-        c = fun_reg(model=self, batch_reg_ratio=self.batch_reg_ratio, **kwargs)
-        self._reg_function_list.append(c)
+        self._reg_function_list.append((fun_reg, kwargs))
 
     def set_update(self, fun_update, **kwargs):
         """ Adds an extra item in the cost function.
@@ -540,11 +594,11 @@ class Model(object):
             Returns cost model include regularization.
         """
         cost = 0.0
-        for c in self._cost_function_list:
-            cost += c
+        for fun_cost, params in self._cost_function_list:
+            cost += fun_cost(model=self, _input=self.model_input, _target=self.model_target, **params)
 
-        for r in self._reg_function_list:
-            cost += r
+        for fun_reg, params in self._reg_function_list:
+            cost += fun_reg(model=self, batch_reg_ratio=self.batch_reg_ratio, **params)
 
         return cost
 

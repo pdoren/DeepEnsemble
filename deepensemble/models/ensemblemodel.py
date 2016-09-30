@@ -200,6 +200,7 @@ class EnsembleModel(Model):
         if not fast:  # compute all the scores and costs of the models in ensemble
             sub_result = []
             for model in self.__list_models_ensemble:
+                model.review_is_binary_classifier()  # update if is binary classifier
                 model.set_default_score()
                 cost_model = model.get_cost_functions()
                 score_model = model.get_score_functions()
@@ -208,6 +209,7 @@ class EnsembleModel(Model):
             result = [error, cost / m, score] + sub_result
         else:  # compute only cost and score of ensemble
             for model in self.__list_models_ensemble:
+                model.review_is_binary_classifier()  # update if is binary classifier
                 cost_model = model.get_cost_functions()
                 cost += cost_model
             result = [error, cost / m, score]

@@ -147,4 +147,6 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return model.get_target_labels()[get_index_label_classes(model.output(_input))]
+        return model.get_target_labels()[
+            get_index_label_classes(model.output(_input), model.is_binary_classification())
+        ]

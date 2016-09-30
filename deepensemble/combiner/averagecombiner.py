@@ -71,4 +71,8 @@ class PluralityVotingCombiner(AverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return model.get_target_labels()[get_index_label_classes(model.output(_input))]
+        o = model.output(_input).eval()
+        index = get_index_label_classes(o, model.is_binary_classification())
+        return model.get_target_labels()[
+            index
+        ]
