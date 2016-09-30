@@ -104,6 +104,16 @@ class Model(object):
         self.__current_data_test = None
         self.__binary_classification = False
 
+    def get_dim_output(self):
+        """ Gets dimension output model.
+
+        Returns
+        -------
+        int
+            Returns dimension output.
+        """
+        return self._n_output
+
     def get_test_cost(self):
         """ Gets current testing cost.
 
@@ -397,6 +407,8 @@ class Model(object):
 
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
 
+            self.prepare_data(_input, _target)
+
             if minibatch:  # Train minibatches
                 self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
             else:
@@ -493,7 +505,7 @@ class Model(object):
         test_size
         """
         input_train, input_test, target_train, target_test = \
-            cross_validation.train_test_split(_input, _target, test_size=test_size, random_state=0)
+            cross_validation.train_test_split(_input, _target, test_size=test_size)
 
         if self._type_model is 'classifier':
             target_train = self.translate_target(_target=target_train, n_classes=self._n_output)

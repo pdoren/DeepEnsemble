@@ -5,6 +5,8 @@ __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'kullback_leibler', 'kullback_leibler_generalized',
            'test_cost']
 
+sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
+
 
 def kullback_leibler_generalized(model, _input, _target):
     """ Kullback Leilbler generalized divergence.
@@ -124,7 +126,8 @@ def mcc(model, _input, _target, s):
         Return MCC.
     """
     e = model.error(_input, _target)
-    return -T.mean(T.exp(-0.5 * T.power(e, 2.0) / s ** 2))
+    s = T.std(_target) * s
+    return -T.mean(T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s))
 
 
 def mee(model, _input, _target, s):
@@ -152,6 +155,7 @@ def mee(model, _input, _target, s):
     e = model.error(_input, _target)
     de = T.tile(e, (e.shape[0], 1, 1))
     de = de - T.transpose(de, axes=(1, 0, 2))
+    s = T.std(_target) * s
     return -T.log(T.mean(T.exp(-0.5 * T.power(de, 2.0) / s ** 2)))
 
 
@@ -249,7 +253,6 @@ def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
     """
     sum_err = 0.0
     output_current_model = model.output(_input)
-    sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
     for model_j in ensemble.get_models():
         if model_j != model:
             e = model_j.output(_input) - output_current_model
@@ -282,16 +285,16 @@ def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
     theano.tensor.matrix
         Return Negative Correntropy.
     """
-    d = T.constant(ensemble.n_output)
+    d = T.constant(ensemble.get_dim_output())
     N = T.sum(T.ones_like(_target)) / d
     e = model.output(_input) - ensemble.output(_input)
     k = T.power(T.constant(4.0) / (N * (T.constant(2.0) * d + T.constant(1.0))), T.constant(1.0) / d + T.constant(4.0))
     s = T.std(_target) * k
-    sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
     return T.mean(
         T.constant(-lamb_corr) * T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s))
 
 
+# noinspection PyUnusedLocal
 def test_cost(model, _input, _target, ensemble, lamb=10):
     params_model = [i for i in model.get_params()]
     sum_d = 0.0

@@ -38,6 +38,7 @@ class Logger(Singleton):
     buffer : str
         Buffer for save all print text.
     """
+
     def __init__(self):
         self.log_activate = True
         self.tic = 0
@@ -100,10 +101,11 @@ class Logger(Singleton):
             Returns a iterator each time is called.
         """
 
-        it=range(0, max_epoch)
+        it = range(0, max_epoch)
         count = len(it)
-        prefix="%s - epoch:" % model.get_name()
+        prefix = "%s - epoch:" % model.get_name()
         size = 20
+
         def _show(_i):
             postfix = "| error: %.4f | score: %.4f" % (model.get_train_error(), model.get_train_score())
             x = int(size * _i / count)

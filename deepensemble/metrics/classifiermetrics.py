@@ -164,13 +164,13 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         metric
             Diversity metric.
 
-        list_target : list
+        list_target : list or array
             List of target.
 
-        list_c1 : list
+        list_c1 : list or array
             Prediction first model.
 
-        list_c2 : list
+        list_c2 : list or array
             Prediction second model.
 
         Returns

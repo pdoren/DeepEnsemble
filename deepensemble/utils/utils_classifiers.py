@@ -3,7 +3,7 @@ import theano.tensor as T
 from theano.tensor.extra_ops import to_one_hot
 import numpy as np
 
-__all__ = ['translate_target', 'translate_binary_target','translate_output', 'get_index_label_classes']
+__all__ = ['translate_target', 'translate_binary_target', 'translate_output', 'get_index_label_classes']
 
 
 def translate_target(_target, n_classes, target_labels):
@@ -31,6 +31,7 @@ def translate_target(_target, n_classes, target_labels):
         target[i, list(target_labels).index(label)] = 1.0
     return target
 
+
 def translate_binary_target(_target, target_labels):
     """ Gets a vector with binary classes: +1 or -1.
 
@@ -55,6 +56,7 @@ def translate_binary_target(_target, target_labels):
     for i, label in enumerate(_target):
         target[i] = dict_value[list(target_labels).index(label)]
     return target
+
 
 def get_index_label_classes(_output, is_binary_classification=False):
     """ Gets index labels.

@@ -211,7 +211,7 @@ class BaseMetrics:
 
         Parameters
         ----------
-        data : list
+        data : list or array
             List of data.
 
         epoch : int
@@ -397,7 +397,7 @@ class BaseMetrics:
                 x = np.hstack((x, x1))
                 y = np.hstack((y, y1))
 
-            n = m
+            n = max(n, m)
         return x, y
 
     @staticmethod
@@ -459,7 +459,7 @@ class EnsembleMetrics(BaseMetrics):
 
         Parameters
         ----------
-        data : list
+        data : list or array
             List of data.
 
         epoch : int
