@@ -3,6 +3,7 @@ from theano import function
 
 from .model import Model
 from ..metrics import *
+from ..utils import *
 
 __all__ = ['Sequential']
 
@@ -48,7 +49,7 @@ class Sequential(Model):
         BaseMetrics
             Returns a metric that will depend on type of model.
         """
-        if self.get_type_model() == "classifier":
+        if self.is_classifier():
             return ClassifierMetrics(self)
         else:
             return RegressionMetrics(self)
@@ -73,13 +74,17 @@ class Sequential(Model):
         new_layer.initialize_parameters()
         self._params += new_layer.get_parameters()
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Output of sequential model.
 
         Parameters
         ----------
         _input: theano.tensor.matrix or numpy.array
             Input sample.
+
+        prob : bool
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------
@@ -90,15 +95,21 @@ class Sequential(Model):
             if self._output is None:
                 for layer in self.__layers:
                     _input = layer.output(_input)
+
                 self._output = _input
 
-            return self._output
+                if not prob and self.is_classifier():
+                    self._output = translate_output(self._output, self.get_fan_out(), self.is_binary_classification())
+
         else:
             for layer in self.__layers:
                 _input = layer.output(_input)
             self._output = _input
 
-            return _input
+            if not prob and self.is_classifier():
+                self._output = get_index_label_classes(self._output, self.is_binary_classification())
+
+        return self._output
 
     def reset(self):
         """ Reset parameters

@@ -15,7 +15,7 @@ class AverageCombiner(ModelCombiner):
         super(AverageCombiner, self).__init__(**kwargs)
 
     # noinspection PyMethodMayBeStatic
-    def output(self, ensemble_model, _input):
+    def output(self, ensemble_model, _input, prob):
         """ Average the output of the ensemble's models.
 
         Parameters
@@ -26,6 +26,9 @@ class AverageCombiner(ModelCombiner):
         _input : theano.tensor.matrix or numpy.array
             Input sample.
 
+        prob : bool
+            True if the output is probability, False otherwise.
+
         Returns
         -------
         numpy.array
@@ -33,7 +36,7 @@ class AverageCombiner(ModelCombiner):
         """
         output = 0.0
         for model in ensemble_model.get_models():
-            output += model.output(_input)
+            output += model.output(_input, prob)
         n = len(ensemble_model.get_models())
         return output / n
 

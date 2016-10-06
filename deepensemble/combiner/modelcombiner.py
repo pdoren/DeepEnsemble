@@ -47,7 +47,7 @@ class ModelCombiner(object):
         """
         return self._params
 
-    def output(self, ensemble_model, _input):
+    def output(self, ensemble_model, _input, prob):
         """ Mixing the output or prediction of ensemble's models.
 
         Parameters
@@ -57,6 +57,9 @@ class ModelCombiner(object):
 
         _input : theano.tensor.matrix or numpy.array
             Input sample.
+
+        prob : bool
+            True if the output is probability, False otherwise.
 
         Returns
         -------

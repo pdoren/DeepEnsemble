@@ -44,7 +44,7 @@ class WeightAverageCombiner(ModelCombiner):
         self._params = shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True)
 
     # noinspection PyMethodMayBeStatic
-    def output(self, ensemble_model, _input):
+    def output(self, ensemble_model, _input, prob):
         """ Average the output of the ensemble's models.
 
         Parameters
@@ -55,6 +55,9 @@ class WeightAverageCombiner(ModelCombiner):
         _input : theano.tensor.matrix or numpy.array
             Input sample.
 
+        prob : bool
+            True if the output is probability, False otherwise.
+
         Returns
         -------
         numpy.array
@@ -63,11 +66,11 @@ class WeightAverageCombiner(ModelCombiner):
         output = 0.0
         if _input == ensemble_model.model_input:
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input) * self._params[i, 0]  # index TensorVariable
+                output += model.output(_input, prob) * self._params[i, 0]  # index TensorVariable
         else:
             params = self._params.get_value()
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input) * params[i]
+                output += model.output(_input, prob) * params[i]
         return output
 
     def update_parameters(self, ensemble_model, _input, _target):

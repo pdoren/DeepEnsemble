@@ -261,6 +261,9 @@ class Model(object):
         """
         raise NotImplementedError
 
+    def is_classifier(self):
+        return self.__type_model == "classifier"
+
     def error(self, _input, _target):
         """ Compute the error prediction of model.
 
@@ -307,7 +310,7 @@ class Model(object):
             return (self.get_input_shape() == other.get_input_shape()) and \
                    (self.get_output_shape() == other.get_output_shape()) and \
                    (self.get_type_model() == other.get_type_model()) and \
-                   (self.get_type_model() == "regressor" or
+                   (not self.is_classifier() or
                     (list(self.get_target_labels() == list(other.get_target_labels()))))
         else:
             return False
@@ -337,7 +340,7 @@ class Model(object):
         """
         self._output = None
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Output model
 
         Parameters
@@ -345,10 +348,13 @@ class Model(object):
         _input : theano.tensor.matrix
             Input sample.
 
+        prob : bool
+            True if the output is probability, False otherwise.
+
         Returns
         -------
         theano.tensor.matrix or numpy.array
-            Prediction of model.
+            Raw output of model.
         """
         raise NotImplementedError
 
@@ -365,11 +371,12 @@ class Model(object):
         numpy.array
             Return the prediction of model.
         """
-        output = self.output(_input)
-        if self.__type_model == "regressor":
-            return output.eval()
+        output = self.output(_input, prob=False)
+
+        if self.is_classifier():
+            return np.squeeze(self.__target_labels[output])
         else:
-            return np.squeeze(self.__target_labels[get_index_label_classes(output, self.is_binary_classification())])
+            return output.eval()
 
     def batch_eval(self, n_input, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
@@ -531,14 +538,14 @@ class Model(object):
         ------
         If exist an inconsistency in output.
         """
-        if self.__type_model == "classifier" and len(self.__target_labels) != self.get_fan_out() and \
+        if self.is_classifier() and len(self.__target_labels) != self.get_fan_out() and \
                 not self.__binary_classification:  # no is binary classifier
                 raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
 
     def review_is_binary_classifier(self):
         """ Review this model is binary classifier
         """
-        if self.__type_model == "classifier" and len(self.__target_labels) == 2 and self.get_fan_out() == 1:
+        if self.is_classifier() and len(self.__target_labels) == 2 and self.get_fan_out() == 1:
             self.__binary_classification = True
 
     def prepare_data(self, _input, _target, test_size=0.3):
@@ -593,7 +600,7 @@ class Model(object):
     def set_default_score(self):
         """ Setting default score in model.
         """
-        if self.__type_model == "classifier":
+        if self.is_classifier():
             self._score_function_list.append(
                 score_accuracy(translate_output(self.output(self.model_input),
                                                 self.get_fan_out(),

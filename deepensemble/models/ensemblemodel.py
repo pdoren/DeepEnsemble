@@ -55,7 +55,7 @@ class EnsembleModel(Model):
         --------
         FactoryMetrics
         """
-        if self.get_type_model() == "classifier":
+        if self.is_classifier():
             return EnsembleClassifierMetrics(self)
         else:
             return EnsembleRegressionMetrics(self)
@@ -128,13 +128,16 @@ class EnsembleModel(Model):
         for model in self.__list_models_ensemble:
             model.reset()
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Output of ensemble model.
 
         Parameters
         ----------
         _input : theano.tensor.matrix or numpy.array
             Input sample.
+
+        prob : bool
+            True if the output is probability, False otherwise.
 
         Returns
         -------
@@ -143,10 +146,10 @@ class EnsembleModel(Model):
         """
         if _input == self.model_input:
             if self._output is None:
-                self._output = self.__combiner.output(self, _input)
+                self._output = self.__combiner.output(self, _input, prob)
             return self._output
         else:
-            return self.__combiner.output(self, _input)
+            return self.__combiner.output(self, _input, prob)
 
     def predict(self, _input):
         """ Compute the prediction of model.
