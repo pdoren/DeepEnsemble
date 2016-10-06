@@ -2,23 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/deepensemble/layers/conv.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/deepensemble/layers/pool.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/mnist/test_conv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/modelcombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/modelcombiner.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/layers/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/dense.py" afterPath="$PROJECT_DIR$/deepensemble/layers/dense.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/layer.py" afterPath="$PROJECT_DIR$/deepensemble/layers/layer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" afterPath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/sequential.py" afterPath="$PROJECT_DIR$/deepensemble/models/sequential.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/boundary/main.ipynb" afterPath="$PROJECT_DIR$/examples/boundary/main.ipynb" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,7 +16,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1475728486155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1475729264944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$logger.coverage" NAME="logger Coverage Results" MODIFIED="1474585451829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/utils" />
     <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1474220208995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_conv.coverage" NAME="test_conv Coverage Results" MODIFIED="1475453929767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/mnist" />
@@ -50,8 +35,8 @@
       <file leaf-file-name="test_australian_credit_card.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/test_australian_credit_card.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="62" column="6" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="6" />
+            <state relative-caret-position="330">
+              <caret line="64" column="17" selection-start-line="64" selection-start-column="17" selection-end-line="64" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -60,8 +45,8 @@
       <file leaf-file-name="weightaveragecombiner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="138" column="29" selection-start-line="138" selection-start-column="29" selection-end-line="138" selection-end-column="29" />
+            <state relative-caret-position="1411">
+              <caret line="154" column="19" selection-start-line="154" selection-start-column="19" selection-end-line="154" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -109,7 +94,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="139">
@@ -119,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="averagecombiner.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="averagecombiner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+            <state relative-caret-position="361">
+              <caret line="95" column="21" selection-start-line="74" selection-start-column="8" selection-end-line="95" selection-end-column="21" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -144,8 +129,8 @@
       <file leaf-file-name="ensemblemodel.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+            <state relative-caret-position="135">
+              <caret line="67" column="32" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -198,7 +183,6 @@
         <option value="$PROJECT_DIR$/docs/conf.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
-        <option value="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/logger.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" />
@@ -218,6 +202,7 @@
         <option value="$PROJECT_DIR$/deepensemble/models/model.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py" />
         <option value="$PROJECT_DIR$/test/test_australian_credit_card.py" />
+        <option value="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
       </list>
     </option>
   </component>
@@ -320,6 +305,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="deepensemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DeepEnsemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DeepEnsemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="deepensemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -813,13 +816,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00026" summary="Changed name main package in setup.py">
-      <created>1473622737115</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1473622737115</updated>
-    </task>
     <task id="LOCAL-00027" summary="Fixed error setup.py (ReadTheDocs).">
       <created>1473622944737</created>
       <option name="number" value="00027" />
@@ -1156,7 +1152,14 @@
       <option name="project" value="LOCAL" />
       <updated>1475251499107</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Changed definition Plurality Voting Combinator (error of concept).">
+      <created>1475728743284</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1475728743284</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1233,7 +1236,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Deleted wiki git in PyCharm Proyect." />
     <MESSAGE value="Fixed error in Iris Example (file ipynb)." />
     <MESSAGE value="Fixed error in basemetrics (function append_metrics)." />
     <MESSAGE value="Changed some docstrig." />
@@ -1258,7 +1260,8 @@
     <MESSAGE value="Added error to output training." />
     <MESSAGE value="Added binary classification." />
     <MESSAGE value="Fixed some warning PEP8." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some warning PEP8." />
+    <MESSAGE value="Changed definition Plurality Voting Combinator (error of concept)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed definition Plurality Voting Combinator (error of concept)." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1562,30 +1565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="559" column="0" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="96" column="14" selection-start-line="96" selection-start-column="14" selection-end-line="96" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/layers/layer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-444">
@@ -1604,6 +1583,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="95" column="21" selection-start-line="74" selection-start-column="8" selection-end-line="95" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_australian_credit_card.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="64" column="17" selection-start-line="64" selection-start-column="17" selection-end-line="64" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="67" column="32" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="96" column="14" selection-start-line="96" selection-start-column="14" selection-end-line="96" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1411">
+          <caret line="154" column="19" selection-start-line="154" selection-start-column="19" selection-end-line="154" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/update_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -1612,29 +1633,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_australian_credit_card.py">
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="62" column="6" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="6" />
+        <state relative-caret-position="139">
+          <caret line="559" column="0" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="138" column="29" selection-start-line="138" selection-start-column="29" selection-end-line="138" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

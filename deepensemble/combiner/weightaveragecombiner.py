@@ -147,6 +147,25 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return ensemble_model.get_target_labels()[
-            get_index_label_classes(ensemble_model.output(_input), ensemble_model.is_binary_classification())
-        ]
+        voting = [{} for i in range(_input.shape[0])]
+        for i, model in enumerate(ensemble_model.get_models()):
+            votes = model.predict(_input)
+            WeightedVotingCombiner._vote(voting, votes, self._params[i].eval())
+
+        return WeightedVotingCombiner._result(voting)
+
+    @staticmethod
+    def _vote(voting, votes, weight):
+        for i, vote in enumerate(votes):
+            if vote in voting[i]:
+                (voting[i])[vote] += weight
+            else:
+                (voting[i])[vote] = weight
+
+    @staticmethod
+    def _result(voting):
+        result = []
+        for votes in voting:
+            result.append(max(votes, key=lambda key: votes[key]))
+
+        return result
