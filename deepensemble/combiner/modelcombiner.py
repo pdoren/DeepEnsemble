@@ -65,12 +65,12 @@ class ModelCombiner(object):
         """
         raise NotImplementedError
 
-    def predict(self, model, _input):
+    def predict(self, ensemble_model, _input):
         """ Compute the prediction of model.
 
         Parameters
         ----------
-        model : EnsembleModel
+        ensemble_model : EnsembleModel
             Ensemble model where gets the output.
 
         _input : theano.tensor.matrix or numpy.array
@@ -81,8 +81,7 @@ class ModelCombiner(object):
         numpy.array
             Return the prediction of model.
         """
-        output = model.output(_input)
-        return output.eval()
+        return ensemble_model.predict(_input)
 
     def update_parameters(self, ensemble_model, _input, _target):
         """ Update internal parameters.

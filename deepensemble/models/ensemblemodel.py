@@ -27,7 +27,7 @@ class EnsembleModel(Model):
     """
 
     def __init__(self, name="ensemble"):
-        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name, n_input=0, n_output=0)
+        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name, input_shape=0, output_shape=0)
         self.__combiner = None
         self.__list_models_ensemble = []
         self.__list_cost_ensemble = []
@@ -55,7 +55,7 @@ class EnsembleModel(Model):
         --------
         FactoryMetrics
         """
-        if self._type_model == "classifier":
+        if self.get_type_model() == "classifier":
             return EnsembleClassifierMetrics(self)
         else:
             return EnsembleRegressionMetrics(self)
@@ -73,11 +73,11 @@ class EnsembleModel(Model):
         ValueError
             If the combiner method is not same type (regressor or classifier).
         """
-        if combiner.get_type_model() is self._type_model:
+        if combiner.get_type_model() is self.get_type_model():
             self.__combiner = combiner
             self._params[0] = combiner.get_params()
         else:
-            raise ValueError("Combiner method must be same type, in this case %s." % self._type_model)
+            raise ValueError("Combiner method must be same type, in this case %s." % self.__type_model)
 
     def append_model(self, new_model):
         """ Add model to ensemble.
@@ -92,22 +92,17 @@ class EnsembleModel(Model):
         If the model is the different type of the current list the models, it is generated an error.
         """
         if len(self.__list_models_ensemble) <= 0:
-            # copy data model
-            self._n_input = new_model._n_input
-            self._n_output = new_model._n_output
-            self._type_model = new_model._type_model
-            self._target_labels = new_model._target_labels
-
+            self.copy_kind_of_model(new_model)  # copy model
             self.__list_models_ensemble.append(new_model)
         elif self.__list_models_ensemble[0] == new_model:
             self.__list_models_ensemble.append(new_model)
         else:
             str_error = ''
-            if self.__list_models_ensemble[0].model.n_input != new_model._n_input:
+            if self.__list_models_ensemble[0].model.get_input_shape() != new_model.get_input_shape():
                 str_error += 'different input, '
-            if self.__list_models_ensemble[0].model.n_output != new_model._n_output:
+            if self.__list_models_ensemble[0].model.get_output_shape() != new_model.get_output_shape():
                 str_error += 'different output, '
-            if self.__list_models_ensemble[0].model.type_model is not new_model._type_model:
+            if self.__list_models_ensemble[0].model.type_model != new_model.get_type_model():
                 str_error += 'different type learner, '
             if self.__list_models_ensemble[0].model.get_target_labels() is not new_model.get_target_labels():
                 str_error += 'different target labels, '

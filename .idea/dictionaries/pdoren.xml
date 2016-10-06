@@ -6,6 +6,8 @@
       <w>adadelta</w>
       <w>adagrad</w>
       <w>cmap</w>
+      <w>conv</w>
+      <w>conved</w>
       <w>correntropy</w>
       <w>deepensemble</w>
       <w>duchi</w>
@@ -34,15 +36,21 @@
       <w>proc</w>
       <w>regressor</w>
       <w>regularizer</w>
+      <w>relu</w>
       <w>scikit</w>
       <w>silverman</w>
       <w>skalak</w>
+      <w>softmax</w>
+      <w>softplus</w>
       <w>spech</w>
       <w>subgradient</w>
+      <w>tanh</w>
       <w>theano</w>
       <w>upcasting</w>
       <w>vmax</w>
       <w>vmin</w>
+      <w>xscale</w>
+      <w>yscale</w>
       <w>zeiler</w>
       <w>zhou</w>
     </words>

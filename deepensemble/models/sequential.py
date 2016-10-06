@@ -48,7 +48,7 @@ class Sequential(Model):
         BaseMetrics
             Returns a metric that will depend on type of model.
         """
-        if self._type_model == "classifier":
+        if self.get_type_model() == "classifier":
             return ClassifierMetrics(self)
         else:
             return RegressionMetrics(self)
@@ -63,12 +63,13 @@ class Sequential(Model):
         """
         n = len(self.__layers)
         if n <= 0:
-            self._n_input = new_layer.get_n_inputs()
+            self.set_input_shape(shape=new_layer.get_input_shape())
         else:
-            new_layer.set_n_inputs(self.__layers[n - 1].get_n_outputs())
+            new_layer.set_input_shape(self.__layers[n - 1].get_output_shape())
 
         self.__layers.append(new_layer)
-        self._n_output = new_layer.get_n_outputs()
+        self.set_output_shape(shape=(new_layer.get_output_shape()))
+
         new_layer.initialize_parameters()
         self._params += new_layer.get_parameters()
 

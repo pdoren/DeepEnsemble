@@ -131,12 +131,12 @@ class WeightedVotingCombiner(WeightAverageCombiner):
     def __init__(self, n_models):
         super(WeightedVotingCombiner, self).__init__(n_models=n_models, type_model="classifier")
 
-    def predict(self, model, _input):
+    def predict(self, ensemble_model, _input):
         """ Returns the class with more votes.
 
         Parameters
         ----------
-        model : EnsembleModel
+        ensemble_model : EnsembleModel
             Ensemble model where gets the output.
 
         _input : theano.tensor.matrix or numpy.array
@@ -147,6 +147,6 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        return model.get_target_labels()[
-            get_index_label_classes(model.output(_input), model.is_binary_classification())
+        return ensemble_model.get_target_labels()[
+            get_index_label_classes(ensemble_model.output(_input), ensemble_model.is_binary_classification())
         ]

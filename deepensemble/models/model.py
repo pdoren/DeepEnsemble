@@ -15,10 +15,10 @@ class Model(object):
 
     Attributes
     ----------
-    n_input : int
+    n_input : tuple
         Number of inputs of the model.
 
-    n_output : int
+    n_output : tuple
         Number of output of the model.
 
     type_model : str
@@ -75,11 +75,11 @@ class Model(object):
     model_target = T.matrix('model_target')  # Attribute for save target model.
     batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # Attribute related with regularization
 
-    def __init__(self, target_labels, type_model, name="model", n_input=None, n_output=None):
-        self._n_input = n_input
-        self._n_output = n_output
-        self._type_model = type_model
-        self._target_labels = np.array(target_labels)
+    def __init__(self, target_labels, type_model, name="model", input_shape=None, output_shape=None):
+        self.__input_shape = input_shape
+        self.__output_shape = output_shape
+        self.__type_model = type_model
+        self.__target_labels = np.array(target_labels)
         self._params = []
 
         self._cost_function_list = []
@@ -104,15 +104,59 @@ class Model(object):
         self.__current_data_test = None
         self.__binary_classification = False
 
-    def get_dim_output(self):
-        """ Gets dimension output model.
+    def get_input_shape(self):
+        return self.__input_shape
+
+    def set_input_shape(self, shape):
+        self.__input_shape = shape
+
+    def get_output_shape(self):
+        return self.__output_shape
+
+    def set_output_shape(self, shape):
+        self.__output_shape = shape
+
+    def get_type_model(self):
+        return self.__type_model
+
+    def get_target_labels(self):
+        return self.__target_labels
+
+    def copy_kind_of_model(self, model):
+        self.set_input_shape(model.get_input_shape())
+        self.set_output_shape(model.get_output_shape())
+        self.__type_model = model.get_type_model()
+        self.__target_labels = model.get_target_labels()
+
+    def get_dim_input(self):
+        """ Gets input dimension.
 
         Returns
         -------
         int
             Returns dimension output.
         """
-        return self._n_output
+        return len(self.__input_shape)
+
+    def get_dim_output(self):
+        """ Gets output dimension.
+
+        Returns
+        -------
+        int
+            Returns dimension output.
+        """
+        return len(self.__output_shape)
+
+    def get_fan_out(self):
+        """ Gets number of output.
+
+        Returns
+        -------
+        int
+            Returns number of output.
+        """
+        return int(np.prod(self.__output_shape))
 
     def get_test_cost(self):
         """ Gets current testing cost.
@@ -204,7 +248,7 @@ class Model(object):
         list
             Returns one list with target labels of this model.
         """
-        return self._target_labels
+        return self.__target_labels
 
     def get_new_metric(self):
         """ Get metrics for respective model.
@@ -260,9 +304,11 @@ class Model(object):
             Return True if the 'other' model has the same form, False otherwise.
         """
         if isinstance(other, Model):
-            return (self._n_input == other._n_input) and (self._n_output == other._n_output) and (
-                self._type_model is other._type_model) and (
-                       self._type_model == "regressor" or (list(self._target_labels) == list(other._target_labels)))
+            return (self.get_input_shape() == other.get_input_shape()) and \
+                   (self.get_output_shape() == other.get_output_shape()) and \
+                   (self.get_type_model() == other.get_type_model()) and \
+                   (self.get_type_model() == "regressor" or
+                    (list(self.get_target_labels() == list(other.get_target_labels()))))
         else:
             return False
 
@@ -320,10 +366,10 @@ class Model(object):
             Return the prediction of model.
         """
         output = self.output(_input)
-        if self._type_model is 'regressor':
+        if self.__type_model == "regressor":
             return output.eval()
         else:
-            return self._target_labels[get_index_label_classes(output, self.is_binary_classification())]
+            return np.squeeze(self.__target_labels[get_index_label_classes(output, self.is_binary_classification())])
 
     def batch_eval(self, n_input, batch_size=32, train=True):
         """ Evaluate cost and score in mini batch.
@@ -485,14 +531,14 @@ class Model(object):
         ------
         If exist an inconsistency in output.
         """
-        if self._type_model == "classifier" and len(self._target_labels) != self._n_output and \
+        if self.__type_model == "classifier" and len(self.__target_labels) != self.get_fan_out() and \
                 not self.__binary_classification:  # no is binary classifier
-                raise ValueError("Output net not is equals to count classes.")  # TODO: review translation
+                raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
 
     def review_is_binary_classifier(self):
         """ Review this model is binary classifier
         """
-        if self._type_model == "classifier" and len(self._target_labels) == 2 and self._n_output == 1:
+        if self.__type_model == "classifier" and len(self.__target_labels) == 2 and self.get_fan_out() == 1:
             self.__binary_classification = True
 
     def prepare_data(self, _input, _target, test_size=0.3):
@@ -507,16 +553,16 @@ class Model(object):
         input_train, input_test, target_train, target_test = \
             cross_validation.train_test_split(_input, _target, test_size=test_size)
 
-        if self._type_model is 'classifier':
-            target_train = self.translate_target(_target=target_train, n_classes=self._n_output)
-            target_test = self.translate_target(_target=target_test, n_classes=self._n_output)
+        if self.__type_model == 'classifier':
+            target_train = self.translate_target(_target=target_train)
+            target_test = self.translate_target(_target=target_test)
 
         self._share_data_input_train.set_value(input_train)
         self._share_data_target_train.set_value(target_train)
         self._share_data_input_test.set_value(input_test)
         self._share_data_target_test.set_value(target_test)
 
-    def translate_target(self, _target, n_classes):
+    def translate_target(self, _target):
         """ Translate target.
 
         Parameters
@@ -524,18 +570,15 @@ class Model(object):
         _target : numpy.array
             Target sample.
 
-        n_classes : int
-            Number of classes.
-
         Returns
         -------
         numpy.array
             Returns the '_target' translated according to target labels.
         """
         if self.is_binary_classification():
-            return translate_binary_target(_target=_target, target_labels=self._target_labels)
+            return translate_binary_target(_target=_target, target_labels=self.__target_labels)
         else:
-            return translate_target(_target=_target, n_classes=n_classes, target_labels=self._target_labels)
+            return translate_target(_target=_target, target_labels=self.__target_labels)
 
     def is_binary_classification(self):
         """ Gets True if this model is a binary classifier, False otherwise.
@@ -550,10 +593,11 @@ class Model(object):
     def set_default_score(self):
         """ Setting default score in model.
         """
-        if self._type_model == "classifier":
+        if self.__type_model == "classifier":
             self._score_function_list.append(
                 score_accuracy(translate_output(self.output(self.model_input),
-                                                self._n_output, self.is_binary_classification()), self.model_target))
+                                                self.get_fan_out(),
+                                                self.is_binary_classification()), self.model_target))
         else:
             self._score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
 

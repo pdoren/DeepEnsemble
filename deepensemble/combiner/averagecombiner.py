@@ -1,4 +1,5 @@
 from .modelcombiner import ModelCombiner
+import numpy as np
 from ..utils import get_index_label_classes
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
@@ -55,12 +56,12 @@ class PluralityVotingCombiner(AverageCombiner):
     def __init__(self):
         super(PluralityVotingCombiner, self).__init__(type_model="classifier")
 
-    def predict(self, model, _input):
+    def predict(self, ensemble_model, _input):
         """ Returns the class with more votes.
 
         Parameters
         ----------
-        model : EnsembleModel
+        ensemble_model : EnsembleModel
             Ensemble model where gets the output.
 
         _input : theano.tensor.matrix or numpy.array
@@ -71,8 +72,25 @@ class PluralityVotingCombiner(AverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        o = model.output(_input).eval()
-        index = get_index_label_classes(o, model.is_binary_classification())
-        return model.get_target_labels()[
-            index
-        ]
+        voting = [{} for i in range(_input.shape[0])]
+        for model in ensemble_model.get_models():
+            votes = model.predict(_input)
+            PluralityVotingCombiner._vote(voting, votes)
+
+        return PluralityVotingCombiner._result(voting)
+
+    @staticmethod
+    def _vote(voting, votes):
+        for i, vote in enumerate(votes):
+            if vote in voting[i]:
+                (voting[i])[vote] += 1
+            else:
+                (voting[i])[vote] = 1
+
+    @staticmethod
+    def _result(voting):
+        result = []
+        for votes in voting:
+            result.append(max(votes, key=lambda key: votes[key]))
+
+        return result
