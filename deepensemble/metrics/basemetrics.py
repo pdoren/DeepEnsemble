@@ -302,7 +302,6 @@ class BaseMetrics:
             ax.set_yscale('log')
         ax.legend(loc='best')
         ax.set_xlim([0, max_epoch])
-        plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
 
@@ -346,7 +345,7 @@ class BaseMetrics:
             plt.grid()
             plt.xlabel('epoch')
 
-    def plot_scores(self, max_epoch, title='Train score', log_xscale=False, log_yscale=False, vmin=0, vmax=1):
+    def plot_scores(self, max_epoch, title='Train score', log_xscale=False, log_yscale=False):
         """ Generate training score plot.
 
         Parameters
@@ -362,12 +361,6 @@ class BaseMetrics:
 
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
-
-        vmin : float
-            Minimum value shown on the y-axis.
-
-        vmax : float
-            Maximum value shown on the y-axis.
         """
         data_train = self.get_scores('train')
         data_test = self.get_scores('test')
@@ -390,7 +383,6 @@ class BaseMetrics:
             ax.legend(loc='best')
             # ax.set_ylim([vmin, vmax])
             ax.set_xlim([0, max_epoch])
-            plt.grid()
             plt.xlabel('epoch')
 
 
@@ -463,7 +455,9 @@ class BaseMetrics:
             x, y = BaseMetrics._get_data_per_col(dps)
             _x = x[:, 0]
             _y = np.nanmean(y, axis=1)
-            ax.plot(_x, _y, label='%s %s' % (label_prefix, label))
+            _y_std = np.nanstd(y, axis=1)
+            p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3)
+            ax.fill_between(_x, _y - _y_std, _y + _y_std, alpha=0.1, color=p[0].get_color())
 
     @staticmethod
     def _get_data_per_col(dps):
