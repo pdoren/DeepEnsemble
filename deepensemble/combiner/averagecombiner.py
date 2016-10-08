@@ -1,4 +1,6 @@
+import theano.tensor as T
 from .modelcombiner import ModelCombiner
+from ..utils import *
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
 
@@ -33,17 +35,14 @@ class AverageCombiner(ModelCombiner):
         numpy.array
             Returns the average of the output models.
         """
-        output = 0.0
-        for model in ensemble_model.get_models():
-            output += model.output(_input, prob)
-        n = len(ensemble_model.get_models())
-        return output / n
+        output = [model.output(_input, prob) for model in ensemble_model.get_models()]
+        return sum(output) / len(ensemble_model.get_models())
 
 
 #
 # For Classification
 #
-class PluralityVotingCombiner(AverageCombiner):
+class PluralityVotingCombiner(ModelCombiner):
     """ Combiner classifier method where each model in ensemble votes by one class and the class with more votes win.
 
     Plurality voting takes the class label which receives the largest number of votes as the final winner.
@@ -57,6 +56,33 @@ class PluralityVotingCombiner(AverageCombiner):
     """
     def __init__(self):
         super(PluralityVotingCombiner, self).__init__(type_model="classifier")
+
+    # noinspection PyMethodMayBeStatic
+    def output(self, ensemble_model, _input, prob):
+        """ Average the output of the ensemble's models.
+
+        Parameters
+        ----------
+        ensemble_model : EnsembleModel
+            Ensemble Model it uses for get ensemble's models.
+
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        prob : bool
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
+
+        Returns
+        -------
+        numpy.array
+            Returns the average of the output models.
+        """
+        outputs = [translate_output(model.output(_input, prob),
+                                    ensemble_model.get_fan_out(),
+                                    ensemble_model.is_binary_classification()) for model in ensemble_model.get_models()]
+        return translate_output(sum(outputs), ensemble_model.get_fan_out(),
+                                ensemble_model.is_binary_classification())
 
     def predict(self, ensemble_model, _input):
         """ Returns the class with more votes.

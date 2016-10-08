@@ -366,7 +366,7 @@ class Model(object):
         output = self.output(_input, prob=False)
 
         if self.is_classifier():
-            return np.squeeze(self.__target_labels[output])
+            return np.squeeze(self.__target_labels[get_index_label_classes(output, self.is_binary_classification())])
         else:
             return output.eval()
 

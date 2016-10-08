@@ -104,7 +104,7 @@ class Sequential(Model):
             self._output = _input
 
             if not prob and self.is_classifier():
-                self._output = get_index_label_classes(self._output, self.is_binary_classification())
+                self._output = translate_output(self._output, self.get_fan_out(), self.is_binary_classification())
 
         return self._output
 
