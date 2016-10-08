@@ -71,12 +71,12 @@ class Layer(object):
     def get_shape_W(self):
         """ Gets shape weights of layer.
         """
-        return (0,)
+        return 0,
 
     def get_shape_b(self):
         """ Gets shape bias of layer.
         """
-        return (0,)
+        return 0,
 
     def initialize_parameters(self):
         """ Initialize neurons params of layers

@@ -3,7 +3,7 @@ import numpy as np
 import theano.tensor as T
 from sklearn import cross_validation
 
-from theano import config, shared
+from theano import config, shared, function
 from ..metrics import *
 from ..utils import *
 
@@ -15,11 +15,11 @@ class Model(object):
 
     Attributes
     ----------
-    n_input : tuple
-        Number of inputs of the model.
+    __input_shape : tuple
+        Shape of inputs of the model.
 
-    n_output : tuple
-        Number of output of the model.
+    __output_shape : tuple
+        Shape of output of the model.
 
     type_model : str
         Type of model: classifier or regressor.
@@ -30,21 +30,18 @@ class Model(object):
     _params : list
         List of model's parameters.
 
-    _cost_function_list : list
+    _cost_function_list : dict
         List for saving the cost functions.
 
     _reg_function_list : list
         List for saving the regularization functions.
 
-    _score_function_list : list
+    _score_function_list : dict
         This is a list of function for compute a score to models, for classifier model is accuracy by default
         and for regressor model is RMS by default.
 
-    _update_function : theano.function
+    _update_function : tuple
         This function allow to update the model's parameters.
-
-    _update_function_args
-        Arguments of update function.
 
     name : str
         This model's name is useful to identify it later.
@@ -63,10 +60,10 @@ class Model(object):
     name : str, "model" by default
         Name of model.
 
-    n_input : int
+    input_shape : tuple
         Number of inputs of the model.
 
-    n_output : int
+    output_shape : tuple
         Number of output of the model.
     """
 
@@ -82,11 +79,10 @@ class Model(object):
         self.__target_labels = np.array(target_labels)
         self._params = []
 
-        self._cost_function_list = []
+        self._cost_function_list = {'list': [], 'changed': True, 'compiled': []}
         self._reg_function_list = []
-        self._score_function_list = []
+        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
         self._update_function = None
-        self._update_function_args = None
 
         self._minibatch_train_eval = None
         self._minibatch_test_eval = None
@@ -99,10 +95,14 @@ class Model(object):
 
         self._output = None
         self._error = None
+        self._labels_result_train = None
 
         self.__current_data_train = None
         self.__current_data_test = None
         self.__binary_classification = False
+
+    def get_result_labels(self):
+        return self._labels_result_train
 
     def get_input_shape(self):
         return self.__input_shape
@@ -118,9 +118,6 @@ class Model(object):
 
     def get_type_model(self):
         return self.__type_model
-
-    def get_target_labels(self):
-        return self.__target_labels
 
     def copy_kind_of_model(self, model):
         self.set_input_shape(model.get_input_shape())
@@ -205,7 +202,7 @@ class Model(object):
         float
             Returns training score.
         """
-        if self.__current_data_train is None:
+        if self.__current_data_train is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
             return self.__current_data_train[2]
@@ -229,16 +226,6 @@ class Model(object):
             Returns model parameters.
         """
         return self._params
-
-    def get_score_function_list(self):
-        """ Getter list score.
-
-        Returns
-        -------
-        list[theano.Op]
-            Returns list of score functions.
-        """
-        return self._score_function_list
 
     def get_target_labels(self):
         """ Getter target labels.
@@ -264,7 +251,7 @@ class Model(object):
     def is_classifier(self):
         return self.__type_model == "classifier"
 
-    def error(self, _input, _target):
+    def error(self, _input, _target, prob=True):
         """ Compute the error prediction of model.
 
         Parameters
@@ -275,6 +262,10 @@ class Model(object):
         _target : theano.tensor.matrix or numpy.array
             Target sample.
 
+        prob :  bool
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
+
         Returns
         -------
         theano.tensor.matrix or numpy.array
@@ -283,10 +274,10 @@ class Model(object):
         """
         if _input == self.model_input and _target == self.model_target:
             if self._error is None:
-                self._error = self.output(_input) - _target
+                self._error = self.output(_input, prob=prob) - _target
             return self._error
         else:
-            return self.output(_input) - _target
+            return self.output(_input, prob=prob) - _target
 
     def __eq__(self, other):
         """ Evaluate if 'other' model has the same form. The items for the comparison are:
@@ -311,7 +302,7 @@ class Model(object):
                    (self.get_output_shape() == other.get_output_shape()) and \
                    (self.get_type_model() == other.get_type_model()) and \
                    (not self.is_classifier() or
-                    (list(self.get_target_labels() == list(other.get_target_labels()))))
+                    (list(self.get_target_labels()) == list(other.get_target_labels())))
         else:
             return False
 
@@ -349,7 +340,8 @@ class Model(object):
             Input sample.
 
         prob : bool
-            True if the output is probability, False otherwise.
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------
@@ -408,12 +400,12 @@ class Model(object):
             return np.mean(t_data, axis=0)
         else:
             if train:
-                return self._minibatch_train_eval(0, n_input, 1.0)
+                return self._minibatch_train_eval(0, n_input - 1, 1.0)
             else:
-                return self._minibatch_test_eval(0, n_input, 1.0)
+                return self._minibatch_test_eval(0, n_input - 1, 1.0)
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True,
-            improvement_threshold=0.995, minibatch=True):
+            improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Function for training sequential model.
 
         Parameters
@@ -433,10 +425,13 @@ class Model(object):
         early_stop : bool, True by default
             Flag for enabled early stop.
 
-        improvement_threshold : int, 0.995 by default
+        improvement_threshold : float, 0.995 by default
 
         minibatch : bool
             Flag for indicate training with minibatch or not.
+
+        update_sets : bool
+            Flag for update sets or not.
 
         Returns
         -------
@@ -460,7 +455,8 @@ class Model(object):
 
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
 
-            self.prepare_data(_input, _target)
+            if update_sets:
+                self.prepare_data(_input, _target)
 
             if minibatch:  # Train minibatches
                 self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
@@ -524,10 +520,40 @@ class Model(object):
         self.review_is_binary_classifier()
         self.review_shape_output()
 
-        if len(self._score_function_list) <= 0:
-            self.set_default_score()
+        cost, updates, extra_results, labels_extra_results = self._compile(fast=fast, **kwargs)
+        error = T.mean(self.error(self.model_input, self.model_target))
 
-        self._compile(fast=fast, **kwargs)
+        self._labels_result_train = []
+        result = [error, cost]
+        self._labels_result_train += ['Error', 'Cost']
+
+        if not fast:
+            costs = self.get_costs()
+            scores = self.get_scores()
+            result += costs + scores + extra_results
+            self._labels_result_train += self.get_labels_costs()
+            self._labels_result_train += self.get_labels_scores()
+            self._labels_result_train += labels_extra_results
+
+        end = T.lscalar('end')
+        start = T.lscalar('start')
+        r = T.fscalar('r')
+        givens_train = {
+            self.model_input: self._share_data_input_train[start:end],
+            self.model_target: self._share_data_target_train[start:end],
+            self.batch_reg_ratio: r
+        }
+
+        givens_test = {
+            self.model_input: self._share_data_input_test[start:end],
+            self.model_target: self._share_data_target_test[start:end],
+            self.batch_reg_ratio: r
+        }
+
+        self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
+                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
+        self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
+                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
 
         Logger().stop_measure_time()
 
@@ -540,7 +566,7 @@ class Model(object):
         """
         if self.is_classifier() and len(self.__target_labels) != self.get_fan_out() and \
                 not self.__binary_classification:  # no is binary classifier
-                raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
+            raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
 
     def review_is_binary_classifier(self):
         """ Review this model is binary classifier
@@ -597,44 +623,58 @@ class Model(object):
         """
         return self.__binary_classification
 
-    def set_default_score(self):
-        """ Setting default score in model.
-        """
-        if self.is_classifier():
-            self._score_function_list.append(
-                score_accuracy(translate_output(self.output(self.model_input),
-                                                self.get_fan_out(),
-                                                self.is_binary_classification()), self.model_target))
-        else:
-            self._score_function_list.append(score_rms(self.output(self.model_input), self.model_target))
+    def append_score(self, fun_score, name, **kwargs):
+        """ Adds an extra item in the score functions.
 
-    def append_cost(self, fun_cost, **kwargs):
-        """ Adds an extra item in the cost function.
+        Parameters
+        ----------
+        fun_score : theano.function
+            Function of score.
+
+        name : str
+            This string identify score function, is useful for plot metrics.
+
+        **kwargs
+            Extra parameters of score function.
+        """
+        self._score_function_list['list'].append((fun_score, name, kwargs))
+        self._score_function_list['changed'] = True
+
+    def append_cost(self, fun_cost, name, **kwargs):
+        """ Adds an extra item in the cost functions.
 
         Parameters
         ----------
         fun_cost : theano.function
-            Function of cost
+            Function of cost.
+
+        name : str
+            This string identify cost function, is useful for plot metrics.
 
         **kwargs
-            Extra parameters of function cost.
+            Extra parameters of cost function.
         """
-        self._cost_function_list.append((fun_cost, kwargs))
+        self._cost_function_list['list'].append((fun_cost, name, kwargs))
+        self._cost_function_list['changed'] = True
 
-    def append_reg(self, fun_reg, **kwargs):
-        """ Adds an extra item in the cost function.
+    def append_reg(self, fun_reg, name, **kwargs):
+        """ Adds an extra item in the cost functions.
 
         Parameters
         ----------
         fun_reg : theano.function
-            Function of regularization
+            Function of regularization.
+
+        name : str
+            This string identify regularization function, is useful for plot metrics.
 
         **kwargs
             Extra parameters of regularization function.
         """
-        self._reg_function_list.append((fun_reg, kwargs))
+        self._reg_function_list.append((fun_reg, name, kwargs))
+        self._cost_function_list['changed'] = True
 
-    def set_update(self, fun_update, **kwargs):
+    def set_update(self, fun_update, name, **kwargs):
         """ Adds an extra item in the cost function.
 
         Parameters
@@ -642,42 +682,73 @@ class Model(object):
         fun_update : theano.function
             Function of update parameters of models.
 
+        name : str
+            This string identify regularization function, is useful for plot metrics.
+
         **kwargs
             Extra parameters of update function.
         """
-        self._update_function = fun_update
-        self._update_function_args = kwargs
+        self._update_function = (fun_update, name, kwargs)
 
-    def get_cost_functions(self):
+    def get_cost(self):
+        return sum(self.get_costs())
+
+    def get_costs(self):
         """ Gets cost function of model.
 
         Returns
         -------
-        theano.tensor.TensorVariable
-            Returns cost model include regularization.
+        list
+            Returns cost model list that include regularization.
         """
-        cost = 0.0
-        for fun_cost, params in self._cost_function_list:
-            cost += fun_cost(model=self, _input=self.model_input, _target=self.model_target, **params)
+        if self._cost_function_list['changed']:
+            for fun_cost, _, params in self._cost_function_list['list']:
+                self._cost_function_list['compiled'].append(fun_cost(model=self,
+                                                                     _input=self.model_input,
+                                                                     _target=self.model_target, **params))
 
-        for fun_reg, params in self._reg_function_list:
-            cost += fun_reg(model=self, batch_reg_ratio=self.batch_reg_ratio, **params)
+            for fun_reg, _, params in self._reg_function_list:
+                self._cost_function_list['compiled'].append(fun_reg(model=self,
+                                                                    batch_reg_ratio=self.batch_reg_ratio, **params))
+            self._cost_function_list['changed'] = False
 
-        return cost
+        return self._cost_function_list['compiled']
 
-    def get_score_functions(self):
+    def get_scores(self):
         """ Gets score function of model.
 
         Returns
         -------
-        theano.tensor.TensorVariable
-            Returns score model.
+        list
+            Returns score model list.
         """
-        score = 0.0
-        for s in self._score_function_list:
-            score += s
+        if self._score_function_list['changed']:
+            output = self.output(self.model_input, prob=False)
+            if self.is_classifier():
+                output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
+                for fun_score, _, params in self._score_function_list['list']:
+                    self._score_function_list['compiled'].append(fun_score(_output=output,
+                                                                           _input=self.model_input,
+                                                                           _target=self.model_target,
+                                                                           model=self,
+                                                                           **params))
+            else:
+                for fun_score, _, params in self._score_function_list['list']:
+                    self._score_function_list['compiled'].append(fun_score(_output=output,
+                                                                           _input=self.model_input,
+                                                                           _target=self.model_target,
+                                                                           model=self,
+                                                                           **params))
 
-        return score
+            self._score_function_list['changed'] = False
+
+        return self._score_function_list['compiled']
+
+    def get_labels_costs(self):
+        return [l for _, l, _ in self._cost_function_list['list']]
+
+    def get_labels_scores(self):
+        return [l for _, l, _ in self._score_function_list['list']]
 
     def get_update_function(self, cost):
         """ Gets dict for update model parameters.
@@ -692,7 +763,7 @@ class Model(object):
         OrderedDict
             A dictionary mapping each parameter to its update expression.
         """
-        return self._update_function(cost, self._params, **self._update_function_args)
+        return self._update_function[0](cost, self._params, **self._update_function[2])
 
     def load(self, filename):
         """ Load model from file.

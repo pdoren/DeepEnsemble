@@ -1,8 +1,5 @@
 from collections import OrderedDict
 
-import theano.tensor as T
-from theano import function
-
 from .model import Model
 from ..metrics import *
 
@@ -27,11 +24,15 @@ class EnsembleModel(Model):
     """
 
     def __init__(self, name="ensemble"):
-        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name, input_shape=0, output_shape=0)
+        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name, input_shape=0,
+                                            output_shape=0)
         self.__combiner = None
         self.__list_models_ensemble = []
         self.__list_cost_ensemble = []
         self._params.append(0)  # the first element is reserved for combiner parameters
+
+    def get_combiner(self):
+        return self.__combiner
 
     def get_models(self):
         """ Getter list of ensemble models.
@@ -137,7 +138,8 @@ class EnsembleModel(Model):
             Input sample.
 
         prob : bool
-            True if the output is probability, False otherwise.
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------
@@ -166,13 +168,19 @@ class EnsembleModel(Model):
         """
         return self.__combiner.predict(self, _input)
 
-    def _compile(self, fast=True, **kwargs):
+    def _compile(self, fast=True, full_costs=True, full_scores=True, **kwargs):
         """ Compile ensemble's models.
 
         Parameters
         ----------
         fast : bool
             Compiling cost and regularization items without separating them.
+
+        full_costs : bool
+            Flag to active save all data model costs in training.
+
+        full_scores : bool
+            Flag to active save all data model scores in training.
 
         kwargs
             Compilers parameters of models.
@@ -187,63 +195,46 @@ class EnsembleModel(Model):
 
         # append const ensemble for each models
         if len(self.__list_cost_ensemble) > 0:
-            for fun_cost, params_cost in self.__list_cost_ensemble:
-                for i, model in enumerate(self.__list_models_ensemble):
-                    model.append_cost(fun_cost=fun_cost, ensemble=self, **params_cost)
+            for fun_cost, name, params_cost in self.__list_cost_ensemble:
+                for i, model in enumerate(self.get_models()):
+                    model.append_cost(fun_cost=fun_cost, name=name, ensemble=self, **params_cost)
 
-        error = T.mean(self.error(self.model_input, self.model_target))
-        cost = self.get_cost_functions()
-        score = self.get_score_functions()
-        m = self.get_num_models()
+        cost = 0.0
+        extra_results = []
+        labels_extra_results = []
         if not fast:  # compute all the scores and costs of the models in ensemble
-            sub_result = []
-            for model in self.__list_models_ensemble:
+            for model in self.get_models():
                 model.review_is_binary_classifier()  # update if is binary classifier
-                model.set_default_score()
-                cost_model = model.get_cost_functions()
-                score_model = model.get_score_functions()
+                cost_model = model.get_cost()
                 cost += cost_model
-                sub_result += [cost_model, score_model]
-            result = [error, cost / m, score] + sub_result
+                extra_results += [cost_model]
+                labels_extra_results += ['Cost']
+                labels_extra_results += model.get_labels_costs()
+                extra_results += model.get_costs()
+                labels_extra_results += model.get_labels_scores()
+                extra_results += model.get_scores()
         else:  # compute only cost and score of ensemble
-            for model in self.__list_models_ensemble:
+            for model in self.get_models():
                 model.review_is_binary_classifier()  # update if is binary classifier
-                cost_model = model.get_cost_functions()
+                cost_model = model.get_cost()
                 cost += cost_model
-            result = [error, cost / m, score]
+
+        cost = cost / self.get_num_models()
 
         update_combiner = self.__combiner.update_parameters(self, self.model_input, self.model_target)
         updates = OrderedDict()
         if update_combiner is not None:
             updates = update_combiner
 
-        for model in self.__list_models_ensemble:
-            cost_model = model.get_cost_functions()
+        for model in self.get_models():
+            cost_model = model.get_cost()
             update_model = model.get_update_function(cost_model)
             for key in update_model.keys():
                 updates[key] = update_model[key]
 
-        end = T.lscalar('end')
-        start = T.lscalar('start')
-        r = T.fscalar('r')
-        givens_train = {
-            self.model_input: self._share_data_input_train[start:end],
-            self.model_target: self._share_data_target_train[start:end],
-            self.batch_reg_ratio: r
-        }
+        return cost, updates, extra_results, labels_extra_results
 
-        givens_test = {
-            self.model_input: self._share_data_input_test[start:end],
-            self.model_target: self._share_data_target_test[start:end],
-            self.batch_reg_ratio: r
-        }
-
-        self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
-                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
-        self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
-                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
-
-    def add_cost_ensemble(self, fun_cost, **kwargs):
+    def add_cost_ensemble(self, fun_cost, name, **kwargs):
         """ Adds cost function for each models in Ensemble.
 
         Parameters
@@ -251,7 +242,10 @@ class EnsembleModel(Model):
         fun_cost : theano.function
             Cost function.
 
+        name : str
+            This string identify cost function, is useful for plot metrics.
+
         kwargs
             Other parameters.
         """
-        self.__list_cost_ensemble.append((fun_cost, kwargs))
+        self.__list_cost_ensemble.append((fun_cost, name, kwargs))

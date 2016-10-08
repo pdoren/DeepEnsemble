@@ -41,16 +41,20 @@ class DataPlot:
     name : str
         Plot's name.
 
+    type : str
+        Type of data.
+
     Parameters
     ----------
     name : str, "Model" by default
         Plot's name.
     """
 
-    def __init__(self, name="Model"):
+    def __init__(self, name='Model', type='score'):
         self.__x = []
         self.__y = []
         self.__name = name
+        self.__type = type
 
     def reset(self):
         """ Reset data.
@@ -58,13 +62,23 @@ class DataPlot:
         self.__x = []
         self.__y = []
 
+    def get_type(self):
+        """ Get type plot.
+
+        Returns
+        -------
+        str
+            This string is used for legend and title plot.
+        """
+        return self.__type
+
     def get_name(self):
         """ Get name plot.
 
         Returns
         -------
         str
-            This string is used for plot legend.
+            This string is used for legend plot.
         """
         return self.__name
 
@@ -125,7 +139,7 @@ class DataPlot:
             Handle subplot.
         """
         if len(self.__y) > 0:
-            ax.plot(self.__x, self.__y, label=self.__name)
+            ax.plot(self.__x, self.__y, label='%s %s' % (self.__type, self.__name))
 
 
 class BaseMetrics:
@@ -136,14 +150,17 @@ class BaseMetrics:
     model : Model or EnsembleModel
         Handle of model.
 
-    _train_cost : list[DataPlot]
-        Plot of training cost.
+    _error : dict[list[DataPlot]]
+        Data plot error.
 
-    _train_score : list[DataPlot]
-        Plot of prediction score.
+    _cost : dict[list[DataPlot]]
+        Data plot cost.
 
-    _test_cost : list[DataPlot]
-        Plot of testing cost.
+    _costs : dict[dict[list[DataPlot]]]
+        Data plot error.
+
+    _scores : dict[dict[list[DataPlot]]]
+        Data plot scores.
 
     Parameters
     ----------
@@ -153,58 +170,63 @@ class BaseMetrics:
 
     def __init__(self, model):
         self._model = model
-        self._train_cost = []
-        self._train_score = []
-        self._test_cost = []
-        self._test_score = []
+        self._error = {'train': [], 'test': []}
+        self._cost = {'train': [], 'test': []}
+        self._costs = {'train': {}, 'test': {}}
+        self._scores = {'train': {}, 'test': {}}
 
-    def get_train_cost(self):
-        """ Getter train cost.
+    def get_cost(self, type_set_data):
+        """ Getter total cost.
 
-        Returns
-        -------
-        list
-            Returns train cost list.
-        """
-        return self._train_cost
-
-    def get_train_score(self):
-        """ Getter train cost.
+        Parameters
+        ----------
+        type_set_data : str
+            This string means what kind of data is passed: train or test.
 
         Returns
         -------
         list
-            Returns train score list.
+            Returns cost list.
         """
-        return self._train_score
+        return self._cost[type_set_data]
 
-    def get_test_cost(self):
-        """ Getter test cost.
+    def get_costs(self, type_set_data):
+        """ Getter costs.
+
+        Parameters
+        ----------
+        type_set_data : str
+            This string means what kind of data is passed: train or test.
 
         Returns
         -------
-        list
-            Returns test cost list.
+        dict
+            Returns costs dictionary.
         """
-        return self._test_cost
+        return self._costs[type_set_data]
 
-    def get_test_score(self):
-        """ Getter test cost.
+    def get_scores(self, type_set_data):
+        """ Getter scores.
+
+        Parameters
+        ----------
+        type_set_data : str
+            This string means what kind of data is passed: train or test.
 
         Returns
         -------
-        list
-            Returns test score list.
+        dict
+            Returns scores dictionary.
         """
-        return self._test_score
+        return self._scores[type_set_data]
 
     def reset(self):
         """ Reset metrics.
         """
-        self._train_cost = []
-        self._train_score = []
-        self._test_cost = []
-        self._test_score = []
+        self._error = {'train': [], 'test': []}
+        self._cost = {'train': [], 'test': []}
+        self._costs = {'train': {}, 'test': {}}
+        self._scores = {'train': {}, 'test': {}}
 
     def append_data(self, data, epoch, type_set_data):
         """ Append metrics data.
@@ -225,27 +247,35 @@ class BaseMetrics:
         int
             Returns index of last item saved from data list.
         """
-        n = 1  # data[0] is the error
-        if type_set_data == "train":
-            self.add_point(self._train_cost, epoch, data[n], "train")
-        elif type_set_data == "test":
-            self.add_point(self._test_cost, epoch, data[n], "test")
-        else:
+        if type_set_data != "train" and type_set_data != "test":
             raise ValueError("The type set data must be 'train' or 'test'.")
 
-        n += 1
-        for _ in self._model.get_score_function_list():
-            if type_set_data == "train":
-                self.add_point(self._train_score, epoch, data[n], "train")
-            elif type_set_data == "test":
-                self.add_point(self._test_score, epoch, data[n], "test")
-            else:
-                n -= 1
-            n += 1
-        return n
+        labels = self._model.get_result_labels()
 
-    def plot_cost(self, max_epoch, train_title='Train Cost', log_xscale=False, log_yscale=False):
-        """ Generate training cost plot.
+        n = 0  # data[0] is the error
+        self.add_point(self._error[type_set_data], epoch, data[n], labels[n], self._model.get_name())
+
+        n += 1  # data[1] is the total cost
+        self.add_point(self._cost[type_set_data], epoch, data[n], labels[n], self._model.get_name())
+
+        n = self.add_data(labels, self._model.get_name(),
+                          self.get_costs(type_set_data), len(self._model.get_costs()), n, data, epoch)
+
+        return self.add_data(labels, self._model.get_name(),
+                             self.get_scores(type_set_data), len(self._model.get_scores()), n, data, epoch)
+
+    @staticmethod
+    def add_data(labels, model_name, data_dict, n_data, index, data, epoch):
+        for _ in range(n_data):
+            index += 1
+            label = labels[index]
+            if label not in data_dict:
+                data_dict[label] = []
+            BaseMetrics.add_point(data_dict[label], epoch, data[index], label, model_name)
+        return index
+
+    def plot_cost(self, max_epoch, train_title='Cost', log_xscale=False, log_yscale=False):
+        """ Generate cost plot.
 
         Parameters
         ----------
@@ -263,20 +293,60 @@ class BaseMetrics:
         """
         f, ax = plt.subplots()
         plt.hold(True)
-        self.plot(ax, self._train_cost)
-        self.plot(ax, self._test_cost)
+        self.plot(ax, self.get_cost('train'), 'Train')
+        self.plot(ax, self.get_cost('test'), 'Test')
         ax.set_title(train_title)
         if log_xscale:
             ax.set_xscale('log')
         if log_yscale:
             ax.set_yscale('log')
-        ax.legend()
+        ax.legend(loc='best')
         ax.set_xlim([0, max_epoch])
         plt.grid()
         plt.xlabel('epoch')
         plt.hold(False)
 
-    def plot_score(self, max_epoch, train_title='Train score', log_xscale=False, log_yscale=False, vmin=0, vmax=1):
+    def plot_costs(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
+        """ Generate costs plot.
+
+        Parameters
+        ----------
+        max_epoch : int
+            Number of epoch of training.
+
+        title : str
+            Plot title of cost.
+
+        log_xscale : bool
+            Flag for show plot x-axis in logarithmic scale.
+
+        log_yscale : bool
+            Flag for show plot y-axis in logarithmic scale.
+        """
+        data_train = self.get_costs('train')
+        data_test = self.get_costs('test')
+        data = set(data_train) & set(data_test)
+        plt.subplots()
+        N = len(data)
+        rows = max(N // 2, 1)
+        cols = max(N // rows, 1)
+        for j, i in enumerate(data):
+            ax = plt.subplot(rows, cols, j + 1)
+            plt.hold(True)
+            BaseMetrics.plot(ax, data_train[i], 'Train')
+            BaseMetrics.plot(ax, data_test[i], 'Test')
+            plt.hold(False)
+            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
+            if log_xscale:
+                ax.set_xscale('log')
+            if log_yscale:
+                ax.set_yscale('log')
+            ax.legend(loc='best')
+            ax.set_xlim([0, max_epoch])
+            plt.grid()
+            plt.xlabel('epoch')
+
+    def plot_scores(self, max_epoch, title='Train score', log_xscale=False, log_yscale=False, vmin=0, vmax=1):
         """ Generate training score plot.
 
         Parameters
@@ -284,7 +354,7 @@ class BaseMetrics:
         max_epoch : int
             Number of epoch of training.
 
-        train_title : str, "Train score" by default
+        title : str, "Train score" by default
             Plot title of training score.
 
         log_xscale : bool
@@ -299,21 +369,30 @@ class BaseMetrics:
         vmax : float
             Maximum value shown on the y-axis.
         """
-        f, ax = plt.subplots()
-        plt.hold(True)
-        self.plot(ax, self._train_score)
-        self.plot(ax, self._test_score)
-        ax.set_title(train_title)
-        if log_xscale:
-            ax.set_xscale('log')
-        if log_yscale:
-            ax.set_yscale('log')
-        ax.legend()
-        ax.set_ylim([vmin, vmax])
-        ax.set_xlim([0, max_epoch])
-        plt.grid()
-        plt.xlabel('epoch')
-        plt.hold(False)
+        data_train = self.get_scores('train')
+        data_test = self.get_scores('test')
+        data = set(data_train) & set(data_test)
+        plt.subplots()
+        N = len(data)
+        rows = max(N // 2, 1)
+        cols = max(N // rows, 1)
+        for j, i in enumerate(sorted(data)):
+            ax = plt.subplot(rows, cols, j + 1)
+            plt.hold(True)
+            BaseMetrics.plot(ax, data_train[i], 'Train')
+            BaseMetrics.plot(ax, data_test[i], 'Test')
+            plt.hold(False)
+            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
+            if log_xscale:
+                ax.set_xscale('log')
+            if log_yscale:
+                ax.set_yscale('log')
+            ax.legend(loc='best')
+            # ax.set_ylim([vmin, vmax])
+            ax.set_xlim([0, max_epoch])
+            plt.grid()
+            plt.xlabel('epoch')
+
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.
@@ -323,12 +402,22 @@ class BaseMetrics:
         metric : BaseMetrics
             Metric of another model.
         """
-        self._train_cost += metric._train_cost
-        self._train_score += metric._train_score
-        self._test_cost += metric._test_cost
+        for type_set_data in ['train', 'test']:
+            self._error[type_set_data] += metric._error[type_set_data]
+            self._cost[type_set_data] += metric._cost[type_set_data]
+            for key in metric.get_costs(type_set_data):
+                if key in self._costs[type_set_data]:
+                    self._costs[type_set_data][key] += metric.get_costs(type_set_data)[key]
+                else:
+                    self._costs[type_set_data][key] = metric.get_costs(type_set_data)[key]
+            for key in metric.get_scores(type_set_data):
+                if key in self._scores[type_set_data]:
+                    self._scores[type_set_data][key] += metric.get_scores(type_set_data)[key]
+                else:
+                    self._scores[type_set_data][key] = metric.get_scores(type_set_data)[key]
 
     @staticmethod
-    def add_point(list_points, x, y, legend):
+    def add_point(list_points, x, y, type, name):
         """ Add point a list.
 
         Parameters
@@ -342,15 +431,19 @@ class BaseMetrics:
         y : float
             Point axis y.
 
-        legend : str
-            This is the legend of plot.
+        type : str
+            Type of data.
+
+        name : str
+            Plot's name.
         """
         if len(list_points) <= 0:
-            list_points.append(DataPlot(name=legend))
+            list_points.append(DataPlot(name=name, type=type))
 
         list_points[0].add_point(x, y)
 
-    def plot(self, ax, dps):
+    @staticmethod
+    def plot(ax, dps, label_prefix=''):
         """ Generate plot.
 
         Parameters
@@ -360,14 +453,17 @@ class BaseMetrics:
 
         dps : list[DataPlot]
             List of DataPlots.
+
+        label_prefix : str
+            This string is concatenate with label plot.
         """
         # Get average plots
         if len(dps) > 0:
-            label = "%s - %s" % (self._model.get_name(), dps[0].get_name())
-            x, y = self._get_data_per_col(dps)
+            label = dps[0].get_name()
+            x, y = BaseMetrics._get_data_per_col(dps)
             _x = x[:, 0]
             _y = np.nanmean(y, axis=1)
-            ax.plot(_x, _y, label=label)
+            ax.plot(_x, _y, label='%s %s' % (label_prefix, label))
 
     @staticmethod
     def _get_data_per_col(dps):
@@ -433,7 +529,7 @@ class EnsembleMetrics(BaseMetrics):
 
     Attributes
     ----------
-    _metrics_models : dict[BaseMetrics]
+    _models_metric : dict[BaseMetrics]
         Dictionary of models metrics.
 
     _y_true_per_model : list[numpy.array]
@@ -450,9 +546,12 @@ class EnsembleMetrics(BaseMetrics):
 
     def __init__(self, model):
         super(EnsembleMetrics, self).__init__(model=model)
-        self._metrics_models = {}
+        self._models_metric = {}
         self._y_true_per_model = []
         self._y_pred_per_model = {}
+
+    def get_models_metric(self):
+        return self._models_metric
 
     def append_data(self, data, epoch, type_set_data):
         """ Append metrics data of ensemble.
@@ -475,30 +574,26 @@ class EnsembleMetrics(BaseMetrics):
         """
         n = super(EnsembleMetrics, self).append_data(data, epoch, type_set_data=type_set_data)
 
-        if data.__len__() > n:
-            for model_ensemble in self._model.get_models():
-                s_model = model_ensemble.get_name()
-                if model_ensemble.get_name() not in self._metrics_models:
-                    self._metrics_models[s_model] = FactoryMetrics().get_metric(model_ensemble)
+        if len(data) > n:
+            labels = self._model.get_result_labels()
 
-                if type_set_data == "train":
-                    self._metrics_models[s_model]. \
-                        add_point(self._metrics_models[model_ensemble.get_name()].get_train_cost(), epoch, data[n],
-                                  "train")
-                    self._metrics_models[s_model]. \
-                        add_point(self._metrics_models[model_ensemble.get_name()].get_train_score(), epoch, data[n + 1],
-                                  "train")
+            for model in self._model.get_models():
+                s_model = model.get_name()
+                if s_model not in self._models_metric:
+                    self._models_metric[s_model] = FactoryMetrics().get_metric(model)
 
-                elif type_set_data == "test":
-                    self._metrics_models[s_model]. \
-                        add_point(self._metrics_models[model_ensemble.get_name()].get_test_cost(), epoch, data[n],
-                                  "test")
-                    self._metrics_models[s_model]. \
-                        add_point(self._metrics_models[model_ensemble.get_name()].get_test_score(), epoch, data[n + 1],
-                                  "test")
-                else:
-                    n -= 2
-                n += 2
+                n += 1
+                BaseMetrics.add_point(self._models_metric[s_model].get_cost(type_set_data), epoch, data[n],
+                                      labels[n], model.get_name())
+
+                n = BaseMetrics.add_data(labels, model.get_name(),
+                                         self._models_metric[s_model].get_costs(type_set_data),
+                                         len(model.get_costs()), n, data, epoch)
+
+                n = BaseMetrics.add_data(labels, model.get_name(),
+                                         self._models_metric[s_model].get_scores(type_set_data),
+                                         len(model.get_scores()), n, data, epoch)
+
         return n
 
     def append_prediction_per_model(self, _input, _target):
@@ -517,9 +612,7 @@ class EnsembleMetrics(BaseMetrics):
         None
         """
         _target = np.squeeze(_target)
-
         self._y_true_per_model += [_target]
-
         for model_ensemble in self._model.get_models():
             output = np.squeeze(model_ensemble.predict(_input))
             if model_ensemble.get_name() not in self._y_pred_per_model:
@@ -535,83 +628,14 @@ class EnsembleMetrics(BaseMetrics):
             Metric of another model.
         """
         if isinstance(metric, EnsembleMetrics):
-            self._metrics_models.update(metric._metrics_models)
-            self._train_cost += metric._train_cost
-            self._test_cost += metric._test_cost
-
-            self._train_score += metric._train_score
-            self._test_score += metric._test_score
+            for name_model in metric._models_metric:
+                if name_model in self._models_metric:
+                    self._models_metric[name_model].append_metric(metric._models_metric[name_model])
+                else:
+                    self._models_metric[name_model] = metric._models_metric[name_model]
+            super(EnsembleMetrics, self).append_metric(metric)
         else:
-            if metric._model.get_name() in self._metrics_models:
-                self._metrics_models[metric._model.get_name()].append_metric(metric)
+            if metric._model.get_name() in self._models_metric:
+                self._models_metric[metric._model.get_name()].append_metric(metric)
             else:
-                self._metrics_models[metric._model.get_name()] = metric
-
-    def plot_cost_models(self, max_epoch, train_title='Train Cost', log_scale=False):
-        """ Generate training cost plot for each models in Ensemble.
-
-        Parameters
-        ----------
-        max_epoch : int
-            Number of epoch of training.
-
-        train_title : str
-            Plot title of training cost.
-
-        log_scale : bool
-            Flag for show plot in logarithmic scale.
-        """
-        f, ax = plt.subplots()
-        plt.hold(True)
-        flag_legend = False
-        for name in sorted(self._metrics_models):
-            if len(self._metrics_models[name].get_train_cost()) > 0:
-                flag_legend = True
-                self._metrics_models[name].plot(ax, self._metrics_models[name].get_train_cost())
-        ax.set_title(train_title)
-        if log_scale:
-            ax.set_xscale('log')
-        if flag_legend:
-            ax.legend()
-        plt.grid()
-        ax.set_xlim([0, max_epoch])
-        plt.xlabel('epoch')
-        plt.hold(False)
-
-    def plot_score_models(self, max_epoch, train_title='Train score', log_scale=False, vmin=0, vmax=1):
-        """ Generate training score plot for each models in Ensemble.
-
-        Parameters
-        ----------
-        max_epoch : int
-            Number of epoch of training.
-
-        train_title : str, "Train score" by default
-            Plot title of training score.
-
-        log_scale : bool, False by default
-            Flag for show plot in logarithmic scale.
-
-        vmin : float
-            Minimum value shown on the y-axis.
-
-        vmax : float
-            Maximum value shown on the y-axis.
-        """
-        f, ax = plt.subplots()
-        plt.hold(True)
-        flag_legend = False
-        for name in sorted(self._metrics_models):
-            if len(self._metrics_models[name].get_train_score()) > 0:
-                flag_legend = True
-                self._metrics_models[name].plot(ax, self._metrics_models[name].get_train_score())
-        ax.set_title(train_title)
-        if log_scale:
-            ax.set_xscale('log')
-        if flag_legend:
-            ax.legend()
-        ax.set_ylim([vmin, vmax])
-        ax.set_xlim([0, max_epoch])
-        plt.grid()
-        plt.xlabel('epoch')
-        plt.hold(False)
+                self._models_metric[metric._model.get_name()] = metric

@@ -52,7 +52,7 @@ class ConvolutionBase(Layer):
     def get_shape_b(self):
         """ Gets shape bias of layer.
         """
-        return (self._filter_shape[0],)
+        return self._filter_shape[0],
 
     def output(self, x):
         """ Return output of layers
@@ -84,7 +84,7 @@ class ConvolutionBase(Layer):
         raise NotImplementedError
 
 
-def conv1d_mc0(input, filters, image_shape=None, filter_shape=None,
+def conv1d_mc0(_input, filters, image_shape=None, filter_shape=None,
                border_mode='valid', subsample=(1,), filter_flip=True):
     """
     using conv2d with width == 1
@@ -106,7 +106,7 @@ def conv1d_mc0(input, filters, image_shape=None, filter_shape=None,
     if isinstance(border_mode, int):
         border_mode = (0, border_mode)
 
-    input_mc0 = input.dimshuffle(0, 1, 'x', 2)
+    input_mc0 = _input.dimshuffle(0, 1, 'x', 2)
     filters_mc0 = filters.dimshuffle(0, 1, 'x', 2)
 
     conved = T.nnet.conv2d(

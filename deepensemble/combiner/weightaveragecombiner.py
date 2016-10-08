@@ -1,9 +1,10 @@
-import theano.tensor as T
-from .modelcombiner import ModelCombiner
-from theano import shared, config
-import numpy as np
 from collections import OrderedDict
-from ..utils.utils_classifiers import get_index_label_classes
+
+import numpy as np
+import theano.tensor as T
+from theano import shared, config
+
+from .modelcombiner import ModelCombiner
 
 __all__ = ['WeightAverageCombiner', 'WeightedVotingCombiner']
 
@@ -56,7 +57,8 @@ class WeightAverageCombiner(ModelCombiner):
             Input sample.
 
         prob : bool
-            True if the output is probability, False otherwise.
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------
@@ -150,7 +152,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        voting = [{} for i in range(_input.shape[0])]
+        voting = [{} for _ in range(_input.shape[0])]
         for i, model in enumerate(ensemble_model.get_models()):
             votes = model.predict(_input)
             WeightedVotingCombiner._vote(voting, votes, self._params[i].eval())

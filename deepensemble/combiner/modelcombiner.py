@@ -59,7 +59,8 @@ class ModelCombiner(object):
             Input sample.
 
         prob : bool
-            True if the output is probability, False otherwise.
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------

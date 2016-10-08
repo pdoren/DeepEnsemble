@@ -6,7 +6,7 @@ from .basemetrics import *
 from .diversitymetrics import *
 from ..utils import Logger
 
-__all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics', 'score_accuracy']
+__all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics', 'score_accuracy', 'score_ensemble_ambiguity']
 
 
 class ClassifierMetrics(BaseMetrics):
@@ -181,19 +181,25 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         sum_m = 0.0
         for i, target in enumerate(list_target):
             sum_m += metric(target, list_c1[i], list_c2[i])
-        return sum_m / list_target.__len__()
+        return sum_m / len(list_target)
 
 
-def score_accuracy(_output, _target):
+def score_accuracy(_input, _output, _target, model):
     """ Accuracy score in a classifier models.
 
     Parameters
     ----------
+    _input : theano.tensor.matrix
+        Input sample.
+
     _output : theano.tensor.matrix
         Output sample.
 
     _target : theano.tensor.matrix
         Target sample.
+
+    model : Model
+        Model.
 
     Returns
     -------
@@ -201,3 +207,9 @@ def score_accuracy(_output, _target):
         Returns accuracy in a classifier models.
     """
     return T.mean(T.eq(_output, _target))
+
+
+def score_ensemble_ambiguity(_input, _output, _target, model):
+    ensemble = model
+    err = [T.mean(T.sqr(model.output(_input, prob=False) - _output)) for model in ensemble.get_models()]
+    return sum(err) / ensemble.get_num_models()

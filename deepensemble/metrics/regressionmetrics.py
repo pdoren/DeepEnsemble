@@ -28,16 +28,22 @@ class EnsembleRegressionMetrics(RegressionMetrics, EnsembleMetrics):
         super(EnsembleRegressionMetrics, self).__init__(model=model)
 
 
-def score_rms(_output, _target):
+def score_rms(_input, _output, _target, model):
     """ Gets Root Mean Square like score in a regressor model.
 
     Parameters
     ----------
+    _input : theano.tensor.matrix
+        Input sample.
+
     _output : theano.tensor.matrix
         Output sample.
 
     _target : theano.tensor.matrix
         Target sample.
+
+    model : Model
+        Model.
 
     Returns
     -------

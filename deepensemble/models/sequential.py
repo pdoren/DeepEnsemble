@@ -1,6 +1,3 @@
-import theano.tensor as T
-from theano import function
-
 from .model import Model
 from ..metrics import *
 from ..utils import *
@@ -128,35 +125,8 @@ class Sequential(Model):
         fast : bool
             Compiling cost and regularization items without separating them.
         """
-        error = T.mean(self.error(self.model_input, self.model_target))
-        cost = self.get_cost_functions()
-        score = self.get_score_functions()
 
-        result = [error, cost, score]
-        if not fast:
-            result += self._cost_function_list
-            if self._reg_function_list is not None:
-                result += self._reg_function_list
-            result += self._score_function_list
+        cost = self.get_cost()
 
-        updates = self.get_update_function(cost)
+        return cost, self.get_update_function(cost), [], []
 
-        end = T.lscalar('end')
-        start = T.lscalar('start')
-        r = T.fscalar('r')
-        givens_train = {
-            self.model_input: self._share_data_input_train[start:end],
-            self.model_target: self._share_data_target_train[start:end],
-            self.batch_reg_ratio: r
-        }
-
-        givens_test = {
-            self.model_input: self._share_data_input_test[start:end],
-            self.model_target: self._share_data_target_test[start:end],
-            self.batch_reg_ratio: r
-        }
-
-        self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
-                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
-        self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
-                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)

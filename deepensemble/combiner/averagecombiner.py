@@ -1,6 +1,4 @@
 from .modelcombiner import ModelCombiner
-import numpy as np
-from ..utils import get_index_label_classes
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
 
@@ -27,7 +25,8 @@ class AverageCombiner(ModelCombiner):
             Input sample.
 
         prob : bool
-            True if the output is probability, False otherwise.
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------
@@ -75,7 +74,7 @@ class PluralityVotingCombiner(AverageCombiner):
         numpy.array
             Return the prediction of model.
         """
-        voting = [{} for i in range(_input.shape[0])]
+        voting = [{} for _ in range(_input.shape[0])]
         for model in ensemble_model.get_models():
             votes = model.predict(_input)
             PluralityVotingCombiner._vote(voting, votes)

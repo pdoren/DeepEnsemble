@@ -1,11 +1,10 @@
 import theano.tensor as T
+from .utils_functions import ITLFunctions
 
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'correntropy_cost', 'cross_entropy', 'correntropy_silverman_cost',
            'kullback_leibler', 'kullback_leibler_generalized',
            'test_cost']
-
-sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
 
 
 def kullback_leibler_generalized(model, _input, _target):
@@ -99,11 +98,10 @@ def mse(model, _input, _target):
     theano.tensor.matrix
         Return MSE error.
     """
-    e = model.error(_input, _target)
-    return T.mean(T.power(e, 2.0))
+    return T.mean(T.power(model.error(_input, _target), 2.0))
 
 
-def mcc(model, _input, _target, s):
+def mcc(model, _input, _target, s, kernel=ITLFunctions.norm):
     """ Compute the MCC.
 
     Parameters
@@ -118,19 +116,20 @@ def mcc(model, _input, _target, s):
         Target sample.
 
     s : float
-        Kernel's Parameter.
+        Size of Kernel.
+
+    kernel : callable
+        Kernel for compute MCC.
 
     Returns
     -------
     theano.tensor.matrix
         Return MCC.
     """
-    e = model.error(_input, _target)
-    s = T.std(_target) * s
-    return -T.mean(T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s))
+    return -T.mean(kernel(model.error(_input, _target), s))
 
 
-def mee(model, _input, _target, s):
+def mee(model, _input, _target, s, kernel=ITLFunctions.norm):
     """ Compute the MEE.
 
     Parameters
@@ -145,7 +144,10 @@ def mee(model, _input, _target, s):
         Target sample.
 
     s : float
-        Kernel's Parameter.
+        Size of Kernel.
+
+    kernel : callable
+        Kernel for compute MEE.
 
     Returns
     -------
@@ -155,8 +157,7 @@ def mee(model, _input, _target, s):
     e = model.error(_input, _target)
     de = T.tile(e, (e.shape[0], 1, 1))
     de = de - T.transpose(de, axes=(1, 0, 2))
-    s = T.std(_target) * s
-    return -T.log(T.mean(T.exp(-0.5 * T.power(de, 2.0) / s ** 2)))
+    return -T.log(T.mean(kernel(de, s)))
 
 
 def neg_log_likelihood(model, _input, _target):
@@ -213,17 +214,11 @@ def neg_corr(model, _input, _target, ensemble, lamb_neg_corr=0.5):
     theano.tensor.matrix
         Return Negative Correlation.
     """
-    sum_err = 0.0
-    output_current_model = model.output(_input)
-    output_ensemble = ensemble.output(_input)
-    for model_j in ensemble.get_models():
-        if model_j != model:
-            sum_err += model_j.output(_input) - output_ensemble
-    return T.mean(T.constant(-lamb_neg_corr) * (output_current_model - output_ensemble) * sum_err)
+    return T.mean(T.constant(-lamb_neg_corr) * T.power(model.output(_input) - ensemble.output(_input), 2.0))
 
 
 # noinspection PyUnusedLocal
-def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
+def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5, kernel=ITLFunctions.norm):
     """ Compute the Correntropy regularization in Ensemble.
 
     Parameters
@@ -244,23 +239,26 @@ def correntropy_cost(model, _input, _target, ensemble, lamb_corr=0.5, s=0.5):
         Ratio negative correlation.
 
     s : float, 0.5 by default
-        Ratio kernel.
+        Size of Kernel.
+
+    kernel : callable
+        Kernel for compute correntropy.
 
     Returns
     -------
     theano.tensor.matrix
         Return Negative Correntropy.
     """
-    sum_err = 0.0
+    error = []
     output_current_model = model.output(_input)
     for model_j in ensemble.get_models():
-        if model_j != model:
+        if model_j is not model:
             e = model_j.output(_input) - output_current_model
-            sum_err += T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
-    return T.mean(T.constant(-lamb_corr) * sum_err)
+            error += [e]
+    return T.mean(T.constant(lamb_corr) * kernel(T.concatenate(error), s))
 
 
-def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
+def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5, kernel=ITLFunctions.norm):
     """ Compute the Correntropy regularization in Ensemble where update size kernel with Silverman.
 
     Parameters
@@ -280,22 +278,46 @@ def correntropy_silverman_cost(model, _input, _target, ensemble, lamb_corr=0.5):
     lamb_corr : float, 0.5 by default
         Ratio negative correlation.
 
+    kernel : callable
+        Kernel for compute correntropy.
+
     Returns
     -------
     theano.tensor.matrix
         Return Negative Correntropy.
     """
-    d = T.constant(ensemble.get_dim_output())
-    N = T.sum(T.ones_like(_target)) / d
-    e = model.output(_input) - ensemble.output(_input)
-    k = T.power(T.constant(4.0) / (N * (T.constant(2.0) * d + T.constant(1.0))), T.constant(1.0) / d + T.constant(4.0))
-    s = T.std(_target) * k
-    return T.mean(
-        T.constant(-lamb_corr) * T.exp(- T.power(e, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s))
+    eo = ensemble.output(_input)
+    e = model.output(_input) - eo
+    s = T.max(ITLFunctions.silverman(eo, _target.shape[0], ensemble.get_dim_output()), 0.00001)
+    return T.mean(T.constant(lamb_corr) * kernel(e, s))
 
 
 # noinspection PyUnusedLocal
-def test_cost(model, _input, _target, ensemble, lamb=10):
+def test_cost_2(model, _input, _target, ensemble, lamb=1.0, s=1.0):
+    sum_mcc = 0.0
+    output_current_model = model.output(_input)
+    s = T.std(_target) * s
+    for model_j in ensemble.get_models():
+        if model_j is not model:
+            e = model_j.output(_input) - output_current_model
+            sum_mcc += T.mean(ITLFunctions.norm(e, s))
+    return T.constant(lamb) * sum_mcc
+
+
+def test_cost(model, _input, _target, ensemble, lamb=1.0, s=1.0):
+    sum_mcc = 0.0
+    output_current_model = model.output(_input)
+    ee = T.power(ensemble.output(_input) - _target, 2.0)
+    s = T.std(_target) * s
+    for model_j in ensemble.get_models():
+        if model_j is not model:
+            e = T.power(model_j.output(_input) - output_current_model, 2.0)
+            sum_mcc += T.mean(e * ee)
+    return T.constant(-lamb) * sum_mcc / T.sum(ee)
+
+
+# noinspection PyUnusedLocal
+def test_cost_1(model, _input, _target, ensemble, lamb=10):
     params_model = [i for i in model.get_params()]
     sum_d = 0.0
     for model_j in ensemble.get_models():
