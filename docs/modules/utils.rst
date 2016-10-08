@@ -36,6 +36,15 @@ Update Functions
 .. autofunction:: adadelta
 .. autofunction:: adagrad
 
+Score Functions
+---------------
+
+.. automodule:: deepensemble.utils.score_functions
+
+.. autofunction:: score_accuracy
+.. autofunction:: score_ensemble_ambiguity
+.. autofunction:: score_rms
+
 Logger
 ------
 
