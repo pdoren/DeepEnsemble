@@ -44,6 +44,24 @@ class Logger(Singleton):
         self.tic = 0
         self.toc = 0
         self.buffer = ""
+        self.fold = 0
+
+    def reset(self):
+        self.tic = 0
+        self.toc = 0
+        self.buffer = ""
+        self.fold = 0
+
+    def push_buffer(self, message, end='\n', **kwargs):
+        self.buffer += message + end
+
+    def get_buffer(self):
+        return self.buffer
+
+    def save_buffer(self, filename):
+        file_ = open(filename, 'w')
+        file_.write(self.buffer)
+        file_.close()
 
     def print(self, message="", **kwargs):
         """ Print message in console, also the message is saved in the buffer.
@@ -57,6 +75,12 @@ class Logger(Singleton):
         """
         if self.log_activate:
             print(str(message), **kwargs)
+        self.push_buffer(message, **kwargs)
+
+    def write(self, message="", **kwargs):
+        sys.stdout.write(message)
+        sys.stdout.flush()
+        self.push_buffer(message, end='')
 
     def start_measure_time(self, message="", **kwargs):
         """ Start timer, is possible show a message.
@@ -103,11 +127,12 @@ class Logger(Singleton):
 
         it = range(0, max_epoch)
         count = len(it)
-        prefix = "%s - epoch:" % model.get_name()
+        self.fold += 1
+        prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
         size = 20
 
         def _show(_i):
-            postfix = "| error: %.4f | score: %.4f" % (model.get_train_error(), model.get_train_score())
+            postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
             if _i == 1:
                 self.tic = time.time()
@@ -116,15 +141,13 @@ class Logger(Singleton):
             eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
             s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
                 prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
-            sys.stdout.write(s)
-            sys.stdout.flush()
+            self.write(s)
 
         _show(0)
         for i, item in enumerate(it):
             yield item
             _show(i + 1)
-        sys.stdout.write("\n")
-        sys.stdout.flush()
+        self.write("\n")
 
     def progressbar(self, it, prefix="", postfix="", end="", size=20):
         """ Show a progressbar (it is necessary called for increment counter).
@@ -157,12 +180,10 @@ class Logger(Singleton):
             eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
             s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
                 prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
-            sys.stdout.write(s)
-            sys.stdout.flush()
+            self.write(s)
 
         _show(0)
         for i, item in enumerate(it):
             yield item
             _show(i + 1)
-        sys.stdout.write("%s\n" % end)
-        sys.stdout.flush()
+        self.write("%s\n" % end)

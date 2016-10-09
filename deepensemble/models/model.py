@@ -194,6 +194,20 @@ class Model(object):
         else:
             return self.__current_data_train[1]
 
+    def get_test_score(self):
+        """ Gets current testing score.
+
+        Returns
+        -------
+        float
+            Returns testing score.
+        """
+        if self.__current_data_test is None or len(self._score_function_list) <= 0:
+            return 0.0
+        else:
+            n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
+            return self.__current_data_test[n]
+
     def get_train_score(self):
         """ Gets current training score.
 
@@ -205,7 +219,8 @@ class Model(object):
         if self.__current_data_train is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
-            return self.__current_data_train[2]
+            n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
+            return self.__current_data_train[n]
 
     def get_name(self):
         """ Getter name.
@@ -584,7 +599,7 @@ class Model(object):
         test_size
         """
         input_train, input_test, target_train, target_test = \
-            cross_validation.train_test_split(_input, _target, test_size=test_size)
+            cross_validation.train_test_split(_input, _target, test_size=test_size, stratify=_target)
 
         if self.__type_model == 'classifier':
             target_train = self.translate_target(_target=target_train)
@@ -702,6 +717,7 @@ class Model(object):
             Returns cost model list that include regularization.
         """
         if self._cost_function_list['changed']:
+            self._cost_function_list['compiled'] = []
             for fun_cost, _, params in self._cost_function_list['list']:
                 self._cost_function_list['compiled'].append(fun_cost(model=self,
                                                                      _input=self.model_input,
@@ -723,6 +739,7 @@ class Model(object):
             Returns score model list.
         """
         if self._score_function_list['changed']:
+            self._score_function_list['compiled'] = []
             output = self.output(self.model_input, prob=False)
             if self.is_classifier():
                 output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
@@ -745,7 +762,7 @@ class Model(object):
         return self._score_function_list['compiled']
 
     def get_labels_costs(self):
-        return [l for _, l, _ in self._cost_function_list['list']]
+        return [l for _, l, _ in self._cost_function_list['list'] + self._reg_function_list]
 
     def get_labels_scores(self):
         return [l for _, l, _ in self._score_function_list['list']]
@@ -787,5 +804,5 @@ class Model(object):
             Path of file where storage data of model.
         """
         file_model = open(filename, 'wb')
-        pickle.dump(self.__dict__, file_model, 2)
+        pickle.dump(self.__dict__, file_model, -1)
         file_model.close()

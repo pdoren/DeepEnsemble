@@ -305,6 +305,8 @@ class BaseMetrics:
         plt.xlabel('epoch')
         plt.hold(False)
 
+        return f
+
     def plot_costs(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate costs plot.
 
@@ -325,7 +327,7 @@ class BaseMetrics:
         data_train = self.get_costs('train')
         data_test = self.get_costs('test')
         data = set(data_train) & set(data_test)
-        plt.subplots()
+        f, _ = plt.subplots()
         N = len(data)
         rows = max(N // 2, 1)
         cols = max(N // rows, 1)
@@ -342,8 +344,9 @@ class BaseMetrics:
                 ax.set_yscale('log')
             ax.legend(loc='best')
             ax.set_xlim([0, max_epoch])
-            plt.grid()
             plt.xlabel('epoch')
+
+        return f
 
     def plot_scores(self, max_epoch, title='Train score', log_xscale=False, log_yscale=False):
         """ Generate training score plot.
@@ -365,7 +368,7 @@ class BaseMetrics:
         data_train = self.get_scores('train')
         data_test = self.get_scores('test')
         data = set(data_train) & set(data_test)
-        plt.subplots()
+        f, _ = plt.subplots()
         N = len(data)
         rows = max(N // 2, 1)
         cols = max(N // rows, 1)
@@ -384,6 +387,8 @@ class BaseMetrics:
             # ax.set_ylim([vmin, vmax])
             ax.set_xlim([0, max_epoch])
             plt.xlabel('epoch')
+
+        return f
 
 
     def append_metric(self, metric):
@@ -435,7 +440,7 @@ class BaseMetrics:
         list_points[0].add_point(x, y)
 
     @staticmethod
-    def plot(ax, dps, label_prefix=''):
+    def plot(ax, dps, label_prefix='', label=None):
         """ Generate plot.
 
         Parameters
@@ -451,7 +456,8 @@ class BaseMetrics:
         """
         # Get average plots
         if len(dps) > 0:
-            label = dps[0].get_name()
+            if label is None:
+                label = dps[0].get_name()
             x, y = BaseMetrics._get_data_per_col(dps)
             _x = x[:, 0]
             _y = np.nanmean(y, axis=1)
@@ -627,9 +633,62 @@ class EnsembleMetrics(BaseMetrics):
                     self._models_metric[name_model].append_metric(metric._models_metric[name_model])
                 else:
                     self._models_metric[name_model] = metric._models_metric[name_model]
+
             super(EnsembleMetrics, self).append_metric(metric)
         else:
             if metric._model.get_name() in self._models_metric:
                 self._models_metric[metric._model.get_name()].append_metric(metric)
             else:
                 self._models_metric[metric._model.get_name()] = metric
+
+    def plot_costs(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
+        """ Generate costs plot.
+
+        Parameters
+        ----------
+        max_epoch : int
+            Number of epoch of training.
+
+        title : str
+            Plot title of cost.
+
+        log_xscale : bool
+            Flag for show plot x-axis in logarithmic scale.
+
+        log_yscale : bool
+            Flag for show plot y-axis in logarithmic scale.
+        """
+        costs =  {'train': {}, 'test': {}}
+        for name_model in self._models_metric:
+            model_metric = self._models_metric[name_model]
+            for type_set_data in ['train', 'test']:
+                for key in model_metric.get_costs(type_set_data):
+                    if key in self._costs[type_set_data]:
+                        costs[type_set_data][key] += model_metric.get_costs(type_set_data)[key]
+                    else:
+                        costs[type_set_data][key] = model_metric.get_costs(type_set_data)[key]
+
+        data_train = costs['train']
+        data_test = costs['test']
+
+        data = set(data_train) & set(data_test)
+        f, _ = plt.subplots()
+        N = len(data)
+        rows = max(N // 2, 1)
+        cols = max(N // rows, 1)
+        for j, i in enumerate(data):
+            ax = plt.subplot(rows, cols, j + 1)
+            plt.hold(True)
+            BaseMetrics.plot(ax, data_train[i], 'Train', self._model.get_name())
+            BaseMetrics.plot(ax, data_test[i], 'Test', self._model.get_name())
+            plt.hold(False)
+            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
+            if log_xscale:
+                ax.set_xscale('log')
+            if log_yscale:
+                ax.set_yscale('log')
+            ax.legend(loc='best')
+            ax.set_xlim([0, max_epoch])
+            plt.xlabel('epoch')
+
+        return f

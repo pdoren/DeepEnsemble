@@ -74,6 +74,8 @@ class ClassifierMetrics(BaseMetrics):
         cmap : plt.cm
             Plot Color.
         """
+        f, ax = plt.subplots()
+
         if len(self.__y_pred) > 0 and len(self.__y_true) > 0:
             y_true = np.concatenate(tuple(self.__y_true))
             y_pred = np.concatenate(tuple(self.__y_pred))
@@ -82,7 +84,6 @@ class ClassifierMetrics(BaseMetrics):
             row_sums = cm.sum(axis=0)
             cm = cm / row_sums[:, np.newaxis]
 
-            f, ax = plt.subplots()
             ax.set_aspect(1)
             res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
             width, height = cm.shape
@@ -101,6 +102,8 @@ class ClassifierMetrics(BaseMetrics):
             res.set_clim(vmin=0, vmax=1)
             plt.grid()
             plt.colorbar(res)
+
+        return f
 
 
 class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
