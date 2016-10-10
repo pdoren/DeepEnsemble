@@ -110,8 +110,7 @@ class ClassifierMetrics(BaseMetrics):
         return self.get_score_prediction(_target, _output)
 
     def get_score_prediction(self, _target, _prediction):
-        p = accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
-        return p
+        return accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
 
     def plot_confusion_matrix(self, **kwargs):
         """ Generate Confusion Matrix plot.

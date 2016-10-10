@@ -1,11 +1,15 @@
 import theano.tensor as T
 
 __all__ = [
+    'dummy_score',
     'score_accuracy',
     'score_ensemble_ambiguity',
     'score_rms'
 ]
 
+
+def dummy_score(_input, _output, _target, model):
+    pass
 
 #
 # Classification Functions

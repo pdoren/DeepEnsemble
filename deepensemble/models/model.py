@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import theano.tensor as T
 from sklearn import cross_validation
+from sklearn.metrics import accuracy_score
 
 from theano import config, shared, function
 from ..metrics import *
@@ -97,8 +98,8 @@ class Model(object):
         self._error = None
         self._labels_result_train = None
 
-        self.__current_data_train = None
-        self.__current_data_test = None
+        self._current_data_train = None
+        self._current_data_test = None
         self.__binary_classification = False
 
     def get_result_labels(self):
@@ -163,10 +164,10 @@ class Model(object):
         float
             Returns testing cost.
         """
-        if self.__current_data_test is None:
+        if self._current_data_test is None:
             return 0.0
         else:
-            return self.__current_data_test[1]
+            return self._current_data_test[1]
 
     def get_train_error(self):
         """ Gets current training error.
@@ -176,10 +177,10 @@ class Model(object):
         float
             Returns average training error.
         """
-        if self.__current_data_train is None:
+        if self._current_data_train is None:
             return 0.0
         else:
-            return self.__current_data_train[0]
+            return self._current_data_train[0]
 
     def get_train_cost(self):
         """ Gets current training cost.
@@ -189,10 +190,10 @@ class Model(object):
         float
             Returns training cost.
         """
-        if self.__current_data_train is None:
+        if self._current_data_train is None:
             return 0.0
         else:
-            return self.__current_data_train[1]
+            return self._current_data_train[1]
 
     def get_test_score(self):
         """ Gets current testing score.
@@ -202,11 +203,11 @@ class Model(object):
         float
             Returns testing score.
         """
-        if self.__current_data_test is None or len(self._score_function_list) <= 0:
+        if self._current_data_test is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
             n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
-            return self.__current_data_test[n]
+            return self._current_data_test[n]
 
     def get_train_score(self):
         """ Gets current training score.
@@ -216,11 +217,11 @@ class Model(object):
         float
             Returns training score.
         """
-        if self.__current_data_train is None or len(self._score_function_list) <= 0:
+        if self._current_data_train is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
             n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
-            return self.__current_data_train[n]
+            return self._current_data_train[n]
 
     def get_name(self):
         """ Getter name.
@@ -474,18 +475,18 @@ class Model(object):
                 self.prepare_data(_input, _target)
 
             if minibatch:  # Train minibatches
-                self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
+                self._current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
             else:
-                self.__current_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
+                self._current_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
 
-            metric_model.append_data(self.__current_data_train, epoch, type_set_data="train")
+            metric_model.append_data(self._current_data_train, epoch, type_set_data="train")
 
             iteration = epoch * n_train
 
             if epoch % validation_jump == 0:
                 # Evaluate test set
-                self.__current_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
-                metric_model.append_data(self.__current_data_test, epoch, type_set_data="test")
+                self._current_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
+                metric_model.append_data(self._current_data_test, epoch, type_set_data="test")
                 validation_cost = self.get_test_cost()
 
                 if validation_cost < best_validation_cost:
@@ -742,7 +743,10 @@ class Model(object):
             self._score_function_list['compiled'] = []
             output = self.output(self.model_input, prob=False)
             if self.is_classifier():
-                output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
+
+                if output is not None:  # TODO: for Wrapper model, changed in the future
+                    output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
+
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['compiled'].append(fun_score(_output=output,
                                                                            _input=self.model_input,
@@ -781,6 +785,9 @@ class Model(object):
             A dictionary mapping each parameter to its update expression.
         """
         return self._update_function[0](cost, self._params, **self._update_function[2])
+
+    def score(self, _input, _target):
+        return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))
 
     def load(self, filename):
         """ Load model from file.

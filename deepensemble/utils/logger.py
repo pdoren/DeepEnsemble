@@ -150,6 +150,45 @@ class Logger(Singleton):
             _show(i + 1)
         self.write("\n")
 
+    def progressbar_training2(self, it, model):
+        """ Show a progressbar (it is necessary called for increment counter).
+
+        Parameters
+        ----------
+        max_epoch : int
+            Max epoch or count of progress bar.
+
+        model : Model
+            Model used of training.
+
+        Returns
+        -------
+        iterator
+            Returns a iterator each time is called.
+        """
+        count = len(it)
+        self.fold += 1
+        prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
+        size = 20
+
+        def _show(_i):
+            postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
+            x = int(size * _i / count)
+            if _i == 1:
+                self.tic = time.time()
+            self.toc = time.time()
+            dt = self.toc - self.tic
+            eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
+            s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
+                prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
+            self.write(s)
+
+        _show(0)
+        for i, item in enumerate(it):
+            yield item
+            _show(i + 1)
+        self.write("\n")
+
     def progressbar(self, it, prefix="", postfix="", end="", size=20):
         """ Show a progressbar (it is necessary called for increment counter).
 

@@ -4,10 +4,12 @@ from .utils_functions import ITLFunctions
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'correntropy_cost', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
-           'test_cost']
+           'test_cost','dummy_cost']
 
 eps = 0.0001
 
+def dummy_cost(model, _input, _target):
+    pass
 
 def kullback_leibler_generalized(model, _input, _target):
     """ Kullback Leilbler generalized divergence.

@@ -5,7 +5,7 @@ import matplotlib.pylab as plt
 import numpy as np
 import theano
 
-from sklearn import cross_validation
+from sklearn import cross_validation, clone
 from sklearn.datasets import load_iris
 from sklearn.datasets.mldata import fetch_mldata
 
@@ -19,11 +19,12 @@ from deepensemble.utils import *
 from deepensemble.utils.utils_functions import *
 
 
-data_home = 'data'
-seed = 8014
+DATA_HOME = 'data'
+RANDOM_SEED = 13
+np.random.seed(RANDOM_SEED)
 
-def load_data(db_name, classes_labels):
-    db = fetch_mldata(db_name, data_home=data_home)
+def load_data(db_name, classes_labels, normalize=True):
+    db = fetch_mldata(db_name, data_home=DATA_HOME)
     if isinstance(db.data, csr_matrix):
         data_input = np.asarray(db.data.todense(), dtype=theano.config.floatX)
     else:
@@ -36,7 +37,10 @@ def load_data(db_name, classes_labels):
     db.target[db.target == -1] = 0
     data_target = classes_labels[np.asarray(db.target, dtype=int)]
 
-    return data_input, data_target, classes_labels, db_name
+    if normalize:
+        data_input = (data_input - np.mean(data_input, axis=0)) / np.var(data_input, axis=0)
+
+    return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
 
 
 def load_data_iris():
@@ -55,7 +59,6 @@ def test_classifier(dir, cls, input_train, target_train, input_test, target_test
         os.makedirs(dir)
 
     metrics = FactoryMetrics.get_metric(cls)
-    Logger().reset()
 
     best_params = None
     best_score = 0
@@ -147,9 +150,25 @@ def mlp_diabetes(n_input, n_output, classes_labels):
                         activation=ActivationFunctions.tanh))
     net.add_layer(Dense(n_output=1, activation=ActivationFunctions.tanh))
     net.append_cost(mse, name="MSE")
-    # net.append_cost(mcc, name="MCC")
     net.append_reg(L1, name='Regularization L1', lamb=0.05)
     net.append_reg(L2, name='Regularization L2', lamb=0.01)
+    net.append_score(score_accuracy, name='Accuracy')
+    net.set_update(adagrad, name="Adagrad", initial_learning_rate=0.1)
+
+    net.compile(fast=False)
+
+    return net
+
+
+def mlp_german(n_input, n_output, classes_labels):
+    net = Sequential("mlp", "classifier", classes_labels)
+    net.add_layer(Dense(n_input=n_input, n_output=12,
+                        activation=ActivationFunctions.tanh))
+    net.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+    net.append_cost(mse, name="MSE")
+    # net.append_cost(mcc, name="MCC")
+    net.append_reg(L1, name='Regularization L1', lamb=0.005)
+    net.append_reg(L2, name='Regularization L2', lamb=0.001)
     net.append_score(score_accuracy, name='Accuracy')
     net.set_update(adagrad, name="Adagrad", initial_learning_rate=0.1)
     # net.set_update(sgd, name="SGD", learning_rate=0.1)
@@ -159,7 +178,7 @@ def mlp_diabetes(n_input, n_output, classes_labels):
     return net
 
 
-def mlp_german(n_input, n_output, classes_labels):
+def mlp_a1a(n_input, n_output, classes_labels):
     net = Sequential("mlp", "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_input, n_output=18,
                         activation=ActivationFunctions.tanh))
@@ -181,9 +200,9 @@ def load_all_data():
     dbs = []
 
     data_dbs = {
-        # 'australian_scale': ['yes', 'no'],
+        'australian_scale': ['yes', 'no'],
         # 'diabetes_scale' : ['yes', 'no'],
-        'german.numer_scale' : ['class 1', 'class 2'],
+        # 'german.numer_scale' : ['class 1', 'class 2'],
         # 'a1a' : ['class 1', 'class 2'],
         # 'Breast Cancer IDA' : ['yes', 'no'],
         # 'datasets-UCI ionosphere' : ['class 1', 'class 2'],
@@ -201,30 +220,80 @@ def test_mlp():
 
     dbs = load_all_data()
 
-    for data_input, data_target, classes_labels, name_db in dbs:
+    for data_input, data_target, classes_labels, name_db, desc, col_names in dbs:
 
         n_input = data_input.shape[1]
         n_output = len(classes_labels)
 
         batch_size = 32
+        max_epoch = 300
+        folds = 25
 
         dir_db = name_db + '/'
 
-        input_train, input_test, target_train, target_test = cross_validation.train_test_split(
-            data_input, data_target, stratify=data_target, test_size=0.3, random_state=seed)
+        # Generate Cross validation data
+        input_train, input_valid, target_train, target_valid = cross_validation.train_test_split(
+            data_input, data_target, stratify=data_target, test_size=0.3, random_state=RANDOM_SEED)
 
-        net = mlp_german(n_input, n_output, classes_labels)
+        # Select Classifier
+        net = mlp_australian(n_input, n_output, classes_labels)
 
         # Print Info Data and Training
-        Logger().print('Model %s | in: %d, out: %d | classes: %s' % (name_db, n_input, n_output, classes_labels))
-        Logger().print('Examples: %d | train: %d, validation: %d ' %
-                       (data_input.shape[0], input_train.shape[0], input_test.shape[0]))
+        Logger().reset()
+        Logger().print('Model:\n %s | in: %d, out: %d' % (net.get_name(), n_input, n_output))
+        Logger().print('Data (%s):\n DESC: %s.\n Features: %d\n Classes(%d): %s' %
+                       (name_db, desc, n_input, n_output, classes_labels))
+        Logger().print('Training:\n total data: %d | train: %d, validation: %d ' %
+                       (data_input.shape[0], input_train.shape[0], input_valid.shape[0]))
+        Logger().print(' folds: %d | Epoch: %d, Batch Size: %d ' %
+                       (folds, max_epoch, batch_size))
 
         dir = dir_db + net.get_name() + '/'
-        test_classifier(dir, net, input_train, target_train, input_test, target_test,
-                        folds=25, max_epoch=300,
+        test_classifier(dir, net, input_train, target_train, input_valid, target_valid,
+                        folds=folds, max_epoch=max_epoch,
                         batch_size=batch_size, early_stop=False,
                         improvement_threshold=0.99995, update_sets=False)
 
 
-test_mlp()
+def test_random_forest():
+    from sklearn.ensemble import RandomForestClassifier
+
+    dbs = load_all_data()
+
+    for data_input, data_target, classes_labels, name_db, desc, col_names in dbs:
+        n_input = data_input.shape[1]
+        n_output = len(classes_labels)
+
+        batch_size = 32
+        max_epoch = 300
+        folds = 25
+
+        dir_db = name_db + '/'
+
+        # Generate Cross validation data
+        input_train, input_valid, target_train, target_valid = cross_validation.train_test_split(
+            data_input, data_target, stratify=data_target, test_size=0.3, random_state=RANDOM_SEED)
+
+        # Select Classifier
+        n_estimators = 30
+        rf = RandomForestClassifier(n_estimators=n_estimators)
+        model = Wrapper(rf, name='Random Forest', type_model='classifier', target_labels=classes_labels)
+
+        # Print Info Data and Training
+        Logger().reset()
+        Logger().print('Model:\n %s | in: %d, out: %d' % ('Random Forest', n_input, n_output))
+        Logger().print('Data (%s):\n DESC: %s.\n Features: %d\n Classes(%d): %s' %
+                       (name_db, desc, n_input, n_output, classes_labels))
+        Logger().print('Training:\n total data: %d | train: %d, validation: %d ' %
+                       (data_input.shape[0], input_train.shape[0], input_valid.shape[0]))
+        Logger().print(' folds: %d | Epoch: %d, Batch Size: %d ' %
+                       (folds, max_epoch, batch_size))
+
+        dir = dir_db + 'Random Forest/'
+        test_classifier(dir, model, input_train, target_train, input_valid, target_valid,
+                        folds=folds, max_epoch=max_epoch,
+                        batch_size=batch_size, early_stop=False,
+                        improvement_threshold=0.99995, update_sets=False)
+
+#test_mlp()
+test_random_forest()
