@@ -1,6 +1,6 @@
 from .model import Model
 from ..metrics import *
-from ..utils import *
+from ..utils import translate_output
 
 __all__ = ['Sequential']
 

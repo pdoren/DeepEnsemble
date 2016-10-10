@@ -8,13 +8,16 @@ __all__ = [
 ]
 
 
+# noinspection PyUnusedLocal
 def dummy_score(_input, _output, _target, model):
     pass
+
 
 #
 # Classification Functions
 #
 
+# noinspection PyUnusedLocal
 def score_accuracy(_input, _output, _target, model):
     """ Accuracy score in a classifier models.
 
@@ -40,15 +43,18 @@ def score_accuracy(_input, _output, _target, model):
     return T.mean(T.eq(_output, _target))
 
 
+# noinspection PyUnusedLocal
 def score_ensemble_ambiguity(_input, _output, _target, model):
     ensemble = model
     err = [T.mean(T.sqr(model.output(_input, prob=False) - _output)) for model in ensemble.get_models()]
     return sum(err) / ensemble.get_num_models()
 
+
 #
 # Regression Functions
 #
 
+# noinspection PyUnusedLocal
 def score_rms(_input, _output, _target, model):
     """ Gets Root Mean Square like score in a regressor model.
 

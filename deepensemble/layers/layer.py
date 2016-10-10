@@ -10,10 +10,10 @@ class Layer(object):
 
     Attributes
     ----------
-    __input_shape : tuple
+    _input_shape : tuple
         Input shape.
 
-    __output_shape : tuple
+    _output_shape : tuple
         Output shape.
 
     _non_linearity : theano.Op
@@ -33,8 +33,8 @@ class Layer(object):
 
     """
     def __init__(self, input_shape=None, output_shape=None, non_linearity=None, exclude_params=False):
-        self.__input_shape = input_shape
-        self.__output_shape = output_shape
+        self._input_shape = input_shape
+        self._output_shape = output_shape
         self._params = []
         self._W = None
         self._b = None
@@ -60,13 +60,13 @@ class Layer(object):
         return self.__exclude_params
 
     def get_input_shape(self):
-        return self.__input_shape
+        return self._input_shape
 
     def set_input_shape(self, shape):
-        self.__input_shape = shape
+        self._input_shape = shape
 
     def get_output_shape(self):
-        return self.__output_shape
+        return self._output_shape
 
     def get_shape_W(self):
         """ Gets shape weights of layer.
@@ -106,7 +106,7 @@ class Layer(object):
         int
             Returns input dimension of layer.
         """
-        return int(np.prod(self.__input_shape))
+        return int(np.prod(self._input_shape))
 
     def get_fan_out(self):
         """ Getter of output dimension.
@@ -116,7 +116,7 @@ class Layer(object):
         int
             Returns output dimension of layer.
         """
-        return int(np.prod(self.__output_shape))
+        return int(np.prod(self._output_shape))
 
     def get_parameters(self):
         """ Getter of parameters of layer.

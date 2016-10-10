@@ -1,4 +1,3 @@
-from theano.tensor.signal.pool import pool_2d
 from .layer import Layer
 
 __all__ = ['MaxPool1D', 'MaxPool2D', 'Pool1D', 'Pool2D']

@@ -39,10 +39,10 @@ class DataPlot:
     __y : list[float]
         Axis y.
 
-    name : str
+    __name : str
         Plot's name.
 
-    type : str
+    __type : str
         Type of data.
 
     Parameters
@@ -51,11 +51,11 @@ class DataPlot:
         Plot's name.
     """
 
-    def __init__(self, name='Model', type='score'):
+    def __init__(self, name='Model', _type='score'):
         self.__x = []
         self.__y = []
         self.__name = name
-        self.__type = type
+        self.__type = _type
 
     def reset(self):
         """ Reset data.
@@ -394,7 +394,6 @@ class BaseMetrics:
 
         return f
 
-
     def append_metric(self, metric):
         """ Adds metric of another metric model.
 
@@ -418,7 +417,7 @@ class BaseMetrics:
                     self._scores[type_set_data][key] = metric.get_scores(type_set_data)[key]
 
     @staticmethod
-    def add_point(list_points, x, y, type, name):
+    def add_point(list_points, x, y, _type, name):
         """ Add point a list.
 
         Parameters
@@ -432,14 +431,14 @@ class BaseMetrics:
         y : float
             Point axis y.
 
-        type : str
+        _type : str
             Type of data.
 
         name : str
             Plot's name.
         """
         if len(list_points) <= 0:
-            list_points.append(DataPlot(name=name, type=type))
+            list_points.append(DataPlot(name=name, _type=_type))
 
         list_points[0].add_point(x, y)
 
@@ -452,11 +451,14 @@ class BaseMetrics:
         ax
             Handle subplot.
 
-        dps : list[DataPlot]
+        dps : numpy.array or list
             List of DataPlots.
 
         label_prefix : str
-            This string is concatenate with label plot.
+            This string is concatenate with title plot.
+
+        label : str
+            This string is the principal text in title plot.
         """
         # Get average plots
         if len(dps) > 0:
@@ -662,7 +664,7 @@ class EnsembleMetrics(BaseMetrics):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
-        costs =  {'train': {}, 'test': {}}
+        costs = {'train': {}, 'test': {}}
         for name_model in self._models_metric:
             model_metric = self._models_metric[name_model]
             for type_set_data in ['train', 'test']:
@@ -686,7 +688,10 @@ class EnsembleMetrics(BaseMetrics):
             BaseMetrics.plot(ax, data_train[i], 'Train', self._model.get_name())
             BaseMetrics.plot(ax, data_test[i], 'Test', self._model.get_name())
             plt.hold(False)
+
+            # noinspection PyTypeChecker
             ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
+
             if log_xscale:
                 ax.set_xscale('log')
             if log_yscale:

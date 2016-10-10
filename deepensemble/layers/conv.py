@@ -14,10 +14,10 @@ class ConvolutionBase(Layer):
 
         Parameters
         ----------
-        filter_shape : tuple
+        filter_shape : tuple[]
             The tuple has the number of filters, num input feature maps and filter size.
 
-        input_shape :  tuple
+        input_shape :  tuple[]
             The tuple has the batch size, num input feature maps and input data size.
 
         stride : int
@@ -30,8 +30,6 @@ class ConvolutionBase(Layer):
 
         non_linearity : callable
         """
-
-        fan_out = int()
 
         self._filter_shape = filter_shape
         self._stride = stride

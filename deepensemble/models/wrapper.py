@@ -1,11 +1,10 @@
-import numpy as np
-import theano.tensor as T
-
 from sklearn import cross_validation, clone
 
 from .model import Model
 from ..metrics import *
-from ..utils import *
+from ..utils.logger import Logger
+from ..utils.score_functions import dummy_score
+from ..utils.cost_functions import dummy_cost
 
 
 __all__ = ['Wrapper']
@@ -37,13 +36,14 @@ class Wrapper(Model):
         metric_model = FactoryMetrics().get_metric(self)
 
         best_score = 0
+        cls_reset = clone(self.__model)
         for i, (train_index, test_index) in enumerate(Logger().progressbar_training2(folds, self)):
             fold_X_train = _input[train_index]
             fold_y_train = _target[train_index]
             fold_X_test = _input[test_index]
             fold_y_test = _target[test_index]
 
-            cls = clone(self.__model)
+            self.__model = clone(cls_reset)
             cls = self.__model.fit(fold_X_train, fold_y_train)
 
             score_train = cls.score(fold_X_train, fold_y_train)

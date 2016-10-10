@@ -15,7 +15,7 @@ def translate_target(_target, target_labels):
     _target : numpy.array
         Target sample.
 
-    target_labels : list
+    target_labels : list[]
         Target labels.
 
     Returns

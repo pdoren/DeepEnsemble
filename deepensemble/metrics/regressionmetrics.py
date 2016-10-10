@@ -1,4 +1,3 @@
-import theano.tensor as T
 from .basemetrics import BaseMetrics, EnsembleMetrics
 
 __all__ = ['RegressionMetrics', 'EnsembleRegressionMetrics']

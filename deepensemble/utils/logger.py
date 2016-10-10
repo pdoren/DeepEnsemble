@@ -52,6 +52,7 @@ class Logger(Singleton):
         self.buffer = ""
         self.fold = 0
 
+    # noinspection PyUnusedLocal
     def push_buffer(self, message, end='\n', **kwargs):
         self.buffer += message + end
 
@@ -77,6 +78,7 @@ class Logger(Singleton):
             print(str(message), **kwargs)
         self.push_buffer(message, **kwargs)
 
+    # noinspection PyUnusedLocal
     def write(self, message="", write_buf=False, **kwargs):
         sys.stdout.write(message)
         sys.stdout.flush()
@@ -155,8 +157,8 @@ class Logger(Singleton):
 
         Parameters
         ----------
-        max_epoch : int
-            Max epoch or count of progress bar.
+        it
+            Iterator for progressbar.
 
         model : Model
             Model used of training.

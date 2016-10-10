@@ -25,6 +25,7 @@ class ClassifierMetrics(BaseMetrics):
     model : Model
         Model.
     """
+
     def __init__(self, model):
         super(ClassifierMetrics, self).__init__(model=model)
         self.__y_pred = []
@@ -43,20 +44,19 @@ class ClassifierMetrics(BaseMetrics):
         support = None
 
         for y_true, y_pred in zip(self.__y_true, self.__y_pred):
-
             p, r, f1, s = precision_recall_fscore_support(y_true, y_pred,
-                                            labels=self._model.get_target_labels())
+                                                          labels=self._model.get_target_labels())
 
             precision = p[np.newaxis, :] if precision is None else np.concatenate((precision, p[np.newaxis, :]))
             recall = r[np.newaxis, :] if recall is None else np.concatenate((recall, r[np.newaxis, :]))
-            f1_score= f1[np.newaxis, :] if f1_score is None else np.concatenate((f1_score, f1[np.newaxis, :]))
-            support= s[np.newaxis, :] if support is None else np.concatenate((support, s[np.newaxis, :]))
+            f1_score = f1[np.newaxis, :] if f1_score is None else np.concatenate((f1_score, f1[np.newaxis, :]))
+            support = s[np.newaxis, :] if support is None else np.concatenate((support, s[np.newaxis, :]))
 
         metrics = OrderedDict()
 
-        metrics['Precision'] = (np.mean(precision*100, axis=0), np.std(precision*100, axis=0))
-        metrics['Recall'] = (np.mean(recall*100, axis=0), np.std(recall*100, axis=0))
-        metrics['f1 Score'] = (np.mean(f1_score*100, axis=0), np.std(f1_score*100, axis=0))
+        metrics['Precision'] = (np.mean(precision * 100, axis=0), np.std(precision * 100, axis=0))
+        metrics['Recall'] = (np.mean(recall * 100, axis=0), np.std(recall * 100, axis=0))
+        metrics['f1 Score'] = (np.mean(f1_score * 100, axis=0), np.std(f1_score * 100, axis=0))
         metrics['Support'] = np.mean(support, axis=0)
 
         len_cell = 0
@@ -109,7 +109,8 @@ class ClassifierMetrics(BaseMetrics):
 
         return self.get_score_prediction(_target, _output)
 
-    def get_score_prediction(self, _target, _prediction):
+    @staticmethod
+    def get_score_prediction(_target, _prediction):
         return accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
 
     def plot_confusion_matrix(self, **kwargs):
@@ -136,6 +137,12 @@ class ClassifierMetrics(BaseMetrics):
 
         Parameters
         ----------
+        y_true : numpy.array
+            Target sample.
+
+        y_pred : numpy.array
+            Prediction.
+
         title : str
             Plot title.
 
@@ -178,6 +185,7 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
     model : EnsembleModel
         Ensemble Model.
     """
+
     def __init__(self, model):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 

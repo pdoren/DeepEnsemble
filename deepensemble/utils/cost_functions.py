@@ -4,12 +4,15 @@ from .utils_functions import ITLFunctions
 __all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'correntropy_cost', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
-           'test_cost','dummy_cost']
+           'test_cost', 'dummy_cost']
 
 eps = 0.0001
 
+
+# noinspection PyUnusedLocal
 def dummy_cost(model, _input, _target):
     pass
+
 
 def kullback_leibler_generalized(model, _input, _target):
     """ Kullback Leilbler generalized divergence.
@@ -54,7 +57,6 @@ def kullback_leibler(model, _input, _target):
     theano.tensor.matrix
         Return Kullback Leilbler divergence.
     """
-    eps = 0.0001
     pt = _target
     pp = model.output(_input)
     return T.sum((pt + eps) * (T.log(pt + eps) - T.log(pp + eps)))
@@ -282,7 +284,6 @@ def test_cost_2(model, _input, _target, ensemble, lamb=1.0, s=1.0):
 def test_cost(model, _input, _target, ensemble, lamb=1.0, s=0.17, kernel=ITLFunctions.norm):
     om = model.output(_input)
     em2 = T.power(model.error(_input, _target), 2.0)
-    ee2 = T.power(ensemble.error(_input, _target), 2.0)
 
     es = []
     for model_j in ensemble.get_models():

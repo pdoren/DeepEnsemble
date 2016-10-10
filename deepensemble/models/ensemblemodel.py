@@ -1,7 +1,10 @@
 from collections import OrderedDict
 
+from sklearn import cross_validation
+
 from .model import Model
 from ..metrics import *
+from ..utils import Logger
 
 __all__ = ['EnsembleModel']
 
@@ -24,8 +27,7 @@ class EnsembleModel(Model):
     """
 
     def __init__(self, name="ensemble"):
-        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name, input_shape=0,
-                                            output_shape=0)
+        super(EnsembleModel, self).__init__(target_labels=[], type_model="regressor", name=name)
         self.__combiner = None
         self.__list_models_ensemble = []
         self.__list_cost_ensemble = []
@@ -199,14 +201,14 @@ class EnsembleModel(Model):
                 for i, model in enumerate(self.get_models()):
                     model.append_cost(fun_cost=fun_cost, name=name, ensemble=self, **params_cost)
 
-        cost = 0.0
+        cost = []
         extra_results = []
         labels_extra_results = []
         if not fast:  # compute all the scores and costs of the models in ensemble
             for model in self.get_models():
                 model.review_is_binary_classifier()  # update if is binary classifier
                 cost_model = model.get_cost()
-                cost += cost_model
+                cost += [cost_model]
                 extra_results += [cost_model]
                 labels_extra_results += ['Cost']
                 labels_extra_results += model.get_labels_costs()
@@ -217,9 +219,9 @@ class EnsembleModel(Model):
             for model in self.get_models():
                 model.review_is_binary_classifier()  # update if is binary classifier
                 cost_model = model.get_cost()
-                cost += cost_model
+                cost += [cost_model]
 
-        cost = cost / self.get_num_models()
+        cost = sum(cost) / self.get_num_models()
 
         update_combiner = self.__combiner.update_parameters(self, self.model_input, self.model_target)
         updates = OrderedDict()
@@ -249,3 +251,47 @@ class EnsembleModel(Model):
             Other parameters.
         """
         self.__list_cost_ensemble.append((fun_cost, name, kwargs))
+
+    def fit_folds(self, _input, _target, seed=13, **kwargs):
+        """ Function for training sequential model.
+
+        Parameters
+        ----------
+        _input : theano.tensor.matrix
+            Input training samples.
+
+        _target : theano.tensor.matrix
+            Target training samples.
+
+        seed : int
+            Seed for random generators.
+
+        kwargs
+
+        Returns
+        -------
+        numpy.array[float]
+            Returns training cost for each batch.
+        """
+        # create a specific metric
+        metric_model = FactoryMetrics().get_metric(self)
+
+        nfolds = self.get_num_models()
+
+        folds = list(cross_validation.StratifiedKFold(_target, nfolds, shuffle=True, random_state=seed))
+        metric_model = FactoryMetrics().get_metric(self)
+
+        iterator = zip(self.get_models(), folds)
+
+        best_score = 0
+        for model, train_index, test_index in Logger().progressbar_training2(iterator, self):
+            fold_X_train = _input[train_index]
+            fold_y_train = _target[train_index]
+            fold_X_test = _input[test_index]
+            fold_y_test = _target[test_index]
+
+            metric = model.fit(fold_X_train, fold_y_train, **kwargs)
+
+            metric_model.append_metric(metric)
+
+        return metric_model

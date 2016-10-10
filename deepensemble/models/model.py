@@ -6,7 +6,8 @@ from sklearn.metrics import accuracy_score
 
 from theano import config, shared, function
 from ..metrics import *
-from ..utils import *
+from ..utils import Logger
+from ..utils.utils_classifiers import *
 
 __all__ = ['Model']
 
@@ -61,10 +62,10 @@ class Model(object):
     name : str, "model" by default
         Name of model.
 
-    input_shape : tuple
+    input_shape : tuple[]
         Number of inputs of the model.
 
-    output_shape : tuple
+    output_shape : tuple[]
         Number of output of the model.
     """
 
@@ -714,7 +715,7 @@ class Model(object):
 
         Returns
         -------
-        list
+        list[]
             Returns cost model list that include regularization.
         """
         if self._cost_function_list['changed']:
@@ -736,7 +737,7 @@ class Model(object):
 
         Returns
         -------
-        list
+        list[]
             Returns score model list.
         """
         if self._score_function_list['changed']:

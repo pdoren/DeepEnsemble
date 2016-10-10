@@ -13,6 +13,7 @@
       <w>deepensemble</w>
       <w>duchi</w>
       <w>feedforward</w>
+      <w>frac</w>
       <w>ggplot</w>
       <w>gparams</w>
       <w>hazan</w>
@@ -27,9 +28,11 @@
       <w>lutz</w>
       <w>mammone</w>
       <w>mathbb</w>
+      <w>mathbf</w>
       <w>minibach</w>
       <w>minibatch</w>
       <w>minibatches</w>
+      <w>nfolds</w>
       <w>numer</w>
       <w>perceptron</w>
       <w>perrone</w>
@@ -50,9 +53,11 @@
       <w>tanh</w>
       <w>theano</w>
       <w>upcasting</w>
+      <w>varphi</w>
       <w>vmax</w>
       <w>vmin</w>
       <w>xscale</w>
+      <w>ylim</w>
       <w>yscale</w>
       <w>zeiler</w>
       <w>zhou</w>

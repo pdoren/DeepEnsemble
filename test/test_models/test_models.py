@@ -1,132 +1,14 @@
-import time
-import os
-
-import matplotlib.pylab as plt
 import numpy as np
-import theano
 
-from sklearn import cross_validation, clone
-from sklearn.datasets import load_iris
-from sklearn.datasets.mldata import fetch_mldata
+from sklearn import cross_validation
 
-from scipy.sparse import csr_matrix
-
-from deepensemble.combiner import *
 from deepensemble.layers import *
-from deepensemble.metrics import *
 from deepensemble.models import *
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import *
 
-
-DATA_HOME = 'data'
 RANDOM_SEED = 13
 np.random.seed(RANDOM_SEED)
-
-def load_data(db_name, classes_labels, normalize=True):
-    db = fetch_mldata(db_name, data_home=DATA_HOME)
-    if isinstance(db.data, csr_matrix):
-        data_input = np.asarray(db.data.todense(), dtype=theano.config.floatX)
-    else:
-        data_input = np.asarray(db.data, dtype=theano.config.floatX)
-
-    if hasattr(db, 'target_names'):
-        classes_labels = db.target_names
-
-    classes_labels = np.asarray(classes_labels, dtype='<U10')
-    db.target[db.target == -1] = 0
-    data_target = classes_labels[np.asarray(db.target, dtype=int)]
-
-    if normalize:
-        data_input = (data_input - np.mean(data_input, axis=0)) / np.var(data_input, axis=0)
-
-    return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
-
-
-def load_data_iris():
-    iris = load_iris()
-    data_input = np.asarray(iris.data, dtype=theano.config.floatX)
-    data_target = iris.target_names[iris.target]
-    classes_labels = iris.target_names
-
-    return data_input, data_target, classes_labels, 'Iris'
-
-
-def test_classifier(dir, cls, input_train, target_train, input_test, target_test, folds=25, max_epoch=300, **kwargs):
-    """ Test on classifier.
-    """
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
-    metrics = FactoryMetrics.get_metric(cls)
-
-    best_params = None
-    best_score = 0
-    for i in range(folds):
-        metric = cls.fit(input_train, target_train, max_epoch=max_epoch, **kwargs)
-
-        # Compute metrics
-        score = metrics.append_prediction(target_test, cls.predict(input_test))
-        metrics.append_metric(metric)
-
-        # Save the best params
-        if score > best_score:
-            best_params = cls.save_params()
-            best_score = score
-        elif score == best_params:
-            score_curr = metrics.get_score_prediction(target_train, cls.predict(input_train))
-            params_curr = cls.save_params()
-            cls.load_params(best_params)
-            score_best = metrics.get_score_prediction(target_train, cls.predict(input_train))
-
-            if score_curr > score_best:
-                best_params = params_curr
-
-        # Reset parameters
-        cls.reset()
-
-    Logger().print('wait ... ', end='')
-    # Load the best params
-    if best_params is not None:
-        cls.load_params(best_params)
-
-    # Save classifier
-    cls.save(dir + '%s_classifier.pkl' % cls.get_name())
-
-    # Compute and Show metrics
-    plt.style.use('ggplot')
-    metrics.classification_report()
-    if isinstance(cls, EnsembleModel):
-        metrics.diversity_report()
-
-    Logger().print('The best score: %.4f' % best_score)
-
-    fig_ = []
-    fig_.append((metrics.plot_confusion_matrix(), 'confusion_matrix'))
-    fig_.append((metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
-                 'confusion_matrix_best_train'))
-    fig_.append((metrics.plot_confusion_matrix_prediction(target_test, cls.predict(input_test)),
-                 'confusion_matrix_best_test'))
-    fig_.append((metrics.plot_cost(max_epoch), 'Cost'))
-    fig_.append((metrics.plot_costs(max_epoch), 'Costs'))
-    fig_.append((metrics.plot_scores(max_epoch), 'Scores'))
-
-    if isinstance(cls, EnsembleModel):
-        for key in metrics.get_models_metric():
-            model = metrics.get_models_metric()[key].get_model()
-            fig_.append((metrics.get_models_metric()[key].plot_costs(max_epoch), 'Cost_' + model.get_name()))
-            fig_.append((metrics.get_models_metric()[key].plot_scores(max_epoch), 'Cost_' + model.get_name()))
-
-    for fig, name in fig_:
-        fig.savefig(dir + name + '.pdf', format='pdf', dpi=1200)
-        fig.clf()
-
-    Logger().save_buffer(dir + 'info.txt')
-
-    print(':) OK')
-
-    return best_score, cls
-
 
 def mlp_australian(n_input, n_output, classes_labels):
     net = Sequential("mlp", "classifier", classes_labels)
