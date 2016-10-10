@@ -77,10 +77,11 @@ class Logger(Singleton):
             print(str(message), **kwargs)
         self.push_buffer(message, **kwargs)
 
-    def write(self, message="", **kwargs):
+    def write(self, message="", write_buf=False, **kwargs):
         sys.stdout.write(message)
         sys.stdout.flush()
-        self.push_buffer(message, end='')
+        if write_buf:
+            self.push_buffer(message, end='')
 
     def start_measure_time(self, message="", **kwargs):
         """ Start timer, is possible show a message.

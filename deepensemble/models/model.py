@@ -415,9 +415,9 @@ class Model(object):
             return np.mean(t_data, axis=0)
         else:
             if train:
-                return self._minibatch_train_eval(0, n_input - 1, 1.0)
+                return self._minibatch_train_eval(0, n_input, 1.0)
             else:
-                return self._minibatch_test_eval(0, n_input - 1, 1.0)
+                return self._minibatch_test_eval(0, n_input, 1.0)
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True,
             improvement_threshold=0.995, minibatch=True, update_sets=True):
@@ -493,7 +493,7 @@ class Model(object):
                     if validation_cost < best_validation_cost * improvement_threshold:
                         patience = max(patience, iteration * patience_increase)
 
-                    best_params = self._save_params()
+                    best_params = self.save_params()
                     best_validation_cost = validation_cost
 
             if early_stop and patience <= iteration:
@@ -501,14 +501,14 @@ class Model(object):
                 break
 
         if best_params is not None:
-            self._load_params(best_params)
+            self.load_params(best_params)
 
         return metric_model
 
-    def _save_params(self):
+    def save_params(self):
         return [i.get_value() for i in self.get_params()]
 
-    def _load_params(self, params):
+    def load_params(self, params):
         for p, value in zip(self.get_params(), params):
             p.set_value(value)
 
@@ -589,7 +589,7 @@ class Model(object):
         if self.is_classifier() and len(self.__target_labels) == 2 and self.get_fan_out() == 1:
             self.__binary_classification = True
 
-    def prepare_data(self, _input, _target, test_size=0.3):
+    def prepare_data(self, _input, _target, test_size=0.20):
         """
 
         Parameters

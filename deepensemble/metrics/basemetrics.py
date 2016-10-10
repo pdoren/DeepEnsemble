@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
+from collections import OrderedDict
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
@@ -172,8 +173,8 @@ class BaseMetrics:
         self._model = model
         self._error = {'train': [], 'test': []}
         self._cost = {'train': [], 'test': []}
-        self._costs = {'train': {}, 'test': {}}
-        self._scores = {'train': {}, 'test': {}}
+        self._costs = {'train': OrderedDict(), 'test': OrderedDict()}
+        self._scores = {'train': OrderedDict(), 'test': OrderedDict()}
 
     def get_cost(self, type_set_data):
         """ Getter total cost.
@@ -225,8 +226,8 @@ class BaseMetrics:
         """
         self._error = {'train': [], 'test': []}
         self._cost = {'train': [], 'test': []}
-        self._costs = {'train': {}, 'test': {}}
-        self._scores = {'train': {}, 'test': {}}
+        self._costs = {'train': OrderedDict(), 'test': OrderedDict()}
+        self._scores = {'train': OrderedDict(), 'test': OrderedDict()}
 
     def append_data(self, data, epoch, type_set_data):
         """ Append metrics data.
@@ -304,6 +305,7 @@ class BaseMetrics:
         ax.set_xlim([0, max_epoch])
         plt.xlabel('epoch')
         plt.hold(False)
+        plt.tight_layout()
 
         return f
 
@@ -329,9 +331,9 @@ class BaseMetrics:
         data = set(data_train) & set(data_test)
         f, _ = plt.subplots()
         N = len(data)
-        rows = max(N // 2, 1)
-        cols = max(N // rows, 1)
-        for j, i in enumerate(data):
+        cols = max(N // 2, 1)
+        rows = max(N // cols, 1)
+        for j, i in enumerate(data_train):
             ax = plt.subplot(rows, cols, j + 1)
             plt.hold(True)
             BaseMetrics.plot(ax, data_train[i], 'Train')
@@ -345,10 +347,11 @@ class BaseMetrics:
             ax.legend(loc='best')
             ax.set_xlim([0, max_epoch])
             plt.xlabel('epoch')
+            plt.tight_layout()
 
         return f
 
-    def plot_scores(self, max_epoch, title='Train score', log_xscale=False, log_yscale=False):
+    def plot_scores(self, max_epoch, title='Score', log_xscale=False, log_yscale=False):
         """ Generate training score plot.
 
         Parameters
@@ -370,9 +373,9 @@ class BaseMetrics:
         data = set(data_train) & set(data_test)
         f, _ = plt.subplots()
         N = len(data)
-        rows = max(N // 2, 1)
-        cols = max(N // rows, 1)
-        for j, i in enumerate(sorted(data)):
+        cols = max(N // 2, 1)
+        rows = max(N // cols, 1)
+        for j, i in enumerate(data_train):
             ax = plt.subplot(rows, cols, j + 1)
             plt.hold(True)
             BaseMetrics.plot(ax, data_train[i], 'Train')
@@ -387,6 +390,7 @@ class BaseMetrics:
             # ax.set_ylim([vmin, vmax])
             ax.set_xlim([0, max_epoch])
             plt.xlabel('epoch')
+            plt.tight_layout()
 
         return f
 
@@ -674,9 +678,9 @@ class EnsembleMetrics(BaseMetrics):
         data = set(data_train) & set(data_test)
         f, _ = plt.subplots()
         N = len(data)
-        rows = max(N // 2, 1)
-        cols = max(N // rows, 1)
-        for j, i in enumerate(data):
+        cols = max(N // 2, 1)
+        rows = max(N // cols, 1)
+        for j, i in enumerate(data_train):
             ax = plt.subplot(rows, cols, j + 1)
             plt.hold(True)
             BaseMetrics.plot(ax, data_train[i], 'Train', self._model.get_name())
@@ -690,5 +694,6 @@ class EnsembleMetrics(BaseMetrics):
             ax.legend(loc='best')
             ax.set_xlim([0, max_epoch])
             plt.xlabel('epoch')
+            plt.tight_layout()
 
         return f

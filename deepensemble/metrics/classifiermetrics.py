@@ -1,6 +1,6 @@
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, accuracy_score
+from collections import OrderedDict
 import matplotlib.pylab as plt
-import theano.tensor as T
 import numpy as np
 from .basemetrics import *
 from .diversitymetrics import *
@@ -30,18 +30,63 @@ class ClassifierMetrics(BaseMetrics):
         self.__y_pred = []
         self.__y_true = []
 
-    def classification_report(self):
+    def classification_report(self, name_report="Classification Report"):
         """ Generate a classification report (wrapper classification_report scikit)
 
         Returns
         -------
         None
         """
-        y_true = np.concatenate(tuple(self.__y_true))
-        y_pred = np.concatenate(tuple(self.__y_pred))
+        precision = None
+        recall = None
+        f1_score = None
+        support = None
 
-        Logger().print(classification_report(y_true, y_pred,
-                                             target_names=np.char.mod("%s", self._model.get_target_labels())))
+        for y_true, y_pred in zip(self.__y_true, self.__y_pred):
+
+            p, r, f1, s = precision_recall_fscore_support(y_true, y_pred,
+                                            labels=self._model.get_target_labels())
+
+            precision = p[np.newaxis, :] if precision is None else np.concatenate((precision, p[np.newaxis, :]))
+            recall = r[np.newaxis, :] if recall is None else np.concatenate((recall, r[np.newaxis, :]))
+            f1_score= f1[np.newaxis, :] if f1_score is None else np.concatenate((f1_score, f1[np.newaxis, :]))
+            support= s[np.newaxis, :] if support is None else np.concatenate((support, s[np.newaxis, :]))
+
+        metrics = OrderedDict()
+
+        metrics['Precision'] = (np.mean(precision*100, axis=0), np.std(precision*100, axis=0))
+        metrics['Recall'] = (np.mean(recall*100, axis=0), np.std(recall*100, axis=0))
+        metrics['f1 Score'] = (np.mean(f1_score*100, axis=0), np.std(f1_score*100, axis=0))
+        metrics['Support'] = np.mean(support, axis=0)
+
+        len_cell = 0
+        for target_label in self._model.get_target_labels():
+            l = len(target_label)
+            if l > len_cell:
+                len_cell = l
+        len_cell = max(len_cell, 15)
+        cell_format1 = '{0: <%d}' % (len_cell + 2)
+        header = cell_format1.format(' ')
+
+        for metric in metrics:
+            header += cell_format1.format(metric)
+        line = "-" * len(header)
+
+        Logger().print("%s:" % name_report)
+        Logger().print(line)
+        Logger().print(header)
+        Logger().print(line)
+        for i, target_label in enumerate(self._model.get_target_labels()):
+            Logger().print(cell_format1.format(target_label), end="")
+            for key in metrics:
+                if key == 'Support':
+                    value = "%d" % metrics[key][i]
+                else:
+                    value = "%.2f +-%.2f" % (metrics[key][0][i], metrics[key][1][i])
+                Logger().print(cell_format1.format(value), end="")
+            Logger().print("")  # new line
+        Logger().print(line)
+        Logger().print("")  # new line
 
     def append_prediction(self, _target, _output):
         """ Add a sample of prediction and target for generating metrics.
@@ -54,14 +99,38 @@ class ClassifierMetrics(BaseMetrics):
         _output : numpy.array
             Prediction of the classifier model.
 
+        Returns
+        -------
+        float
+            Return score accuracy.
         """
-        _output = np.squeeze(_output)
-        self.__y_pred += [_output]
+        self.__y_pred += [np.squeeze(_output)]
+        self.__y_true += [np.squeeze(_target)]
 
-        _target = np.squeeze(_target)
-        self.__y_true += [_target]
+        return self.get_score_prediction(_target, _output)
 
-    def plot_confusion_matrix(self, title='Confusion matrix', cmap=plt.cm.Blues):
+    def get_score_prediction(self, _target, _prediction):
+        p = accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
+        return p
+
+    def plot_confusion_matrix(self, **kwargs):
+        """ Generate Confusion Matrix plot.
+
+        .. note:: Show Confusion Matrix plot.
+
+        Parameters
+        ----------
+        kwargs
+        """
+        if len(self.__y_pred) > 0 and len(self.__y_true) > 0:
+            y_true = np.concatenate(tuple(self.__y_true))
+            y_pred = np.concatenate(tuple(self.__y_pred))
+            return self.plot_confusion_matrix_prediction(y_true=y_true, y_pred=y_pred, **kwargs)
+        else:
+            f, _ = plt.subplots()
+            return f
+
+    def plot_confusion_matrix_prediction(self, y_true, y_pred, title='Confusion matrix', cmap=plt.cm.Blues):
         """ Generate Confusion Matrix plot.
 
         .. note:: Show Confusion Matrix plot.
@@ -76,32 +145,28 @@ class ClassifierMetrics(BaseMetrics):
         """
         f, ax = plt.subplots()
 
-        if len(self.__y_pred) > 0 and len(self.__y_true) > 0:
-            y_true = np.concatenate(tuple(self.__y_true))
-            y_pred = np.concatenate(tuple(self.__y_pred))
-            cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self._model.get_target_labels())
-            # normalize
-            row_sums = cm.sum(axis=0)
-            cm = cm / row_sums[:, np.newaxis]
+        cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self._model.get_target_labels())
+        # normalize
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
-            ax.set_aspect(1)
-            res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
-            width, height = cm.shape
-            for x in range(width):
-                for y in range(height):
-                    ax.annotate("%*.*f" % (1, 2, cm[x][y]), xy=(y, x),
-                                horizontalalignment='center',
-                                verticalalignment='center')
-            plt.title(title)
-            tick_marks = np.arange(len(self._model.get_target_labels()))
-            plt.xticks(tick_marks, self._model.get_target_labels(), rotation=45)
-            plt.yticks(tick_marks, self._model.get_target_labels())
-            plt.tight_layout()
-            plt.ylabel('True label')
-            plt.xlabel('Predicted label')
-            res.set_clim(vmin=0, vmax=1)
-            plt.grid()
-            plt.colorbar(res)
+        ax.set_aspect(1)
+        res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        width, height = cm.shape
+        for x in range(width):
+            for y in range(height):
+                ax.annotate("%*.*f" % (1, 2, cm[x][y]), xy=(y, x),
+                            horizontalalignment='center',
+                            verticalalignment='center')
+        plt.title(title)
+        tick_marks = np.arange(len(self._model.get_target_labels()))
+        plt.xticks(tick_marks, self._model.get_target_labels(), rotation=45)
+        plt.yticks(tick_marks, self._model.get_target_labels())
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        res.set_clim(vmin=0, vmax=1)
+        plt.grid()
+        plt.colorbar(res)
 
         return f
 
