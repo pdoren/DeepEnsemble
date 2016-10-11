@@ -1,11 +1,12 @@
 from theano import shared, config
 import theano.tensor as T
 import numpy as np
+from ..utils.serializable import Serializable
 
 __all__ = ['Layer']
 
 
-class Layer(object):
+class Layer(Serializable):
     """ Base class layers.
 
     Attributes
@@ -33,6 +34,7 @@ class Layer(object):
 
     """
     def __init__(self, input_shape=None, output_shape=None, non_linearity=None, exclude_params=False):
+        super(Layer, self).__init__()
         self._input_shape = input_shape
         self._output_shape = output_shape
         self._params = []

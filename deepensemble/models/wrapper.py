@@ -2,26 +2,34 @@ from sklearn import cross_validation, clone
 
 from .model import Model
 from ..metrics import *
+from ..utils.cost_functions import dummy_cost
 from ..utils.logger import Logger
 from ..utils.score_functions import dummy_score
-from ..utils.cost_functions import dummy_cost
-
+from ..utils.update_functions import dummy_update
 
 __all__ = ['Wrapper']
 
 
 class Wrapper(Model):
-
-    def __init__(self, model, name, type_model="regressor", target_labels=None):
+    def __init__(self, model, name, input_shape=None, output_shape=None, type_model="regressor", target_labels=None):
         if type_model == "regressor":
             target_labels = []
-        super(Wrapper, self).__init__(target_labels=target_labels, type_model=type_model, name=name)
+        super(Wrapper, self).__init__(input_shape=input_shape, output_shape=output_shape, target_labels=target_labels,
+                                      type_model=type_model, name=name)
 
         self.__model = model
         self.__clf = None
+
+        # Reset score default
+        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
         self.append_score(dummy_score, 'Accuracy')
+
+        # Default cost
         self.append_cost(dummy_cost, 'Cost')
         self._labels_result_train = ['Error', 'Cost'] + self.get_labels_costs() + self.get_labels_scores()
+
+        # Default update function
+        self.set_update(dummy_update, name='dummy update')
 
     def get_new_metric(self):
         if self.is_classifier():
@@ -71,6 +79,7 @@ class Wrapper(Model):
                 return self.__model.predict_proba(_input)
             else:
                 return self.__clf.predict_proba(_input)
+
         return None
 
     def predict(self, _input):
@@ -81,3 +90,13 @@ class Wrapper(Model):
 
     def _compile(self, fast=True, **kwargs):
         pass
+
+    def compile(self, fast=True, **kwargs):
+        Logger().start_measure_time("Start Compile %s" % self._name)
+
+        # review possibles mistakes
+        self.review_is_binary_classifier()
+        self.review_shape_output()
+
+        Logger().stop_measure_time()
+        self._is_compiled = True

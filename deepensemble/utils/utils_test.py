@@ -5,10 +5,11 @@ from ..metrics import *
 from ..models import *
 from .logger import *
 
-__all__ = ['test_classifier']
+__all__ = ['test_classifier', 'test_models']
 
 
-def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, folds=25, max_epoch=300, **kwargs):
+def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_valid=0.7, folds=25,
+                    max_epoch=300, **kwargs):
     """ Test on classifier.
     """
     if not os.path.exists(_dir):
@@ -18,11 +19,26 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
 
     best_params = None
     best_score = 0
-    for i in range(folds):
+    i = 0
+    invalid_training = 0
+    while i < folds:
         metric = cls.fit(input_train, target_train, max_epoch=max_epoch, **kwargs)
 
         # Compute metrics
-        score = metrics.append_prediction(target_test, cls.predict(input_test))
+        score = metrics.append_prediction(input_test, target_test)
+
+        if score < min_score_valid:
+            Logger().print('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score, min_score_valid))
+            if invalid_training > 0.25 * folds:
+                min_score_valid = 0.0
+            else:
+                invalid_training += 1
+                # Reset parameters
+                cls.reset()
+                continue
+        else:
+            i += 1
+
         metrics.append_metric(metric)
 
         # Save the best params
@@ -41,7 +57,6 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
         # Reset parameters
         cls.reset()
 
-    Logger().print('wait ... ', end='')
     # Load the best params
     if best_params is not None:
         cls.load_params(best_params)
@@ -56,6 +71,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
         metrics.diversity_report()
 
     Logger().print('The best score: %.4f' % best_score)
+    Logger().print('wait ... ', end='', flush=True)
 
     fig_ = [(metrics.plot_confusion_matrix(), 'confusion_matrix'),
             (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
@@ -78,4 +94,33 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
 
     print(':) OK')
 
-    return best_score, cls
+    return best_score, metrics, cls
+
+
+def test_models(models, input_train, target_train, input_valid, target_valid,
+                classes_labels, name_db, desc, col_names,
+                folds, **kwargs):
+    """ Training Ensemble with American Credit Card data base.
+    """
+
+    for model in models:
+        n_input = input_train.shape[1]
+        n_output = len(classes_labels)
+
+        dir_db = name_db + '/'
+
+        # Print Info Data and Training
+        Logger().reset()
+        Logger().print('Model:\n %s | in: %d, out: %d\n info:\n %s' %
+                       (model.get_name(), n_input, n_output, model.get_info()))
+        Logger().print('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
+                       (name_db, desc, n_input, col_names, n_output, classes_labels))
+        Logger().print('Training:\n total data: %d | train: %d, validation: %d ' %
+                       (input_train.shape[0] + input_valid.shape[0], input_train.shape[0], input_valid.shape[0]))
+        Logger().print(' folds: %d | Epoch: %d, Batch Size: %d ' %
+                       (folds, kwargs['max_epoch'], kwargs['batch_size']))
+        dir = dir_db + model.get_name() + '/'
+        test_classifier(dir, model, input_train, target_train, input_valid, target_valid,
+                        folds=folds, **kwargs)
+
+        

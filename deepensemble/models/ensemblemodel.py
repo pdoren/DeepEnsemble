@@ -1,10 +1,9 @@
 from collections import OrderedDict
 
-from sklearn import cross_validation
-
 from .model import Model
+from .wrapper import Wrapper
 from ..metrics import *
-from ..utils import Logger
+from ..utils import Logger, score_accuracy, score_rms
 
 __all__ = ['EnsembleModel']
 
@@ -97,6 +96,15 @@ class EnsembleModel(Model):
         if len(self.__list_models_ensemble) <= 0:
             self.copy_kind_of_model(new_model)  # copy model
             self.__list_models_ensemble.append(new_model)
+
+            # Overwrite current score default
+            self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+
+            if self.is_classifier():
+                self.append_score(score_accuracy, 'Accuracy')
+            else:
+                self.append_score(score_rms, 'Root Mean Square')
+
         elif self.__list_models_ensemble[0] == new_model:
             self.__list_models_ensemble.append(new_model)
         else:
@@ -193,7 +201,7 @@ class EnsembleModel(Model):
             If the combiner method not exists.
         """
         if self.__combiner is None:
-            raise ValueError("Not exists combiner method for %s." % self._name)
+            raise AssertionError("Not exists combiner method for %s." % self._name)
 
         # append const ensemble for each models
         if len(self.__list_cost_ensemble) > 0:
@@ -252,46 +260,42 @@ class EnsembleModel(Model):
         """
         self.__list_cost_ensemble.append((fun_cost, name, kwargs))
 
-    def fit_folds(self, _input, _target, seed=13, **kwargs):
-        """ Function for training sequential model.
+    def is_fit_ensemble_normal(self):
+        there_are_wrapper_models = True
+        for _model in self.__list_models_ensemble:
+            if isinstance(_model, Wrapper):
+                there_are_wrapper_models = False
+                break
 
-        Parameters
-        ----------
-        _input : theano.tensor.matrix
-            Input training samples.
+        return there_are_wrapper_models
 
-        _target : theano.tensor.matrix
-            Target training samples.
+    def compile(self, fast=True, **kwargs):
+        if self.is_fit_ensemble_normal():
+            super(EnsembleModel, self).compile(fast=fast, **kwargs)
+        else:  # TODO: changed when improve Wrapper model
+            Logger().start_measure_time("Start Compile %s" % self._name)
+            Logger().stop_measure_time()
+            self._is_compiled = True
 
-        seed : int
-            Seed for random generators.
+    def fit(self, _input, _target, **kwargs):
 
-        kwargs
+        if self.is_fit_ensemble_normal():
+            return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
+        else:
+            return self.fit_separate_models(_input=_input, _target=_target, **kwargs)
 
-        Returns
-        -------
-        numpy.array[float]
-            Returns training cost for each batch.
-        """
+    def fit_separate_models(self, _input, _target, **kwargs):
         # create a specific metric
-        metric_model = FactoryMetrics().get_metric(self)
+        metrics = FactoryMetrics().get_metric(self)
 
-        nfolds = self.get_num_models()
+        for model in self.__list_models_ensemble:
 
-        folds = list(cross_validation.StratifiedKFold(_target, nfolds, shuffle=True, random_state=seed))
-        metric_model = FactoryMetrics().get_metric(self)
+            Logger().print('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log_disable()
+            metric = model.fit(_input, _target, **kwargs)
+            Logger().log_enable()
+            Logger().print("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
 
-        iterator = zip(self.get_models(), folds)
+            metrics.append_metric(metric)
 
-        best_score = 0
-        for model, train_index, test_index in Logger().progressbar_training2(iterator, self):
-            fold_X_train = _input[train_index]
-            fold_y_train = _target[train_index]
-            fold_X_test = _input[test_index]
-            fold_y_test = _target[test_index]
-
-            metric = model.fit(fold_X_train, fold_y_train, **kwargs)
-
-            metric_model.append_metric(metric)
-
-        return metric_model
+        return metrics

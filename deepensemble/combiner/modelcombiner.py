@@ -1,10 +1,11 @@
 from collections import OrderedDict
 from theano import shared
+from ..utils.serializable import Serializable
 
 __all__ = ['ModelCombiner']
 
 
-class ModelCombiner(object):
+class ModelCombiner(Serializable):
     """ Base class for mixing output of models.
 
     Attributes
@@ -24,6 +25,7 @@ class ModelCombiner(object):
         Type of model: regressor or classifier
     """
     def __init__(self, params=shared(0), type_model="regressor"):
+        super(ModelCombiner, self).__init__()
         self._params = params
         self._type_model = type_model
 

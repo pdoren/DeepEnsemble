@@ -1,7 +1,9 @@
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, accuracy_score
 from collections import OrderedDict
+
 import matplotlib.pylab as plt
 import numpy as np
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+
 from .basemetrics import *
 from .diversitymetrics import *
 from ..utils import Logger
@@ -12,14 +14,6 @@ __all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics']
 class ClassifierMetrics(BaseMetrics):
     """ Class for generate different metrics for classifier models.
 
-    Attributes
-    ----------
-    __y_true : list[numpy.array]
-        List of array with target samples.
-
-    __y_pred : list[numpy.array]
-        List of array with output or prediction of model.
-
     Parameters
     ----------
     model : Model
@@ -28,8 +22,6 @@ class ClassifierMetrics(BaseMetrics):
 
     def __init__(self, model):
         super(ClassifierMetrics, self).__init__(model=model)
-        self.__y_pred = []
-        self.__y_true = []
 
     def classification_report(self, name_report="Classification Report"):
         """ Generate a classification report (wrapper classification_report scikit)
@@ -43,7 +35,7 @@ class ClassifierMetrics(BaseMetrics):
         f1_score = None
         support = None
 
-        for y_true, y_pred in zip(self.__y_true, self.__y_pred):
+        for y_true, y_pred in zip(self._y_true, self._y_pred):
             p, r, f1, s = precision_recall_fscore_support(y_true, y_pred,
                                                           labels=self._model.get_target_labels())
 
@@ -64,13 +56,14 @@ class ClassifierMetrics(BaseMetrics):
             l = len(target_label)
             if l > len_cell:
                 len_cell = l
-        len_cell = max(len_cell, 15)
+
+        len_cell = max(len_cell, 16)
         cell_format1 = '{0: <%d}' % (len_cell + 2)
         header = cell_format1.format(' ')
 
         for metric in metrics:
             header += cell_format1.format(metric)
-        line = "-" * len(header)
+        line = "-" * max(len(header), (len_cell + 3) * len(metrics))
 
         Logger().print("%s:" % name_report)
         Logger().print(line)
@@ -88,31 +81,6 @@ class ClassifierMetrics(BaseMetrics):
         Logger().print(line)
         Logger().print("")  # new line
 
-    def append_prediction(self, _target, _output):
-        """ Add a sample of prediction and target for generating metrics.
-
-        Parameters
-        ----------
-        _target : numpy.array
-            Target sample.
-
-        _output : numpy.array
-            Prediction of the classifier model.
-
-        Returns
-        -------
-        float
-            Return score accuracy.
-        """
-        self.__y_pred += [np.squeeze(_output)]
-        self.__y_true += [np.squeeze(_target)]
-
-        return self.get_score_prediction(_target, _output)
-
-    @staticmethod
-    def get_score_prediction(_target, _prediction):
-        return accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
-
     def plot_confusion_matrix(self, **kwargs):
         """ Generate Confusion Matrix plot.
 
@@ -122,9 +90,9 @@ class ClassifierMetrics(BaseMetrics):
         ----------
         kwargs
         """
-        if len(self.__y_pred) > 0 and len(self.__y_true) > 0:
-            y_true = np.concatenate(tuple(self.__y_true))
-            y_pred = np.concatenate(tuple(self.__y_pred))
+        if len(self._y_pred) > 0 and len(self._y_true) > 0:
+            y_true = np.concatenate(tuple(self._y_true))
+            y_pred = np.concatenate(tuple(self._y_pred))
             return self.plot_confusion_matrix_prediction(y_true=y_true, y_pred=y_pred, **kwargs)
         else:
             f, _ = plt.subplots()
@@ -208,12 +176,14 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
             l = len(model.get_name())
             if l > len_cell:
                 len_cell = l
+        len_cell = max(len_cell, 16)
         cell_format1 = '{0: <%d}' % (len_cell + 3)
         cell_format2 = '{0: >%d}   ' % len_cell
         header = cell_format1.format(' ')
+
         for model in self._model.get_models():
             header += cell_format1.format(model.get_name())
-        line = "-" * len(header)
+        line = "-" * max(len(header), (len_cell + 3) * self._model.get_num_models())
 
         for name_metric in sorted(metrics.keys()):
             Logger().print("%s:" % name_metric)
@@ -226,13 +196,14 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
                 list_c1 = self._y_pred_per_model[model1.get_name()]
                 for model2 in self._model.get_models():
                     list_c2 = self._y_pred_per_model[model2.get_name()]
-                    value = "%*.*f" % (2, 4, (self.mean_metric(metric, self._y_true_per_model, list_c1, list_c2)))
+                    mean, std = self.statistic_metric(metric, self._y_true_per_model, list_c1, list_c2)
+                    value = "%+.4f +-%.4f" % (mean, std)
                     Logger().print(cell_format2.format(value), end="")
                 Logger().print("")  # new line
             Logger().print("")  # new line
 
     @staticmethod
-    def mean_metric(metric, list_target, list_c1, list_c2):
+    def statistic_metric(metric, list_target, list_c1, list_c2):
         """
 
         Parameters
@@ -251,10 +222,10 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
 
         Returns
         -------
-        float
+        tuple
             Returns average between two metric models.
         """
-        sum_m = 0.0
+        data = []
         for i, target in enumerate(list_target):
-            sum_m += metric(target, list_c1[i], list_c2[i])
-        return sum_m / len(list_target)
+            data += [metric(target, list_c1[i], list_c2[i])]
+        return np.mean(data), np.std(data)

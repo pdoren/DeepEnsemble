@@ -10,7 +10,7 @@ __all__ = [
 
 # noinspection PyUnusedLocal
 def dummy_score(_input, _output, _target, model):
-    pass
+    return T.zeros(_target.shape)
 
 
 #

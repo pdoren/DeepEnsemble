@@ -5,7 +5,12 @@ import numpy as np
 
 # Thanks to the library Lasagne.
 
-__all__ = ['adagrad', 'sgd', 'sgd_momentum', 'adadelta']
+__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta']
+
+
+# noinspection PyUnusedLocal,PyUnusedLocal
+def dummy_update(cost_function, params):
+    return OrderedDict()
 
 
 def adagrad(cost_function, params, initial_learning_rate=0.1, epsilon=1e-6):

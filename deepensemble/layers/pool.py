@@ -3,6 +3,7 @@ from .layer import Layer
 __all__ = ['MaxPool1D', 'MaxPool2D', 'Pool1D', 'Pool2D']
 
 
+# noinspection PyUnusedLocal
 class PoolBase(Layer):
     def __init__(self, pool_size, stride=None, pad=0, ignore_border=True, mode='max'):
         super(PoolBase, self).__init__(input_shape=None, output_shape=None, non_linearity=None, exclude_params=True)

@@ -52,6 +52,12 @@ class Logger(Singleton):
         self.buffer = ""
         self.fold = 0
 
+    def log_enable(self):
+        self.log_activate = True
+
+    def log_disable(self):
+        self.log_activate = False
+
     # noinspection PyUnusedLocal
     def push_buffer(self, message, end='\n', **kwargs):
         self.buffer += message + end
@@ -80,10 +86,11 @@ class Logger(Singleton):
 
     # noinspection PyUnusedLocal
     def write(self, message="", write_buf=False, **kwargs):
-        sys.stdout.write(message)
-        sys.stdout.flush()
-        if write_buf:
-            self.push_buffer(message, end='')
+        if self.log_activate:
+            sys.stdout.write(message)
+            sys.stdout.flush()
+            if write_buf:
+                self.push_buffer(message, end='')
 
     def start_measure_time(self, message="", **kwargs):
         """ Start timer, is possible show a message.

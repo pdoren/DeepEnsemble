@@ -1,0 +1,272 @@
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
+
+from deepensemble.combiner import *
+from deepensemble.layers import *
+from deepensemble.models import *
+from deepensemble.utils import *
+from deepensemble.utils.utils_functions import ActivationFunctions
+
+#############################################################################################################
+# Load Data
+#############################################################################################################
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale')
+
+input_train = data_input[0:517]
+input_valid = data_input[518:690]
+target_train = data_target[0:517]
+target_valid = data_target[518:690]
+
+#############################################################################################################
+# Define Models
+#############################################################################################################
+
+models = []
+
+# ==========< Ensemble        >==============================================================================
+ensemble = EnsembleModel(name='Ensemble')
+ensemble.set_info('Ensemble with 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
+                  'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
+                  'the activation function is sigmoid for each neurons. The cost function is MSE.\n'
+                  ' The combiner output model ensemble is Max Voting or Plurality Voting.')
+for i in range(4):
+    net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
+    net.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                        activation=ActivationFunctions.sigmoid))
+    net.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+    net.append_cost(mse, name="MSE")
+    net.set_update(sgd, name="SGD", learning_rate=0.1)
+    ensemble.append_model(net)
+
+ensemble.set_combiner(PluralityVotingCombiner())
+models.append(ensemble)
+
+# ==========< Ensemble  NCL   >==============================================================================
+ensembleNCL = EnsembleModel(name='Ensemble NCL')
+ensembleNCL.set_info('Ensemble training with Negative Correlation Learning (NCL).\n'
+                     'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
+                     'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
+                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
+                     ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
+                     " This configuration is the same that paper of"
+                     " 'Negative Correlation Learning (NCL)' Xin Yao, 1999.")
+for i in range(4):
+    net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
+    net.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                        activation=ActivationFunctions.sigmoid))
+    net.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+    net.append_cost(mse, name="MSE")
+    net.set_update(sgd, name="SGD", learning_rate=0.1)
+    ensembleNCL.append_model(net)
+
+ensembleNCL.add_cost_ensemble(fun_cost=neg_corr, name="NEG_CORR", lamb_neg_corr=0.6)
+# The lamb_neg_corr changed from 1.0 to 0.6 for improve score classification
+
+ensembleNCL.set_combiner(PluralityVotingCombiner())
+models.append(ensembleNCL)
+
+# ==========< Ensemble Kullback Leibler Generalized    >====================================================
+ensembleKLG = EnsembleModel(name='Ensemble KLG')
+ensembleKLG.set_info('Ensemble training with Kullback Leibler Generalized.\n'
+                     'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
+                     'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
+                     ' the activation function is sigmoid for each neurons.\n'
+                     ' The combiner output model ensemble is Max Voting or Plurality Voting. and'
+                     ' The cost function is Kullback Leibler Generalized.')
+for i in range(4):
+    net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
+    net.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                        activation=ActivationFunctions.sigmoid))
+    net.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+    net.append_cost(kullback_leibler_generalized, name="Kullback Leibler Generalized")
+    net.set_update(sgd, name="SGD", learning_rate=0.1)
+    ensembleKLG.append_model(net)
+
+ensembleKLG.set_combiner(PluralityVotingCombiner())
+models.append(ensembleKLG)
+
+# ==========< Ensemble MCC    >=============================================================================
+ensembleMCC = EnsembleModel(name='Ensemble MCC')
+ensembleMCC.set_info('Ensemble training with MCC (Minimum Cross Correntropy).\n'
+                     'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
+                     'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
+                     ' the activation function is sigmoid for each neurons.\n'
+                     ' The combiner output model ensemble is Max Voting or Plurality Voting'
+                     ' and the cost function is MCC.')
+for i in range(4):
+    net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
+    net.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                        activation=ActivationFunctions.sigmoid))
+    net.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+    net.append_cost(mcc, name="MCC")
+    net.set_update(sgd, name="SGD", learning_rate=0.1)
+    ensembleMCC.append_model(net)
+
+ensembleMCC.set_combiner(PluralityVotingCombiner())
+models.append(ensembleMCC)
+
+# ==========< MLP 40 ADAGRAD MSE  >===========================================================================
+net40_ADAGRAD_MSE = Sequential("MLP 40 ADAGRAD MSE", "classifier", classes_labels)
+net40_ADAGRAD_MSE.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+                           ' 2 neurons in output (one hot encoding).\n'
+                           ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
+                           ' The cost function is MSE with regularization L1 and L2.')
+net40_ADAGRAD_MSE.add_layer(Dense(n_input=data_input.shape[1], n_output=40,
+                                  activation=ActivationFunctions.sigmoid))
+net40_ADAGRAD_MSE.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net40_ADAGRAD_MSE.append_cost(mse, name="MSE")
+net40_ADAGRAD_MSE.append_reg(L1, name='Regularization L1', lamb=0.005)
+net40_ADAGRAD_MSE.append_reg(L2, name='Regularization L2', lamb=0.001)
+net40_ADAGRAD_MSE.set_update(adagrad, name="Adagrad", initial_learning_rate=0.1)
+
+models.append(net40_ADAGRAD_MSE)
+
+# ==========< MLP 40 KLG  >==================================================================================
+net40_KLG = Sequential("MLP 40 KLG", "classifier", classes_labels)
+net40_KLG.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+                   ' 2 neurons in output (one hot encoding).\n'
+                   ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
+                   ' The cost function is Kullback Leibler Generalized.')
+net40_KLG.add_layer(Dense(n_input=data_input.shape[1], n_output=40,
+                          activation=ActivationFunctions.sigmoid))
+net40_KLG.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net40_KLG.append_cost(kullback_leibler_generalized, name="Kullback Leibler Generalized")
+net40_KLG.set_update(sgd, name="SGD", learning_rate=0.1)
+
+models.append(net40_KLG)
+
+# ==========< MLP 40 MCC  >==================================================================================
+net40_MCC = Sequential("MLP 40 MCC", "classifier", classes_labels)
+net40_MCC.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+                   ' 2 neurons in output (one hot encoding).\n'
+                   ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
+                   ' The cost function is MCC.')
+net40_MCC.add_layer(Dense(n_input=data_input.shape[1], n_output=40,
+                          activation=ActivationFunctions.sigmoid))
+net40_MCC.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net40_MCC.append_cost(mcc, name="MCC")
+net40_MCC.set_update(sgd, name="SGD", learning_rate=0.1)
+
+models.append(net40_MCC)
+
+# ==========< MLP 10 ADAGRAD MSE  >===========================================================================
+net10_ADAGRAD_MSE = Sequential("MLP 10 ADAGRAD MSE", "classifier", classes_labels)
+net10_ADAGRAD_MSE.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+                           ' 2 neurons in output (one hot encoding).\n'
+                           ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
+                           ' The cost function is MSE with regularization L1 and L2.')
+net10_ADAGRAD_MSE.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                                  activation=ActivationFunctions.sigmoid))
+net10_ADAGRAD_MSE.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net10_ADAGRAD_MSE.append_cost(mse, name="MSE")
+net10_ADAGRAD_MSE.append_reg(L1, name='Regularization L1', lamb=0.005)
+net10_ADAGRAD_MSE.append_reg(L2, name='Regularization L2', lamb=0.001)
+net10_ADAGRAD_MSE.set_update(adagrad, name="Adagrad", initial_learning_rate=0.1)
+
+models.append(net10_ADAGRAD_MSE)
+
+# ==========< MLP 10 KLG  >===================================================================================
+net10_KLG = Sequential("MLP 10 KLG", "classifier", classes_labels)
+net10_KLG.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+                   ' 2 neurons in output (one hot encoding).\n'
+                   ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
+                   ' The cost function is Kullback Leibler Generalized.')
+net10_KLG.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                          activation=ActivationFunctions.sigmoid))
+net10_KLG.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net10_KLG.append_cost(kullback_leibler_generalized, name="Kullback Leibler Generalized")
+net10_KLG.set_update(sgd, name="SGD", learning_rate=0.1)
+
+models.append(net10_KLG)
+
+# ==========< MLP 10 MCC  >===================================================================================
+net10_MCC = Sequential("MLP 10 MCC", "classifier", classes_labels)
+net10_MCC.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+                   ' 2 neurons in output (one hot encoding).\n'
+                   ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
+                   ' The cost function is MCC.')
+net10_MCC.add_layer(Dense(n_input=data_input.shape[1], n_output=10,
+                          activation=ActivationFunctions.sigmoid))
+net10_MCC.add_layer(Dense(n_output=2, activation=ActivationFunctions.sigmoid))
+net10_MCC.append_cost(mcc, name="MCC")
+net10_MCC.set_update(sgd, name="SGD", learning_rate=0.1)
+
+models.append(net10_MCC)
+
+# ==========< Random Forest  >=================================================================================
+rf = RandomForestClassifier(n_estimators=40)
+random_forest = Wrapper(rf, name='Random Forest',
+                        input_shape=(data_input.shape[1],), output_shape=(2,),
+                        type_model='classifier', target_labels=classes_labels)
+random_forest.set_info('Random Forest with 40 estimators. This algorithm is implemented for Scikit library.')
+
+models.append(random_forest)
+
+# ==========< Random Forest Ensemble  >========================================================================
+ensembleRandomForest = EnsembleModel(name='Ensemble with Random Forest')
+ensembleRandomForest.set_info('Ensemble with 4 Random Forest Classifiers.\n'
+                              ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
+                              ' Random Forest has 10 estimators. This algorithm is implemented for Scikit library.')
+for i in range(4):
+    rft = RandomForestClassifier(n_estimators=10)
+    rfw = Wrapper(rft, name='Random Forest %d' % (i + 1),
+                  input_shape=(data_input.shape[1],), output_shape=(2,),
+                  type_model='classifier', target_labels=classes_labels)
+    ensembleRandomForest.append_model(rfw)
+
+ensembleRandomForest.set_combiner(PluralityVotingCombiner())
+models.append(ensembleRandomForest)
+
+# ==========< SVM  >===========================================================================================
+svmc = svm.SVC()
+svmw = Wrapper(svmc, name='SVM kernel RBF',
+               input_shape=(data_input.shape[1],), output_shape=(2,),
+               type_model='classifier', target_labels=classes_labels)
+svmw.set_info('Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
+
+models.append(svmw)
+
+# ==========< Ensemble SVM  >==================================================================================
+ensembleSVM = EnsembleModel(name='Ensemble with SVM kernel RBF')
+ensembleSVM.set_info('Ensemble with 4 SVM (RBF) Classifiers.\n'
+                     ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
+                     ' Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
+for i in range(4):
+    svmt = svm.SVC()
+    svmwt = Wrapper(svmt, name='SVM %d' % (i + 1),
+                    input_shape=(data_input.shape[1],), output_shape=(2,),
+                    type_model='classifier', target_labels=classes_labels)
+    ensembleSVM.append_model(svmwt)
+
+ensembleSVM.set_combiner(PluralityVotingCombiner())
+models.append(ensembleSVM)
+
+# ============================================================================================================
+# Compile models and define extra score functions  >==========================================================
+
+Logger().reset()
+for model in models:
+    # Extra Scores
+    if isinstance(model, EnsembleModel):
+        model.append_score(score_ensemble_ambiguity, 'Ambiguity')
+
+    # Compile
+    model.compile(fast=False)
+
+Logger().save_buffer('info_%s_compile.txt' % name_db)
+
+#############################################################################################################
+#
+#  TRAINING ALL MODELS
+#
+#############################################################################################################
+
+# Arguments Training  >======================================================================================
+args_train = {'max_epoch': 300, 'batch_size': 32, 'early_stop': False,
+              'improvement_threshold': 0.9995, 'update_sets': False}
+
+# Training Models >==========================================================================================
+test_models(models=models,
+            input_train=input_train, target_train=target_train, input_valid=input_valid, target_valid=target_valid,
+            classes_labels=classes_labels, name_db=name_db, desc=desc, col_names=col_names,
+            folds=50, **args_train)

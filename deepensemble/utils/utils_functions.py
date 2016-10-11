@@ -160,9 +160,19 @@ class ITLFunctions:
         return T.exp(- T.power(x - T.mean(x), 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
 
     @staticmethod
+    def kernel_gauss(x, s):
+        return T.exp(- T.power(x, 2.0) / (T.constant(2.0) * T.power(s, 2.0)))
+
+    @staticmethod
     def silverman(x, N, d):
         K = T.power(4.0 / (N * (2.0 * d + 1.0)), 1.0 / (d + 4.0))
         return T.std(x) * K
+
+    @staticmethod
+    def information_potential(x, kernel, s):
+        dx = T.tile(x, (x.shape[0], 1, 1))
+        dx = dx - T.transpose(dx, axes=(1, 0, 2))
+        return T.mean(kernel(dx, s))
 
 
 class DiversityFunctions:

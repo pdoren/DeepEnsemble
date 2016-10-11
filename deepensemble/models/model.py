@@ -1,18 +1,17 @@
-import pickle
 import numpy as np
 import theano.tensor as T
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
 
 from theano import config, shared, function
-from ..metrics import *
-from ..utils import Logger
+from ..metrics import FactoryMetrics
 from ..utils.utils_classifiers import *
+from ..utils import Logger, score_accuracy, score_rms, Serializable
 
 __all__ = ['Model']
 
 
-class Model(object):
+class Model(Serializable):
     """ Base class for models.
 
     Attributes
@@ -75,15 +74,26 @@ class Model(object):
     batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # Attribute related with regularization
 
     def __init__(self, target_labels, type_model, name="model", input_shape=None, output_shape=None):
+        super(Model, self).__init__()
+
         self.__input_shape = input_shape
         self.__output_shape = output_shape
         self.__type_model = type_model
         self.__target_labels = np.array(target_labels)
         self._params = []
 
+        # Default score
+        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+
+        if self.is_classifier():
+            self.append_score(score_accuracy, 'Accuracy')
+        else:
+            self.append_score(score_rms, 'Root Mean Square')
+
+
         self._cost_function_list = {'list': [], 'changed': True, 'compiled': []}
         self._reg_function_list = []
-        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+
         self._update_function = None
 
         self._minibatch_train_eval = None
@@ -102,6 +112,17 @@ class Model(object):
         self._current_data_train = None
         self._current_data_test = None
         self.__binary_classification = False
+        self._info_model = ''
+        self._is_compiled = False
+
+    def is_compiled(self):
+        return self._is_compiled
+
+    def get_info(self):
+        return self._info_model
+
+    def set_info(self, info):
+        self._info_model = info
 
     def get_result_labels(self):
         return self._labels_result_train
@@ -456,6 +477,9 @@ class Model(object):
             Returns training cost for each batch.
         """
         # create a specific metric
+        if not self.is_compiled():
+            raise AssertionError('The model need to be compiled before to be used.')
+
         metric_model = FactoryMetrics().get_metric(self)
 
         # save data in shared variables
@@ -532,7 +556,6 @@ class Model(object):
         If exist an inconsistency between output and count classes
         """
         Logger().start_measure_time("Start Compile %s" % self._name)
-
         # review possibles mistakes
         self.review_is_binary_classifier()
         self.review_shape_output()
@@ -573,6 +596,7 @@ class Model(object):
                                              givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
 
         Logger().stop_measure_time()
+        self._is_compiled = True
 
     def review_shape_output(self):
         """ Review if this model its dimension output is wrong.
@@ -789,28 +813,3 @@ class Model(object):
 
     def score(self, _input, _target):
         return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))
-
-    def load(self, filename):
-        """ Load model from file.
-
-        Parameters
-        ----------
-        filename : str
-            Path of file where recovery data of model.
-        """
-        file_model = open(filename, 'rb')
-        tmp_dict = pickle.load(file_model)
-        file_model.close()
-        self.__dict__.update(tmp_dict)
-
-    def save(self, filename):
-        """ Save data to file.
-
-        Parameters
-        ----------
-        filename : str
-            Path of file where storage data of model.
-        """
-        file_model = open(filename, 'wb')
-        pickle.dump(self.__dict__, file_model, -1)
-        file_model.close()

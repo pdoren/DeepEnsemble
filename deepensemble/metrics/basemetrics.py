@@ -1,6 +1,8 @@
 import numpy as np
+from sklearn.metrics import accuracy_score, mean_squared_error
 import matplotlib.pylab as plt
 from collections import OrderedDict
+from ..utils.serializable import Serializable
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
@@ -27,7 +29,7 @@ class FactoryMetrics:
         return _model.get_new_metric()
 
 
-class DataPlot:
+class DataPlot(Serializable):
     """ Class for save data plot.
 
     Attributes
@@ -52,6 +54,7 @@ class DataPlot:
     """
 
     def __init__(self, name='Model', _type='score'):
+        super(DataPlot, self).__init__()
         self.__x = []
         self.__y = []
         self.__name = name
@@ -143,7 +146,7 @@ class DataPlot:
             ax.plot(self.__x, self.__y, label='%s %s' % (self.__type, self.__name))
 
 
-class BaseMetrics:
+class BaseMetrics(Serializable):
     """ Base class generate metrics.
 
     Attributes
@@ -163,6 +166,12 @@ class BaseMetrics:
     _scores : dict[dict[list[DataPlot]]]
         Data plot scores.
 
+    _y_true : list[numpy.array]
+        List of array with target samples.
+
+    _y_pred : list[numpy.array]
+        List of array with output or prediction of model.
+
     Parameters
     ----------
     model : Model
@@ -170,11 +179,17 @@ class BaseMetrics:
     """
 
     def __init__(self, model):
+        super(BaseMetrics, self).__init__()
         self._model = model
         self._error = {'train': [], 'test': []}
         self._cost = {'train': [], 'test': []}
         self._costs = {'train': OrderedDict(), 'test': OrderedDict()}
         self._scores = {'train': OrderedDict(), 'test': OrderedDict()}
+        self._y_pred = []
+        self._y_true = []
+
+    def get_model(self):
+        return self._model
 
     def get_cost(self, type_set_data):
         """ Getter total cost.
@@ -416,6 +431,34 @@ class BaseMetrics:
                 else:
                     self._scores[type_set_data][key] = metric.get_scores(type_set_data)[key]
 
+    def append_prediction(self, _input, _target):
+        """ Add a sample of prediction and target for generating metrics.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        Returns
+        -------
+        float
+            Return model score (classifier: accuracy, regressor: MSE).
+        """
+        _output = self._model.predict(_input)
+        self._y_pred += [np.squeeze(_output)]
+        self._y_true += [np.squeeze(_target)]
+
+        return self.get_score_prediction(_target, _output)
+
+    def get_score_prediction(self, _target, _prediction):
+        if self._model.is_classifier():
+            return accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
+        else:
+            return mean_squared_error(np.squeeze(_target), np.squeeze(_prediction))
+
     @staticmethod
     def add_point(list_points, x, y, _type, name):
         """ Add point a list.
@@ -602,6 +645,10 @@ class EnsembleMetrics(BaseMetrics):
 
         return n
 
+    def append_prediction(self, _input, _target):
+        self.append_prediction_per_model(_input, _target)
+        return super(EnsembleMetrics, self).append_prediction(_input, _target)
+
     def append_prediction_per_model(self, _input, _target):
         """ Append prediction for each model in ensemble.
 
@@ -619,11 +666,11 @@ class EnsembleMetrics(BaseMetrics):
         """
         _target = np.squeeze(_target)
         self._y_true_per_model += [_target]
-        for model_ensemble in self._model.get_models():
-            output = np.squeeze(model_ensemble.predict(_input))
-            if model_ensemble.get_name() not in self._y_pred_per_model:
-                self._y_pred_per_model[model_ensemble.get_name()] = []
-            self._y_pred_per_model[model_ensemble.get_name()] += [output]
+        for _model in self._model.get_models():
+            output = np.squeeze(_model.predict(_input))
+            if _model.get_name() not in self._y_pred_per_model:
+                self._y_pred_per_model[_model.get_name()] = []
+            self._y_pred_per_model[_model.get_name()] += [output]
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.
