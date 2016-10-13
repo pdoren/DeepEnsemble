@@ -108,6 +108,20 @@ class PluralityVotingCombiner(ModelCombiner):
 
     @staticmethod
     def _vote(voting, votes):
+        """ Counting votes.
+
+        Parameters
+        ----------
+        voting : list[dict]
+            This dictionary keeps the votes.
+
+        votes : list[]
+            This list has votes.
+
+        Returns
+        -------
+        None
+        """
         for i, vote in enumerate(votes):
             if vote in voting[i]:
                 (voting[i])[vote] += 1
@@ -116,6 +130,18 @@ class PluralityVotingCombiner(ModelCombiner):
 
     @staticmethod
     def _result(voting):
+        """ Gets the result of voting.
+
+        Parameters
+        ----------
+        voting : list[dict]
+            This dictionary has recount.
+
+        Returns
+        -------
+        list[]
+            Returns a list with results of voting.
+        """
         result = []
         for votes in voting:
             result.append(max(votes, key=lambda key: votes[key]))

@@ -47,25 +47,60 @@ class Logger(Singleton):
         self.fold = 0
 
     def reset(self):
+        """ Reset intern parameters.
+
+        """
         self.tic = 0
         self.toc = 0
         self.buffer = ""
         self.fold = 0
 
     def log_enable(self):
+        """ Enable print on console.
+
+        """
         self.log_activate = True
 
     def log_disable(self):
+        """ Disable print on console.
+
+        """
         self.log_activate = False
 
     # noinspection PyUnusedLocal
     def push_buffer(self, message, end='\n', **kwargs):
+        """ Push message in buffer.
+
+        Parameters
+        ----------
+        message : str
+            Message.
+
+        end : str
+            This string is concatenate in the end of message.
+
+        kwargs
+        """
         self.buffer += message + end
 
     def get_buffer(self):
+        """ Gets buffer.
+
+        Returns
+        -------
+        str
+            Returns the buffer.
+        """
         return self.buffer
 
     def save_buffer(self, filename):
+        """ Save the buffer in a file.
+
+        Parameters
+        ----------
+        filename : str
+            Name of file.
+        """
         file_ = open(filename, 'w')
         file_.write(self.buffer)
         file_.close()
@@ -86,6 +121,18 @@ class Logger(Singleton):
 
     # noinspection PyUnusedLocal
     def write(self, message="", write_buf=False, **kwargs):
+        """ Write message in console and the buffer.
+
+        Parameters
+        ----------
+        message : str
+            Message.
+
+        write_buf : bool
+            Flag for indicate if the message is copied in buffer.
+
+        kwargs
+        """
         if self.log_activate:
             sys.stdout.write(message)
             sys.stdout.flush()

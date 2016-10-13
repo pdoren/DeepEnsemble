@@ -8,6 +8,9 @@ __all__ = ['Convolution1D', 'Convolution2D']
 
 
 class ConvolutionBase(Layer):
+    """ Convolution Layer.
+    """
+
     def __init__(self, filter_shape, input_shape=None, stride=1, pad=0, untie_biases=False, filter_flip=True,
                  non_linearity=ActivationFunctions.linear):
         """
@@ -115,6 +118,9 @@ def conv1d_mc0(_input, filters, image_shape=None, filter_shape=None,
 
 
 class Convolution1D(ConvolutionBase):
+    """ Convolution 1D Layer.
+    """
+
     def __init__(self, filter_shape, input_shape, stride=1, pad=0, untie_biases=False, filter_flip=True,
                  non_linearity=ActivationFunctions.linear):
         super(Convolution1D, self).__init__(filter_shape=filter_shape, input_shape=input_shape,
@@ -122,6 +128,16 @@ class Convolution1D(ConvolutionBase):
                                             filter_flip=filter_flip, non_linearity=non_linearity)
 
     def convolution(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+
+        Returns
+        -------
+
+        """
         border_mode = 'half' if self._pad == 'same' else self._pad
         return conv1d_mc0(x, self._W,
                           self._input_shape, self.get_shape_W(),
@@ -132,6 +148,9 @@ class Convolution1D(ConvolutionBase):
 
 
 class Convolution2D(ConvolutionBase):
+    """ Convolution 2D Layer.
+    """
+
     def __init__(self, filter_shape, input_shape, stride=(1, 1), pad=0, untie_biases=False, filter_flip=True,
                  non_linearity=ActivationFunctions.linear):
         super(Convolution2D, self).__init__(filter_shape=filter_shape, input_shape=input_shape,
@@ -139,6 +158,16 @@ class Convolution2D(ConvolutionBase):
                                             filter_flip=filter_flip, non_linearity=non_linearity)
 
     def convolution(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+
+        Returns
+        -------
+
+        """
         border_mode = 'half' if self._pad == 'same' else self._pad
         return conv.conv2d(x, self._W,
                            self._input_shape, self.get_shape_W(),

@@ -1,11 +1,12 @@
 import pickle
 import sys
 
-
 __all__ = ['Serializable']
 
 
 class Serializable(object):
+    """ Class for save an load data in a object.
+    """
 
     def load(self, filename):
         """ Load model from file.
@@ -28,7 +29,7 @@ class Serializable(object):
         filename : str
             Path of file where storage data of model.
         """
-        sys.setrecursionlimit(10**4)
+        sys.setrecursionlimit(10 ** 4)
         file_model = open(filename, 'wb')
         pickle.dump(self.__dict__, file_model, -1)
         file_model.close()

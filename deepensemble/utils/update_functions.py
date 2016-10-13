@@ -10,6 +10,21 @@ __all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta']
 
 # noinspection PyUnusedLocal,PyUnusedLocal
 def dummy_update(cost_function, params):
+    """ Dummy update function.
+
+    Parameters
+    ----------
+    cost_function : callable
+        Cost function.
+
+    params : dict
+        Parameters of cost function.
+
+    Returns
+    -------
+    OrderedDict
+        Returns an empty dictionary.
+    """
     return OrderedDict()
 
 

@@ -11,6 +11,21 @@ __all__ = ['Wrapper']
 
 
 class Wrapper(Model):
+    """ Wrapper Model class.
+
+    This model is a wrapper for model from sklearn (scikit).
+
+    Attributes
+    ----------
+
+    __model
+        Model from sklearn.
+
+    __clf
+        Training model.
+
+    """
+
     def __init__(self, model, name, input_shape=None, output_shape=None, type_model="regressor", target_labels=None):
         if type_model == "regressor":
             target_labels = []
@@ -32,6 +47,12 @@ class Wrapper(Model):
         self.set_update(dummy_update, name='dummy update')
 
     def get_new_metric(self):
+        """ Get metrics for respective model.
+
+        See Also
+        --------
+        FactoryMetrics
+        """
         if self.is_classifier():
             return ClassifierMetrics(self)
         else:
@@ -39,7 +60,8 @@ class Wrapper(Model):
 
     def fit(self, _input, _target, seed=13, nfolds=20, max_epoch=300, batch_size=32, early_stop=True,
             improvement_threshold=0.995, minibatch=True, update_sets=True):
-
+        """ Training model.
+        """
         folds = list(cross_validation.StratifiedKFold(_target, nfolds, shuffle=True, random_state=seed))
         metric_model = FactoryMetrics().get_metric(self)
 
@@ -74,6 +96,8 @@ class Wrapper(Model):
         return metric_model
 
     def output(self, _input, prob=True):
+        """ Output model.
+        """
         if _input != self.model_input:
             if self.__clf is None:
                 return self.__model.predict_proba(_input)
@@ -83,15 +107,31 @@ class Wrapper(Model):
         return None
 
     def predict(self, _input):
+        """ Compute the prediction of model.
+
+        Parameters
+        ----------
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        Returns
+        -------
+        numpy.array
+            Return the prediction of model.
+        """
         if self.__clf is None:
             return self.__model.predict(_input)
         else:
             return self.__clf.predict(_input)
 
     def _compile(self, fast=True, **kwargs):
+        """ not does nothing.
+        """
         pass
 
     def compile(self, fast=True, **kwargs):
+        """ Update intern parameters.
+        """
         Logger().start_measure_time("Start Compile %s" % self._name)
 
         # review possibles mistakes

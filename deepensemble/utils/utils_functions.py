@@ -6,6 +6,8 @@ sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
 
 
 class ActivationFunctions:
+    """ Static class with common useful activation functions.
+    """
     @staticmethod
     def linear(x):
         """ Linear function.
@@ -143,49 +145,194 @@ class ActivationFunctions:
 
 
 class ITLFunctions:
+    """ Static class with useful ITL (Information Theoretic Learning) functions.
+    """
     @staticmethod
     def entropy(px):
+        """ Entropy.
+
+        Parameters
+        ----------
+        px : float
+            Probability of random variable X.
+
+        Returns
+        -------
+        float
+            Returns entropy.
+        """
         return -T.sum(px * T.log(px))
 
     @staticmethod
     def cross_entropy(px, py):
+        """ Cross entropy.
+
+        Parameters
+        ----------
+        px : float
+            Probability of random variable X.
+
+        py : float
+            Probability of random variable Y.
+
+        Returns
+        -------
+        float
+            Returns cross entropy.
+        """
         return -T.sum(px * T.log(py))
 
     @staticmethod
     def mutual_information(px1, px2, px1x2):
+        """
+
+        Parameters
+        ----------
+        px1
+        px2
+        px1x2
+
+        Returns
+        -------
+
+        """
         return T.sum(px1x2 * (T.log(px1x2) - T.log(px1 * px2)))
 
     @staticmethod
     def norm(x, s):
+        """ Normal.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            Input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns normal.
+        """
         return T.exp(- T.power(x - T.mean(x), 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
 
     @staticmethod
     def kernel_gauss(x, s):
+        """ Gaussian Kernel.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            Input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns Gaussian Kernel.
+        """
         return T.exp(- T.power(x, 2.0) / (T.constant(2.0) * T.power(s, 2.0)))
 
     @staticmethod
     def silverman(x, N, d):
+        """ Silverman
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            Input data.
+
+        N : int
+            Number of data.
+
+        d : int
+            Dimension of data.
+
+        Returns
+        -------
+        float
+            Returns a size kernel computed with Silverman Rule.
+        """
         K = T.power(4.0 / (N * (2.0 * d + 1.0)), 1.0 / (d + 4.0))
         return T.std(x) * K
 
     @staticmethod
     def information_potential(x, kernel, s):
+        """ Information Potential.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            Input data.
+
+        kernel : callable
+            Kernel function.
+
+        s : float
+            Size of kernel.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns Information Potential.
+        """
         dx = T.tile(x, (x.shape[0], 1, 1))
         dx = dx - T.transpose(dx, axes=(1, 0, 2))
         return T.mean(kernel(dx, s))
 
 
 class DiversityFunctions:
+    """ Static class with useful diversity functions (Ensembles diversity).
+    """
     @staticmethod
     def ambiguity(_input, model, ensemble):
+        """ Ambiguity.
+
+        Parameters
+        ----------
+        _input
+        model
+        ensemble
+
+        Returns
+        -------
+
+        """
         return T.power(model.output(_input) - ensemble.output(_input), 2.0)
 
     @staticmethod
     def mean_ambiguity(_input, model, ensemble):
+        """
+
+        Parameters
+        ----------
+        _input
+        model
+        ensemble
+
+        Returns
+        -------
+
+        """
         return T.mean(DiversityFunctions.ambiguity(_input, model, ensemble))
 
     @staticmethod
     def bias(_input, ensemble, _target):
+        """
+
+        Parameters
+        ----------
+        _input
+        ensemble
+        _target
+
+        Returns
+        -------
+
+        """
         sum_e = 0.0
         for model_j in ensemble.get_models():
             sum_e += (model_j.output(_input) - _target)
@@ -194,6 +341,17 @@ class DiversityFunctions:
 
     @staticmethod
     def variance(_input, ensemble):
+        """
+
+        Parameters
+        ----------
+        _input
+        ensemble
+
+        Returns
+        -------
+
+        """
         sum_e = 0.0
         for model_j in ensemble.get_models():
             sum_e += (model_j.output(_input) - ensemble.output(_input))

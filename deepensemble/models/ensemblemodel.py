@@ -33,6 +33,13 @@ class EnsembleModel(Model):
         self._params.append(0)  # the first element is reserved for combiner parameters
 
     def get_combiner(self):
+        """ Getter model combiner in Ensemble.
+
+        Returns
+        -------
+        ModelCombiner
+            Returns a models combiner.
+        """
         return self.__combiner
 
     def get_models(self):
@@ -261,6 +268,13 @@ class EnsembleModel(Model):
         self.__list_cost_ensemble.append((fun_cost, name, kwargs))
 
     def is_fit_ensemble_normal(self):
+        """ Determine whether it is possible to train normally.
+
+        Returns
+        -------
+        bool
+            Returns True if it is possible to train normally, False otherwise.
+        """
         there_are_wrapper_models = True
         for _model in self.__list_models_ensemble:
             if isinstance(_model, Wrapper):
@@ -270,6 +284,15 @@ class EnsembleModel(Model):
         return there_are_wrapper_models
 
     def compile(self, fast=True, **kwargs):
+        """ Prepare training (compile function of Theano).
+
+        Parameters
+        ----------
+        fast : bool
+           Compile model only necessary.
+
+        kwargs
+        """
         if self.is_fit_ensemble_normal():
             super(EnsembleModel, self).compile(fast=fast, **kwargs)
         else:  # TODO: changed when improve Wrapper model
@@ -278,13 +301,46 @@ class EnsembleModel(Model):
             self._is_compiled = True
 
     def fit(self, _input, _target, **kwargs):
+        """ Training Ensemble.
 
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        kwargs
+
+        Returns
+        -------
+        MetricsBase
+            Returns metrics got in training.
+        """
         if self.is_fit_ensemble_normal():
             return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
         else:
             return self.fit_separate_models(_input=_input, _target=_target, **kwargs)
 
     def fit_separate_models(self, _input, _target, **kwargs):
+        """ Training ensemble models each separately.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        kwargs
+
+        Returns
+        -------
+        MetricsBase
+            Returns metrics got in training.
+        """
         # create a specific metric
         metrics = FactoryMetrics().get_metric(self)
 

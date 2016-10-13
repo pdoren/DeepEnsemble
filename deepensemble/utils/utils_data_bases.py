@@ -11,6 +11,25 @@ DATA_HOME = 'data'
 
 
 def load_data(db_name, classes_labels=None, normalize=True):
+    """ Load data from mldata.org.
+
+    Parameters
+    ----------
+    db_name : str
+        Name of data base.
+
+    classes_labels : list[]
+        Labels of classes.
+
+    normalize : bool
+        Flag for indicate if it necessary to normalize the data.
+
+    Returns
+    -------
+    tuple
+        Returns a tuple with data as follow:
+        (input data, target data, labels classes, name data base, description data base, list with feature names)
+    """
     db = fetch_mldata(db_name, data_home=DATA_HOME)
     if isinstance(db.data, csr_matrix):
         data_input = np.asarray(db.data.todense(), dtype=theano.config.floatX)
@@ -34,6 +53,14 @@ def load_data(db_name, classes_labels=None, normalize=True):
 
 
 def load_data_iris():
+    """ Load data Iris.
+
+    Returns
+    -------
+    tuple
+        Returns a tuple with data as follow:
+        (input data, target data, labels classes, name data base)
+    """
     iris = load_iris()
     data_input = np.asarray(iris.data, dtype=theano.config.floatX)
     data_target = iris.target_names[iris.target]

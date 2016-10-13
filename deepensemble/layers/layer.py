@@ -59,26 +59,54 @@ class Layer(Serializable):
         raise NotImplementedError
 
     def exclude_params(self):
+        """ Flag determine if the params are included for in training update.
+
+        Returns
+        -------
+        bool
+            Returns True if the params are included in training update, False otherwise.
+        """
         return self.__exclude_params
 
     def get_input_shape(self):
+        """ Gets shape of input.
+
+        Returns
+        -------
+        tuple
+            Returns shape of input model.
+        """
         return self._input_shape
 
     def set_input_shape(self, shape):
+        """ Set input shape.
+
+        Parameters
+        ----------
+        shape : tuple
+            Shape of input.
+        """
         self._input_shape = shape
 
     def get_output_shape(self):
+        """ Gets output shape.
+
+        Returns
+        -------
+        tuple
+            Returns output shape.
+        """
         return self._output_shape
 
     def get_shape_W(self):
         """ Gets shape weights of layer.
         """
-        return 0,
+        return 0,  # TODO: changed
 
     def get_shape_b(self):
         """ Gets shape bias of layer.
         """
-        return 0,
+        return 0,  # TODO: changed
 
     def initialize_parameters(self):
         """ Initialize neurons params of layers

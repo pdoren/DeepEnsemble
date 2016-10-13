@@ -9,6 +9,7 @@
       <w>conv</w>
       <w>conved</w>
       <w>correntropy</w>
+      <w>corrpy</w>
       <w>datasets</w>
       <w>deepensemble</w>
       <w>duchi</w>
@@ -29,9 +30,11 @@
       <w>mammone</w>
       <w>mathbb</w>
       <w>mathbf</w>
+      <w>matplotlib</w>
       <w>minibach</w>
       <w>minibatch</w>
       <w>minibatches</w>
+      <w>mldata</w>
       <w>nfolds</w>
       <w>numer</w>
       <w>perceptron</w>
@@ -40,16 +43,22 @@
       <w>pred</w>
       <w>preprint</w>
       <w>proc</w>
+      <w>rects</w>
       <w>regressor</w>
       <w>regularizer</w>
       <w>relu</w>
       <w>scikit</w>
       <w>silverman</w>
       <w>skalak</w>
+      <w>sklearn</w>
       <w>softmax</w>
       <w>softplus</w>
       <w>spech</w>
       <w>subgradient</w>
+      <w>svmc</w>
+      <w>svmt</w>
+      <w>svmw</w>
+      <w>svmwt</w>
       <w>tanh</w>
       <w>theano</w>
       <w>upcasting</w>
@@ -57,6 +66,7 @@
       <w>vmax</w>
       <w>vmin</w>
       <w>xscale</w>
+      <w>ylabel</w>
       <w>ylim</w>
       <w>yscale</w>
       <w>zeiler</w>

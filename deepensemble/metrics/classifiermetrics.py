@@ -98,6 +98,53 @@ class ClassifierMetrics(BaseMetrics):
             f, _ = plt.subplots()
             return f
 
+    @staticmethod
+    def plot_matrix(ax, cm, labels, title, cmap=plt.cm.Blues):
+        """  Plot Matrix.
+
+        Parameters
+        ----------
+        ax
+            Handler plot.
+
+        cm : numpy.array
+            Matrix for plotting, the matrix must be square.
+
+        labels : list[str]
+            List of labels for each row and cols in Matrix.
+
+        title : str
+            Title of plot.
+
+        cmap
+            Colors of plot.
+
+        Raises
+        ------
+        ValueError
+        If the matrix is not square.
+        """
+
+        if cm.shape[0] != cm.shape[1]:
+            raise ValueError('The matrix must be square.')
+
+        ax.set_aspect(1)
+        res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        width, height = cm.shape
+        for x in range(width):
+            for y in range(height):
+                ax.annotate("%*.*f" % (1, 2, cm[x][y]), xy=(y, x),
+                            horizontalalignment='center',
+                            verticalalignment='center')
+        plt.title(title)
+        tick_marks = np.arange(len(labels))
+        plt.xticks(tick_marks, labels, rotation=45)
+        plt.yticks(tick_marks, labels)
+        plt.tight_layout()
+        res.set_clim(vmin=0, vmax=1)
+        plt.grid()
+        plt.colorbar(res)
+
     def plot_confusion_matrix_prediction(self, y_true, y_pred, title='Confusion matrix', cmap=plt.cm.Blues):
         """ Generate Confusion Matrix plot.
 
@@ -120,27 +167,11 @@ class ClassifierMetrics(BaseMetrics):
         f, ax = plt.subplots()
 
         cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self._model.get_target_labels())
+
         # normalize
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
-        ax.set_aspect(1)
-        res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
-        width, height = cm.shape
-        for x in range(width):
-            for y in range(height):
-                ax.annotate("%*.*f" % (1, 2, cm[x][y]), xy=(y, x),
-                            horizontalalignment='center',
-                            verticalalignment='center')
-        plt.title(title)
-        tick_marks = np.arange(len(self._model.get_target_labels()))
-        plt.xticks(tick_marks, self._model.get_target_labels(), rotation=45)
-        plt.yticks(tick_marks, self._model.get_target_labels())
-        plt.tight_layout()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        res.set_clim(vmin=0, vmax=1)
-        plt.grid()
-        plt.colorbar(res)
+        self.plot_matrix(ax, cm, self._model.get_target_labels(), title, cmap)
 
         return f
 
@@ -229,3 +260,55 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         for i, target in enumerate(list_target):
             data += [metric(target, list_c1[i], list_c2[i])]
         return np.mean(data), np.std(data)
+
+    def plot_diversity(self, input_test, target_test, prefix='diversity'):
+        """ Generate a plot for different diversity metrics.
+
+        Parameters
+        ----------
+        input_test : numpy.array
+            Input sample.
+
+        target_test : numpy.array
+            Target sample.
+
+        prefix : str
+            This string is add as prefix a each label the figures.
+
+        Returns
+        -------
+        list
+            Returns a list of tuple where each tuple has the figure and a label that identify the figure.
+        """
+        metrics = {'Correlation Coefficient': correlation_coefficient,
+                   'Kappa statistic': kappa_statistic,
+                   'Q statistic': q_statistic,
+                   'Double fault': double_fault_measure,
+                   'Disagreement': disagreement_measure
+                   }
+
+        N = len(self._model.get_models())
+
+        predictions = []
+        labels = []
+        for model in self._model.get_models():
+            pred_test = model.predict(input_test)
+            predictions.append(pred_test)
+            labels.append(model.get_name())
+
+        figures = []
+
+        for k, key in enumerate(metrics):
+            f, ax = plt.subplots()
+
+            metric = metrics[key]
+            cm = np.zeros(shape=(N, N))
+            for i in range(N):
+                for j in range(N):
+                    cm[i, j] = metric(target_test, predictions[i], predictions[j])
+
+            self.plot_matrix(ax, cm, labels, '%s: %s' % (self._model.get_name(), key))
+
+            figures.append((f, '%s_%s' % (prefix, key)))
+
+        return figures

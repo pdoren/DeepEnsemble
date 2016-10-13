@@ -76,6 +76,16 @@ class DataPlot(Serializable):
         """
         return self.__type
 
+    def set_name(self, name):
+        """ Setter name of plot.
+
+        Parameters
+        ----------
+        name : str
+            Name of plot (using as label plot).
+        """
+        self.__name = name
+
     def get_name(self):
         """ Get name plot.
 
@@ -189,6 +199,13 @@ class BaseMetrics(Serializable):
         self._y_true = []
 
     def get_model(self):
+        """ Getter model.
+
+        Returns
+        -------
+        Model
+            Returns current model in metric.
+        """
         return self._model
 
     def get_cost(self, type_set_data):
@@ -201,7 +218,7 @@ class BaseMetrics(Serializable):
 
         Returns
         -------
-        list
+        list[]
             Returns cost list.
         """
         return self._cost[type_set_data]
@@ -280,17 +297,7 @@ class BaseMetrics(Serializable):
         return self.add_data(labels, self._model.get_name(),
                              self.get_scores(type_set_data), len(self._model.get_scores()), n, data, epoch)
 
-    @staticmethod
-    def add_data(labels, model_name, data_dict, n_data, index, data, epoch):
-        for _ in range(n_data):
-            index += 1
-            label = labels[index]
-            if label not in data_dict:
-                data_dict[label] = []
-            BaseMetrics.add_point(data_dict[label], epoch, data[index], label, model_name)
-        return index
-
-    def plot_cost(self, max_epoch, train_title='Cost', log_xscale=False, log_yscale=False):
+    def plot_cost(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate cost plot.
 
         Parameters
@@ -298,7 +305,7 @@ class BaseMetrics(Serializable):
         max_epoch : int
             Number of epoch of training.
 
-        train_title : str
+        title : str
             Plot title of training cost.
 
         log_xscale : bool
@@ -307,22 +314,22 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
-        f, ax = plt.subplots()
-        plt.hold(True)
-        self.plot(ax, self.get_cost('train'), 'Train')
-        self.plot(ax, self.get_cost('test'), 'Test')
-        ax.set_title(train_title)
-        if log_xscale:
-            ax.set_xscale('log')
-        if log_yscale:
-            ax.set_yscale('log')
-        ax.legend(loc='best')
-        ax.set_xlim([0, max_epoch])
-        plt.xlabel('epoch')
-        plt.hold(False)
-        plt.tight_layout()
 
-        return f
+        data_train = self.get_cost('train')
+        data_test = self.get_cost('test')
+
+        if len(data_train) > 0:
+            f, ax = plt.subplots()
+
+            data = [(data_train, 'Train'), (data_test, 'Test')]
+
+            self.plot_data(ax, data, max_epoch=max_epoch,
+                           title=title,
+                           log_xscale=log_xscale, log_yscale=log_yscale)
+
+            return f
+        else:
+            return None
 
     def plot_costs(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate costs plot.
@@ -341,30 +348,14 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
-        data_train = self.get_costs('train')
-        data_test = self.get_costs('test')
-        data = set(data_train) & set(data_test)
-        f, _ = plt.subplots()
-        N = len(data)
-        cols = max(N // 2, 1)
-        rows = max(N // cols, 1)
-        for j, i in enumerate(data_train):
-            ax = plt.subplot(rows, cols, j + 1)
-            plt.hold(True)
-            BaseMetrics.plot(ax, data_train[i], 'Train')
-            BaseMetrics.plot(ax, data_test[i], 'Test')
-            plt.hold(False)
-            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
-            if log_xscale:
-                ax.set_xscale('log')
-            if log_yscale:
-                ax.set_yscale('log')
-            ax.legend(loc='best')
-            ax.set_xlim([0, max_epoch])
-            plt.xlabel('epoch')
-            plt.tight_layout()
+        list_data = []
+        for key in self.get_costs('train'):
+            data_train = self.get_costs('train')[key]
+            data_test = self.get_costs('test')[key]
+            list_data.append(([(data_train, 'Train'), (data_test, 'Test')], data_train[0].get_type()))
 
-        return f
+        return self.plot_list_data(list_data=list_data,
+                                   max_epoch=max_epoch, title=title, log_xscale=log_xscale, log_yscale=log_yscale)
 
     def plot_scores(self, max_epoch, title='Score', log_xscale=False, log_yscale=False):
         """ Generate training score plot.
@@ -383,31 +374,14 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
-        data_train = self.get_scores('train')
-        data_test = self.get_scores('test')
-        data = set(data_train) & set(data_test)
-        f, _ = plt.subplots()
-        N = len(data)
-        cols = max(N // 2, 1)
-        rows = max(N // cols, 1)
-        for j, i in enumerate(data_train):
-            ax = plt.subplot(rows, cols, j + 1)
-            plt.hold(True)
-            BaseMetrics.plot(ax, data_train[i], 'Train')
-            BaseMetrics.plot(ax, data_test[i], 'Test')
-            plt.hold(False)
-            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
-            if log_xscale:
-                ax.set_xscale('log')
-            if log_yscale:
-                ax.set_yscale('log')
-            ax.legend(loc='best')
-            # ax.set_ylim([vmin, vmax])
-            ax.set_xlim([0, max_epoch])
-            plt.xlabel('epoch')
-            plt.tight_layout()
+        list_data = []
+        for key in self.get_scores('train'):
+            data_train = self.get_scores('train')[key]
+            data_test = self.get_scores('test')[key]
+            list_data.append(([(data_train, 'Train'), (data_test, 'Test')], data_train[0].get_type()))
 
-        return f
+        return self.plot_list_data(list_data=list_data,
+                                   max_epoch=max_epoch, title=title, log_xscale=log_xscale, log_yscale=log_yscale)
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.
@@ -454,10 +428,149 @@ class BaseMetrics(Serializable):
         return self.get_score_prediction(_target, _output)
 
     def get_score_prediction(self, _target, _prediction):
+        """ Get score the prediction.
+
+        Parameters
+        ----------
+        _target : numpy.array
+            Target sample.
+
+        _prediction : numpy.array
+            Prediction of model.
+
+        Returns
+        -------
+        float
+            Returns prediction od model, in case of classifier model return accuracy and in case of regressor model
+            return mean square error.
+        """
         if self._model.is_classifier():
             return accuracy_score(np.squeeze(_target), np.squeeze(_prediction))
         else:
             return mean_squared_error(np.squeeze(_target), np.squeeze(_prediction))
+
+    @staticmethod
+    def add_data(labels, model_name, data_dict, n_data, index, data, epoch):
+        """ Appends data training in data_dict (dictionary).
+
+        Parameters
+        ----------
+        labels : list[]
+            List of label data.
+
+        model_name : str
+            Name of model.
+
+        data_dict : dict
+            Dictionary of data.
+
+        n_data : int
+            Number of data.
+
+        index : int
+            Index of data that it wants to append.
+
+        data : list[]
+            Source of data.
+
+        epoch : int
+            Current epoch training.
+
+        Returns
+        -------
+        int
+            Returns current index (index = index + n_data)
+        """
+        for _ in range(n_data):
+            index += 1
+            label = labels[index]
+            if label not in data_dict:
+                data_dict[label] = []
+            BaseMetrics.add_point(data_dict[label], epoch, data[index], label, model_name)
+        return index
+
+    @staticmethod
+    def plot_data(ax, list_data_plots, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
+        """ Plot list data plots.
+
+        Parameters
+        ----------
+        ax
+            Handler plot.
+
+        list_data_plots : list[DataPlots]
+            List DataPlots.
+
+        max_epoch : int
+            Maximum epoch to plot (limit x-axis plot).
+
+        title : str
+            Title of plot.
+
+        log_xscale : bool
+            Flag for scaling x-axis plot.
+
+        log_yscale
+            Flag for scaling y-axis plot.
+        """
+        plt.hold(True)
+
+        for plot_data, prefix in list_data_plots:
+            BaseMetrics.plot(ax, plot_data, prefix)
+
+        # plt.hold(False)
+
+        ax.set_title(title)
+        if log_xscale:
+            ax.set_xscale('log')
+        if log_yscale:
+            ax.set_yscale('log')
+        ax.legend(loc='best')
+        ax.set_xlim([0, max_epoch])
+        plt.xlabel('epoch')
+        plt.tight_layout()
+
+    @staticmethod
+    def plot_list_data(list_data, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
+        """ Generate plot of list data.
+
+        Parameters
+        ----------
+        list_data : list[]
+            List of data to plot where the structure for each elements is as follows:
+
+            tuple: (list[DataPlots], label_plot)
+
+        max_epoch : int
+            Number of epoch of training.
+
+        title : str
+            Plot title of cost.
+
+        log_xscale : bool
+            Flag for show plot x-axis in logarithmic scale.
+
+        log_yscale : bool
+            Flag for show plot y-axis in logarithmic scale.
+        """
+        N = len(list_data)
+
+        if N > 0:
+            f, _ = plt.subplots()
+
+            cols = max(N // 2, 1)
+            rows = max(N // cols, 1)
+            for j, (data, _type) in enumerate(list_data):
+                ax = plt.subplot(rows, cols, j + 1)
+                BaseMetrics.plot_data(ax, data, max_epoch=max_epoch,
+                                      title='%s: %s' % (title, _type),
+                                      log_xscale=log_xscale,
+                                      log_yscale=log_yscale)
+
+            return f
+
+        else:
+            return None
 
     @staticmethod
     def add_point(list_points, x, y, _type, name):
@@ -600,6 +713,13 @@ class EnsembleMetrics(BaseMetrics):
         self._y_pred_per_model = {}
 
     def get_models_metric(self):
+        """ Gets Ensemble models.
+
+        Returns
+        -------
+        list[]
+            Returns list of Ensemble models.
+        """
         return self._models_metric
 
     def append_data(self, data, epoch, type_set_data):
@@ -646,6 +766,21 @@ class EnsembleMetrics(BaseMetrics):
         return n
 
     def append_prediction(self, _input, _target):
+        """ Append prediction (using for generate reports).
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target :  numpy.array
+            Target sample.
+
+        Returns
+        -------
+        float
+            Returns the score prediction.
+        """
         self.append_prediction_per_model(_input, _target)
         return super(EnsembleMetrics, self).append_prediction(_input, _target)
 
@@ -716,36 +851,18 @@ class EnsembleMetrics(BaseMetrics):
             model_metric = self._models_metric[name_model]
             for type_set_data in ['train', 'test']:
                 for key in model_metric.get_costs(type_set_data):
+                    cost = model_metric.get_costs(type_set_data)[key]
+                    cost[0].set_name(self._model.get_name())
                     if key in self._costs[type_set_data]:
-                        costs[type_set_data][key] += model_metric.get_costs(type_set_data)[key]
+                        costs[type_set_data][key] += cost
                     else:
-                        costs[type_set_data][key] = model_metric.get_costs(type_set_data)[key]
+                        costs[type_set_data][key] = cost
 
-        data_train = costs['train']
-        data_test = costs['test']
+        list_data = []
+        for key in costs['train']:
+            data_train = costs['train'][key]
+            data_test = costs['test'][key]
+            list_data.append(([(data_train, 'Train'), (data_test, 'Test')], self._model.get_name()))
 
-        data = set(data_train) & set(data_test)
-        f, _ = plt.subplots()
-        N = len(data)
-        cols = max(N // 2, 1)
-        rows = max(N // cols, 1)
-        for j, i in enumerate(data_train):
-            ax = plt.subplot(rows, cols, j + 1)
-            plt.hold(True)
-            BaseMetrics.plot(ax, data_train[i], 'Train', self._model.get_name())
-            BaseMetrics.plot(ax, data_test[i], 'Test', self._model.get_name())
-            plt.hold(False)
-
-            # noinspection PyTypeChecker
-            ax.set_title('%s: %s' % (title, data_train[i][0].get_type()))
-
-            if log_xscale:
-                ax.set_xscale('log')
-            if log_yscale:
-                ax.set_yscale('log')
-            ax.legend(loc='best')
-            ax.set_xlim([0, max_epoch])
-            plt.xlabel('epoch')
-            plt.tight_layout()
-
-        return f
+        return self.plot_list_data(list_data=list_data,
+                                   max_epoch=max_epoch, title=title, log_xscale=log_xscale, log_yscale=log_yscale)

@@ -6,7 +6,8 @@ from sklearn.metrics import accuracy_score
 from theano import config, shared, function
 from ..metrics import FactoryMetrics
 from ..utils.utils_classifiers import *
-from ..utils import Logger, score_accuracy, score_rms, Serializable
+from ..utils import Logger, score_accuracy, score_rms
+from ..utils.serializable import Serializable
 
 __all__ = ['Model']
 
@@ -90,7 +91,6 @@ class Model(Serializable):
         else:
             self.append_score(score_rms, 'Root Mean Square')
 
-
         self._cost_function_list = {'list': [], 'changed': True, 'compiled': []}
         self._reg_function_list = []
 
@@ -116,33 +116,109 @@ class Model(Serializable):
         self._is_compiled = False
 
     def is_compiled(self):
+        """ Indicate if the model was compiled.
+
+        Returns
+        -------
+        bool
+            Returns True if the model was compiled, False otherwise.
+        """
         return self._is_compiled
 
     def get_info(self):
+        """ Gets model info.
+
+        Returns
+        -------
+        str
+            Returns info.
+        """
         return self._info_model
 
     def set_info(self, info):
+        """ Set model info.
+
+        Parameters
+        ----------
+        info : str
+            Information for model.
+        """
         self._info_model = info
 
     def get_result_labels(self):
+        """ Gets list with labels of data training.
+
+        Returns
+        -------
+        list[]
+            Returns list of labels of data training.
+        """
         return self._labels_result_train
 
     def get_input_shape(self):
+        """ Gets input shape.
+
+        Returns
+        -------
+        tuple
+            Returns input shape.
+        """
         return self.__input_shape
 
     def set_input_shape(self, shape):
+        """ Set input shape.
+
+        Parameters
+        ----------
+        shape : tuple
+            Input shape.
+        """
         self.__input_shape = shape
 
     def get_output_shape(self):
+        """ Gets output shape.
+
+        Returns
+        -------
+        tuple
+            Returns output shape.
+        """
         return self.__output_shape
 
     def set_output_shape(self, shape):
+        """ Set output shape.
+
+        Parameters
+        ----------
+        shape : tuple
+            Output shape.
+        """
         self.__output_shape = shape
 
     def get_type_model(self):
+        """ Gets type of model.
+
+        Returns
+        -------
+        str
+            Returns type od model (regressor or classifier).
+        """
         return self.__type_model
 
     def copy_kind_of_model(self, model):
+        """ Copy important data from model.
+
+        This data is:
+            - Input shape.
+            - Output Shape.
+            - Type of model.
+            - Target labels.
+
+        Parameters
+        ----------
+        model : Model
+            Source data model.
+        """
         self.set_input_shape(model.get_input_shape())
         self.set_output_shape(model.get_output_shape())
         self.__type_model = model.get_type_model()
@@ -287,6 +363,13 @@ class Model(Serializable):
         raise NotImplementedError
 
     def is_classifier(self):
+        """ Asks if the model is a classifier.
+
+        Returns
+        -------
+        bool
+            Return True if the model is a classifier, False otherwise.
+        """
         return self.__type_model == "classifier"
 
     def error(self, _input, _target, prob=True):
@@ -532,9 +615,24 @@ class Model(Serializable):
         return metric_model
 
     def save_params(self):
+        """ Save parameter of model.
+
+        Returns
+        -------
+        list[]
+            Returns a list with the parameters model.
+        """
         return [i.get_value() for i in self.get_params()]
 
     def load_params(self, params):
+        """ Load parameters.
+
+        Parameters
+        ----------
+        params : list[]
+            List of parameters.
+        """
+        # TODO: it is needed verification of the parameters.
         for p, value in zip(self.get_params(), params):
             p.set_value(value)
 
@@ -549,7 +647,14 @@ class Model(Serializable):
         raise NotImplementedError
 
     def compile(self, fast=True, **kwargs):
-        """ Prepare training.
+        """ Prepare training (compile function of Theano).
+
+        Parameters
+        ----------
+        fast : bool
+            Compile model only necessary.
+
+        kwargs
 
         Raises
         ------
@@ -732,6 +837,13 @@ class Model(Serializable):
         self._update_function = (fun_update, name, kwargs)
 
     def get_cost(self):
+        """ Get cost function.
+
+        Returns
+        -------
+        theano.tensor.TensorVariable
+            Returns cost function.
+        """
         return sum(self.get_costs())
 
     def get_costs(self):
@@ -791,9 +903,23 @@ class Model(Serializable):
         return self._score_function_list['compiled']
 
     def get_labels_costs(self):
+        """ Gets list of cost functions.
+
+        Returns
+        -------
+        list[]
+            Returns a list cost functions.
+        """
         return [l for _, l, _ in self._cost_function_list['list'] + self._reg_function_list]
 
     def get_labels_scores(self):
+        """ Gets list of score functions.
+
+        Returns
+        -------
+        list[]
+            Returns a list score functions.
+        """
         return [l for _, l, _ in self._score_function_list['list']]
 
     def get_update_function(self, cost):
@@ -812,4 +938,19 @@ class Model(Serializable):
         return self._update_function[0](cost, self._params, **self._update_function[2])
 
     def score(self, _input, _target):
+        """ Gets score prediction.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        Returns
+        -------
+        float
+            Returns score prediction.
+        """
         return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))
