@@ -606,7 +606,7 @@ class Model(Serializable):
                     best_validation_cost = validation_cost
 
             if early_stop and patience <= iteration:
-                Logger().print()
+                Logger().log()
                 break
 
         if best_params is not None:

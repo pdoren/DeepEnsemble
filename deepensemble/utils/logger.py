@@ -105,7 +105,7 @@ class Logger(Singleton):
         file_.write(self.buffer)
         file_.close()
 
-    def print(self, message="", **kwargs):
+    def log(self, message="", **kwargs):
         """ Print message in console, also the message is saved in the buffer.
 
         Parameters
@@ -116,7 +116,7 @@ class Logger(Singleton):
         kwargs
         """
         if self.log_activate:
-            print(str(message), **kwargs)
+            print(message, kwargs)
         self.push_buffer(message, **kwargs)
 
     # noinspection PyUnusedLocal
@@ -150,7 +150,7 @@ class Logger(Singleton):
         kwargs
         """
         self.tic = time.time()
-        self.print(message="%s" % message, end="", **kwargs)
+        self.log(message="%s" % message, end="", **kwargs)
 
     def stop_measure_time(self, message="", **kwargs):
         """ Stop timer, also show a message with the time elapsed since it called the start_measure_time function.
@@ -163,7 +163,7 @@ class Logger(Singleton):
         kwargs
         """
         self.toc = time.time()
-        self.print(message=" %s - elapsed: %.2f [s]" % (message, self.toc - self.tic), **kwargs)
+        self.log(message=" %s - elapsed: %.2f [s]" % (message, self.toc - self.tic), **kwargs)
 
     def progressbar_training(self, max_epoch, model):
         """ Show a progressbar (it is necessary called for increment counter).

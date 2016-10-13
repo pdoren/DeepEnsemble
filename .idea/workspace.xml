@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="&#10;&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_australian.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/test_models/__init__.py" afterPath="$PROJECT_DIR$/test/test_model.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/test_models/test_australian.py" afterPath="$PROJECT_DIR$/test_models/test_german_numer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/conv.py" afterPath="$PROJECT_DIR$/deepensemble/layers/conv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/layer.py" afterPath="$PROJECT_DIR$/deepensemble/layers/layer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/pool.py" afterPath="$PROJECT_DIR$/deepensemble/layers/pool.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" afterPath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/wrapper.py" afterPath="$PROJECT_DIR$/deepensemble/models/wrapper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/logger.py" afterPath="$PROJECT_DIR$/deepensemble/utils/logger.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/score_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/score_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/serializable.py" afterPath="$PROJECT_DIR$/deepensemble/utils/serializable.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/update_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/conf.py" afterPath="$PROJECT_DIR$/docs/conf.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/modules/combiner.rst" afterPath="$PROJECT_DIR$/docs/modules/combiner.rst" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/modules/layers.rst" afterPath="$PROJECT_DIR$/docs/modules/layers.rst" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/modules/models.rst" afterPath="$PROJECT_DIR$/docs/modules/models.rst" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/modules/utils.rst" afterPath="$PROJECT_DIR$/docs/modules/utils.rst" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,7 +30,7 @@
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1476109113805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_ensemble/" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$logger.coverage" NAME="logger Coverage Results" MODIFIED="1474585451829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/utils" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble.coverage" NAME="test_ensemble Coverage Results" MODIFIED="1476205206569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian.coverage" NAME="test_australian Coverage Results" MODIFIED="1476376446194" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian.coverage" NAME="test_australian Coverage Results" MODIFIED="1476378375658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
     <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1474220208995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_conv.coverage" NAME="test_conv Coverage Results" MODIFIED="1475453929767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/mnist" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1476161463008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_models" />
@@ -65,42 +54,7 @@
     <favorites_list name="correntropy-and-ensembles-in-deep-learning" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="utils_test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="508">
-              <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_australian.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test_models/test_australian.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5040">
-              <caret line="336" column="17" selection-start-line="336" selection-start-column="17" selection-end-line="336" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#51#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="utils_data_bases.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="118">
-              <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -116,21 +70,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/deepensemble/metrics/factorymetrics.py" />
-        <option value="$PROJECT_DIR$/deepensemble/metrics/__init__.py" />
         <option value="$PROJECT_DIR$/docs/modules/metrics.rst" />
         <option value="$PROJECT_DIR$/docs/index.rst" />
         <option value="$PROJECT_DIR$/deepensemble/utils/regularizer_functions.py" />
-        <option value="$PROJECT_DIR$/docs/modules/models.rst" />
-        <option value="$PROJECT_DIR$/docs/conf.py" />
-        <option value="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/__init__.py" />
         <option value="$PROJECT_DIR$/test/test_conv.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/dense.py" />
         <option value="$PROJECT_DIR$/examples/mnist/test_conv.py" />
-        <option value="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/regressionmetrics.py" />
-        <option value="$PROJECT_DIR$/docs/modules/utils.rst" />
         <option value="$PROJECT_DIR$/test/test_models.py" />
         <option value="$PROJECT_DIR$/test/german.numer_scale/mlp/info.txt" />
         <option value="$PROJECT_DIR$/test/australian_scale/mlp/info.txt" />
@@ -151,7 +98,6 @@
         <option value="$PROJECT_DIR$/test/test_model.py" />
         <option value="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/layer.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/logger.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
@@ -167,6 +113,14 @@
         <option value="$PROJECT_DIR$/deepensemble/models/model.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
         <option value="$PROJECT_DIR$/test_models/test_australian.py" />
+        <option value="$PROJECT_DIR$/docs/modules/utils.rst" />
+        <option value="$PROJECT_DIR$/docs/modules/models.rst" />
+        <option value="$PROJECT_DIR$/docs/modules/layers.rst" />
+        <option value="$PROJECT_DIR$/docs/conf.py" />
+        <option value="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/logger.py" />
+        <option value="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
+        <option value="$PROJECT_DIR$/docs/modules/combiner.rst" />
       </list>
     </option>
   </component>
@@ -252,6 +206,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="DeepEnsemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DeepEnsemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DeepEnsemble" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="deepensemble" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -651,13 +619,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00038" summary="Test 9 ReadTheDocs.&#10;Added License MIT.&#10;Changed setup.">
-      <created>1473632315950</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1473632315950</updated>
-    </task>
     <task id="LOCAL-00039" summary="Test 10 ReadTheDocs.">
       <created>1473632720857</created>
       <option name="number" value="00039" />
@@ -994,7 +955,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476216639185</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Added docstring for new classes and functions.&#10;">
+      <created>1476376658132</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1476376658132</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1018,9 +986,9 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.303155" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41563785" sideWeight="0.52503574" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32784638" sideWeight="0.49713877" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33744857" sideWeight="0.527897" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29218107" sideWeight="0.52288985" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33744857" sideWeight="0.472103" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29298487" sideWeight="0.48640916" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29218107" sideWeight="0.47711015" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24821173" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47736627" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1049,7 +1017,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed inspect error typo in Weight Average Combiner (PEP8)." />
     <MESSAGE value="Changed content LICENCE (MIT)." />
     <MESSAGE value="Added new combiner ensembles: Weight Voting and Plurality Voting." />
     <MESSAGE value="Changed library name.&#10;Fixed double requirement of Theano." />
@@ -1074,7 +1041,8 @@
     <MESSAGE value="Added Wrapper for SKLearn models (Scikit)." />
     <MESSAGE value="Added useful function for data base and testing model in utils.&#10;Changed some warning (inspector and PEP8)&#10;" />
     <MESSAGE value="Added Serializable Class.&#10;Fixed some errors in Wrapper model.&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Serializable Class.&#10;Fixed some errors in Wrapper model.&#10;" />
+    <MESSAGE value="Added docstring for new classes and functions.&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added docstring for new classes and functions.&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1109,43 +1077,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/ensemble/base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="15" column="29" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/metrics/classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12689">
-          <caret line="1103" column="4" selection-start-line="1103" selection-start-column="4" selection-end-line="1103" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/german.numer_scale/mlp/mlp_epoch_0.dat" />
-    <entry file="file://$PROJECT_DIR$/test/test_models/german.numer_scale/mlp/info.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_models/australian_scale/mlp/info.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test_models/australian_scale/Random Forest/info.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1284,14 +1215,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib64/python3.4/site-packages/matplotlib/pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
@@ -1348,14 +1271,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/logger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/update_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-47">
@@ -1376,14 +1291,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-137">
           <caret line="291" column="22" selection-start-line="291" selection-start-column="22" selection-end-line="291" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/layers/conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="150" column="29" selection-start-line="150" selection-start-column="29" selection-end-line="150" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -1416,14 +1323,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="118">
           <caret line="283" column="19" selection-start-line="283" selection-start-column="19" selection-end-line="283" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1488,16 +1387,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="508">
-          <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="118">
@@ -1513,6 +1402,98 @@
           <folding>
             <element signature="e#0#51#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/modules/models.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="34" column="20" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/layers/conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="87" column="14" selection-start-line="87" selection-start-column="4" selection-end-line="87" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/conf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="28" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
+          <folding>
+            <element signature="e#469#479#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/modules/utils.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-435">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="124" column="33" selection-start-line="124" selection-start-column="33" selection-end-line="124" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/modules/layers.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="12" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="168" column="10" selection-start-line="168" selection-start-column="10" selection-end-line="168" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/modules/combiner.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-35">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="39" column="43" selection-start-line="39" selection-start-column="43" selection-end-line="39" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="112" column="16" selection-start-line="112" selection-start-column="16" selection-end-line="112" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -65,21 +65,21 @@ class ClassifierMetrics(BaseMetrics):
             header += cell_format1.format(metric)
         line = "-" * max(len(header), (len_cell + 3) * len(metrics))
 
-        Logger().print("%s:" % name_report)
-        Logger().print(line)
-        Logger().print(header)
-        Logger().print(line)
+        Logger().log("%s:" % name_report)
+        Logger().log(line)
+        Logger().log(header)
+        Logger().log(line)
         for i, target_label in enumerate(self._model.get_target_labels()):
-            Logger().print(cell_format1.format(target_label), end="")
+            Logger().log(cell_format1.format(target_label), end="")
             for key in metrics:
                 if key == 'Support':
                     value = "%d" % metrics[key][i]
                 else:
                     value = "%.2f +-%.2f" % (metrics[key][0][i], metrics[key][1][i])
-                Logger().print(cell_format1.format(value), end="")
-            Logger().print("")  # new line
-        Logger().print(line)
-        Logger().print("")  # new line
+                Logger().log(cell_format1.format(value), end="")
+            Logger().log("")  # new line
+        Logger().log(line)
+        Logger().log("")  # new line
 
     def plot_confusion_matrix(self, **kwargs):
         """ Generate Confusion Matrix plot.
@@ -217,21 +217,21 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         line = "-" * max(len(header), (len_cell + 3) * self._model.get_num_models())
 
         for name_metric in sorted(metrics.keys()):
-            Logger().print("%s:" % name_metric)
-            Logger().print(line)
-            Logger().print(header)
-            Logger().print(line)
+            Logger().log("%s:" % name_metric)
+            Logger().log(line)
+            Logger().log(header)
+            Logger().log(line)
             metric = metrics[name_metric]
             for model1 in self._model.get_models():
-                Logger().print(cell_format1.format(model1.get_name()), end="")
+                Logger().log(cell_format1.format(model1.get_name()), end="")
                 list_c1 = self._y_pred_per_model[model1.get_name()]
                 for model2 in self._model.get_models():
                     list_c2 = self._y_pred_per_model[model2.get_name()]
                     mean, std = self.statistic_metric(metric, self._y_true_per_model, list_c1, list_c2)
                     value = "%+.4f +-%.4f" % (mean, std)
-                    Logger().print(cell_format2.format(value), end="")
-                Logger().print("")  # new line
-            Logger().print("")  # new line
+                    Logger().log(cell_format2.format(value), end="")
+                Logger().log("")  # new line
+            Logger().log("")  # new line
 
     @staticmethod
     def statistic_metric(metric, list_target, list_c1, list_c2):

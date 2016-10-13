@@ -37,7 +37,7 @@ class WeightAverageCombiner(ModelCombiner):
 
     .. [2] M. P. Perrone and L. N. Cooper. When networks disagree: Ensemble method
            for neural networks. In R. J.Mammone, editor, Artificial Neural Networks
-           for Spech and Vision, pages 126–142. Chapman & Hall, New York, NY,
+           for Spech and Vision, pages 126-142. Chapman & Hall, New York, NY,
            1993.
     """
     def __init__(self, n_models, **kwargs):

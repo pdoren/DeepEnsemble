@@ -12,3 +12,39 @@ Dense Layer
 
 .. autoclass:: Dense
    :members:
+
+Convolution Layer
+-----------------
+
+.. automodule:: deepensemble.layers.conv
+
+.. autoclass:: ConvolutionBase
+   :members:
+
+.. autoclass:: Convolution1D
+   :members:
+
+.. autoclass:: Convolution2D
+   :members:
+
+.. autofunction:: conv1d_mc0
+
+Pool Layer
+----------
+
+.. automodule:: deepensemble.layers.pool
+
+.. autoclass:: PoolBase
+   :members:
+
+.. autoclass:: Pool1D
+   :members:
+
+.. autoclass:: MaxPool1D
+   :members:
+
+.. autoclass:: Pool2D
+   :members:
+
+.. autoclass:: MaxPool2D
+   :members:

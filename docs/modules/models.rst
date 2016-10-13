@@ -28,3 +28,11 @@ Sequential Model
 
 .. autoclass:: Sequential
    :members:
+
+Wrapper Model
+-------------
+
+.. automodule:: deepensemble.models.wrapper
+
+.. autoclass:: Wrapper
+   :members:

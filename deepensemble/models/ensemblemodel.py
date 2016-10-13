@@ -346,11 +346,11 @@ class EnsembleModel(Model):
 
         for model in self.__list_models_ensemble:
 
-            Logger().print('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
             Logger().log_disable()
             metric = model.fit(_input, _target, **kwargs)
             Logger().log_enable()
-            Logger().print("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
+            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
 
             metrics.append_metric(metric)
 

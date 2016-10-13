@@ -166,7 +166,7 @@ def q_statistic(y, c1, c2):
     -------
     float
         Return the Q-Statistic measure between the classifiers 'c1' and 'c2'.
-        Q-Statistic takes value in the range of [−1, 1]:
+        Q-Statistic takes value in the range of [-1, 1]:
 
          - is zero if 'c1' and 'c2' are independent.
          - is positive if 'c1' and 'c2' make similar predictions.

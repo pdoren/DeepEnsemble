@@ -43,7 +43,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
         score = metrics.append_prediction(input_test, target_test)
 
         if score < min_score_test:
-            Logger().print('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score, min_score_test))
+            Logger().log('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score, min_score_test))
             if invalid_training > 0.25 * folds:
                 min_score_test = 0.0
             else:
@@ -87,8 +87,8 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
     # Save Metrics
     metrics.save(_dir + '%s_metrics.pkl' % cls.get_name())
 
-    Logger().print('The best score: %.4f' % best_score)
-    Logger().print('wait .', end='', flush=True)
+    Logger().log('The best score: %.4f' % best_score)
+    Logger().log('wait .', end='', flush=True)
 
     fig_ = [(metrics.plot_confusion_matrix(), 'confusion_matrix'),
             (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
@@ -120,7 +120,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
         if fig is not None:
             fig.savefig(_dir + name + '.pdf', format='pdf', dpi=1200)
             plt.close(fig)
-            Logger().print('.', end='', flush=True)
+            Logger().log('.', end='', flush=True)
 
     Logger().save_buffer(_dir + 'info.txt')
 
@@ -145,14 +145,14 @@ def test_models(models, input_train, target_train, input_valid, target_valid,
 
         # Print Info Data and Training
         Logger().reset()
-        Logger().print('Model:\n %s | in: %d, out: %d\n info:\n %s' %
-                       (_model.get_name(), n_input, n_output, _model.get_info()))
-        Logger().print('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
-                       (name_db, desc, n_input, col_names, n_output, classes_labels))
-        Logger().print('Training:\n total data: %d | train: %d, validation: %d ' %
-                       (input_train.shape[0] + input_valid.shape[0], input_train.shape[0], input_valid.shape[0]))
-        Logger().print(' folds: %d | Epoch: %d, Batch Size: %d ' %
-                       (folds, kwargs['max_epoch'], kwargs['batch_size']))
+        Logger().log('Model:\n %s | in: %d, out: %d\n info:\n %s' %
+                     (_model.get_name(), n_input, n_output, _model.get_info()))
+        Logger().log('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
+                     (name_db, desc, n_input, col_names, n_output, classes_labels))
+        Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
+                     (input_train.shape[0] + input_valid.shape[0], input_train.shape[0], input_valid.shape[0]))
+        Logger().log(' folds: %d | Epoch: %d, Batch Size: %d ' %
+                     (folds, kwargs['max_epoch'], kwargs['batch_size']))
         _dir = dir_db + _model.get_name() + '/'
         data_models.append(test_classifier(_dir, _model, input_train, target_train, input_valid, target_valid,
                                            folds=folds, **kwargs))

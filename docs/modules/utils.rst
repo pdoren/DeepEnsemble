@@ -11,12 +11,17 @@ Cost Functions
 .. autofunction:: mse
 .. autofunction:: mcc
 .. autofunction:: mee
+.. autofunction:: cross_entropy
 .. autofunction:: neg_log_likelihood
+.. autofunction:: kullback_leibler
+.. autofunction:: kullback_leibler_generalized
+.. autofunction:: dummy_cost
 
 Cost Function for Ensemble Models
 ---------------------------------
 
 .. autofunction:: neg_corr
+.. autofunction:: neg_correntropy
 
 Regularizer Functions
 ---------------------
@@ -35,6 +40,7 @@ Update Functions
 .. autofunction:: sgd_momentum
 .. autofunction:: adadelta
 .. autofunction:: adagrad
+.. autofunction:: dummy_update
 
 Score Functions
 ---------------
@@ -44,6 +50,8 @@ Score Functions
 .. autofunction:: score_accuracy
 .. autofunction:: score_ensemble_ambiguity
 .. autofunction:: score_rms
+.. autofunction:: score_silverman
+.. autofunction:: dummy_score
 
 Logger
 ------
@@ -51,4 +59,57 @@ Logger
 .. automodule:: deepensemble.utils.logger
 
 .. autoclass:: Logger
+   :members:
+
+Utils Classifiers
+-----------------
+
+.. automodule:: deepensemble.utils.utils_classifiers
+
+.. autofunction:: get_index_label_classes
+.. autofunction:: translate_binary_target
+.. autofunction:: translate_output
+.. autofunction:: translate_target
+
+Utils Data Bases
+----------------
+
+.. automodule:: deepensemble.utils.utils_data_bases
+
+.. autofunction:: load_data
+.. autofunction:: load_data_iris
+
+Utils Functions
+---------------
+
+.. automodule:: deepensemble.utils.utils_functions
+
+.. autoclass:: ActivationFunctions
+   :members:
+
+.. autoclass:: DiversityFunctions
+   :members:
+
+.. autoclass:: ITLFunctions
+   :members:
+
+Utils Testing
+-------------
+
+.. automodule:: deepensemble.utils.utils_test
+
+.. autofunction:: plot_hist_train_test
+.. autofunction:: plot_hist_train_test2
+.. autofunction:: plot_scores_classifications
+.. autofunction:: test_classifier
+.. autofunction:: test_models
+.. autofunction:: make_dirs
+
+
+Serializable
+============
+
+.. automodule:: deepensemble.utils.serializable
+
+.. autoclass:: Serializable
    :members:
