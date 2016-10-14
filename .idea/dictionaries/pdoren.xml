@@ -6,6 +6,7 @@
       <w>adadelta</w>
       <w>adagrad</w>
       <w>cmap</w>
+      <w>cnmem</w>
       <w>conv</w>
       <w>conved</w>
       <w>correntropy</w>
@@ -37,6 +38,7 @@
       <w>mldata</w>
       <w>nfolds</w>
       <w>numer</w>
+      <w>pdoren</w>
       <w>perceptron</w>
       <w>perrone</w>
       <w>prechelt</w>

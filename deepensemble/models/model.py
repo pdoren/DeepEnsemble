@@ -8,6 +8,7 @@ from ..metrics import FactoryMetrics
 from ..utils.utils_classifiers import *
 from ..utils import Logger, score_accuracy, score_rms
 from ..utils.serializable import Serializable
+from ..utils.update_functions import sgd
 
 __all__ = ['Model']
 
@@ -95,6 +96,7 @@ class Model(Serializable):
         self._reg_function_list = []
 
         self._update_function = None
+        self.set_update(sgd, name='SGD', learning_rate=0.1)  # default training algorithm
 
         self._minibatch_train_eval = None
         self._minibatch_test_eval = None
@@ -114,6 +116,7 @@ class Model(Serializable):
         self.__binary_classification = False
         self._info_model = ''
         self._is_compiled = False
+        self._is_fast_compile = False
 
     def is_compiled(self):
         """ Indicate if the model was compiled.
@@ -244,6 +247,16 @@ class Model(Serializable):
         """
         return len(self.__output_shape)
 
+    def get_fan_in(self):
+        """ Gets number of input.
+
+        Returns
+        -------
+        int
+            Returns number of input.
+        """
+        return int(np.prod(self.__input_shape))
+
     def get_fan_out(self):
         """ Gets number of output.
 
@@ -304,8 +317,7 @@ class Model(Serializable):
         if self._current_data_test is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
-            n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
-            return self._current_data_test[n]
+            return self._current_data_test[self._index_score()]
 
     def get_train_score(self):
         """ Gets current training score.
@@ -318,8 +330,20 @@ class Model(Serializable):
         if self._current_data_train is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
-            n = len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
-            return self._current_data_train[n]
+            return self._current_data_train[self._index_score()]
+
+    def _index_score(self):
+        """ Gets index in vector of training result where start score.
+
+        Returns
+        -------
+        int
+            Returns index in vector of training result where start score.
+        """
+        if self._is_fast_compile:
+            return 2
+        else:
+            return len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
 
     def get_name(self):
         """ Getter name.
@@ -661,6 +685,8 @@ class Model(Serializable):
         If exist an inconsistency between output and count classes
         """
         Logger().start_measure_time("Start Compile %s" % self._name)
+        self._is_fast_compile = fast
+
         # review possibles mistakes
         self.review_is_binary_classifier()
         self.review_shape_output()
@@ -679,6 +705,10 @@ class Model(Serializable):
             self._labels_result_train += self.get_labels_costs()
             self._labels_result_train += self.get_labels_scores()
             self._labels_result_train += labels_extra_results
+        else:
+            # append only first score (default score)
+            result += [self.get_scores()[0]]
+            self._labels_result_train += self.get_labels_scores()[0]
 
         end = T.lscalar('end')
         start = T.lscalar('start')
@@ -878,8 +908,8 @@ class Model(Serializable):
         """
         if self._score_function_list['changed']:
             self._score_function_list['compiled'] = []
-            output = self.output(self.model_input, prob=False)
             if self.is_classifier():
+                output = self.output(self.model_input, prob=False)
 
                 if output is not None:  # TODO: for Wrapper model, changed in the future
                     output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
@@ -891,6 +921,8 @@ class Model(Serializable):
                                                                            model=self,
                                                                            **params))
             else:
+                output = self.output(self.model_input)
+
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['compiled'].append(fun_score(_output=output,
                                                                            _input=self.model_input,

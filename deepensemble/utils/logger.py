@@ -1,5 +1,8 @@
+from __future__ import print_function
+
 import sys
 import time
+
 
 __all__ = ['Logger']
 
@@ -116,7 +119,7 @@ class Logger(Singleton):
         kwargs
         """
         if self.log_activate:
-            print(message, kwargs)
+            print(message, **kwargs)
         self.push_buffer(message, **kwargs)
 
     # noinspection PyUnusedLocal

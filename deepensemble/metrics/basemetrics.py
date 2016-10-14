@@ -291,8 +291,10 @@ class BaseMetrics(Serializable):
         n += 1  # data[1] is the total cost
         self.add_point(self._cost[type_set_data], epoch, data[n], labels[n], self._model.get_name())
 
-        n = self.add_data(labels, self._model.get_name(),
-                          self.get_costs(type_set_data), len(self._model.get_costs()), n, data, epoch)
+        n_cost = len(self._model.get_costs())
+        if n_cost > 1:
+            n = self.add_data(labels, self._model.get_name(),
+                              self.get_costs(type_set_data), n_cost, n, data, epoch)
 
         return self.add_data(labels, self._model.get_name(),
                              self.get_scores(type_set_data), len(self._model.get_scores()), n, data, epoch)
