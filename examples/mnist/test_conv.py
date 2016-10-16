@@ -5,6 +5,8 @@ from deepensemble.models.sequential import Sequential
 from deepensemble.layers import *
 from deepensemble.utils.cost_functions import *
 from deepensemble.utils.utils_functions import ActivationFunctions
+from deepensemble.utils import adagrad
+
 from sklearn import cross_validation
 import matplotlib.pylab as plt
 
@@ -28,7 +30,8 @@ net1.add_layer(Convolution2D(num_filters=nkerns[1], filter_size=(5, 5)))
 net1.add_layer(MaxPool2D(pool_size=(2, 2)))
 net1.add_layer(Dropout(p=0.5))
 net1.add_layer(Dense(n_output=len(classes_names), activation=ActivationFunctions.softmax))
-net1.append_cost(mse, name='Neg Log Likelihood')
+net1.append_cost(neg_log_likelihood, name='Neg Log Likelihood')
+net1.set_update(adagrad, name='ADAGRAD')
 net1.compile()
 
 max_epoch = 5

@@ -51,14 +51,18 @@ class ClassifierMetrics(BaseMetrics):
         metrics['f1 Score'] = (np.mean(f1_score * 100, axis=0), np.std(f1_score * 100, axis=0))
         metrics['Support'] = np.mean(support, axis=0)
 
-        len_cell = 0
+        len_label = 0
         for target_label in self._model.get_target_labels():
             l = len(str(target_label))
-            if l > len_cell:
-                len_cell = l
+            if l > len_label:
+                len_label = l
 
-        len_cell = max(len_cell, 16)
-        cell_format1 = '{0: <%d}' % (len_cell + 2)
+        str_average = 'average: '
+        len_label = max(len(str_average), len_label)
+
+        len_cell = max(len_label, 16)
+        cell_format1 = '{0: <%d}' % (len_label + 2)
+        cell_format2 = '{0: <%d}' % (len_cell + 2)
         header = cell_format1.format(' ')
 
         for metric in metrics:
@@ -76,9 +80,22 @@ class ClassifierMetrics(BaseMetrics):
                     value = "%d" % metrics[key][i]
                 else:
                     value = "%.2f +-%.2f" % (metrics[key][0][i], metrics[key][1][i])
-                Logger().log(cell_format1.format(value), end="")
+                Logger().log(cell_format2.format(value), end="")
             Logger().log("")  # new line
         Logger().log(line)
+
+        Logger().log(cell_format1.format(str_average), end="")
+        sum_sp = np.sum(metrics['Support'])
+        for key in metrics:
+            if key == 'Support':
+                continue
+
+            mean = np.sum(metrics[key][0] * metrics['Support']) / sum_sp
+            std = np.sum(metrics[key][1] * metrics['Support']) / sum_sp
+            value = "%.2f +-%.2f" % (mean, std)
+            Logger().log(cell_format2.format(value), end="")
+
+        Logger().log('\n' + line)
         Logger().log("")  # new line
 
     def plot_confusion_matrix(self, **kwargs):
