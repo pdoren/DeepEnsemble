@@ -48,3 +48,11 @@ Pool Layer
 
 .. autoclass:: MaxPool2D
    :members:
+
+Dropout Layer
+-------------
+
+.. automodule:: deepensemble.layers.dropout
+
+.. autoclass:: Dropout
+   :members:

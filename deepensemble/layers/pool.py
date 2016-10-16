@@ -35,8 +35,9 @@ class PoolBase(Layer):
     mode : str
 
     """
-    def __init__(self, pool_size, stride=1, pad=0, ignore_border=True, mode='max'):
-        super(PoolBase, self).__init__(input_shape=None, output_shape=None, non_linearity=None, exclude_params=True)
+    def __init__(self, pool_size, input_shape=None, output_shape=None, stride=1, pad=0, ignore_border=True, mode='max'):
+        super(PoolBase, self).__init__(input_shape=input_shape, output_shape=output_shape,
+                                       non_linearity=None, exclude_params=True)
 
         self._pool_size = pool_size
         self._stride = stride
@@ -71,8 +72,25 @@ class Pool1D(PoolBase):
     """ Pool 1D Layer.
     """
 
-    def __init__(self, pool_size, mode='max', **kwargs):
-        super(Pool1D, self).__init__(pool_size, mode=mode, **kwargs)
+    def __init__(self, pool_size, input_shape=None, output_shape=None,
+                 stride=1, pad=0, ignore_border=True, mode='max'):
+
+        if input_shape is not None:
+            output_shape = list(input_shape)
+
+            output_shape[-1] = self._get_size_output(input_shape[-1],
+                                                     self._pool_size,
+                                                     self._stride,
+                                                     self._pad,
+                                                     self._ignore_border)
+
+            output_shape = tuple(output_shape)
+
+        super(Pool1D, self).__init__(pool_size, input_shape=input_shape,
+                                     output_shape=tuple(output_shape),
+                                     stride=stride, pad=pad,
+                                     ignore_border=ignore_border,
+                                     mode=mode)
 
     def set_input_shape(self, shape):
         """ Set input shape.
@@ -118,8 +136,30 @@ class Pool2D(PoolBase):
     """ Pool 2D Layer.
     """
 
-    def __init__(self, pool_size, stride=(1, 1), pad=(0, 0), mode='max', **kwargs):
-        super(Pool2D, self).__init__(pool_size, mode=mode, stride=stride, pad=pad, **kwargs)
+    def __init__(self, pool_size, input_shape=None, output_shape=None,
+                 stride=(1, 1), pad=(0, 0), ignore_border=True, mode='max'):
+
+        if input_shape is not None:
+            output_shape = list(input_shape)
+
+            output_shape[2] = self._get_size_output(input_shape[2],
+                                                     self._pool_size[0],
+                                                     self._stride[0],
+                                                     self._pad[0],
+                                                     self._ignore_border)
+
+            output_shape[3] = self._get_size_output(input_shape[3],
+                                                    self._pool_size[1],
+                                                    self._stride[1],
+                                                    self._pad[1],
+                                                    self._ignore_border)
+            output_shape = tuple(output_shape)
+
+        super(Pool2D, self).__init__(pool_size, input_shape=input_shape,
+                                     output_shape=output_shape,
+                                     stride=stride, pad=pad,
+                                     ignore_border=ignore_border,
+                                     mode=mode)
 
     def set_input_shape(self, shape):
         """ Set input shape.

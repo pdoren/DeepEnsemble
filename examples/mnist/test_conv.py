@@ -2,9 +2,7 @@ import theano
 import numpy as np
 from sklearn.datasets import fetch_mldata
 from deepensemble.models.sequential import Sequential
-from deepensemble.layers.dense import Dense
-from deepensemble.layers.conv import Convolution2D
-from deepensemble.layers.pool import MaxPool2D
+from deepensemble.layers import *
 from deepensemble.utils.cost_functions import *
 from deepensemble.utils.utils_functions import ActivationFunctions
 from sklearn import cross_validation
@@ -20,7 +18,7 @@ classes_names = ['%d' % i for i in range(10)]
 
 # ## Training
 
-nkerns = [8, 8]
+nkerns = [5, 8]
 
 
 net1 = Sequential("mlp", "classifier", classes_names)
@@ -28,8 +26,9 @@ net1.add_layer(Convolution2D(input_shape=(None, 1, 28, 28), num_filters=nkerns[0
 net1.add_layer(MaxPool2D(pool_size=(2, 2)))
 net1.add_layer(Convolution2D(num_filters=nkerns[1], filter_size=(5, 5)))
 net1.add_layer(MaxPool2D(pool_size=(2, 2)))
+net1.add_layer(Dropout(p=0.5))
 net1.add_layer(Dense(n_output=len(classes_names), activation=ActivationFunctions.softmax))
-net1.append_cost(cross_entropy, name='Neg Log Likelihood')
+net1.append_cost(mse, name='Neg Log Likelihood')
 net1.compile()
 
 max_epoch = 5
