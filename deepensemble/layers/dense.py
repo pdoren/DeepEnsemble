@@ -14,10 +14,10 @@ class Dense(Layer):
 
     Parameters
     ----------
-    n_input : int
+    n_input : int or tuple[]
         Dimension of input.
 
-    n_output : int
+    n_output : int or tuple[]
         Dimension of output.
 
     activation : callback
@@ -25,7 +25,9 @@ class Dense(Layer):
     """
 
     def __init__(self, n_input=None, n_output=None, activation=None):
-        super(Dense, self).__init__(input_shape=(n_input,), output_shape=(n_output,), non_linearity=activation)
+        input_shape = n_input if isinstance(n_input, tuple) else (1, n_input)
+        output_shape = n_output if isinstance(n_output, tuple) else (1, n_output)
+        super(Dense, self).__init__(input_shape=input_shape, output_shape=output_shape, non_linearity=activation)
 
     def get_shape_W(self):
         """ Gets shape weights of layer.
@@ -52,7 +54,10 @@ class Dense(Layer):
 
             .. math::  Layer(x) = activation(Wx + b)
         """
-        lin_output = T.dot(x, self._W) + self._b
+        if x.ndim > 2:
+            x = x.flatten(2)
+
+        lin_output = T.dot(x, self._W) + self._b.dimshuffle('x', 0)
 
         # noinspection PyCallingNonCallable
         return (

@@ -42,8 +42,8 @@ class TestSequential(TestCase):
                                  activation=ActivationFunctions.sigmoid))
         seq.add_layer(Dense(n_output=3, activation=ActivationFunctions.sigmoid))
 
-        self.assertEqual(seq.get_dim_input(), len(data_input.shape) - 1, 'Problem with input dimension')
-        self.assertEqual(seq.get_dim_output(), 1, 'Problem with output dimension')
+        self.assertEqual(seq.get_dim_input(), len(data_input.shape), 'Problem with input dimension')
+        self.assertEqual(seq.get_dim_output(), 2, 'Problem with output dimension')
         self.assertEqual(seq.get_fan_in(), data_input.shape[1], 'Problem with input shape')
         self.assertEqual(seq.get_fan_out(), 3, 'Problem with output shape')
 

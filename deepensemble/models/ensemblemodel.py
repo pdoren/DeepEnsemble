@@ -102,10 +102,11 @@ class EnsembleModel(Model):
         """
         if len(self.__list_models_ensemble) <= 0:
             self.copy_kind_of_model(new_model)  # copy model
+
             self.__list_models_ensemble.append(new_model)
 
             # Overwrite current score default
-            self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+            self._score_function_list = {'list': [], 'changed': True, 'result': []}
 
             if self.is_classifier():
                 self.append_score(score_accuracy, 'Accuracy')
@@ -163,11 +164,17 @@ class EnsembleModel(Model):
         theano.tensor.matrix or numpy.array
             Returns of combiner the outputs of the different the ensemble's models.
         """
-        if _input == self.model_input:
-            if self._output is None:
-                self._output = self.__combiner.output(self, _input, prob)
-            return self._output
+        _type = 'prob' if prob else 'crisp'
+
+        if _input == self._model_input:
+
+            if self._output[_type]['changed']:
+                self._output[_type]['result'] = self.__combiner.output(self, _input, prob)
+
+            return self._output[_type]['result']
+
         else:
+
             return self.__combiner.output(self, _input, prob)
 
     def predict(self, _input):
@@ -210,6 +217,13 @@ class EnsembleModel(Model):
         if self.__combiner is None:
             raise AssertionError("Not exists combiner method for %s." % self._name)
 
+        self._define_input()
+        self._define_output()
+
+        for model in self.get_models():
+            model._copy_input(self)
+            model._copy_output(self)
+
         # append const ensemble for each models
         if len(self.__list_cost_ensemble) > 0:
             for fun_cost, name, params_cost in self.__list_cost_ensemble:
@@ -238,7 +252,7 @@ class EnsembleModel(Model):
 
         cost = sum(cost) / self.get_num_models()
 
-        update_combiner = self.__combiner.update_parameters(self, self.model_input, self.model_target)
+        update_combiner = self.__combiner.update_parameters(self, self._model_input, self._model_target)
         updates = OrderedDict()
         if update_combiner is not None:
             updates = update_combiner

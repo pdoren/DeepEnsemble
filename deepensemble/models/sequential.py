@@ -62,6 +62,7 @@ class Sequential(Model):
         n = len(self.__layers)
         if n <= 0:
             self.set_input_shape(shape=new_layer.get_input_shape())
+            self._define_input()
         else:
             new_layer.set_input_shape(self.__layers[n - 1].get_output_shape())
 
@@ -88,25 +89,34 @@ class Sequential(Model):
         theano.tensor.matrix or numpy.array
             Returns the output sequential model.
         """
-        if _input == self.model_input:
-            if self._output is None:
+        if _input == self._model_input:
+
+            _type = 'prob' if prob else 'crisp'
+
+            if self._output[_type]['changed']:
                 for layer in self.__layers:
                     _input = layer.output(_input)
 
-                self._output = _input
+                self._output[_type]['result'] = _input
 
-                if not prob and self.is_classifier():
-                    self._output = translate_output(self._output, self.get_fan_out(), self.is_binary_classification())
+                if _type == 'crisp' and self.is_classifier():
+                    self._output[_type]['result'] = translate_output(self._output[_type]['result'],
+                                                                       self.get_fan_out(),
+                                                                       self.is_binary_classification())
+                self._output[_type]['changed'] = False
+
+            return self._output[_type]['result']
 
         else:
+
             for layer in self.__layers:
                 _input = layer.output(_input)
-            self._output = _input
+            _output = _input
 
             if not prob and self.is_classifier():
-                self._output = translate_output(self._output, self.get_fan_out(), self.is_binary_classification())
+                self._output = translate_output(_output, self.get_fan_out(), self.is_binary_classification())
 
-        return self._output
+            return _output
 
     def reset(self):
         """ Reset parameters
@@ -125,6 +135,7 @@ class Sequential(Model):
         fast : bool
             Compiling cost and regularization items without separating them.
         """
+        self._define_output()
 
         cost = self.get_cost()
 

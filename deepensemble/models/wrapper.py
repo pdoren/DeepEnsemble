@@ -36,7 +36,7 @@ class Wrapper(Model):
         self.__clf = None
 
         # Reset score default
-        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+        self._score_function_list = {'list': [], 'changed': True, 'result': []}
         self.append_score(dummy_score, 'Accuracy')
 
         # Default cost
@@ -98,7 +98,7 @@ class Wrapper(Model):
     def output(self, _input, prob=True):
         """ Output model.
         """
-        if _input != self.model_input:
+        if _input != self._model_input:
             if self.__clf is None:
                 return self.__model.predict_proba(_input)
             else:

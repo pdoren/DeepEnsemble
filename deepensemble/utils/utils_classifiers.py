@@ -75,7 +75,7 @@ def get_index_label_classes(_output, is_binary_classification=False):
     if is_binary_classification:
         return T.ge(_output, 0.0).eval()
     else:
-        return T.argmax(_output, axis=1).eval()
+        return T.argmax(_output, axis=-1).eval()
 
 
 def translate_output(_output, n_classes, is_binary_classification=False):
@@ -100,4 +100,4 @@ def translate_output(_output, n_classes, is_binary_classification=False):
     if is_binary_classification:
         return T.sgn(_output)
     else:
-        return to_one_hot(T.argmax(_output, axis=1), n_classes)
+        return to_one_hot(T.argmax(_output, axis=-1), n_classes)

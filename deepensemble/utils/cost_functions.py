@@ -204,7 +204,7 @@ def neg_log_likelihood(model, _input, _target):
     theano.tensor.matrix
         Return negative logarithm likelihood.
     """
-    labels = T.argmax(_target, axis=1)
+    labels = T.argmax(_target, axis=-1)
     return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 

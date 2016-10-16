@@ -346,7 +346,7 @@ models.append(ensembleSVM)
 
 plt.style.use('ggplot')
 
-models = [ensemble]
+models = [ensemble, net40_ADAGRAD_MSE]
 
 # ============================================================================================================
 # Compile models and define extra score functions  >==========================================================

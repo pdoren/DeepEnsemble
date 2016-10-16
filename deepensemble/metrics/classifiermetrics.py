@@ -53,7 +53,7 @@ class ClassifierMetrics(BaseMetrics):
 
         len_cell = 0
         for target_label in self._model.get_target_labels():
-            l = len(target_label)
+            l = len(str(target_label))
             if l > len_cell:
                 len_cell = l
 

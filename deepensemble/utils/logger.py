@@ -192,7 +192,7 @@ class Logger(Singleton):
         size = 20
 
         def _show(_i):
-            postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
+            postfix = "| error: %.4f, score: %.4f / %.4f" % (model.get_train_error(), model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
             if _i == 1:
                 self.tic = time.time()

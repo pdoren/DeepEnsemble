@@ -70,13 +70,12 @@ class Model(Serializable):
         Number of output of the model.
     """
 
-    # static variables
-    model_input = T.matrix('model_input')  # Attribute for save input model.
-    model_target = T.matrix('model_target')  # Attribute for save target model.
-    batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # Attribute related with regularization
-
     def __init__(self, target_labels, type_model, name="model", input_shape=None, output_shape=None):
         super(Model, self).__init__()
+
+        self._model_input = None  # input model.
+        self._model_target = None  # target model.
+        self._batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # related with regularization
 
         self.__input_shape = input_shape
         self.__output_shape = output_shape
@@ -85,14 +84,14 @@ class Model(Serializable):
         self._params = []
 
         # Default score
-        self._score_function_list = {'list': [], 'changed': True, 'compiled': []}
+        self._score_function_list = {'list': [], 'changed': True, 'result': []}
 
         if self.is_classifier():
             self.append_score(score_accuracy, 'Accuracy')
         else:
             self.append_score(score_rms, 'Root Mean Square')
 
-        self._cost_function_list = {'list': [], 'changed': True, 'compiled': []}
+        self._cost_function_list = {'list': [], 'changed': True, 'result': []}
         self._reg_function_list = []
 
         self._update_function = None
@@ -100,14 +99,15 @@ class Model(Serializable):
 
         self._minibatch_train_eval = None
         self._minibatch_test_eval = None
-        self._share_data_input_train = shared(np.zeros((1, 1), dtype=config.floatX))
-        self._share_data_input_test = shared(np.zeros((1, 1), dtype=config.floatX))
-        self._share_data_target_train = shared(np.zeros((1, 1), dtype=config.floatX))
-        self._share_data_target_test = shared(np.zeros((1, 1), dtype=config.floatX))
+        self._share_data_input_train = None
+        self._share_data_input_test = None
+        self._share_data_target_train = None
+        self._share_data_target_test = None
 
         self._name = name
 
-        self._output = None
+        self._output = {'prob': {'changed': True, 'result' : None},
+                        'crisp' : {'changed': True, 'result' : None}}
         self._error = None
         self._labels_result_train = None
 
@@ -117,6 +117,27 @@ class Model(Serializable):
         self._info_model = ''
         self._is_compiled = False
         self._is_fast_compile = False
+
+    def _define_input(self):
+        tmp_data = [False] * self.get_dim_input()
+
+        self._model_input = T.TensorType(config.floatX, tmp_data)('model_input')
+
+        tmp_shape = (1,) * self.get_dim_input()
+        self._share_data_input_train = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
+        self._share_data_input_test = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
+
+    def _define_output(self):
+        tmp_data = [False] * self.get_dim_output()
+
+        self._model_target = T.TensorType(config.floatX, tmp_data)('model_target')
+
+        tmp_shape = (1,) * self.get_dim_output()
+        self._share_data_target_train = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
+        self._share_data_target_test = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
+
+    def is_multi_label(self):
+        return len(self.__target_labels) > 2
 
     def is_compiled(self):
         """ Indicate if the model was compiled.
@@ -226,6 +247,16 @@ class Model(Serializable):
         self.set_output_shape(model.get_output_shape())
         self.__type_model = model.get_type_model()
         self.__target_labels = model.get_target_labels()
+
+    def _copy_input(self, model):
+        """ Copy input.
+        """
+        self._model_input = model._model_input
+
+    def _copy_output(self, model):
+        """ Copy output.
+        """
+        self._model_target = model._model_target
 
     def get_dim_input(self):
         """ Gets input dimension.
@@ -417,7 +448,7 @@ class Model(Serializable):
             Returns error of model prediction.
 
         """
-        if _input == self.model_input and _target == self.model_target:
+        if _input == self._model_input and _target == self._model_target:
             if self._error is None:
                 self._error = self.output(_input, prob=prob) - _target
             return self._error
@@ -598,7 +629,7 @@ class Model(Serializable):
         best_params = None
         best_validation_cost = np.inf
         patience = max(max_epoch * n_train // 5, 5000)
-        validation_jump = min(patience // 100, max_epoch // 50)
+        validation_jump = max(min(patience // 100, max_epoch // 50), 1)
         patience_increase = 2
 
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
@@ -692,7 +723,11 @@ class Model(Serializable):
         self.review_shape_output()
 
         cost, updates, extra_results, labels_extra_results = self._compile(fast=fast, **kwargs)
-        error = T.mean(self.error(self.model_input, self.model_target))
+
+        if self.is_classifier():
+            error = T.mean(T.neq(self.output(self._model_input, prob=False), self._model_target))
+        else:
+            error = T.mean(self.error(self._model_input, self._model_target))
 
         self._labels_result_train = []
         result = [error, cost]
@@ -714,15 +749,15 @@ class Model(Serializable):
         start = T.lscalar('start')
         r = T.fscalar('r')
         givens_train = {
-            self.model_input: self._share_data_input_train[start:end],
-            self.model_target: self._share_data_target_train[start:end],
-            self.batch_reg_ratio: r
+            self._model_input: self._share_data_input_train[start:end],
+            self._model_target: self._share_data_target_train[start:end],
+            self._batch_reg_ratio: r
         }
 
         givens_test = {
-            self.model_input: self._share_data_input_test[start:end],
-            self.model_target: self._share_data_target_test[start:end],
-            self.batch_reg_ratio: r
+            self._model_input: self._share_data_input_test[start:end],
+            self._model_target: self._share_data_target_test[start:end],
+            self._batch_reg_ratio: r
         }
 
         self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
@@ -885,18 +920,18 @@ class Model(Serializable):
             Returns cost model list that include regularization.
         """
         if self._cost_function_list['changed']:
-            self._cost_function_list['compiled'] = []
+            self._cost_function_list['result'] = []
             for fun_cost, _, params in self._cost_function_list['list']:
-                self._cost_function_list['compiled'].append(fun_cost(model=self,
-                                                                     _input=self.model_input,
-                                                                     _target=self.model_target, **params))
+                self._cost_function_list['result'].append(fun_cost(model=self,
+                                                                     _input=self._model_input,
+                                                                     _target=self._model_target, **params))
 
             for fun_reg, _, params in self._reg_function_list:
-                self._cost_function_list['compiled'].append(fun_reg(model=self,
-                                                                    batch_reg_ratio=self.batch_reg_ratio, **params))
+                self._cost_function_list['result'].append(fun_reg(model=self,
+                                                                    batch_reg_ratio=self._batch_reg_ratio, **params))
             self._cost_function_list['changed'] = False
 
-        return self._cost_function_list['compiled']
+        return self._cost_function_list['result']
 
     def get_scores(self):
         """ Gets score function of model.
@@ -907,32 +942,32 @@ class Model(Serializable):
             Returns score model list.
         """
         if self._score_function_list['changed']:
-            self._score_function_list['compiled'] = []
+            self._score_function_list['result'] = []
             if self.is_classifier():
-                output = self.output(self.model_input, prob=False)
+                output = self.output(self._model_input, prob=False)
 
                 if output is not None:  # TODO: for Wrapper model, changed in the future
                     output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
 
                 for fun_score, _, params in self._score_function_list['list']:
-                    self._score_function_list['compiled'].append(fun_score(_output=output,
-                                                                           _input=self.model_input,
-                                                                           _target=self.model_target,
+                    self._score_function_list['result'].append(fun_score(_output=output,
+                                                                           _input=self._model_input,
+                                                                           _target=self._model_target,
                                                                            model=self,
                                                                            **params))
             else:
-                output = self.output(self.model_input)
+                output = self.output(self._model_input)
 
                 for fun_score, _, params in self._score_function_list['list']:
-                    self._score_function_list['compiled'].append(fun_score(_output=output,
-                                                                           _input=self.model_input,
-                                                                           _target=self.model_target,
+                    self._score_function_list['result'].append(fun_score(_output=output,
+                                                                           _input=self._model_input,
+                                                                           _target=self._model_target,
                                                                            model=self,
                                                                            **params))
 
             self._score_function_list['changed'] = False
 
-        return self._score_function_list['compiled']
+        return self._score_function_list['result']
 
     def get_labels_costs(self):
         """ Gets list of cost functions.

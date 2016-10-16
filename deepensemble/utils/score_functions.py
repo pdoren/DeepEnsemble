@@ -63,7 +63,10 @@ def score_accuracy(_input, _output, _target, model):
     theano.tensor.matrix
         Returns accuracy in a classifier models.
     """
-    return T.mean(T.eq(_output, _target))
+    if model.is_multi_label():
+        return T.mean(T.eq(_output - _target, T.zeros_like(_target)))
+    else:
+        return T.mean(T.eq(_output, _target))
 
 
 # noinspection PyUnusedLocal

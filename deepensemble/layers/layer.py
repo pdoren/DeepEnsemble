@@ -11,10 +11,10 @@ class Layer(Serializable):
 
     Attributes
     ----------
-    _input_shape : tuple
+    _input_shape : tuple[]
         Input shape.
 
-    _output_shape : tuple
+    _output_shape : tuple[]
         Output shape.
 
     _non_linearity : theano.Op
@@ -73,7 +73,7 @@ class Layer(Serializable):
 
         Returns
         -------
-        tuple
+        tuple[]
             Returns shape of input model.
         """
         return self._input_shape
@@ -136,7 +136,7 @@ class Layer(Serializable):
         int
             Returns input dimension of layer.
         """
-        return int(np.prod(self._input_shape))
+        return int(np.prod(self._input_shape[1:]))
 
     def get_fan_out(self):
         """ Getter of output dimension.
@@ -146,7 +146,7 @@ class Layer(Serializable):
         int
             Returns output dimension of layer.
         """
-        return int(np.prod(self._output_shape))
+        return int(np.prod(self._output_shape[1:]))
 
     def get_parameters(self):
         """ Getter of parameters of layer.
