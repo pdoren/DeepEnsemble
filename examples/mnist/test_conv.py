@@ -34,12 +34,12 @@ net1.append_cost(neg_log_likelihood, name='Neg Log Likelihood')
 net1.set_update(adagrad, name='ADAGRAD')
 net1.compile()
 
-max_epoch = 5
+max_epoch = 10
 
 input_train, input_test, target_train, target_test = cross_validation.train_test_split(
         data_input, data_target, test_size=0.3, random_state=0)
 
-metrics = net1.fit(input_train, target_train, max_epoch=max_epoch, batch_size=200, early_stop=False)
+metrics = net1.fit(input_train, target_train, max_epoch=max_epoch, batch_size=200, early_stop=False, update_sets=False)
 # Compute metrics
 metrics.append_prediction(input_test, target_test)
 

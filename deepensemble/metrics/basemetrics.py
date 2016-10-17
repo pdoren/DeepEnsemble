@@ -745,7 +745,7 @@ class EnsembleMetrics(BaseMetrics):
         """
         n = super(EnsembleMetrics, self).append_data(data, epoch, type_set_data=type_set_data)
 
-        if len(data) > n:
+        if (len(data) - 1) > n:
             labels = self._model.get_result_labels()
 
             for model in self._model.get_models():

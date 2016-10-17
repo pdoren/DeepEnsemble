@@ -1,5 +1,6 @@
 from .modelcombiner import ModelCombiner
 from ..utils import *
+import numpy as np
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
 
@@ -139,11 +140,11 @@ class PluralityVotingCombiner(ModelCombiner):
 
         Returns
         -------
-        list[]
+        numpy.array
             Returns a list with results of voting.
         """
         result = []
         for votes in voting:
             result.append(max(votes, key=lambda key: votes[key]))
 
-        return result
+        return np.array(result)

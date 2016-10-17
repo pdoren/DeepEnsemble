@@ -209,4 +209,4 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         for votes in voting:
             result.append(max(votes, key=lambda key: votes[key]))
 
-        return result
+        return np.array(result)
