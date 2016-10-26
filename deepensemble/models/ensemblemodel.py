@@ -192,6 +192,19 @@ class EnsembleModel(Model):
         """
         return self.__combiner.predict(self, _input)
 
+    def __update_io(self):
+        """ Update Input Output shared Theano variables """
+        # Define input-output variables in ensemble
+        self._define_input()
+        self._define_output()
+
+        # This way all models share the same input-output variables
+        for model in self.get_models():
+            model._copy_input(self)
+            model._copy_output(self)
+            model._copy_batch_ratio(self)
+
+
     def _compile(self, fast=True, full_costs=True, full_scores=True, **kwargs):
         """ Compile ensemble's models.
 
@@ -217,12 +230,7 @@ class EnsembleModel(Model):
         if self.__combiner is None:
             raise AssertionError("Not exists combiner method for %s." % self._name)
 
-        self._define_input()
-        self._define_output()
-
-        for model in self.get_models():
-            model._copy_input(self)
-            model._copy_output(self)
+        self.__update_io()
 
         # append const ensemble for each models
         if len(self.__list_cost_ensemble) > 0:
@@ -311,6 +319,7 @@ class EnsembleModel(Model):
             super(EnsembleModel, self).compile(fast=fast, **kwargs)
         else:  # TODO: changed when improve Wrapper model
             Logger().start_measure_time("Start Compile %s" % self._name)
+            self.__update_io()
             Logger().stop_measure_time()
             self._is_compiled = True
 

@@ -75,7 +75,7 @@ class Model(Serializable):
 
         self._model_input = None  # input model.
         self._model_target = None  # target model.
-        self._batch_reg_ratio = T.scalar('batch_reg_ratio', dtype=config.floatX)  # related with regularization
+        self._batch_reg_ratio = T.fscalar('batch_reg_ratio')  # related with regularization
 
         self.__input_shape = input_shape
         self.__output_shape = output_shape
@@ -257,6 +257,11 @@ class Model(Serializable):
         """ Copy output.
         """
         self._model_target = model._model_target
+
+    def _copy_batch_ratio(self, model):
+        """ Copy output.
+        """
+        self._batch_reg_ratio = model._batch_reg_ratio
 
     def get_dim_input(self):
         """ Gets input dimension.

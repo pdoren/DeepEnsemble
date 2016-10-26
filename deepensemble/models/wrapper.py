@@ -137,6 +137,7 @@ class Wrapper(Model):
         # review possibles mistakes
         self.review_is_binary_classifier()
         self.review_shape_output()
+        self._define_output()
 
         Logger().stop_measure_time()
         self._is_compiled = True
