@@ -87,7 +87,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
     # Save Metrics
     metrics.save(_dir + '%s_metrics.pkl' % cls.get_name())
 
-    Logger().log('The best score: %.4f' % best_score)
+    Logger().log('The best score (test): %.4f' % best_score)
     Logger().log('wait .', end='', flush=True)
 
     fig_ = [(metrics.plot_confusion_matrix(), 'confusion_matrix'),
@@ -132,7 +132,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
 def test_models(models, input_train, target_train, input_valid, target_valid,
                 classes_labels, name_db, desc, col_names,
                 folds, **kwargs):
-    """ Training Ensemble with American Credit Card data base.
+    """ Test models.
     """
 
     data_models = []

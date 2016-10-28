@@ -1,4 +1,5 @@
 from sklearn import cross_validation, clone
+from copy import deepcopy
 
 from .model import Model
 from ..metrics import *
@@ -90,7 +91,7 @@ class Wrapper(Model):
             metric_model.append_data(self._current_data_test, i, type_set_data="test")
 
             if score_test >= best_score:
-                self.__clf = cls
+                self.__clf = deepcopy(cls)
                 best_score = score_test
 
         return metric_model

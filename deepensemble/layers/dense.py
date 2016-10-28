@@ -25,8 +25,8 @@ class Dense(Layer):
     """
 
     def __init__(self, n_input=None, n_output=None, activation=None):
-        input_shape = n_input if isinstance(n_input, tuple) else (1, n_input)
-        output_shape = n_output if isinstance(n_output, tuple) else (1, n_output)
+        input_shape = n_input if isinstance(n_input, tuple) else (None, n_input)
+        output_shape = n_output if isinstance(n_output, tuple) else (None, n_output)
         super(Dense, self).__init__(input_shape=input_shape, output_shape=output_shape, non_linearity=activation)
 
     def get_shape_W(self):

@@ -1,4 +1,6 @@
+import numpy as np
 from collections import OrderedDict
+
 
 from .model import Model
 from .wrapper import Wrapper
@@ -19,6 +21,12 @@ class EnsembleModel(Model):
     __list_models_ensemble : list[Model]
         List of the ensemble's models.
 
+    __list_cost_ensemble : list[]
+        List of cost in Ensemble.
+
+    _type_training : str
+        This parameter means what type of training perform.
+
     Parameters
     ----------
     name : str, "ensemble" by default
@@ -30,6 +38,7 @@ class EnsembleModel(Model):
         self.__combiner = None
         self.__list_models_ensemble = []
         self.__list_cost_ensemble = []
+        self._type_training = None
         self._params.append(0)  # the first element is reserved for combiner parameters
 
     def get_combiner(self):
@@ -289,21 +298,30 @@ class EnsembleModel(Model):
         """
         self.__list_cost_ensemble.append((fun_cost, name, kwargs))
 
-    def is_fit_ensemble_normal(self):
-        """ Determine whether it is possible to train normally.
+    def exists_wrapper_models(self):
+        """ Determine whether exist a wrapper model in Ensemble.
 
         Returns
         -------
         bool
-            Returns True if it is possible to train normally, False otherwise.
+            Returns True if exists wrapper models in Ensemble, False otherwise.
         """
-        there_are_wrapper_models = True
+        there_are_wrapper_models = False
         for _model in self.__list_models_ensemble:
             if isinstance(_model, Wrapper):
-                there_are_wrapper_models = False
+                there_are_wrapper_models = True
                 break
 
         return there_are_wrapper_models
+
+    def is_need_compile_separately(self):
+        """ Determine if it is necessary to compile models separately.
+
+        Returns
+        bool
+            Returns True if it is necessary to compile models separately, False otherwise.
+        """
+        return self.exists_wrapper_models() or self._type_training is not None
 
     def compile(self, fast=True, **kwargs):
         """ Prepare training (compile function of Theano).
@@ -315,11 +333,17 @@ class EnsembleModel(Model):
 
         kwargs
         """
-        if self.is_fit_ensemble_normal():
+        if not self.is_need_compile_separately():
             super(EnsembleModel, self).compile(fast=fast, **kwargs)
-        else:  # TODO: changed when improve Wrapper model
+        else:
             Logger().start_measure_time("Start Compile %s" % self._name)
+            Logger().log_disable()
+
             self.__update_io()
+            for _model in self.get_models():
+                _model.compile(fast=fast, **kwargs)
+
+            Logger().log_enable()
             Logger().stop_measure_time()
             self._is_compiled = True
 
@@ -341,13 +365,57 @@ class EnsembleModel(Model):
         MetricsBase
             Returns metrics got in training.
         """
-        if self.is_fit_ensemble_normal():
+        if not self.is_need_compile_separately():
             return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
         else:
             return self.fit_separate_models(_input=_input, _target=_target, **kwargs)
 
+    def set_type_training(self, type_training):
+        """ Setter type of training
+
+        Parameters
+        ----------
+        type_training : str
+            This parameter means what type of training perform.
+
+        Returns
+        -------
+        None
+        """
+        self._type_training = type_training
+
     def fit_separate_models(self, _input, _target, **kwargs):
         """ Training ensemble models each separately.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        type_training : str
+            This parameter means what type of training perform.
+
+        kwargs
+
+        Returns
+        -------
+        MetricsBase
+            Returns metrics got in training.
+        """
+        # Choose training method
+        if self._type_training == 'boosting':
+            return self.__fit_boosting(_input, _target, **kwargs)
+        elif self._type_training == 'bagging':
+            return self.__fit_bagging(_input, _target, **kwargs)
+        else:
+            return self.__fit_simple(_input, _target, **kwargs)
+
+
+    def __fit_simple(self, _input, _target, **kwargs):
+        """ Train each models one at time.
 
         Parameters
         ----------
@@ -364,11 +432,91 @@ class EnsembleModel(Model):
         MetricsBase
             Returns metrics got in training.
         """
-        # create a specific metric
         metrics = FactoryMetrics().get_metric(self)
-
+        Logger().log('Simple train ', flush=True)
         for model in self.__list_models_ensemble:
+            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log_disable()
+            metric = model.fit(_input, _target, **kwargs)
+            Logger().log_enable()
+            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
 
+            metrics.append_metric(metric)
+
+        return metrics
+
+    def __fit_bagging(self, _input, _target, seeds=None, ratio_bootstrap=0.9, **kwargs):
+        """ Train the Ensemble with Bagging algorithm.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        seeds : list[]
+
+        ratio_bootstrap : int
+
+        kwargs
+
+        Returns
+        -------
+        MetricsBase
+            Returns metrics got in training.
+        """
+        metrics = FactoryMetrics().get_metric(self)
+        Logger().log('Bagging train ', flush=True)
+
+        M = self.get_num_models()
+        if seeds is None or len(seeds) < M:
+            seeds = [i * 13 for i in range(M)]
+
+        N = len(_input)
+
+        n_bootstrap = int(ratio_bootstrap * N)
+
+        for i, model in enumerate(self.__list_models_ensemble):
+            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log_disable()
+
+            # Generate bootstrap
+            rns = np.random.RandomState(seeds[i])
+            index_bootstrap = rns.randint(0, N, n_bootstrap)
+
+            # Training model
+            metric = model.fit(_input[index_bootstrap], _target[index_bootstrap], **kwargs)
+
+            Logger().log_enable()
+            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
+
+            metrics.append_metric(metric)
+
+        return metrics
+
+    def __fit_boosting(self, _input, _target, **kwargs):
+        """ Train the Ensemble with Boosting algorithm.
+
+        Parameters
+        ----------
+        _input : numpy.array
+            Input sample.
+
+        _target : numpy.array
+            Target sample.
+
+        kwargs
+
+        Returns
+        -------
+        MetricsBase
+            Returns metrics got in training.
+        """
+        metrics = FactoryMetrics().get_metric(self)
+        Logger().log('Boosting train ', flush=True)
+        for model in self.__list_models_ensemble:
             Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
             Logger().log_disable()
             metric = model.fit(_input, _target, **kwargs)

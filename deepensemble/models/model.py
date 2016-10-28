@@ -291,7 +291,9 @@ class Model(Serializable):
         int
             Returns number of input.
         """
-        return int(np.prod(self.__input_shape))
+        input_shape = list(self.__input_shape)
+        input_shape[input_shape is None] = 1
+        return int(np.prod(input_shape))
 
     def get_fan_out(self):
         """ Gets number of output.
@@ -301,7 +303,9 @@ class Model(Serializable):
         int
             Returns number of output.
         """
-        return int(np.prod(self.__output_shape))
+        output_shape = list(self.__output_shape)
+        output_shape[output_shape is None] = 1
+        return int(np.prod(output_shape))
 
     def get_test_cost(self):
         """ Gets current testing cost.
@@ -651,7 +655,7 @@ class Model(Serializable):
 
             iteration = epoch * n_train
 
-            if epoch % validation_jump == 0:
+            if epoch % validation_jump == 0 or epoch == max_epoch:
                 # Evaluate test set
                 self._current_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
                 metric_model.append_data(self._current_data_test, epoch, type_set_data="test")
@@ -692,7 +696,6 @@ class Model(Serializable):
         params : list[]
             List of parameters.
         """
-        # TODO: it is needed verification of the parameters.
         for p, value in zip(self.get_params(), params):
             p.set_value(value)
 
