@@ -1,7 +1,6 @@
 import numpy as np
 from collections import OrderedDict
 
-
 from .model import Model
 from .wrapper import Wrapper
 from ..metrics import *
@@ -40,6 +39,9 @@ class EnsembleModel(Model):
         self.__list_cost_ensemble = []
         self._type_training = None
         self._params.append(0)  # the first element is reserved for combiner parameters
+
+    def get_model_input(self):
+        return self._model_input
 
     def get_combiner(self):
         """ Getter model combiner in Ensemble.
@@ -201,6 +203,7 @@ class EnsembleModel(Model):
         """
         return self.__combiner.predict(self, _input)
 
+    # noinspection PyProtectedMember
     def __update_io(self):
         """ Update Input Output shared Theano variables """
         # Define input-output variables in ensemble
@@ -212,7 +215,6 @@ class EnsembleModel(Model):
             model._copy_input(self)
             model._copy_output(self)
             model._copy_batch_ratio(self)
-
 
     def _compile(self, fast=True, full_costs=True, full_scores=True, **kwargs):
         """ Compile ensemble's models.
@@ -395,9 +397,6 @@ class EnsembleModel(Model):
         _target : numpy.array
             Target sample.
 
-        type_training : str
-            This parameter means what type of training perform.
-
         kwargs
 
         Returns
@@ -412,7 +411,6 @@ class EnsembleModel(Model):
             return self.__fit_bagging(_input, _target, **kwargs)
         else:
             return self.__fit_simple(_input, _target, **kwargs)
-
 
     def __fit_simple(self, _input, _target, **kwargs):
         """ Train each models one at time.

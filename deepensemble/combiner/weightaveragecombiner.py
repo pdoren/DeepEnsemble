@@ -162,7 +162,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
                                     ensemble_model.get_fan_out(),
                                     ensemble_model.is_binary_classification()) for model in
                    ensemble_model.get_models()]
-        if _input == ensemble_model.model_input:
+        if _input == ensemble_model.get_model_input():
             for i, model in enumerate(outputs):
                 outputs[i] *= self._params[i, 0]  # index TensorVariable
         else:

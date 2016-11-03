@@ -3,7 +3,6 @@ from __future__ import print_function
 import sys
 import time
 
-
 __all__ = ['Logger']
 
 
@@ -32,11 +31,8 @@ class Logger(Singleton):
     log_activate : bool, True by default
         Flag for print or not text in console.
 
-    tic : long
+    tic : list[]
         Save init value timer.
-
-    toc : long
-        Save end value timer.
 
     buffer : str
         Buffer for save all print text.
@@ -44,8 +40,7 @@ class Logger(Singleton):
 
     def __init__(self):
         self.log_activate = True
-        self.tic = 0
-        self.toc = 0
+        self.tic = []
         self.buffer = ""
         self.fold = 0
 
@@ -53,8 +48,7 @@ class Logger(Singleton):
         """ Reset intern parameters.
 
         """
-        self.tic = 0
-        self.toc = 0
+        self.tic = []
         self.buffer = ""
         self.fold = 0
 
@@ -152,7 +146,7 @@ class Logger(Singleton):
 
         kwargs
         """
-        self.tic = time.time()
+        self.tic.append(time.time())
         self.log(message="%s" % message, end="", **kwargs)
 
     def stop_measure_time(self, message="", **kwargs):
@@ -165,8 +159,9 @@ class Logger(Singleton):
 
         kwargs
         """
-        self.toc = time.time()
-        self.log(message=" %s - elapsed: %.2f [s]" % (message, self.toc - self.tic), **kwargs)
+        tic = self.tic.pop()
+        toc = time.time()
+        self.log(message=" %s - elapsed: %.2f [s]" % (message, toc - tic), **kwargs)
 
     def progressbar_training(self, max_epoch, model):
         """ Show a progressbar (it is necessary called for increment counter).
@@ -190,14 +185,14 @@ class Logger(Singleton):
         self.fold += 1
         prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
         size = 20
+        tic = time.time()
 
         def _show(_i):
-            postfix = "| error: %.4f, score: %.4f / %.4f" % (model.get_train_error(), model.get_train_score(), model.get_test_score())
+            postfix = "| error: %.4f, score: %.4f / %.4f" % (
+                model.get_train_error(), model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
-            if _i == 1:
-                self.tic = time.time()
-            self.toc = time.time()
-            dt = self.toc - self.tic
+            toc = time.time()
+            dt = toc - tic
             eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
             s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
                 prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
@@ -229,14 +224,13 @@ class Logger(Singleton):
         self.fold += 1
         prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
         size = 20
+        tic = time.time()
 
         def _show(_i):
             postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
-            if _i == 1:
-                self.tic = time.time()
-            self.toc = time.time()
-            dt = self.toc - self.tic
+            toc = time.time()
+            dt = toc - tic
             eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
             s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
                 prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)
@@ -253,7 +247,7 @@ class Logger(Singleton):
 
         Parameters
         ----------
-        it : iterator
+        it : iterator or list[]
             Range of values that progressbar uses.
 
         prefix : str
@@ -269,13 +263,12 @@ class Logger(Singleton):
             Size of progressbar.
         """
         count = len(it)
+        tic = time.time()
 
         def _show(_i):
             x = int(size * _i / count)
-            if _i == 1:
-                self.tic = time.time()
-            self.toc = time.time()
-            dt = self.toc - self.tic
+            toc = time.time()
+            dt = toc - tic
             eta = (count - _i) * dt / (_i + 1)  # Estimate Time Arrival
             s = "\r%s[%s%s] %i/%i elapsed: %.2f[s] - left: %.2f[s] %s" % (
                 prefix, "#" * x, "." * (size - x), _i, count, dt, eta, postfix)

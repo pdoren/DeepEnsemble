@@ -101,8 +101,8 @@ class Sequential(Model):
 
                 if _type == 'crisp' and self.is_classifier():
                     self._output[_type]['result'] = translate_output(self._output[_type]['result'],
-                                                                       self.get_fan_out(),
-                                                                       self.is_binary_classification())
+                                                                     self.get_fan_out(),
+                                                                     self.is_binary_classification())
                 self._output[_type]['changed'] = False
 
             return self._output[_type]['result']
@@ -140,4 +140,3 @@ class Sequential(Model):
         cost = self.get_cost()
 
         return cost, self.get_update_function(cost), [], []
-

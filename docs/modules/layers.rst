@@ -56,3 +56,11 @@ Dropout Layer
 
 .. autoclass:: Dropout
    :members:
+
+Utils Layers
+------------
+
+.. automodule:: deepensemble.layers.utils_layers
+
+.. autoclass:: Mask
+   :members:

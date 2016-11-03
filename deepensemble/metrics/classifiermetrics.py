@@ -90,8 +90,8 @@ class ClassifierMetrics(BaseMetrics):
             if key == 'Support':
                 continue
 
-            mean = np.sum(metrics[key][0] * metrics['Support']) / sum_sp
-            std = np.sum(metrics[key][1] * metrics['Support']) / sum_sp
+            mean = float(np.sum(metrics[key][0] * metrics['Support']) / sum_sp)
+            std = float(np.sum(metrics[key][1] * metrics['Support']) / sum_sp)
             value = "%.2f +-%.2f" % (mean, std)
             Logger().log(cell_format2.format(value), end="")
 

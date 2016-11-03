@@ -35,6 +35,7 @@ class PoolBase(Layer):
     mode : str
 
     """
+
     def __init__(self, pool_size, input_shape=None, output_shape=None, stride=1, pad=0, ignore_border=True, mode='max'):
         super(PoolBase, self).__init__(input_shape=input_shape, output_shape=output_shape,
                                        non_linearity=None, exclude_params=True)
@@ -74,7 +75,6 @@ class Pool1D(PoolBase):
 
     def __init__(self, pool_size, input_shape=None, output_shape=None,
                  stride=1, pad=0, ignore_border=True, mode='max'):
-
         if input_shape is not None:
             output_shape = list(input_shape)
 
@@ -104,10 +104,10 @@ class Pool1D(PoolBase):
         output_shape = list(shape)
 
         output_shape[-1] = self._get_size_output(shape[-1],
-                                             self._pool_size,
-                                             self._stride,
-                                             self._pad,
-                                             self._ignore_border)
+                                                 self._pool_size,
+                                                 self._stride,
+                                                 self._pad,
+                                                 self._ignore_border)
 
         self._output_shape = tuple(output_shape)
 
@@ -138,15 +138,14 @@ class Pool2D(PoolBase):
 
     def __init__(self, pool_size, input_shape=None, output_shape=None,
                  stride=(1, 1), pad=(0, 0), ignore_border=True, mode='max'):
-
         if input_shape is not None:
             output_shape = list(input_shape)
 
             output_shape[2] = self._get_size_output(input_shape[2],
-                                                     self._pool_size[0],
-                                                     self._stride[0],
-                                                     self._pad[0],
-                                                     self._ignore_border)
+                                                    self._pool_size[0],
+                                                    self._stride[0],
+                                                    self._pad[0],
+                                                    self._ignore_border)
 
             output_shape[3] = self._get_size_output(input_shape[3],
                                                     self._pool_size[1],

@@ -1,14 +1,16 @@
+import inspect
+
 import numpy as np
 import theano.tensor as T
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
+from theano import config, function
 
-from theano import config, shared, function
 from ..metrics import FactoryMetrics
-from ..utils.utils_classifiers import *
 from ..utils import Logger, score_accuracy, score_rms
 from ..utils.serializable import Serializable
 from ..utils.update_functions import sgd
+from ..utils.utils_classifiers import *
 
 __all__ = ['Model']
 
@@ -97,47 +99,66 @@ class Model(Serializable):
         self._update_function = None
         self.set_update(sgd, name='SGD', learning_rate=0.1)  # default training algorithm
 
-        self._minibatch_train_eval = None
-        self._minibatch_test_eval = None
-        self._share_data_input_train = None
-        self._share_data_input_test = None
-        self._share_data_target_train = None
-        self._share_data_target_test = None
+        self._train_eval = None
+        self._valid_eval = None
+        self._data_train = {'input': None, 'target': None}
+        self._data_valid = {'input': None, 'target': None}
 
         self._name = name
 
-        self._output = {'prob': {'changed': True, 'result' : None},
-                        'crisp' : {'changed': True, 'result' : None}}
+        self._output = {'prob': {'changed': True, 'result': None},
+                        'crisp': {'changed': True, 'result': None}}
         self._error = None
         self._labels_result_train = None
 
         self._current_data_train = None
-        self._current_data_test = None
+        self._current_data_valid = None
         self.__binary_classification = False
-        self._info_model = ''
+        self._info_model = {'info': 'Nothing.', 'comment': None}
         self._is_compiled = False
         self._is_fast_compile = False
 
     def _define_input(self):
+        """ Generate a shared variable for input.
+
+        Returns
+        -------
+        None
+        """
         tmp_data = [False] * self.get_dim_input()
 
         self._model_input = T.TensorType(config.floatX, tmp_data)('model_input')
 
-        tmp_shape = (1,) * self.get_dim_input()
-        self._share_data_input_train = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
-        self._share_data_input_test = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
-
     def _define_output(self):
+        """ Generate a shared variable for output.
+
+        Returns
+        -------
+        None
+        """
         tmp_data = [False] * self.get_dim_output()
 
         self._model_target = T.TensorType(config.floatX, tmp_data)('model_target')
 
-        tmp_shape = (1,) * self.get_dim_output()
-        self._share_data_target_train = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
-        self._share_data_target_test = shared(np.zeros(shape=tmp_shape, dtype=config.floatX))
+    def is_binary_classification(self):
+        """ Gets True if this model is a binary classifier, False otherwise.
 
-    def is_multi_label(self):
-        return len(self.__target_labels) > 2
+        Returns
+        -------
+        bool
+            Returns True if this model is a binary classifier, False otherwise.
+        """
+        return self.__binary_classification
+
+    def is_classifier(self):
+        """ Asks if the model is a classifier.
+
+        Returns
+        -------
+        bool
+            Return True if the model is a classifier, False otherwise.
+        """
+        return self.__type_model == "classifier"
 
     def is_compiled(self):
         """ Indicate if the model was compiled.
@@ -149,6 +170,17 @@ class Model(Serializable):
         """
         return self._is_compiled
 
+    def is_multi_label(self):
+        """ Indicate if this model is a multi-class classifier model.
+
+        Returns
+        -------
+        bool
+            Returns True if the number of classes is great than 2, False in otherwise.
+        """
+        return len(self.__target_labels) > 2
+
+    # noinspection PyNoneFunctionAssignment
     def get_info(self):
         """ Gets model info.
 
@@ -157,17 +189,29 @@ class Model(Serializable):
         str
             Returns info.
         """
-        return self._info_model
+        self.__generate_info()
+        if self._info_model['comment'] is None:
+            info_model = self._info_model['info']
+        else:
+            info_model = self._info_model['comment'] + '\n' + self._info_model['info']
+        size = max(len(self.get_name()), max([len(i) for i in info_model.splitlines()]))
+        line = '-' * size + '\n'
+        extra = self._get_extra_info()
+        if extra is None:
+            return line + self.get_name() + '\n' + line + info_model + line
+        else:
+            # noinspection PyTypeChecker
+            return line + self.get_name() + '\n' + line + info_model + line + extra + line
 
-    def set_info(self, info):
+    def append_comment(self, comment):
         """ Set model info.
 
         Parameters
         ----------
-        info : str
+        comment : str
             Information for model.
         """
-        self._info_model = info
+        self._info_model['comment'] = comment
 
     def get_result_labels(self):
         """ Gets list with labels of data training.
@@ -251,16 +295,19 @@ class Model(Serializable):
     def _copy_input(self, model):
         """ Copy input.
         """
+        # noinspection PyProtectedMember
         self._model_input = model._model_input
 
     def _copy_output(self, model):
         """ Copy output.
         """
+        # noinspection PyProtectedMember
         self._model_target = model._model_target
 
     def _copy_batch_ratio(self, model):
         """ Copy output.
         """
+        # noinspection PyProtectedMember
         self._batch_reg_ratio = model._batch_reg_ratio
 
     def get_dim_input(self):
@@ -315,10 +362,10 @@ class Model(Serializable):
         float
             Returns testing cost.
         """
-        if self._current_data_test is None:
+        if self._current_data_valid is None:
             return 0.0
         else:
-            return self._current_data_test[1]
+            return self._current_data_valid[1]
 
     def get_train_error(self):
         """ Gets current training error.
@@ -354,10 +401,10 @@ class Model(Serializable):
         float
             Returns testing score.
         """
-        if self._current_data_test is None or len(self._score_function_list) <= 0:
+        if self._current_data_valid is None or len(self._score_function_list) <= 0:
             return 0.0
         else:
-            return self._current_data_test[self._index_score()]
+            return self._current_data_valid[self._index_score()]
 
     def get_train_score(self):
         """ Gets current training score.
@@ -425,16 +472,6 @@ class Model(Serializable):
         FactoryMetrics
         """
         raise NotImplementedError
-
-    def is_classifier(self):
-        """ Asks if the model is a classifier.
-
-        Returns
-        -------
-        bool
-            Return True if the model is a classifier, False otherwise.
-        """
-        return self.__type_model == "classifier"
 
     def error(self, _input, _target, prob=True):
         """ Compute the error prediction of model.
@@ -514,7 +551,7 @@ class Model(Serializable):
     def reset(self):
         """ Reset params
         """
-        self._output = None
+        pass
 
     def output(self, _input, prob=True):
         """ Output model
@@ -555,13 +592,13 @@ class Model(Serializable):
         else:
             return output.eval()
 
-    def batch_eval(self, n_input, batch_size=32, train=True):
+    def batch_eval(self, data, batch_size=32, train=True, shuffle=False):
         """ Evaluate cost and score in mini batch.
 
         Parameters
         ----------
-        n_input: int
-            Dimension Input.
+        data : dict
+            Dictionary with 'input' and 'output' data.
 
         batch_size: int
             Size of batch.
@@ -569,25 +606,39 @@ class Model(Serializable):
         train: bool
             Flag for knowing if the evaluation of batch is for training or testing.
 
+        shuffle : bool
+
+
         Returns
         -------
         numpy.array
             Returns evaluation cost and score in mini batch.
         """
+        _input = data['input']
+        _target = data['target']
+
+        n_input = len(_input)
+        indices = []
+        if shuffle:
+            indices = np.arange(n_input)
+            np.random.shuffle(indices)
+
+        fun_eval = self._train_eval if train else self._valid_eval
+
         if n_input > batch_size:
             t_data = []
             for (start, end) in zip(range(0, n_input, batch_size), range(batch_size, n_input, batch_size)):
                 r = (end - start) / n_input
-                if train:
-                    t_data.append(self._minibatch_train_eval(start, end, r))
+                if shuffle:
+                    batch_index = indices[start:end]
                 else:
-                    t_data.append(self._minibatch_test_eval(start, end, r))
+                    batch_index = slice(start, end)
+
+                t_data.append(fun_eval(_input[batch_index], _target[batch_index], r))
+
             return np.mean(t_data, axis=0)
         else:
-            if train:
-                return self._minibatch_train_eval(0, n_input, 1.0)
-            else:
-                return self._minibatch_test_eval(0, n_input, 1.0)
+            return fun_eval(_input, _target, 1.0)
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True,
             improvement_threshold=0.995, minibatch=True, update_sets=True):
@@ -630,9 +681,7 @@ class Model(Serializable):
         metric_model = FactoryMetrics().get_metric(self)
 
         # save data in shared variables
-        self.prepare_data(_input, _target)
-        n_train = self._share_data_target_train.get_value(borrow=True).shape[0]
-        n_test = self._share_data_target_test.get_value(borrow=True).shape[0]
+        n_train, n_valid = self.prepare_data(_input, _target)
 
         # parameters early stopping
         best_params = None
@@ -643,13 +692,12 @@ class Model(Serializable):
 
         for epoch, _ in enumerate(Logger().progressbar_training(max_epoch, self)):
 
-            if update_sets:
-                self.prepare_data(_input, _target)
-
             if minibatch:  # Train minibatches
-                self._current_data_train = self.batch_eval(n_input=n_train, batch_size=batch_size, train=True)
+                self._current_data_train = self.batch_eval(self._data_train, batch_size=batch_size, train=True,
+                                                           shuffle=update_sets)
             else:
-                self._current_data_train = self.batch_eval(n_input=n_train, batch_size=n_train, train=True)
+                self._current_data_train = self.batch_eval(self._data_train, batch_size=n_train, train=True,
+                                                           shuffle=update_sets)
 
             metric_model.append_data(self._current_data_train, epoch, type_set_data="train")
 
@@ -657,8 +705,9 @@ class Model(Serializable):
 
             if epoch % validation_jump == 0 or epoch == max_epoch:
                 # Evaluate test set
-                self._current_data_test = self.batch_eval(n_input=n_test, batch_size=n_test, train=False)
-                metric_model.append_data(self._current_data_test, epoch, type_set_data="test")
+                self._current_data_valid = self.batch_eval(self._data_valid, batch_size=batch_size, train=False,
+                                                           shuffle=update_sets)
+                metric_model.append_data(self._current_data_valid, epoch, type_set_data="test")
                 validation_cost = self.get_test_cost()
 
                 if validation_cost < best_validation_cost:
@@ -753,28 +802,80 @@ class Model(Serializable):
             result += [self.get_scores()[0]]
             self._labels_result_train += self.get_labels_scores()[0]
 
-        end = T.lscalar('end')
-        start = T.lscalar('start')
-        r = T.fscalar('r')
-        givens_train = {
-            self._model_input: self._share_data_input_train[start:end],
-            self._model_target: self._share_data_target_train[start:end],
-            self._batch_reg_ratio: r
-        }
+        _inputs = [self._model_input, self._model_target, self._batch_reg_ratio]
 
-        givens_test = {
-            self._model_input: self._share_data_input_test[start:end],
-            self._model_target: self._share_data_target_test[start:end],
-            self._batch_reg_ratio: r
-        }
-
-        self._minibatch_train_eval = function(inputs=[start, end, r], outputs=result, updates=updates,
-                                              givens=givens_train, on_unused_input='ignore', allow_input_downcast=True)
-        self._minibatch_test_eval = function(inputs=[start, end, r], outputs=result,
-                                             givens=givens_test, on_unused_input='ignore', allow_input_downcast=True)
+        self._train_eval = function(inputs=_inputs, outputs=result, updates=updates,
+                                    on_unused_input='ignore', allow_input_downcast=True)
+        self._valid_eval = function(inputs=_inputs, outputs=result,
+                                    on_unused_input='ignore', allow_input_downcast=True)
 
         Logger().stop_measure_time()
         self._is_compiled = True
+
+    @staticmethod
+    def __extract_info(list_func):
+        """ Extract info of parameters from a function list.
+
+        Returns
+        -------
+        str
+            Returns string with functions info.
+        """
+        str_info = ''
+        for fun, name, kwargs in list_func:
+            args_fun = inspect.getargspec(fun)
+            comment = fun.__doc__.splitlines()[0] if fun.__doc__ is not None else None
+
+            if comment is not None:
+                str_info += ' %s: %s\n' % (name, comment)
+            else:
+                str_info += ' %s:\n' % name
+
+            if args_fun.defaults is not None:
+                params_fun = dict(zip(args_fun.args[-len(args_fun.defaults):], args_fun.defaults))
+                params_fun.update(kwargs)
+                str_info += ' params: %s\n' % params_fun
+
+        return str_info
+
+    def _get_spec_model(self):
+        """ Gets specific info about this model.
+        """
+        return 'Info model:\n Type model: %s\n inputs: %d\n outputs: %d\n' % \
+               (self.__type_model, self.get_fan_in(), self.get_fan_out())
+
+    # noinspection PyMethodMayBeStatic
+    def _get_extra_info(self):
+        """ Gets extra info about this model.
+        """
+        return None
+
+    def __generate_info(self):
+        """ Generate information about this model.
+
+        Information about:
+
+            - Specific information about model.
+            - Cost functions.
+            - Regularization.
+            - Score functions.
+
+        Returns
+        -------
+        None
+        """
+        self._info_model['info'] = ''  # Reset info model
+        self._info_model['info'] += self._get_spec_model() + '\n'
+
+        self._info_model['info'] += 'Update params:\n' + self.__extract_info([self._update_function]) + '\n'
+
+        self._info_model['info'] += 'Cost functions:\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
+
+        if len(self._reg_function_list) > 0:
+            self._info_model['info'] += \
+                'Regularization functions:\n' + self.__extract_info(self._reg_function_list) + '\n'
+
+        self._info_model['info'] += 'Score functions:\n' + self.__extract_info(self._score_function_list['list']) + '\n'
 
     def review_shape_output(self):
         """ Review if this model its dimension output is wrong.
@@ -802,17 +903,19 @@ class Model(Serializable):
         _target
         test_size
         """
-        input_train, input_test, target_train, target_test = \
+        input_train, input_valid, target_train, target_valid = \
             cross_validation.train_test_split(_input, _target, test_size=test_size, stratify=_target)
 
         if self.__type_model == 'classifier':
             target_train = self.translate_target(_target=target_train)
-            target_test = self.translate_target(_target=target_test)
+            target_valid = self.translate_target(_target=target_valid)
 
-        self._share_data_input_train.set_value(input_train)
-        self._share_data_target_train.set_value(target_train)
-        self._share_data_input_test.set_value(input_test)
-        self._share_data_target_test.set_value(target_test)
+        self._data_train['input'] = input_train
+        self._data_train['target'] = target_train
+        self._data_valid['input'] = input_valid
+        self._data_valid['target'] = target_valid
+
+        return len(input_train), len(input_valid)
 
     def translate_target(self, _target):
         """ Translate target.
@@ -831,16 +934,6 @@ class Model(Serializable):
             return translate_binary_target(_target=_target, target_labels=self.__target_labels)
         else:
             return translate_target(_target=_target, target_labels=self.__target_labels)
-
-    def is_binary_classification(self):
-        """ Gets True if this model is a binary classifier, False otherwise.
-
-        Returns
-        -------
-        bool
-            Returns True if this model is a binary classifier, False otherwise.
-        """
-        return self.__binary_classification
 
     def append_score(self, fun_score, name, **kwargs):
         """ Adds an extra item in the score functions.
@@ -931,12 +1024,12 @@ class Model(Serializable):
             self._cost_function_list['result'] = []
             for fun_cost, _, params in self._cost_function_list['list']:
                 self._cost_function_list['result'].append(fun_cost(model=self,
-                                                                     _input=self._model_input,
-                                                                     _target=self._model_target, **params))
+                                                                   _input=self._model_input,
+                                                                   _target=self._model_target, **params))
 
             for fun_reg, _, params in self._reg_function_list:
                 self._cost_function_list['result'].append(fun_reg(model=self,
-                                                                    batch_reg_ratio=self._batch_reg_ratio, **params))
+                                                                  batch_reg_ratio=self._batch_reg_ratio, **params))
             self._cost_function_list['changed'] = False
 
         return self._cost_function_list['result']
@@ -959,19 +1052,19 @@ class Model(Serializable):
 
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['result'].append(fun_score(_output=output,
-                                                                           _input=self._model_input,
-                                                                           _target=self._model_target,
-                                                                           model=self,
-                                                                           **params))
+                                                                         _input=self._model_input,
+                                                                         _target=self._model_target,
+                                                                         model=self,
+                                                                         **params))
             else:
                 output = self.output(self._model_input)
 
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['result'].append(fun_score(_output=output,
-                                                                           _input=self._model_input,
-                                                                           _target=self._model_target,
-                                                                           model=self,
-                                                                           **params))
+                                                                         _input=self._model_input,
+                                                                         _target=self._model_target,
+                                                                         model=self,
+                                                                         **params))
 
             self._score_function_list['changed'] = False
 

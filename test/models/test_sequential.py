@@ -26,9 +26,8 @@ class TestSequential(TestCase):
 
     def test_initialization(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
-        self.assertEqual(info, seq.get_info(), 'Problem with info')
         self.assertEqual((classes_labels == seq.get_target_labels()).all(), True,
                          'The elements of classes labels are different')
         self.assertEqual(name, seq.get_name(), 'Problem with name of class')
@@ -36,7 +35,7 @@ class TestSequential(TestCase):
 
     def test_add_layer(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=3,
                                  activation=ActivationFunctions.sigmoid))
@@ -49,7 +48,7 @@ class TestSequential(TestCase):
 
     def test_get_layers(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         layers = [Dense(n_input=data_input.shape[1], n_output=3,
                             activation=ActivationFunctions.sigmoid),
@@ -75,7 +74,7 @@ class TestSequential(TestCase):
 
     def test_fit_fast(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=3,
                             activation=ActivationFunctions.sigmoid))
@@ -87,7 +86,7 @@ class TestSequential(TestCase):
 
     def test_fit_not_fast(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=3,
                             activation=ActivationFunctions.sigmoid))
@@ -99,7 +98,7 @@ class TestSequential(TestCase):
 
     def test_output(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=4,
                             activation=ActivationFunctions.sigmoid))
@@ -129,7 +128,7 @@ class TestSequential(TestCase):
         data_input = np.random.random(size=(N, 5)).astype(dtype=config.floatX)
         data_target = ['class_1'] * (N // 2) + ['class_2'] * (N // 2)
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=4,
                             activation=ActivationFunctions.tanh))
@@ -166,7 +165,7 @@ class TestSequential(TestCase):
 
     def test_reset(self):
         seq = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
-        seq.set_info(info)
+        seq.append_comment(info)
 
         seq.add_layer(Dense(n_input=data_input.shape[1], n_output=3,
                             activation=ActivationFunctions.sigmoid))

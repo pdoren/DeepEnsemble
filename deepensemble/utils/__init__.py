@@ -8,4 +8,5 @@ from .utils_classifiers import *
 from .score_functions import *
 from .utils_data_bases import *
 from .utils_test import *
+from .utils_plot import *
 from .serializable import *

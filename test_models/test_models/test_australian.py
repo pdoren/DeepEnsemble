@@ -14,7 +14,7 @@ training = True
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale')
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale', data_home='../data')
 
 input_train = data_input[0:517]
 input_test = data_input[518:690]
@@ -29,7 +29,7 @@ models = []
 
 # ==========< Ensemble        >==============================================================================
 ensemble = EnsembleModel(name='Ensemble')
-ensemble.set_info('Ensemble with 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
+ensemble.append_comment('Ensemble with 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                   'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                   'the activation function is sigmoid for each neurons. The cost function is MSE.\n'
                   ' The combiner output model ensemble is Max Voting or Plurality Voting.')
@@ -47,7 +47,7 @@ models.append(ensemble)
 
 # ==========< Ensemble  Neg Correntropy   >=================================================================
 ensembleNCPY = EnsembleModel(name='Ensemble Neg Correntropy')
-ensembleNCPY.set_info('Ensemble training with Negative Correntropy and MSE.\n'
+ensembleNCPY.append_comment('Ensemble training with Negative Correntropy and MSE.\n'
                       'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                       'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                       ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
@@ -68,7 +68,7 @@ models.append(ensembleNCPY)
 
 # ==========< Ensemble  MCC - Neg Correntropy   >============================================================
 ensembleNCPY_MCC = EnsembleModel(name='Ensemble MCC - Neg Correntropy')
-ensembleNCPY_MCC.set_info('Ensemble training with Negative Correntropy and MCC.\n'
+ensembleNCPY_MCC.append_comment('Ensemble training with Negative Correntropy and MCC.\n'
                           'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                           'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                           ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
@@ -88,7 +88,7 @@ models.append(ensembleNCPY_MCC)
 
 # ==========< Ensemble  KLG - Neg Correntropy   >============================================================
 ensembleNCPY_KLG = EnsembleModel(name='Ensemble KLG - Neg Correntropy')
-ensembleNCPY_KLG.set_info('Ensemble training with Negative Correntropy and KLG.\n'
+ensembleNCPY_KLG.append_comment('Ensemble training with Negative Correntropy and KLG.\n'
                           'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                           'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                           ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
@@ -108,7 +108,7 @@ models.append(ensembleNCPY_KLG)
 
 # ==========< Ensemble  NCL   >==============================================================================
 ensembleNCL = EnsembleModel(name='Ensemble NCL')
-ensembleNCL.set_info('Ensemble training with Negative Correlation Learning (NCL).\n'
+ensembleNCL.append_comment('Ensemble training with Negative Correlation Learning (NCL).\n'
                      'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                      'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                      ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
@@ -132,7 +132,7 @@ models.append(ensembleNCL)
 
 # ==========< Ensemble  NCL L1+L2   >========================================================================
 ensembleNCL_L1L2 = EnsembleModel(name='Ensemble NCL L1+L2')
-ensembleNCL_L1L2.set_info('Ensemble training with Negative Correlation Learning (NCL).\n'
+ensembleNCL_L1L2.append_comment('Ensemble training with Negative Correlation Learning (NCL).\n'
                           'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                           'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                           ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
@@ -156,7 +156,7 @@ models.append(ensembleNCL_L1L2)
 
 # ==========< Ensemble Kullback Leibler Generalized    >====================================================
 ensembleKLG = EnsembleModel(name='Ensemble KLG')
-ensembleKLG.set_info('Ensemble training with Kullback Leibler Generalized.\n'
+ensembleKLG.append_comment('Ensemble training with Kullback Leibler Generalized.\n'
                      'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                      'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                      ' the activation function is sigmoid for each neurons.\n'
@@ -176,7 +176,7 @@ models.append(ensembleKLG)
 
 # ==========< Ensemble MCC    >=============================================================================
 ensembleMCC = EnsembleModel(name='Ensemble MCC')
-ensembleMCC.set_info('Ensemble training with MCC (Minimum Cross Correntropy).\n'
+ensembleMCC.append_comment('Ensemble training with MCC (Minimum Cross Correntropy).\n'
                      'This ensemble has 4 neural networks type MLP, training algorithm is SGD (lr=0.1).\n'
                      'MLPs: 10 neurons in hidden layers and 2 neurons in output (one hot encoding),\n'
                      ' the activation function is sigmoid for each neurons.\n'
@@ -196,7 +196,7 @@ models.append(ensembleMCC)
 
 # ==========< MLP 40  MSE  >===================================================================================
 net40_MSE = Sequential("MLP 40 MSE", "classifier", classes_labels)
-net40_MSE.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+net40_MSE.append_comment('Neural Network type MLP 40 neurons in hidden layers and'
                    ' 2 neurons in output (one hot encoding).\n'
                    ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
                    ' The cost function is MSE.')
@@ -210,7 +210,7 @@ models.append(net40_MSE)
 
 # ==========< MLP 40 ADAGRAD MSE  >===========================================================================
 net40_ADAGRAD_MSE = Sequential("MLP 40 ADAGRAD MSE", "classifier", classes_labels)
-net40_ADAGRAD_MSE.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+net40_ADAGRAD_MSE.append_comment('Neural Network type MLP 40 neurons in hidden layers and'
                            ' 2 neurons in output (one hot encoding).\n'
                            ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
                            ' The cost function is MSE with regularization L1 and L2 (lamb: L1: 0.005, L2: 0.001 ).')
@@ -226,7 +226,7 @@ models.append(net40_ADAGRAD_MSE)
 
 # ==========< MLP 40 KLG  >==================================================================================
 net40_KLG = Sequential("MLP 40 KLG", "classifier", classes_labels)
-net40_KLG.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+net40_KLG.append_comment('Neural Network type MLP 40 neurons in hidden layers and'
                    ' 2 neurons in output (one hot encoding).\n'
                    ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
                    ' The cost function is Kullback Leibler Generalized.')
@@ -240,7 +240,7 @@ models.append(net40_KLG)
 
 # ==========< MLP 40 MCC  >==================================================================================
 net40_MCC = Sequential("MLP 40 MCC", "classifier", classes_labels)
-net40_MCC.set_info('Neural Network type MLP 40 neurons in hidden layers and'
+net40_MCC.append_comment('Neural Network type MLP 40 neurons in hidden layers and'
                    ' 2 neurons in output (one hot encoding).\n'
                    ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
                    ' The cost function is MCC.')
@@ -254,7 +254,7 @@ models.append(net40_MCC)
 
 # ==========< MLP 10 ADAGRAD MSE  >===========================================================================
 net10_ADAGRAD_MSE = Sequential("MLP 10 ADAGRAD MSE", "classifier", classes_labels)
-net10_ADAGRAD_MSE.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+net10_ADAGRAD_MSE.append_comment('Neural Network type MLP 10 neurons in hidden layers and'
                            ' 2 neurons in output (one hot encoding).\n'
                            ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
                            ' The cost function is MSE with regularization L1 and L2.')
@@ -270,7 +270,7 @@ models.append(net10_ADAGRAD_MSE)
 
 # ==========< MLP 10 KLG  >===================================================================================
 net10_KLG = Sequential("MLP 10 KLG", "classifier", classes_labels)
-net10_KLG.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+net10_KLG.append_comment('Neural Network type MLP 10 neurons in hidden layers and'
                    ' 2 neurons in output (one hot encoding).\n'
                    ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
                    ' The cost function is Kullback Leibler Generalized.')
@@ -284,7 +284,7 @@ models.append(net10_KLG)
 
 # ==========< MLP 10 MCC  >===================================================================================
 net10_MCC = Sequential("MLP 10 MCC", "classifier", classes_labels)
-net10_MCC.set_info('Neural Network type MLP 10 neurons in hidden layers and'
+net10_MCC.append_comment('Neural Network type MLP 10 neurons in hidden layers and'
                    ' 2 neurons in output (one hot encoding).\n'
                    ' The training is with SGD (lr=0.1), the activation function is sigmoid for each neurons.\n'
                    ' The cost function is MCC.')
@@ -301,13 +301,13 @@ rf = RandomForestClassifier(n_estimators=40)
 random_forest = Wrapper(rf, name='Random Forest',
                         input_shape=(data_input.shape[1],), output_shape=(2,),
                         type_model='classifier', target_labels=classes_labels)
-random_forest.set_info('Random Forest with 40 estimators. This algorithm is implemented for Scikit library.')
+random_forest.append_comment('Random Forest with 40 estimators. This algorithm is implemented for Scikit library.')
 
 models.append(random_forest)
 
 # ==========< Random Forest Ensemble  >========================================================================
 ensembleRandomForest = EnsembleModel(name='Ensemble with Random Forest')
-ensembleRandomForest.set_info('Ensemble with 4 Random Forest Classifiers.\n'
+ensembleRandomForest.append_comment('Ensemble with 4 Random Forest Classifiers.\n'
                               ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
                               ' Random Forest has 10 estimators. This algorithm is implemented for Scikit library.')
 for i in range(4):
@@ -325,13 +325,13 @@ svmc = svm.SVC()
 svmw = Wrapper(svmc, name='SVM kernel RBF',
                input_shape=(data_input.shape[1],), output_shape=(2,),
                type_model='classifier', target_labels=classes_labels)
-svmw.set_info('Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
+svmw.append_comment('Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
 
 models.append(svmw)
 
 # ==========< Ensemble SVM  >==================================================================================
 ensembleSVM = EnsembleModel(name='Ensemble with SVM kernel RBF')
-ensembleSVM.set_info('Ensemble with 4 SVM (RBF) Classifiers.\n'
+ensembleSVM.append_comment('Ensemble with 4 SVM (RBF) Classifiers.\n'
                      ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
                      ' Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
 for i in range(4):
@@ -369,7 +369,7 @@ if training:  # compile only if training models
 
 if training:
     # Arguments Training  >==================================================================================
-    args_train = {'max_epoch': 300, 'batch_size': 32, 'early_stop': False,
+    args_train = {'max_epoch': 300, 'batch_size': 32, 'early_stop': True,
                   'improvement_threshold': 0.9995, 'update_sets': False}
 
     # Training Models >======================================================================================
@@ -377,7 +377,7 @@ if training:
                               input_train=input_train, target_train=target_train, input_valid=input_test,
                               target_valid=target_test,
                               classes_labels=classes_labels, name_db=name_db, desc=desc, col_names=col_names,
-                              folds=1, **args_train)
+                              folds=25, **args_train)
 else:
     # Load Data
     _dir = name_db + '/'

@@ -17,7 +17,7 @@ plt.style.use('ggplot')
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('germannumer_scale')
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('germannumer_scale', data_home='../data')
 
 input_train, input_test, target_train, target_test = \
             cross_validation.train_test_split(data_input, data_target, test_size=0.3, stratify=data_target,
@@ -51,7 +51,7 @@ reg_l2 = 0.0001
 #############################################################################################################
 
 max_epoch = 300
-folds = 10
+folds = 1
 batch_size = 32
 training = True
 
@@ -63,11 +63,6 @@ models = []
 
 # ==========< Ensemble        >==============================================================================
 ensemble = EnsembleModel(name='Ensemble')
-ensemble.set_info('Ensemble with %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                  'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                  'the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                  ' The combiner output model ensemble is Max Voting or Plurality Voting.'
-                  % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -82,12 +77,6 @@ models.append(ensemble)
 
 # ==========< Ensemble  Neg Correntropy   >=================================================================
 ensembleNCPY = EnsembleModel(name='Ensemble Neg Correntropy')
-ensembleNCPY.set_info('Ensemble training with Negative Correntropy and MSE.\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.'
-                      % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -103,12 +92,6 @@ models.append(ensembleNCPY)
 
 # ==========< Ensemble  MCC - Neg Correntropy   >============================================================
 ensembleNCPY_MCC = EnsembleModel(name='Ensemble MCC - Neg Correntropy')
-ensembleNCPY_MCC.set_info('Ensemble training with Negative Correntropy and MCC.\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.'
-                          % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -125,12 +108,6 @@ models.append(ensembleNCPY_MCC)
 
 # ==========< Ensemble  KLG - Neg Correntropy   >============================================================
 ensembleNCPY_KLG = EnsembleModel(name='Ensemble KLG - Neg Correntropy')
-ensembleNCPY_KLG.set_info('Ensemble training with Negative Correntropy and KLG.\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.'
-                          % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -146,14 +123,8 @@ models.append(ensembleNCPY_KLG)
 
 # ==========< Ensemble  NCL   >==============================================================================
 ensembleNCL = EnsembleModel(name='Ensemble NCL')
-ensembleNCL.set_info('Ensemble training with Negative Correlation Learning (NCL).\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
-                     " This configuration is the same that paper of"
-                     " 'Negative Correlation Learning (NCL)' Xin Yao, 1999."
-                     % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
+ensembleNCL.append_comment("This configuration is the same that paper of"
+                           "'Negative Correlation Learning (NCL)' Xin Yao, 1999.")
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -169,13 +140,6 @@ models.append(ensembleNCL)
 
 # ==========< Ensemble  NCL L1+L2   >========================================================================
 ensembleNCL_L1L2 = EnsembleModel(name='Ensemble NCL L1+L2')
-ensembleNCL_L1L2.set_info('Ensemble training with Negative Correlation Learning (NCL).\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons. The cost function is MSE.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
-                     " This cost function include MSE and regularization L1 and L2."
-                          % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -194,13 +158,6 @@ models.append(ensembleNCL_L1L2)
 
 # ==========< Ensemble Kullback Leibler Generalized    >====================================================
 ensembleKLG = EnsembleModel(name='Ensemble KLG')
-ensembleKLG.set_info('Ensemble training with Kullback Leibler Generalized.\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting. and'
-                     ' The cost function is Kullback Leibler Generalized.'
-                     % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -215,13 +172,6 @@ models.append(ensembleKLG)
 
 # ==========< Ensemble MCC    >=============================================================================
 ensembleMCC = EnsembleModel(name='Ensemble MCC')
-ensembleMCC.set_info('Ensemble training with MCC (Minimum Cross Correntropy).\n'
-                     'This ensemble has %d neural networks type MLP, training algorithm is SGD (lr=%f).\n'
-                     'MLPs: %d neurons in hidden layers and %d neurons in output (one hot encoding),\n'
-                     ' the activation function is sigmoid for each neurons.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting'
-                     ' and the cost function is MCC.'
-                     % (n_ensemble_models, lr, n_neurons_ensemble_per_models, n_output))
 for i in range(n_ensemble_models):
     net = Sequential("net%d" % (i + 1), "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
@@ -236,11 +186,6 @@ models.append(ensembleMCC)
 
 # ==========< MLP 40  MSE  >===================================================================================
 net40_MSE = Sequential("MLP %d MSE" % n_neurons, "classifier", classes_labels)
-net40_MSE.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                   ' %d neurons in output (one hot encoding).\n'
-                   ' The training is with SGD (lr=%f), the activation function is sigmoid for each neurons.\n'
-                   ' The cost function is MSE.'
-                   % (n_neurons, n_output, lr))
 net40_MSE.add_layer(Dense(n_input=n_inputs, n_output=n_neurons,
                           activation=fn_activation))
 net40_MSE.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -251,11 +196,6 @@ models.append(net40_MSE)
 
 # ==========< MLP 40 ADAGRAD MSE  >===========================================================================
 net40_ADAGRAD_MSE = Sequential("MLP %d ADAGRAD MSE" % n_neurons, "classifier", classes_labels)
-net40_ADAGRAD_MSE.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                           ' %d neurons in output (one hot encoding).\n'
-                           ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
-                           ' The cost function is MSE with regularization L1 and L2 (lamb: L1: %f, L2: %f ).'
-                           % (n_neurons, n_output, reg_l1, reg_l2))
 net40_ADAGRAD_MSE.add_layer(Dense(n_input=n_inputs, n_output=n_neurons,
                                   activation=fn_activation))
 net40_ADAGRAD_MSE.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -268,11 +208,6 @@ models.append(net40_ADAGRAD_MSE)
 
 # ==========< MLP 40 KLG  >==================================================================================
 net40_KLG = Sequential("MLP %d KLG" % n_neurons, "classifier", classes_labels)
-net40_KLG.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                   ' %d neurons in output (one hot encoding).\n'
-                   ' The training is with SGD (lr=%f), the activation function is sigmoid for each neurons.\n'
-                   ' The cost function is Kullback Leibler Generalized.'
-                   % (n_neurons, n_output, lr))
 net40_KLG.add_layer(Dense(n_input=n_inputs, n_output=n_neurons,
                           activation=fn_activation))
 net40_KLG.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -283,11 +218,6 @@ models.append(net40_KLG)
 
 # ==========< MLP 40 MCC  >==================================================================================
 net40_MCC = Sequential("MLP %d MCC" % n_neurons, "classifier", classes_labels)
-net40_MCC.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                   ' %d neurons in output (one hot encoding).\n'
-                   ' The training is with SGD (lr=%f), the activation function is sigmoid for each neurons.\n'
-                   ' The cost function is MCC.'
-                   % (n_neurons, n_output, lr))
 net40_MCC.add_layer(Dense(n_input=n_inputs, n_output=n_neurons,
                           activation=fn_activation))
 net40_MCC.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -298,11 +228,6 @@ models.append(net40_MCC)
 
 # ==========< MLP 10 ADAGRAD MSE  >===========================================================================
 net10_ADAGRAD_MSE = Sequential("MLP %d ADAGRAD MSE" % n_neurons_ensemble_per_models, "classifier", classes_labels)
-net10_ADAGRAD_MSE.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                           ' %d neurons in output (one hot encoding).\n'
-                           ' The training is with ADAGRAD, the activation function is sigmoid for each neurons.\n'
-                           ' The cost function is MSE with regularization L1 and L2  (lamb: L1: %f, L2: %f ).'
-                           % (n_neurons, n_output, reg_l1, reg_l2))
 net10_ADAGRAD_MSE.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
                                   activation=fn_activation))
 net10_ADAGRAD_MSE.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -315,11 +240,6 @@ models.append(net10_ADAGRAD_MSE)
 
 # ==========< MLP 10 KLG  >===================================================================================
 net10_KLG = Sequential("MLP %d KLG" % n_neurons_ensemble_per_models, "classifier", classes_labels)
-net10_KLG.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                   ' %d neurons in output (one hot encoding).\n'
-                   ' The training is with SGD (lr=%f), the activation function is sigmoid for each neurons.\n'
-                   ' The cost function is Kullback Leibler Generalized.'
-                   % (n_neurons, n_output, lr))
 net10_KLG.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
                           activation=fn_activation))
 net10_KLG.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -330,11 +250,6 @@ models.append(net10_KLG)
 
 # ==========< MLP 10 MCC  >===================================================================================
 net10_MCC = Sequential("MLP %d MCC" % n_neurons_ensemble_per_models, "classifier", classes_labels)
-net10_MCC.set_info('Neural Network type MLP %d neurons in hidden layers and'
-                   ' %d neurons in output (one hot encoding).\n'
-                   ' The training is with SGD (lr=%f), the activation function is sigmoid for each neurons.\n'
-                   ' The cost function is MCC.'
-                   % (n_neurons, n_output, lr))
 net10_MCC.add_layer(Dense(n_input=n_inputs, n_output=n_neurons_ensemble_per_models,
                           activation=fn_activation))
 net10_MCC.add_layer(Dense(n_output=n_output, activation=fn_activation))
@@ -348,17 +263,13 @@ rf = RandomForestClassifier(n_estimators=n_estimators_rf)
 random_forest = Wrapper(rf, name='Random Forest',
                         input_shape=(n_inputs,), output_shape=(n_output,),
                         type_model='classifier', target_labels=classes_labels)
-random_forest.set_info('Random Forest with %d estimators. This algorithm is implemented for Scikit library.'
-                       % n_estimators_rf)
+random_forest.append_comment('Random Forest with %d estimators. This algorithm is implemented for Scikit library.'
+                             % n_estimators_rf)
 
 models.append(random_forest)
 
 # ==========< Random Forest Ensemble  >========================================================================
 ensembleRandomForest = EnsembleModel(name='Ensemble with Random Forest')
-ensembleRandomForest.set_info('Ensemble with %d Random Forest Classifiers.\n'
-                              ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
-                              ' Random Forest has %d estimators. This algorithm is implemented for Scikit library.'
-                              % (n_ensemble_models, n_estimators_ensemble_rf))
 for i in range(n_ensemble_models):
     rft = RandomForestClassifier(n_estimators=n_estimators_ensemble_rf)
     rfw = Wrapper(rft, name='Random Forest %d' % (i + 1),
@@ -374,16 +285,11 @@ svmc = svm.SVC()
 svmw = Wrapper(svmc, name='SVM kernel RBF',
                input_shape=(n_inputs,), output_shape=(n_output,),
                type_model='classifier', target_labels=classes_labels)
-svmw.set_info('Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.')
 
 models.append(svmw)
 
 # ==========< Ensemble SVM  >==================================================================================
 ensembleSVM = EnsembleModel(name='Ensemble with SVM kernel RBF')
-ensembleSVM.set_info('Ensemble with %d SVM (RBF) Classifiers.\n'
-                     ' The combiner output model ensemble is Max Voting or Plurality Voting.\n'
-                     ' Super Vector Machine with kernel RBF. This algorithm is implemented for Scikit library.'
-                     % n_ensemble_models)
 for i in range(n_ensemble_models):
     svmt = svm.SVC()
     svmwt = Wrapper(svmt, name='SVM %d' % (i + 1),
@@ -393,6 +299,8 @@ for i in range(n_ensemble_models):
 
 ensembleSVM.set_combiner(PluralityVotingCombiner())
 models.append(ensembleSVM)
+
+models = [ensemble]
 
 # ============================================================================================================
 # Compile models and define extra score functions  >==========================================================
@@ -417,7 +325,7 @@ if training:  # compile only if training models
 
 if training:
     # Arguments Training  >==================================================================================
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': True,
                   'improvement_threshold': 0.9995, 'update_sets': False}
 
     # Training Models >======================================================================================

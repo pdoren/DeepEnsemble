@@ -1,5 +1,5 @@
-import theano.tensor.nnet.conv as conv
 import theano.tensor as T
+
 from .layer import Layer
 from ..utils.utils_functions import ActivationFunctions
 
@@ -54,10 +54,10 @@ class ConvolutionBase(Layer):
             self._num_feature_maps = input_shape[1]
 
             output_shape = ((self._batch_size, self._num_filters) +
-                    tuple(self._get_size_output(input, filter, s, p)
-                          for input, filter, s, p
-                          in zip(input_shape[2:], self._filter_size,
-                                 self._stride, pad)))
+                            tuple(self._get_size_output(_input, _filter, s, p)
+                                  for _input, _filter, s, p
+                                  in zip(input_shape[2:], self._filter_size,
+                                         self._stride, pad)))
 
         super(ConvolutionBase, self).__init__(input_shape=input_shape,
                                               output_shape=output_shape,
@@ -78,8 +78,8 @@ class ConvolutionBase(Layer):
         self._num_feature_maps = self._input_shape[1]
 
         output_shape = ((self._batch_size, self._num_filters) +
-                        tuple(self._get_size_output(input, filter, s, p)
-                              for input, filter, s, p
+                        tuple(self._get_size_output(_input, _filter, s, p)
+                              for _input, _filter, s, p
                               in zip(self._input_shape[2:], self._filter_size,
                                      self._stride, self._pad)))
 
@@ -193,7 +193,6 @@ class Convolution1D(ConvolutionBase):
 
     def __init__(self, num_filters, filter_size, input_shape=None, stride=1, pad=0, untie_biases=False,
                  filter_flip=True, non_linearity=ActivationFunctions.linear):
-
         super(Convolution1D, self).__init__(num_filters=num_filters, filter_size=filter_size, input_shape=input_shape,
                                             stride=stride, pad=pad, untie_biases=untie_biases,
                                             filter_flip=filter_flip, non_linearity=non_linearity)
@@ -224,7 +223,6 @@ class Convolution2D(ConvolutionBase):
 
     def __init__(self, num_filters, filter_size, input_shape=None, stride=(1, 1), pad=(0, 0),
                  untie_biases=False, filter_flip=True, non_linearity=ActivationFunctions.linear):
-
         super(Convolution2D, self).__init__(num_filters=num_filters, filter_size=filter_size, input_shape=input_shape,
                                             stride=stride, pad=pad, untie_biases=untie_biases,
                                             filter_flip=filter_flip, non_linearity=non_linearity)
@@ -244,8 +242,8 @@ class Convolution2D(ConvolutionBase):
         """
         border_mode = 'half' if self._pad == 'same' else self._pad
         return _conv(x, self._W,
-                           self._input_shape, self.get_shape_W(),
-                           subsample=self._stride,
-                           border_mode=border_mode,
-                           filter_flip=self._filter_flip
-                           )
+                     self._input_shape, self.get_shape_W(),
+                     subsample=self._stride,
+                     border_mode=border_mode,
+                     filter_flip=self._filter_flip
+                     )

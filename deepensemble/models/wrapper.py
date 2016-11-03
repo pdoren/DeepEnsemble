@@ -82,13 +82,13 @@ class Wrapper(Model):
 
             # TODO: it's necessary to add the error and cost values
             self._current_data_train = [0] * 4
-            self._current_data_test = [0] * 4
+            self._current_data_valid = [0] * 4
 
             self._current_data_train[3] = score_train
-            self._current_data_test[3] = score_test
+            self._current_data_valid[3] = score_test
 
             metric_model.append_data(self._current_data_train, i, type_set_data="train")
-            metric_model.append_data(self._current_data_test, i, type_set_data="test")
+            metric_model.append_data(self._current_data_valid, i, type_set_data="test")
 
             if score_test >= best_score:
                 self.__clf = deepcopy(cls)

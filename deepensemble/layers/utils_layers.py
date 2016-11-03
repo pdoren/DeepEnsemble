@@ -1,9 +1,6 @@
-from .layer import Layer
-
-import theano.tensor as T
 import numpy as np
-from theano import config
 
+from .layer import Layer
 
 __all__ = ['Mask']
 

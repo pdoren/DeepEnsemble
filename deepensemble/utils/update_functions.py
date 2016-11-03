@@ -71,6 +71,7 @@ def adagrad(cost_function, params, initial_learning_rate=0.1, epsilon=1e-6):
 
     return updates
 
+
 def sgd(cost_function, params, learning_rate=0.1):
     """ Stochastic Gradient Descent (SGD).
 

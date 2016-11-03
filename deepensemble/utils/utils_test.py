@@ -7,7 +7,7 @@ from ..metrics import *
 from ..models import *
 from .logger import *
 
-__all__ = ['test_classifier', 'test_models',
+__all__ = ['test_classifier', 'test_models', 'test_model',
            'plot_hist_train_test',
            'plot_scores_classifications']
 
@@ -24,16 +24,13 @@ def make_dirs(_dir):
         os.makedirs(_dir)
 
 
-def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.7, folds=25,
-                    max_epoch=300, **kwargs):
-    """ Test on classifier.
-    """
-    make_dirs(_dir)
-
+def test_model(cls, input_train, target_train, input_test, target_test, min_score_test=0.7, folds=25,
+               max_epoch=300, **kwargs):
     metrics = FactoryMetrics.get_metric(cls)
 
     best_params = None
     best_score = 0
+    list_score = []
     i = 0
     invalid_training = 0
     while i < folds:
@@ -56,6 +53,7 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
 
         metrics.append_metric(metric)
 
+        list_score.append(score)
         # Save the best params
         if score > best_score:
             best_params = cls.save_params()
@@ -75,6 +73,18 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
     # Load the best params
     if best_params is not None:
         cls.load_params(best_params)
+
+    return metrics, best_score, list_score
+
+
+def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.7, folds=25,
+                    max_epoch=300, **kwargs):
+    """ Test on classifier.
+    """
+    make_dirs(_dir)
+
+    metrics, best_score, _ = test_model(cls, input_train, target_train, input_test, target_test, min_score_test, folds,
+                                        max_epoch, **kwargs)
 
     # Save classifier
     cls.save(_dir + '%s_classifier.pkl' % cls.get_name())
@@ -145,8 +155,7 @@ def test_models(models, input_train, target_train, input_valid, target_valid,
 
         # Print Info Data and Training
         Logger().reset()
-        Logger().log('Model:\n %s | in: %d, out: %d\n info:\n %s' %
-                     (_model.get_name(), n_input, n_output, _model.get_info()))
+        Logger().log('info:\n%s' % _model.get_info())
         Logger().log('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
                      (name_db, desc, n_input, col_names, n_output, classes_labels))
         Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
