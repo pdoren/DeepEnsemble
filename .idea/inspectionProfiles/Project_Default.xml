@@ -40,6 +40,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="matplotlib.cm.Blues" />
+          <option value="six.moves" />
         </list>
       </option>
     </inspection_tool>

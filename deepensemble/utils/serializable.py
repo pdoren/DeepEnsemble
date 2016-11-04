@@ -1,5 +1,4 @@
 import sys
-
 from six.moves import cPickle
 
 __all__ = ['Serializable']

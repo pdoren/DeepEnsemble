@@ -101,12 +101,12 @@ class Layer(Serializable):
     def get_shape_W(self):
         """ Gets shape weights of layer.
         """
-        return 0,  # TODO: changed
+        return 0,
 
     def get_shape_b(self):
         """ Gets shape bias of layer.
         """
-        return 0,  # TODO: changed
+        return 0,
 
     def initialize_parameters(self):
         """ Initialize neurons params of layers

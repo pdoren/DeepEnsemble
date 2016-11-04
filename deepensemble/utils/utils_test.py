@@ -24,7 +24,7 @@ def make_dirs(_dir):
         os.makedirs(_dir)
 
 
-def test_model(cls, input_train, target_train, input_test, target_test, min_score_test=0.7, folds=25,
+def test_model(cls, input_train, target_train, input_test, target_test, min_score_test=0.5, folds=25,
                max_epoch=300, **kwargs):
     metrics = FactoryMetrics.get_metric(cls)
 
@@ -77,7 +77,7 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
     return metrics, best_score, list_score
 
 
-def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.7, folds=25,
+def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.5, folds=25,
                     max_epoch=300, **kwargs):
     """ Test on classifier.
     """

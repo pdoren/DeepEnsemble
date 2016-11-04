@@ -31,6 +31,30 @@ def dummy_cost(model, _input, _target):
     """
     return T.zeros(_target.shape)
 
+def information_potential(model, _input, _target, s=None, kernel=ITLFunctions.norm):
+    """ Dummy cost function, this function only return zeros for each elements in _target.
+
+    Parameters
+    ----------
+    model : Model
+        Model.
+
+    _input : theano.tensor.matrix
+        Input Sample
+
+    _target : theano.tensor.matrix
+        Target Sample.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Returns only zeros for each elements in _target.
+    """
+    if s is None:
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+    e = model.error(_input, _target)
+    return -T.log(ITLFunctions.information_potential(e, kernel, s))
+
 
 def kullback_leibler_generalized(model, _input, _target):
     """ Kullback Leilbler generalized divergence.

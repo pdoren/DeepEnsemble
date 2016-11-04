@@ -170,6 +170,16 @@ class Model(Serializable):
         """
         return self._is_compiled
 
+    def is_fast_compiled(self):
+        """ Indicate if the model was compiled in fast mode.
+
+        Returns
+        -------
+        bool
+            Returns True if the model was compiled in fast mode, False otherwise.
+        """
+        return self._is_fast_compile
+
     def is_multi_label(self):
         """ Indicate if this model is a multi-class classifier model.
 
@@ -800,7 +810,7 @@ class Model(Serializable):
         else:
             # append only first score (default score)
             result += [self.get_scores()[0]]
-            self._labels_result_train += self.get_labels_scores()[0]
+            self._labels_result_train += [self.get_labels_scores()[0]]
 
         _inputs = [self._model_input, self._model_target, self._batch_reg_ratio]
 

@@ -170,8 +170,9 @@ class BaseMetrics(Serializable):
             n = add_data(labels, self._model.get_name(),
                          self.get_costs(type_set_data), n_cost, n, data, epoch)
 
+        n_data_score = 1 if self._model.is_fast_compiled() else len(self._model.get_scores())
         return add_data(labels, self._model.get_name(),
-                        self.get_scores(type_set_data), len(self._model.get_scores()), n, data, epoch)
+                        self.get_scores(type_set_data),  n_data_score, n, data, epoch)
 
     def plot_cost(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate cost plot.

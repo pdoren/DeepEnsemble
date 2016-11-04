@@ -27,10 +27,10 @@ class ActivationFunctions:
         return x
 
     @staticmethod
-    def softmax(x):
+    def softmax(x, alpha=1.):
         """ Softmax function.
 
-        .. math:: \\varphi(\\mathbf{x})_j = \\frac{e^{\mathbf{x}_j}}{\sum_{k=1}^K e^{\mathbf{x}_k}}
+        .. math:: \\varphi(\\mathbf{x'=\\alpha \\cdot x})_j = \\frac{e^{\mathbf{x'}_j}}{\sum_{k=1}^K e^{\mathbf{x'}_k}}
 
         Parameters
         ----------
@@ -39,10 +39,11 @@ class ActivationFunctions:
 
         Returns
         -------
-        float
+        function
             Returns the output of the softmax function.
         """
-        return T.nnet.softmax(x)
+
+        return T.nnet.softmax(x * alpha)
 
     @staticmethod
     def sigmoid(x):
