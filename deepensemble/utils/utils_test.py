@@ -2,6 +2,7 @@ import os
 import numpy as np
 from sklearn.metrics import *
 import matplotlib.pylab as plt
+from sklearn.neighbors.kde import KernelDensity
 
 from ..metrics import *
 from ..models import *
@@ -9,7 +10,8 @@ from .logger import *
 
 __all__ = ['test_classifier', 'test_models', 'test_model',
            'plot_hist_train_test',
-           'plot_scores_classifications']
+           'plot_scores_classifications',
+           'plot_pdf']
 
 
 def make_dirs(_dir):
@@ -37,10 +39,11 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
         metric = cls.fit(input_train, target_train, max_epoch=max_epoch, **kwargs)
 
         # Compute metrics
-        score = metrics.append_prediction(input_test, target_test)
+        score_train = metrics.append_prediction(input_train, target_train)
+        score_test = metrics.append_prediction(input_test, target_test)
 
-        if score < min_score_test:
-            Logger().log('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score, min_score_test))
+        if score_test < min_score_test:
+            Logger().log('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score_test, min_score_test))
             if invalid_training > 0.25 * folds:
                 min_score_test = 0.0
             else:
@@ -53,12 +56,12 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
 
         metrics.append_metric(metric)
 
-        list_score.append(score)
+        list_score.append((score_train, score_test))
         # Save the best params
-        if score > best_score:
+        if score_test > best_score:
             best_params = cls.save_params()
-            best_score = score
-        elif score == best_params:
+            best_score = score_test
+        elif score_test == best_params:
             score_curr = metrics.get_score_prediction(target_train, cls.predict(input_train))
             params_curr = cls.save_params()
             cls.load_params(best_params)
@@ -78,70 +81,73 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
 
 
 def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.5, folds=25,
-                    max_epoch=300, **kwargs):
+                    max_epoch=300, save_file=True, **kwargs):
     """ Test on classifier.
     """
     make_dirs(_dir)
 
-    metrics, best_score, _ = test_model(cls, input_train, target_train, input_test, target_test, min_score_test, folds,
-                                        max_epoch, **kwargs)
-
-    # Save classifier
-    cls.save(_dir + '%s_classifier.pkl' % cls.get_name())
+    metrics, best_score, list_score = test_model(cls, input_train, target_train, input_test, target_test,
+                                                 min_score_test, folds,
+                                                 max_epoch, **kwargs)
 
     # Compute and Show metrics
     metrics.classification_report()
     if isinstance(cls, EnsembleModel):
         metrics.diversity_report()
 
-    # Save Metrics
-    metrics.save(_dir + '%s_metrics.pkl' % cls.get_name())
-
     Logger().log('The best score (test): %.4f' % best_score)
     Logger().log('wait .', end='', flush=True)
 
-    fig_ = [(metrics.plot_confusion_matrix(), 'confusion_matrix'),
-            (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
-             'confusion_matrix_best_train'),
-            (metrics.plot_confusion_matrix_prediction(target_test, cls.predict(input_test)),
-             'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), 'Cost'),
-            (metrics.plot_costs(max_epoch), 'Costs'), (metrics.plot_scores(max_epoch), 'Scores')]
+    if save_file:
 
-    if isinstance(cls, EnsembleModel):
-        for key in metrics.get_models_metric():
-            _model = metrics.get_models_metric()[key].get_model()
+        # Save classifier
+        cls.save(_dir + '%s_classifier.pkl' % cls.get_name())
 
-            dir_model_costs = 'costs_models/'
-            dir_model_scores = 'scores_models/'
-            make_dirs(_dir + dir_model_costs)
-            make_dirs(_dir + dir_model_scores)
+        # Save Metrics
+        metrics.save(_dir + '%s_metrics.pkl' % cls.get_name())
 
-            fig_.append((metrics.get_models_metric()[key].plot_costs(max_epoch),
-                         dir_model_costs + 'cost_' + _model.get_name()))
-            fig_.append((metrics.get_models_metric()[key].plot_scores(max_epoch),
-                         dir_model_scores + 'score_' + _model.get_name()))
+        fig_ = [(metrics.plot_confusion_matrix(), 'confusion_matrix'),
+                (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
+                 'confusion_matrix_best_train'),
+                (metrics.plot_confusion_matrix_prediction(target_test, cls.predict(input_test)),
+                 'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), 'Cost'),
+                (metrics.plot_costs(max_epoch), 'Costs'), (metrics.plot_scores(max_epoch), 'Scores')]
 
-        # Diversity current model in metrics, so best model
-        dir_diversity = 'diversity/'
-        make_dirs(_dir + dir_diversity)
-        fig_ += metrics.plot_diversity(input_test, target_test, prefix=dir_diversity + 'diversity')
+        if isinstance(cls, EnsembleModel):
+            for key in metrics.get_models_metric():
+                _model = metrics.get_models_metric()[key].get_model()
 
-    for fig, name in fig_:
-        if fig is not None:
-            fig.savefig(_dir + name + '.pdf', format='pdf', dpi=1200)
-            plt.close(fig)
-            Logger().log('.', end='', flush=True)
+                dir_model_costs = 'costs_models/'
+                dir_model_scores = 'scores_models/'
+                make_dirs(_dir + dir_model_costs)
+                make_dirs(_dir + dir_model_scores)
 
-    Logger().save_buffer(_dir + 'info.txt')
+                fig_.append((metrics.get_models_metric()[key].plot_costs(max_epoch),
+                             dir_model_costs + 'cost_' + _model.get_name()))
+                fig_.append((metrics.get_models_metric()[key].plot_scores(max_epoch),
+                             dir_model_scores + 'score_' + _model.get_name()))
+
+            # Diversity current model in metrics, so best model
+            dir_diversity = 'diversity/'
+            make_dirs(_dir + dir_diversity)
+            fig_ += metrics.plot_diversity(input_test, target_test, prefix=dir_diversity + 'diversity')
+
+        for fig, name in fig_:
+            if fig is not None:
+                fig.savefig(_dir + name + '.pdf', format='pdf', dpi=1200)
+                plt.close(fig)
+                Logger().log('.', end='', flush=True)
+
+        Logger().save_buffer(_dir + 'info.txt')
 
     print(':) OK')
 
-    return best_score, metrics, cls
+    return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
 
 def test_models(models, input_train, target_train, input_valid, target_valid,
                 classes_labels, name_db, desc, col_names,
-                folds, **kwargs):
+                folds, save_file=True, **kwargs):
     """ Test models.
     """
 
@@ -164,7 +170,7 @@ def test_models(models, input_train, target_train, input_valid, target_valid,
                      (folds, kwargs['max_epoch'], kwargs['batch_size']))
         _dir = dir_db + _model.get_name() + '/'
         data_models.append(test_classifier(_dir, _model, input_train, target_train, input_valid, target_valid,
-                                           folds=folds, **kwargs))
+                                           folds=folds, save_file=save_file, **kwargs))
 
     return data_models
 
@@ -314,3 +320,12 @@ def plot_scores_classifications(models, input_train, target_train, input_test, t
             test_means.append(metric(target_test, data['test']))
 
         plot_hist_train_test(train_means, test_means, 'score', key, labels)
+
+def plot_pdf(ax, x, label):
+    x_plot = np.linspace(-2, 2, 1000)[:, np.newaxis]
+    N = len(x)
+    s = float(1.06 * np.std(x) / np.power(N, 0.2))
+    kde = KernelDensity(kernel='gaussian', bandwidth=s)
+    kde.fit(x[:, np.newaxis])
+    y = np.exp(kde.score_samples(x_plot))
+    ax.plot(x_plot, y / np.sum(y), label=label)

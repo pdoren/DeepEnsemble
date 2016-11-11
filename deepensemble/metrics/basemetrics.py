@@ -503,7 +503,7 @@ class EnsembleMetrics(BaseMetrics):
         for key in costs['train']:
             data_train = costs['train'][key]
             data_test = costs['test'][key]
-            list_data.append(([(data_train, 'Train'), (data_test, 'Test')], self._model.get_name()))
+            list_data.append(([(data_train, 'Train'), (data_test, 'Test')], key))
 
         return plot_list_data(list_data=list_data,
                               x_max=max_epoch, title=title, log_xscale=log_xscale, log_yscale=log_yscale)

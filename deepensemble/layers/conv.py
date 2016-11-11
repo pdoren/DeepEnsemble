@@ -7,34 +7,32 @@ __all__ = ['Convolution1D', 'Convolution2D']
 
 
 class ConvolutionBase(Layer):
-    """ Convolution Layer.
-    """
+    """ Convolution Layer Class Base-
 
+    Parameters
+    ----------
+    num_filters : int
+        Number of filters.
+
+    filter_size : int or tuple[]
+        The tuple has the filter size.
+
+    input_shape :  tuple[]
+        The tuple has the batch size, num input feature maps and input data size.
+
+    stride : int
+
+    pad : int
+
+    untie_biases : bool
+
+    filter_flip : bool
+
+    non_linearity : callable
+    """
     def __init__(self, num_filters, filter_size, input_shape=None, stride=1, pad=0, untie_biases=False,
                  filter_flip=True, non_linearity=ActivationFunctions.linear):
-        """
 
-        Parameters
-        ----------
-        num_filters : int
-            Number of filters.
-
-        filter_size : int or tuple[]
-            The tuple has the filter size.
-
-        input_shape :  tuple[]
-            The tuple has the batch size, num input feature maps and input data size.
-
-        stride : int
-
-        pad : int
-
-        untie_biases : bool
-
-        filter_flip : bool
-
-        non_linearity : callable
-        """
         self._num_filters = num_filters
         self._filter_size = filter_size
         self._stride = stride
@@ -68,7 +66,7 @@ class ConvolutionBase(Layer):
 
         Parameters
         ----------
-        shape : tuple
+        shape : tuple[]
             Shape of input.
         """
         self._input_shape = shape
@@ -87,6 +85,25 @@ class ConvolutionBase(Layer):
 
     @staticmethod
     def _get_size_output(input_size, filter_size, stride, pad):
+        """ Gets size output.
+
+        Parameters
+        ----------
+        input_size : int
+            Size of input layer.
+
+        filter_size : int
+            Size of filter (used in convolution).
+
+        stride : int
+
+        pad : int
+
+        Returns
+        -------
+        int
+            Returns size of output.
+        """
         # extract from Lasagne Library
         if input_size is None:
             return None
@@ -122,6 +139,11 @@ class ConvolutionBase(Layer):
 
     def get_shape_b(self):
         """ Gets shape bias of layer.
+
+        Returns
+        -------
+        int
+            Returns number of filters.
         """
         return self._num_filters,
 
@@ -157,9 +179,37 @@ class ConvolutionBase(Layer):
 
 def conv1d_mc0(_input, filters, image_shape=None, filter_shape=None,
                border_mode='valid', subsample=(1,), filter_flip=True):
+    """ Generate convolution 1D using conv2d with width == 1.
+
+    Parameters
+    ----------
+    _input : theano.tensor
+        Input layer.
+
+    filters : theano.tensor
+        Filters.
+
+    image_shape : tuple[]
+        Shape of image or array with 1D signals.
+
+    filter_shape : tuple[]
+        Shape of filters.
+
+    border_mode : tuple[] or int
+        Border mode.
+
+    subsample
+        Subsample.
+
+    filter_flip
+        Filter flip.
+
+    Returns
+    -------
+    theano.tensor
+        Returns convolution 1D.
     """
-    using conv2d with width == 1
-    """
+    # extract from Lasagne Library
     if image_shape is None:
         image_shape_mc0 = None
     else:
@@ -197,19 +247,21 @@ class Convolution1D(ConvolutionBase):
                                             stride=stride, pad=pad, untie_biases=untie_biases,
                                             filter_flip=filter_flip, non_linearity=non_linearity)
 
-    def convolution(self, x):
-        """
+    def convolution(self, _input):
+        """ Convolution 1D Function.
 
         Parameters
         ----------
-        x
+        _input : theano.tensor
+            Input sample.
 
         Returns
         -------
-
+        theano.tensor
+            Returns convolution 1D.
         """
         border_mode = 'half' if self._pad == 'same' else self._pad
-        return conv1d_mc0(x, self._W,
+        return conv1d_mc0(_input, self._W,
                           self._input_shape, self.get_shape_W(),
                           subsample=self._stride,
                           border_mode=border_mode,
@@ -227,21 +279,24 @@ class Convolution2D(ConvolutionBase):
                                             stride=stride, pad=pad, untie_biases=untie_biases,
                                             filter_flip=filter_flip, non_linearity=non_linearity)
 
-    def convolution(self, x, _conv=T.nnet.conv2d):
-        """
+    def convolution(self, _input, _conv=T.nnet.conv2d):
+        """ Convolution 2D Function.
 
         Parameters
         ----------
-        x
+        _input : theano.tensor
+            Input sample.
 
-        _conv
+        _conv : theano.Op
+            Convolution function.
 
         Returns
         -------
-
+        theano.tensor
+            Returns convolution 1D.
         """
         border_mode = 'half' if self._pad == 'same' else self._pad
-        return _conv(x, self._W,
+        return _conv(_input, self._W,
                      self._input_shape, self.get_shape_W(),
                      subsample=self._stride,
                      border_mode=border_mode,

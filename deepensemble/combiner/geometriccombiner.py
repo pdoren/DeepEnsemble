@@ -1,23 +1,24 @@
 from .modelcombiner import ModelCombiner
 from ..utils import *
 import numpy as np
+import theano.tensor as T
 
-__all__ = ['AverageCombiner', 'PluralityVotingCombiner']
+__all__ = ['GeometricCombiner', 'GeometricVotingCombiner']
 
 
 #
 # For Regression
 #
-class AverageCombiner(ModelCombiner):
+class GeometricCombiner(ModelCombiner):
     """ Class for compute the average the output models.
     """
 
     def __init__(self, **kwargs):
-        super(AverageCombiner, self).__init__(**kwargs)
+        super(GeometricCombiner, self).__init__(**kwargs)
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input, prob):
-        """ Average the output of the ensemble's models.
+        """ Multiplied the output of the ensemble's models.
 
         Parameters
         ----------
@@ -36,28 +37,23 @@ class AverageCombiner(ModelCombiner):
         theano.Op
             Returns the average of the output models.
         """
-        output = [model.output(_input, prob) for model in ensemble_model.get_models()]
-        return sum(output) / len(ensemble_model.get_models())
+        L = ensemble_model.get_num_models()
+        prod = 1.0
+        for model in ensemble_model.get_models():
+            prod *= model.output(_input, prob)
+
+        return T.power(prod, 1.0 / L)
 
 
 #
 # For Classification
 #
-class PluralityVotingCombiner(ModelCombiner):
+class GeometricVotingCombiner(ModelCombiner):
     """ Combiner classifier method where each model in ensemble votes by one class and the class with more votes win.
-
-    Plurality voting takes the class label which receives the largest number of votes as the final winner.
-    That is, the output class label of the ensemble.
-
-    References
-    ----------
-    .. [1] Zhi-Hua Zhou. (2012), pp 73:
-           Ensemble Methods Foundations and Algorithms
-           Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
     """
 
     def __init__(self):
-        super(PluralityVotingCombiner, self).__init__(type_model="classifier")
+        super(GeometricVotingCombiner, self).__init__(type_model="classifier")
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input, prob):
@@ -81,8 +77,12 @@ class PluralityVotingCombiner(ModelCombiner):
             Returns the average of the output models.
         """
         if prob:
-            output = [model.output(_input, prob) for model in ensemble_model.get_models()]
-            return sum(output) / len(ensemble_model.get_models())
+            L = ensemble_model.get_num_models()
+            prod = 1.0
+            for model in ensemble_model.get_models():
+                prod *= model.output(_input, prob)
+
+            return T.power(prod, 1.0 / L)
         else:
             outputs = [translate_output(model.output(_input, prob),
                                         ensemble_model.get_fan_out(),
@@ -110,9 +110,9 @@ class PluralityVotingCombiner(ModelCombiner):
         voting = [{} for _ in range(_input.shape[0])]
         for model in ensemble_model.get_models():
             votes = model.predict(_input)
-            PluralityVotingCombiner._vote(voting, votes)
+            GeometricVotingCombiner._vote(voting, votes)
 
-        return PluralityVotingCombiner._result(voting)
+        return GeometricVotingCombiner._result(voting)
 
     @staticmethod
     def _vote(voting, votes):

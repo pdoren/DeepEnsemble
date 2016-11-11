@@ -66,7 +66,7 @@ class ModelCombiner(Serializable):
 
         Returns
         -------
-        numpy.array
+        theano.Op
             Returns the mixing prediction of ensemble's models.
         """
         raise NotImplementedError
@@ -87,7 +87,7 @@ class ModelCombiner(Serializable):
         numpy.array
             Return the prediction of model.
         """
-        return ensemble_model.predict(_input)
+        return self.output(ensemble_model, _input, prob=True).eval()
 
     def update_parameters(self, ensemble_model, _input, _target):
         """ Update internal parameters.

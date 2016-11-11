@@ -59,8 +59,8 @@ class Wrapper(Model):
         else:
             return RegressionMetrics(self)
 
-    def fit(self, _input, _target, seed=13, nfolds=20, max_epoch=300, batch_size=32, early_stop=True,
-            improvement_threshold=0.995, minibatch=True, update_sets=True):
+    def fit(self, _input, _target, seed=13, nfolds=20, max_epoch=300, batch_size=32, early_stop=True, valid_size=0.20,
+            no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Training model.
         """
         folds = list(cross_validation.StratifiedKFold(_target, nfolds, shuffle=True, random_state=seed))

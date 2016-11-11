@@ -8,6 +8,7 @@ sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
 class ActivationFunctions:
     """ Static class with common useful activation functions.
     """
+
     @staticmethod
     def linear(x):
         """ Linear function.
@@ -36,6 +37,9 @@ class ActivationFunctions:
         ----------
         x : float
             Input sample.
+
+        alpha : float
+            The scale parameter.
 
         Returns
         -------
@@ -148,6 +152,7 @@ class ActivationFunctions:
 class ITLFunctions:
     """ Static class with useful ITL (Information Theoretic Learning) functions.
     """
+
     @staticmethod
     def entropy(px):
         """ Entropy.
@@ -235,7 +240,7 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        return T.exp(- T.power(x, 2.0) / (T.constant(2.0) * T.power(s, 2.0)))
+        return ITLFunctions.norm(x, s)
 
     @staticmethod
     def silverman(x, N, d):
@@ -284,55 +289,98 @@ class ITLFunctions:
         dx = dx - T.transpose(dx, axes=(1, 0, 2))
         return T.mean(kernel(dx, s))
 
+    @staticmethod
+    def error_rate(y, t):
+        """ Error Rates for classification models.
+
+        Assume that vector y and t have the same shape and length.
+
+        Parameters
+        ----------
+        y : numpy.array or theano.matrix
+            Array with Predictions.
+
+        t : numpy.array or theano.matrix
+            Array with Targets.
+
+        Returns
+        -------
+        float
+            Returns a float with error rates.
+        """
+        M = T.prod(t.shape)  # Total elements
+        N = t.shape[0]  # Total samples
+        S = t.shape[1]  # Size vector sample
+        return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
+
 
 class DiversityFunctions:
     """ Static class with useful diversity functions (Ensembles diversity).
     """
+
     @staticmethod
     def ambiguity(_input, model, ensemble):
-        """ Ambiguity.
+        """ Ambiguity of a model and its Ensemble.
 
         Parameters
         ----------
-        _input
-        model
-        ensemble
+        _input : numpy.array or theano.matrix
+            Input sample.
+
+        model : Model
+            Model.
+
+        ensemble : EnsembleModel
+            Ensemble.
 
         Returns
         -------
-
+        theano.tensor
+            Returns ambiguity.
         """
         return T.power(model.output(_input) - ensemble.output(_input), 2.0)
 
     @staticmethod
     def mean_ambiguity(_input, model, ensemble):
-        """
+        """ Mean ambiguity of a model and its Ensemble.
 
         Parameters
         ----------
-        _input
-        model
-        ensemble
+        _input : numpy.array or theano.matrix
+            Input sample.
+
+        model : Model
+            Model.
+
+        ensemble : EnsembleModel
+            Ensemble.
 
         Returns
         -------
-
+        theano.tensor
+            Returns mean ambiguity.
         """
         return T.mean(DiversityFunctions.ambiguity(_input, model, ensemble))
 
     @staticmethod
     def bias(_input, ensemble, _target):
-        """
+        """ Bias among outputs of models in Ensemble.
 
         Parameters
         ----------
-        _input
-        ensemble
-        _target
+        _input : numpy.array or theano.matrix
+            Input sample.
+
+        ensemble : EnsembleModel
+            Ensemble.
+
+        _target : numpy.array or theano.matrix
+            Target sample.
 
         Returns
         -------
-
+        theano.tensor
+            Returns bias.
         """
         sum_e = 0.0
         for model_j in ensemble.get_models():
@@ -342,16 +390,20 @@ class DiversityFunctions:
 
     @staticmethod
     def variance(_input, ensemble):
-        """
+        """ Variance among outputs of models in Ensemble.
 
         Parameters
         ----------
-        _input
-        ensemble
+        _input : numpy.array or theano.matrix
+            Input sample.
+
+        ensemble : EnsembleModel
+            Ensemble.
 
         Returns
         -------
-
+        theano.tensor
+            Returns variance.
         """
         sum_e = 0.0
         for model_j in ensemble.get_models():

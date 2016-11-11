@@ -26,6 +26,11 @@ Methods Combiner Regression
 .. autoclass:: WeightAverageCombiner
    :members:
 
+.. automodule:: deepensemble.combiner.geometriccombiner
+
+.. autoclass:: GeometricCombiner
+   :members:
+
 Methods Combiner Classification
 -------------------------------
 
@@ -37,4 +42,9 @@ Methods Combiner Classification
 .. automodule:: deepensemble.combiner.weightaveragecombiner
 
 .. autoclass:: WeightedVotingCombiner
+   :members:
+
+.. automodule:: deepensemble.combiner.geometriccombiner
+
+.. autoclass:: GeometricVotingCombiner
    :members:

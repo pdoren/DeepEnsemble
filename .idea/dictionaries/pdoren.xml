@@ -5,6 +5,7 @@
       <w>accu</w>
       <w>adadelta</w>
       <w>adagrad</w>
+      <w>cdot</w>
       <w>cmap</w>
       <w>cnmem</w>
       <w>conv</w>
@@ -20,6 +21,7 @@
       <w>gparams</w>
       <w>hazan</w>
       <w>interscience</w>
+      <w>itakura</w>
       <w>jmlr</w>
       <w>kullback</w>
       <w>kuncheva</w>
@@ -38,6 +40,7 @@
       <w>mldata</w>
       <w>nfolds</w>
       <w>numer</w>
+      <w>parzen</w>
       <w>pdoren</w>
       <w>perceptron</w>
       <w>perrone</w>
@@ -49,6 +52,7 @@
       <w>regressor</w>
       <w>regularizer</w>
       <w>relu</w>
+      <w>saito</w>
       <w>scikit</w>
       <w>silverman</w>
       <w>skalak</w>

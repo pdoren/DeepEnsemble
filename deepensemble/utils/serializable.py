@@ -1,4 +1,5 @@
 import sys
+# noinspection PyUnresolvedReferences
 from six.moves import cPickle
 
 __all__ = ['Serializable']

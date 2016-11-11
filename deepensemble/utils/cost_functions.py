@@ -1,12 +1,12 @@
 import theano.tensor as T
 from .utils_functions import ITLFunctions
 
-__all__ = ['mse', 'mcc', 'mee', 'neg_log_likelihood',
+__all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'neg_correntropy', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
-           'test_cost', 'dummy_cost']
+           'itakura_saito']
 
-eps = 0.0001
+eps = 0.00001
 
 
 # noinspection PyUnusedLocal
@@ -31,6 +31,7 @@ def dummy_cost(model, _input, _target):
     """
     return T.zeros(_target.shape)
 
+
 def information_potential(model, _input, _target, s=None, kernel=ITLFunctions.norm):
     """ Dummy cost function, this function only return zeros for each elements in _target.
 
@@ -45,6 +46,12 @@ def information_potential(model, _input, _target, s=None, kernel=ITLFunctions.no
     _target : theano.tensor.matrix
         Target Sample.
 
+    s : float
+        Size of kernel.
+
+    kernel : theano.Op
+        Kernel of compute information potential (Parzen Window).
+
     Returns
     -------
     theano.tensor.matrix
@@ -54,6 +61,30 @@ def information_potential(model, _input, _target, s=None, kernel=ITLFunctions.no
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
     e = model.error(_input, _target)
     return -T.log(ITLFunctions.information_potential(e, kernel, s))
+
+
+def itakura_saito(model, _input, _target):
+    """ Itakura Saito distance.
+
+    Parameters
+    ----------
+    model : Model
+        Model for generating output for compare with target sample.
+
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Return Itakura Saito divergence.
+    """
+    pt = _target
+    pp = model.output(_input)
+    return T.sum((pt + eps) / (pp + eps) - (T.log(pt + eps) - T.log(pp + eps)) - 1)
 
 
 def kullback_leibler_generalized(model, _input, _target):
@@ -148,7 +179,7 @@ def mse(model, _input, _target):
     return T.mean(T.power(model.error(_input, _target), 2.0))
 
 
-def mcc(model, _input, _target, s=None, kernel=ITLFunctions.norm):
+def mcc(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Compute the MCC.
 
     Parameters
@@ -175,10 +206,10 @@ def mcc(model, _input, _target, s=None, kernel=ITLFunctions.norm):
     """
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
-    return -T.mean(kernel(model.error(_input, _target), s))
+    return -T.mean(kernel(model.error(_input, _target, prob=True), s))
 
 
-def mee(model, _input, _target, s=None, kernel=ITLFunctions.norm):
+def mee(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Compute the MEE.
 
     Parameters
@@ -240,7 +271,7 @@ def neg_log_likelihood(model, _input, _target):
 
 
 # noinspection PyUnusedLocal
-def neg_corr(model, _input, _target, ensemble, lamb_neg_corr=0.5):
+def neg_corr(model, _input, _target, ensemble, lamb=0.5):
     """ Compute the Negative Correlation in Ensemble.
 
     Parameters
@@ -257,7 +288,7 @@ def neg_corr(model, _input, _target, ensemble, lamb_neg_corr=0.5):
     ensemble : EnsembleModel
         Ensemble.
 
-    lamb_neg_corr : float, 0.5 by default
+    lamb : float, 0.5 by default
         Ratio negative correlation.
 
     Returns
@@ -265,11 +296,11 @@ def neg_corr(model, _input, _target, ensemble, lamb_neg_corr=0.5):
     theano.tensor.matrix
         Return Negative Correlation.
     """
-    return T.mean(T.constant(-lamb_neg_corr) * T.power(model.output(_input) - ensemble.output(_input), 2.0))
+    return T.mean(T.constant(-lamb) * T.power(model.output(_input) - ensemble.output(_input), 2.0))
 
 
 # noinspection PyUnusedLocal
-def neg_correntropy(model, _input, _target, ensemble, lamb_corr=0.5, s=None, kernel=ITLFunctions.norm):
+def neg_correntropy(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Compute the Correntropy regularization in Ensemble.
 
     Parameters
@@ -286,7 +317,7 @@ def neg_correntropy(model, _input, _target, ensemble, lamb_corr=0.5, s=None, ker
     ensemble : EnsembleModel
         Ensemble.
 
-    lamb_corr : float, 0.5 by default
+    lamb : float, 0.5 by default
         Ratio negative correlation.
 
     s : float
@@ -300,136 +331,11 @@ def neg_correntropy(model, _input, _target, ensemble, lamb_corr=0.5, s=None, ker
     theano.tensor.matrix
         Return Negative Correntropy.
     """
-    error = []
     om = model.output(_input)
     oe = ensemble.output(_input)
+    h = om - oe
 
     if s is None:
         s = T.max(ITLFunctions.silverman(oe, _target.shape[0], ensemble.get_dim_output()), eps)
 
-    return T.mean(T.constant(lamb_corr) * kernel(om - oe, s))
-
-
-def test_cost(model, _input, _target, ensemble, **kwargs):
-    """
-
-    Parameters
-    ----------
-    model
-    _input
-    _target
-    ensemble
-    kwargs
-
-    Returns
-    -------
-
-    """
-    return test_4(model, _input, _target, ensemble, **kwargs)
-
-
-# noinspection PyUnusedLocal
-def test_4(_model, _input, _target, ensemble, s=None, kernel=ITLFunctions.norm):
-    """
-
-    Parameters
-    ----------
-    _model
-    _input
-    _target
-    ensemble
-    s
-    kernel
-
-    Returns
-    -------
-
-    """
-    N = len(_model.get_params())
-    params_model = [_model.get_params()[i] for i in range(0, N, 2)]
-
-    sum_d = []
-    for model_j in ensemble.get_models():
-        params_model_j = [model_j.get_params()[i] for i in range(0, N, 2)]
-        e = [i - j for i, j in zip(params_model, params_model_j)]
-        for i, e_i in enumerate(e):
-            s = ITLFunctions.silverman(params_model[i], N, 1)
-            sum_d += [-ITLFunctions.information_potential(e_i, kernel, s)]
-
-    return T.mean(sum(sum_d))
-
-
-# noinspection PyUnusedLocal
-def test_ensemble_ambiguity(_model, _input, _target, ensemble, **kwargs):
-    """
-
-    Parameters
-    ----------
-    _model
-    _input
-    _target
-    ensemble
-    kwargs
-
-    Returns
-    -------
-
-    """
-    _output = ensemble.output(_input)
-    err = [T.mean(T.sqr(model.output(_input, prob=False) - _output)) for model in ensemble.get_models()]
-    return -sum(err) / ensemble.get_num_models()
-
-
-# noinspection PyUnusedLocal
-def mee_ensemble2(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.norm):
-    """
-
-    Parameters
-    ----------
-    model
-    _input
-    _target
-    ensemble
-    s
-    kernel
-
-    Returns
-    -------
-
-    """
-    om = model.output(_input)
-    oe = ensemble.output(_input)
-
-    if s is None:
-        s = T.max(ITLFunctions.silverman(oe, _target.shape[0], model.get_dim_output()), eps)
-
-    e = om - oe
-    de = T.tile(e, (e.shape[0], 1, 1))
-    de = de - T.transpose(de, axes=(1, 0, 2))
-    return -T.log(T.mean(kernel(de, s)))
-
-
-# noinspection PyUnusedLocal
-def mee_ensemble(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.norm):
-    """
-
-    Parameters
-    ----------
-    model
-    _input
-    _target
-    ensemble
-    s
-    kernel
-
-    Returns
-    -------
-
-    """
-    if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
-
-    e = model.error(_input, _target)
-    de = T.tile(e, (e.shape[0], 1, 1))
-    de = de - T.transpose(de, axes=(1, 0, 2))
-    return T.log(T.mean(kernel(de, s)))
+    return T.mean(lamb * kernel(h, s))

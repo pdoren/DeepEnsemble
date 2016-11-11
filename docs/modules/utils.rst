@@ -15,6 +15,7 @@ Cost Functions
 .. autofunction:: neg_log_likelihood
 .. autofunction:: kullback_leibler
 .. autofunction:: kullback_leibler_generalized
+.. autofunction:: itakura_saito
 .. autofunction:: dummy_cost
 
 Cost Function for Ensemble Models

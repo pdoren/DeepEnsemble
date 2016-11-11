@@ -41,6 +41,13 @@ class EnsembleModel(Model):
         self._params.append(0)  # the first element is reserved for combiner parameters
 
     def get_model_input(self):
+        """ Gets model input.
+
+        Returns
+        -------
+        theano.tensor
+            Returns model input.
+        """
         return self._model_input
 
     def get_combiner(self):
@@ -80,6 +87,16 @@ class EnsembleModel(Model):
         else:
             return EnsembleRegressionMetrics(self)
 
+    def get_num_models(self):
+        """ Get number of the Ensemble's models
+
+        Returns
+        -------
+        int
+            Returns current number of models in the Ensemble.
+        """
+        return len(self.__list_models_ensemble)
+
     def set_combiner(self, combiner):
         """ Setter combiner.
 
@@ -98,6 +115,20 @@ class EnsembleModel(Model):
             self._params[0] = combiner.get_params()
         else:
             raise ValueError("Combiner method must be same type, in this case %s." % self.__type_model)
+
+    def set_type_training(self, type_training):
+        """ Setter type of training
+
+        Parameters
+        ----------
+        type_training : str
+            This parameter means what type of training perform.
+
+        Returns
+        -------
+        None
+        """
+        self._type_training = type_training
 
     def append_model(self, new_model):
         """ Add model to ensemble.
@@ -140,16 +171,6 @@ class EnsembleModel(Model):
             raise ValueError('Incorrect Learner: ' + str_error[0:-2] + '.')
 
         self._params += new_model.get_params()
-
-    def get_num_models(self):
-        """ Get number of the Ensemble's models
-
-        Returns
-        -------
-        int
-            Returns current number of models in the Ensemble.
-        """
-        return len(self.__list_models_ensemble)
 
     def reset(self):
         """ Reset parameters of the ensemble's models.
@@ -336,6 +357,9 @@ class EnsembleModel(Model):
         kwargs
         """
         if not self.is_need_compile_separately():
+            for _model in self.get_models():
+                _model.reset_compile()
+
             super(EnsembleModel, self).compile(fast=fast, **kwargs)
         else:
             Logger().start_measure_time("Start Compile %s" % self._name)
@@ -371,20 +395,6 @@ class EnsembleModel(Model):
             return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
         else:
             return self.fit_separate_models(_input=_input, _target=_target, **kwargs)
-
-    def set_type_training(self, type_training):
-        """ Setter type of training
-
-        Parameters
-        ----------
-        type_training : str
-            This parameter means what type of training perform.
-
-        Returns
-        -------
-        None
-        """
-        self._type_training = type_training
 
     def fit_separate_models(self, _input, _target, **kwargs):
         """ Training ensemble models each separately.
@@ -512,6 +522,7 @@ class EnsembleModel(Model):
         MetricsBase
             Returns metrics got in training.
         """
+        # TODO: need to be completed
         metrics = FactoryMetrics().get_metric(self)
         Logger().log('Boosting train ', flush=True)
         for model in self.__list_models_ensemble:

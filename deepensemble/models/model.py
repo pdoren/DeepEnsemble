@@ -3,7 +3,7 @@ import inspect
 import numpy as np
 import theano.tensor as T
 from sklearn import cross_validation
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, mean_squared_error
 from theano import config, function
 
 from ..metrics import FactoryMetrics
@@ -117,6 +117,29 @@ class Model(Serializable):
         self._info_model = {'info': 'Nothing.', 'comment': None}
         self._is_compiled = False
         self._is_fast_compile = False
+
+    def reset_compile(self):
+        """ Reset all functions compiled with theano.
+
+        Returns
+        -------
+        None
+        """
+        if self.is_compiled():
+            self._output['prob']['changed'] = True
+            self._output['crisp']['changed'] = True
+
+            self._cost_function_list['changed'] = True
+            self._score_function_list['changed'] = True
+            self._error = None
+
+            self._is_compiled = True
+            self._is_fast_compile = False
+
+            self._train_eval = None
+            self._valid_eval = None
+            self._data_train = {'input': None, 'target': None}
+            self._data_valid = {'input': None, 'target': None}
 
     def _define_input(self):
         """ Generate a shared variable for input.
@@ -629,7 +652,7 @@ class Model(Serializable):
 
         n_input = len(_input)
         indices = []
-        if shuffle:
+        if shuffle and self.is_classifier():
             indices = np.arange(n_input)
             np.random.shuffle(indices)
 
@@ -639,7 +662,7 @@ class Model(Serializable):
             t_data = []
             for (start, end) in zip(range(0, n_input, batch_size), range(batch_size, n_input, batch_size)):
                 r = (end - start) / n_input
-                if shuffle:
+                if shuffle and self.is_classifier():
                     batch_index = indices[start:end]
                 else:
                     batch_index = slice(start, end)
@@ -650,8 +673,8 @@ class Model(Serializable):
         else:
             return fun_eval(_input, _target, 1.0)
 
-    def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True,
-            improvement_threshold=0.995, minibatch=True, update_sets=True):
+    def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.20,
+            no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Function for training sequential model.
 
         Parameters
@@ -670,6 +693,12 @@ class Model(Serializable):
 
         early_stop : bool, True by default
             Flag for enabled early stop.
+
+        valid_size : float
+            This ratio define size of validation set (percent).
+
+        no_update_best_parameters : bool
+            This flag is used to change or not parameters of model after training.
 
         improvement_threshold : float, 0.995 by default
 
@@ -691,7 +720,7 @@ class Model(Serializable):
         metric_model = FactoryMetrics().get_metric(self)
 
         # save data in shared variables
-        n_train, n_valid = self.prepare_data(_input, _target)
+        n_train, n_valid = self.prepare_data(_input, _target, valid_size)
 
         # parameters early stopping
         best_params = None
@@ -732,7 +761,7 @@ class Model(Serializable):
                 Logger().log()
                 break
 
-        if best_params is not None:
+        if not no_update_best_parameters and best_params is not None:
             self.load_params(best_params)
 
         return metric_model
@@ -904,21 +933,41 @@ class Model(Serializable):
         if self.is_classifier() and len(self.__target_labels) == 2 and self.get_fan_out() == 1:
             self.__binary_classification = True
 
-    def prepare_data(self, _input, _target, test_size=0.20):
-        """
+    def prepare_data(self, _input, _target, valid_size):
+        """ Prepare data for training.
+
+        Split data in 2 sets: train and validation.
 
         Parameters
         ----------
-        _input
-        _target
-        test_size
-        """
-        input_train, input_valid, target_train, target_valid = \
-            cross_validation.train_test_split(_input, _target, test_size=test_size, stratify=_target)
+        _input : numpy.array
+            Input sample.
 
-        if self.__type_model == 'classifier':
+        _target : numpy.array
+            Target sample.
+
+        valid_size : float
+            Ratio of size validation set.
+
+        """
+        # define default size of validation set
+        valid_size = valid_size if (valid_size < 1.0 and valid_size >= 0) else 0.2
+
+        if self.is_classifier():
+            input_train, input_valid, target_train, target_valid = \
+                cross_validation.train_test_split(_input, _target, test_size=valid_size, stratify=_target)
             target_train = self.translate_target(_target=target_train)
             target_valid = self.translate_target(_target=target_valid)
+        else:
+            # TODO: need to be changed for KFold.
+            N = len(_input)
+            n_valid = int(valid_size * N)
+            n_train = N - n_valid
+
+            input_train = _input[0:n_train]
+            input_valid = _input[n_train:N]
+            target_train = _target[0:n_train]
+            target_valid = _target[n_train:N]
 
         self._data_train['input'] = input_train
         self._data_train['target'] = target_train
@@ -1131,4 +1180,7 @@ class Model(Serializable):
         float
             Returns score prediction.
         """
-        return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))
+        if self.is_classifier():
+            return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))
+        else:
+            return mean_squared_error(np.squeeze(_target), np.squeeze(self.predict(_input)))

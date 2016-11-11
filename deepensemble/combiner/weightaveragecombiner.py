@@ -63,7 +63,7 @@ class WeightAverageCombiner(ModelCombiner):
 
         Returns
         -------
-        numpy.array
+        theano.Op
             Returns the average of the output models.
         """
         output = 0.0
@@ -155,22 +155,25 @@ class WeightedVotingCombiner(WeightAverageCombiner):
 
         Returns
         -------
-        numpy.array
+        theano.Op
             Returns the average of the output models.
         """
-        outputs = [translate_output(model.output(_input, prob),
-                                    ensemble_model.get_fan_out(),
-                                    ensemble_model.is_binary_classification()) for model in
-                   ensemble_model.get_models()]
-        if _input == ensemble_model.get_model_input():
-            for i, model in enumerate(outputs):
-                outputs[i] *= self._params[i, 0]  # index TensorVariable
+        if prob:
+            return super(WeightedVotingCombiner, self).output(ensemble_model, _input, prob)
         else:
-            params = self._params.get_value()
-            for i, model in enumerate(outputs):
-                outputs[i] *= params[i]
-        return translate_output(sum(outputs), ensemble_model.get_fan_out(),
-                                ensemble_model.is_binary_classification())
+            outputs = [translate_output(model.output(_input, prob),
+                                        ensemble_model.get_fan_out(),
+                                        ensemble_model.is_binary_classification()) for model in
+                       ensemble_model.get_models()]
+            if _input == ensemble_model.get_model_input():
+                for i, model in enumerate(outputs):
+                    outputs[i] *= self._params[i, 0]  # index TensorVariable
+            else:
+                params = self._params.get_value()
+                for i, model in enumerate(outputs):
+                    outputs[i] *= params[i]
+            return translate_output(sum(outputs), ensemble_model.get_fan_out(),
+                                    ensemble_model.is_binary_classification())
 
     def predict(self, ensemble_model, _input):
         """ Returns the class with more votes.

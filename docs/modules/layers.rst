@@ -62,5 +62,8 @@ Utils Layers
 
 .. automodule:: deepensemble.layers.utils_layers
 
-.. autoclass:: Mask
+.. autoclass:: MaskLayer
+   :members:
+
+.. autoclass:: NoiseLayer
    :members:
