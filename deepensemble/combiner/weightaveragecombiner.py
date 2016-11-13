@@ -67,7 +67,7 @@ class WeightAverageCombiner(ModelCombiner):
             Returns the average of the output models.
         """
         output = 0.0
-        if _input == ensemble_model.model_input:
+        if _input == ensemble_model.get_model_input():
             for i, model in enumerate(ensemble_model.get_models()):
                 output += model.output(_input, prob) * self._params[i, 0]  # index TensorVariable
         else:

@@ -40,7 +40,7 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
 
         # Compute metrics
         score_train = metrics.append_prediction(input_train, target_train)
-        score_test = metrics.append_prediction(input_test, target_test)
+        score_test = metrics.append_prediction(input_test, target_test, append_last_pred=True)
 
         if score_test < min_score_test:
             Logger().log('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score_test, min_score_test))
@@ -321,11 +321,12 @@ def plot_scores_classifications(models, input_train, target_train, input_test, t
 
         plot_hist_train_test(train_means, test_means, 'score', key, labels)
 
-def plot_pdf(ax, x, label):
-    x_plot = np.linspace(-2, 2, 1000)[:, np.newaxis]
+def plot_pdf(ax, x, label, x_min=-1, x_max=1, n_points=1000):
     N = len(x)
-    s = float(1.06 * np.std(x) / np.power(N, 0.2))
+    s = float(1.06 * np.std(x) / np.power(N, 0.2))  # Silverman
     kde = KernelDensity(kernel='gaussian', bandwidth=s)
     kde.fit(x[:, np.newaxis])
+
+    x_plot = np.linspace(x_min, x_max, n_points)[:, np.newaxis]
     y = np.exp(kde.score_samples(x_plot))
     ax.plot(x_plot, y / np.sum(y), label=label)

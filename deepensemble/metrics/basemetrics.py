@@ -7,11 +7,16 @@ from ..utils.utils_plot import *
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
+def concatenate_data(x, y):
+    """ Concatenate 2 arrays """
+    x = x[:, np.newaxis] if len(x.shape) == 1 else x
+    y = y[:, np.newaxis] if len(y.shape) == 1 else y
+
+    return np.vstack((x, y))
 
 class FactoryMetrics:
     """ Factory Metrics
     """
-
     def __init__(self):
         pass
 
@@ -282,7 +287,7 @@ class BaseMetrics(Serializable):
                 else:
                     self._scores[type_set_data][key] = metric.get_scores(type_set_data)[key]
 
-    def append_prediction(self, _input, _target):
+    def append_prediction(self, _input, _target, append_last_pred=False):
         """ Add a sample of prediction and target for generating metrics.
 
         Parameters
@@ -293,14 +298,22 @@ class BaseMetrics(Serializable):
         _target : numpy.array
             Target sample.
 
+        append_last_pred : bool
+            This flag indicates that the current prediction is append in the last saved prediction.
+
         Returns
         -------
         float
             Return model score (classifier: accuracy, regressor: MSE).
         """
         _output = self._model.predict(_input)
-        self._y_pred += [np.squeeze(_output)]
-        self._y_true += [np.squeeze(_target)]
+        n = len(self._y_pred)
+        if append_last_pred and n > 0:
+            self._y_pred[n - 1] = concatenate_data(self._y_pred[n - 1], np.squeeze(_output))
+            self._y_true[n - 1] = concatenate_data(self._y_true[n - 1], np.squeeze(_target))
+        else:
+            self._y_pred += [np.squeeze(_output)]
+            self._y_true += [np.squeeze(_target)]
 
         return self.get_score_prediction(_target, _output)
 
@@ -406,7 +419,7 @@ class EnsembleMetrics(BaseMetrics):
 
         return n
 
-    def append_prediction(self, _input, _target):
+    def append_prediction(self, _input, _target, append_last_pred=False):
         """ Append prediction (using for generate reports).
 
         Parameters
@@ -417,15 +430,18 @@ class EnsembleMetrics(BaseMetrics):
         _target :  numpy.array
             Target sample.
 
+        append_last_pred : bool
+            This flag indicates that the current prediction is append in the last saved prediction.
+
         Returns
         -------
         float
             Returns the score prediction.
         """
-        self.append_prediction_per_model(_input, _target)
-        return super(EnsembleMetrics, self).append_prediction(_input, _target)
+        self.append_prediction_per_model(_input, _target, append_last_pred)
+        return super(EnsembleMetrics, self).append_prediction(_input, _target, append_last_pred)
 
-    def append_prediction_per_model(self, _input, _target):
+    def append_prediction_per_model(self, _input, _target, append_last_pred=False):
         """ Append prediction for each model in ensemble.
 
         Parameters
@@ -436,17 +452,31 @@ class EnsembleMetrics(BaseMetrics):
         _target : numpy.array
             Target sample.
 
+        append_last_pred : bool
+            This flag indicates that the current prediction is append in the last saved prediction.
+
         Returns
         -------
         None
         """
         _target = np.squeeze(_target)
-        self._y_true_per_model += [_target]
+        n = len(self._y_true_per_model)
+        if append_last_pred and n > 0:
+            self._y_true_per_model[n - 1] = concatenate_data(self._y_true_per_model[n - 1], _target)
+        else:
+            self._y_true_per_model += [_target]
+
         for _model in self._model.get_models():
             output = np.squeeze(_model.predict(_input))
             if _model.get_name() not in self._y_pred_per_model:
                 self._y_pred_per_model[_model.get_name()] = []
-            self._y_pred_per_model[_model.get_name()] += [output]
+
+            n = len(self._y_pred_per_model[_model.get_name()])
+            if append_last_pred and n > 0:
+                self._y_pred_per_model[_model.get_name()][n - 1] = concatenate_data(
+                    self._y_pred_per_model[_model.get_name()][n - 1], output)
+            else:
+                self._y_pred_per_model[_model.get_name()] += [output]
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.

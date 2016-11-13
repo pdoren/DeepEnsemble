@@ -36,8 +36,7 @@ class ClassifierMetrics(BaseMetrics):
         support = None
 
         for y_true, y_pred in zip(self._y_true, self._y_pred):
-            p, r, f1, s = precision_recall_fscore_support(y_true, y_pred,
-                                                          labels=self._model.get_target_labels())
+            p, r, f1, s = precision_recall_fscore_support(y_true, y_pred, labels=self._model.get_target_labels())
 
             precision = p[np.newaxis, :] if precision is None else np.concatenate((precision, p[np.newaxis, :]))
             recall = r[np.newaxis, :] if recall is None else np.concatenate((recall, r[np.newaxis, :]))

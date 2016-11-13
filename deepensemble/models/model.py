@@ -1045,6 +1045,86 @@ class Model(Serializable):
         self._reg_function_list.append((fun_reg, name, kwargs))
         self._cost_function_list['changed'] = True
 
+    def delete_score(self, name='all'):
+        """ Delete score function.
+
+        Parameters
+        ----------
+        name : str
+            Name score function.
+
+        Returns
+        -------
+        None
+        """
+        if name == 'all':
+            n = len(self._score_function_list['list'])
+            for j in range(1, n):  # delete all function except the first (default)
+                del self._score_function_list['list'][j]
+            self.reset_compile()
+        else:
+            j = None
+            for i, (_, name_fun, _) in enumerate(self._score_function_list['list']):
+                if name == name_fun:
+                    j = i
+                    break
+
+            if j is not None and j != 0:  # Not delete first score function
+                del self._score_function_list['list'][j]
+                self.reset_compile()
+
+    def delete_cost(self, name='all'):
+        """ Delete cost function.
+
+        Parameters
+        ----------
+        name : str
+            Name cost function.
+
+        Returns
+        -------
+        None
+        """
+        if name == 'all':
+            self._cost_function_list['list'] = []
+            self.reset_compile()
+        else:
+            j = None
+            for i, (_, name_fun, _) in enumerate(self._cost_function_list['list']):
+                if name == name_fun:
+                    j = i
+                    break
+
+            if j is not None:
+                del self._cost_function_list['list'][j]
+                self.reset_compile()
+
+    def delete_reg(self, name='all'):
+        """ Delete regularization function.
+
+        Parameters
+        ----------
+        name : str
+            Name regularization function.
+
+        Returns
+        -------
+        None
+        """
+        if name == 'all':
+            self._reg_function_list = []
+            self.reset_compile()
+        else:
+            j = None
+            for i, (_, name_fun, _) in enumerate(self._reg_function_list):
+                if name == name_fun:
+                    j = i
+                    break
+
+            if j is not None:
+                del self._reg_function_list[j]
+                self.reset_compile()
+
     def set_update(self, fun_update, name, **kwargs):
         """ Adds an extra item in the cost function.
 
