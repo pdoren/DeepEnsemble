@@ -84,7 +84,8 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
                     max_epoch=300, save_file=True, **kwargs):
     """ Test on classifier.
     """
-    make_dirs(_dir)
+    if save_file:
+        make_dirs(_dir)
 
     metrics, best_score, list_score = test_model(cls, input_train, target_train, input_test, target_test,
                                                  min_score_test, folds,
@@ -145,34 +146,34 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
     return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
 
-def test_models(models, input_train, target_train, input_valid, target_valid,
-                classes_labels, name_db, desc, col_names,
-                folds, save_file=True, **kwargs):
+def test_models(models, input_train, target_train, input_test, target_test,
+                folds, name_db='', save_file=True, **kwargs):
     """ Test models.
     """
 
     data_models = []
 
     for _model in models:
-        n_input = input_train.shape[1]
-        n_output = len(classes_labels)
-
-        dir_db = name_db + '/'
-
-        # Print Info Data and Training
         Logger().reset()
-        Logger().log('info:\n%s' % _model.get_info())
-        Logger().log('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
-                     (name_db, desc, n_input, col_names, n_output, classes_labels))
-        Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
-                     (input_train.shape[0] + input_valid.shape[0], input_train.shape[0], input_valid.shape[0]))
-        Logger().log(' folds: %d | Epoch: %d, Batch Size: %d ' %
-                     (folds, kwargs['max_epoch'], kwargs['batch_size']))
-        _dir = dir_db + _model.get_name() + '/'
-        data_models.append(test_classifier(_dir, _model, input_train, target_train, input_valid, target_valid,
+        _dir = name_db + '/' + _model.get_name() + '/'
+        data_models.append(test_classifier(_dir, _model, input_train, target_train, input_test, target_test,
                                            folds=folds, save_file=save_file, **kwargs))
 
     return data_models
+
+def show_info_model(_model):
+    # Print Info model
+    Logger().log('info:\n%s' % _model.get_info())
+
+def show_info_data_base(classes_labels, name_db, desc, col_names):
+    Logger().log('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
+                 (name_db, desc, len(col_names), col_names, len(classes_labels), classes_labels))
+
+def show_info_training(input_train, target_train, input_test, target_test, folds, max_epoch, batch_size):
+    Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
+                 (input_train.shape[0] + input_test.shape[0], input_train.shape[0], input_test.shape[0]))
+    Logger().log(' folds: %d | Epoch: %d, Batch Size: %d ' %
+                 (folds, max_epoch, batch_size))
 
 
 def plot_hist_train_test(train_means, test_means, ylabel, title, labels):

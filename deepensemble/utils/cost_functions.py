@@ -4,7 +4,7 @@ from .utils_functions import ITLFunctions
 __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'neg_correntropy', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
-           'itakura_saito']
+           'itakura_saito', 'neg_mee']
 
 eps = 0.00001
 
@@ -339,3 +339,44 @@ def neg_correntropy(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=I
         s = T.max(ITLFunctions.silverman(oe, _target.shape[0], ensemble.get_dim_output()), eps)
 
     return T.mean(lamb * kernel(h, s))
+
+# noinspection PyUnusedLocal
+def neg_mee(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=ITLFunctions.kernel_gauss):
+    """ Compute the MEE regularization in Ensemble.
+
+    Parameters
+    ----------
+    model : theano.tensor.matrix
+        Current model that one would want to calculate the cost.
+
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    ensemble : EnsembleModel
+        Ensemble.
+
+    lamb : float, 0.5 by default
+        Ratio negative correlation.
+
+    s : float
+        Size of Kernel.
+
+    kernel : callable
+        Kernel for compute correntropy.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Return Negative Correntropy.
+    """
+    om = model.error(_input, _target)
+    oe = ensemble.error(_input, _target)
+    h = om - oe
+
+    if s is None:
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+
+    return lamb * T.log(ITLFunctions.information_potential(h, kernel, s))

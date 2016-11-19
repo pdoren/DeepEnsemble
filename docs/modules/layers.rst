@@ -13,8 +13,8 @@ Dense Layer
 .. autoclass:: Dense
    :members:
 
-Convolution Layer
------------------
+Convolutional Layers
+--------------------
 
 .. automodule:: deepensemble.layers.conv
 
@@ -29,8 +29,8 @@ Convolution Layer
 
 .. autofunction:: conv1d_mc0
 
-Pool Layer
-----------
+Pool Layers
+-----------
 
 .. automodule:: deepensemble.layers.pool
 
@@ -55,6 +55,14 @@ Dropout Layer
 .. automodule:: deepensemble.layers.dropout
 
 .. autoclass:: Dropout
+   :members:
+
+Recurrent Layers
+----------------
+
+.. automodule:: deepensemble.layers.recurrent
+
+.. autoclass:: RecurrentLayer
    :members:
 
 Utils Layers

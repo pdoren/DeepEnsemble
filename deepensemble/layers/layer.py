@@ -117,16 +117,20 @@ class Layer(Serializable):
             if self._b is None:
                 self._b = shared(np.zeros(shape=self.get_shape_b(), dtype=config.floatX), name='b', borrow=True)
 
-            wb = np.sqrt(6.0 / (self.get_fan_in() + self.get_fan_out()))  # W bound
-
-            W = np.array(np.random.uniform(low=-wb, high=wb, size=self.get_shape_W()), dtype=config.floatX)
-            if self._non_linearity == T.nnet.sigmoid:
-                W *= 4
-
-            self._W.set_value(W)
+            self._W.set_value(self.init_W(self.get_shape_W()))
             self._b.set_value(np.zeros(shape=self.get_shape_b(), dtype=config.floatX))
 
             self._params = [self._W, self._b]
+
+    def init_W(self, shape_W, name='W'):
+        """ Initialize Weights.
+        """
+        wb = np.sqrt(6.0 / (self.get_fan_in() + self.get_fan_out()))  # W bound
+        W = np.array(np.random.uniform(low=-wb, high=wb, size=shape_W), dtype=config.floatX)
+        if self._non_linearity == T.nnet.sigmoid:
+            W *= 4.0
+
+        return W
 
     def get_fan_in(self):
         """ Getter of input dimension.
