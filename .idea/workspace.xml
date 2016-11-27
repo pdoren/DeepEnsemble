@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Added RecurrentLayer.&#10;&#10;">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/Australian Credit Card Assessment/data/australian.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/Australian Credit Card Assessment/data/australian.doc" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/Iris/data/bezdekIris.data" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/Iris/data/iris.names" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" />
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/layer.py" afterPath="$PROJECT_DIR$/deepensemble/layers/layer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/recurrent.py" afterPath="$PROJECT_DIR$/deepensemble/layers/recurrent.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/modules/layers.rst" afterPath="$PROJECT_DIR$/docs/modules/layers.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_model.py" afterPath="$PROJECT_DIR$/test_models/test_model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_models/test_australian.py" afterPath="$PROJECT_DIR$/test_models/test_models/test_australian.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_models/test_german_numer.py" afterPath="$PROJECT_DIR$/test_models/test_models/test_german_numer.py" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -739,13 +728,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00052" summary="Fixed error in basemetrics (function append_metrics).">
-      <created>1474033586568</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1474033586568</updated>
-    </task>
     <task id="LOCAL-00053" summary="Changed some docstrig.">
       <created>1474037140366</created>
       <option name="number" value="00053" />
@@ -1082,7 +1064,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479538510123</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="Added RecurrentLayer.&#10;&#10;">
+      <created>1480213832526</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1480213832527</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TestHistory">
