@@ -36,11 +36,11 @@ n_inputs = n_features
 fn_activation = ActivationFunctions.tanh
 
 n_ensemble_models = 4
-n_neurons = int(0.5 * (n_features + n_output)) * 2
+n_neurons = int(0.75 * (n_features + n_output))
 
 n_estimators_rf = int(math.sqrt(n_features))
 n_estimators_ensemble_rf = max(n_estimators_rf // n_ensemble_models, 10)
-n_neurons_ensemble_per_models = n_neurons // n_ensemble_models
+n_neurons_ensemble_per_models = n_neurons
 
 lr = 0.0005
 reg_l1 = 0.0001
@@ -52,7 +52,7 @@ reg_l2 = 0.0001
 
 max_epoch = 500
 folds = 1
-batch_size = 50
+batch_size = 40
 training = True
 
 args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
@@ -77,17 +77,23 @@ for i in range(n_ensemble_models):
     # net.append_cost(mse, name="MSE")
     # net.append_cost(mcc, name="MCC")
 
-    #net.compile()
-    #net.fit(input_train, target_train, max_epoch=max_epoch, batch_size=32, early_stop=False)
+    # net.append_cost(mse, name="MSE")
+    # net.set_update(sgd, name="SGD", learning_rate=100 * lr)
+    # net.compile()
+    # net.fit(input_train, target_train, max_epoch=300, batch_size=batch_size, early_stop=False)
+    # net.delete_cost('MSE')
+    # net.append_cost(mee, name="MEE")
+    # net.set_update(sgd, name="SGD", learning_rate=50 * lr)  # override
 
     net.set_update(sgd, name="SGD", learning_rate=lr)
     ensemble.append_model(net)
 
 # ensemble.set_type_training('bagging')
-ensemble.set_combiner(GeometricVotingCombiner())
+ensemble.set_combiner(PluralityVotingCombiner())
 # ensemble.set_combiner(PluralityVotingCombiner())
-ensemble.add_cost_ensemble(fun_cost=neg_correntropy, name="NEG_CORRPY", lamb=5.9)
-# ensemble.add_cost_ensemble(fun_cost=neg_corr, name="NEG_CORR", lamb=0.7)
+# ensemble.add_cost_ensemble(fun_cost=neg_mee, name="NEG MEE", s=10, lamb=0.6)
+# ensemble.add_cost_ensemble(fun_cost=neg_correntropy, name="NEG CORRPY", lamb=0.6)
+# ensemble.add_cost_ensemble(fun_cost=neg_corr, name="NCL", lamb=0.7)
 
 models.append(ensemble)
 
@@ -104,8 +110,6 @@ if training:  # compile only if training models
         # Compile
         model.compile(fast=False)
 
-    Logger().save_buffer('info_%s_compile.txt' % name_db)
-
 #############################################################################################################
 #
 #  TRAINING ALL MODELS
@@ -115,10 +119,9 @@ if training:  # compile only if training models
 if training:
     # Training Models >======================================================================================
     data_models = test_models(models=models,
-                              input_train=input_train, target_train=target_train, input_valid=input_test,
-                              target_valid=target_test,
-                              classes_labels=classes_labels, name_db=name_db, desc=desc, col_names=col_names,
-                              folds=folds, save_file=False,  **args_train)
+                              input_train=input_train, target_train=target_train,
+                              input_test=input_test, target_test=target_test,
+                              folds=folds, name_db=name_db, save_file=False, **args_train)
 else:
     # Load Data
     dir = name_db + '/'
@@ -155,14 +158,41 @@ plt.ylabel('PDF of the error')
 plt.title("Comparison between error probability density functions")
 plt.legend()
 
-_, ax = plt.subplots()
+plt.figure()
+ax = plt.subplot(211)
 for _model in model.get_models():
-    e = _model.error(input_test, model.output(input_test), prob=True).eval().flatten()
+    e = model.error(input_train, _model.output(input_train, prob=True), prob=True).eval().flatten()
     plot_pdf(ax, e, 'Model ' + _model.get_name())
 
 plt.xlabel('Error')
 plt.ylabel('PDF of the error')
 plt.title("Comparison between error probability density functions")
 plt.legend()
+plt.tight_layout()
+
+ax = plt.subplot(212)
+for _model in model.get_models():
+    e = model.error(input_test, _model.output(input_test, prob=True), prob=True).eval().flatten()
+    plot_pdf(ax, e, 'Model ' + _model.get_name())
+
+plt.xlabel('Error')
+plt.ylabel('PDF of the error')
+plt.title("Comparison between error probability density functions")
+plt.legend()
+plt.tight_layout()
+
+plt.figure()
+ax = plt.subplot(111)
+for _model in model.get_models():
+    plot_pdf(ax, _model.output(input_test, prob=True).eval().flatten(), 'Test ' + _model.get_name(),
+             x_min=-2, x_max=2)
+    plot_pdf(ax, _model.output(input_train, prob=True).eval().flatten(), 'Train ' + _model.get_name(),
+             x_min=-2, x_max=2)
+
+plt.xlabel('Output')
+plt.ylabel('PDF of output')
+plt.title("Probability density functions")
+plt.legend()
+plt.tight_layout()
 
 plt.show()

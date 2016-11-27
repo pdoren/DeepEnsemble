@@ -122,7 +122,7 @@ class Layer(Serializable):
 
             self._params = [self._W, self._b]
 
-    def init_W(self, shape_W, name='W'):
+    def init_W(self, shape_W):
         """ Initialize Weights.
         """
         wb = np.sqrt(6.0 / (self.get_fan_in() + self.get_fan_out()))  # W bound

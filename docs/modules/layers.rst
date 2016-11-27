@@ -65,6 +65,9 @@ Recurrent Layers
 .. autoclass:: RecurrentLayer
    :members:
 
+.. autoclass:: LSTMLayer
+   :members:
+
 Utils Layers
 ------------
 

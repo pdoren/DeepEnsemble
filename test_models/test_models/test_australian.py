@@ -374,8 +374,8 @@ if training:
 
     # Training Models >======================================================================================
     data_models = test_models(models=models,
-                              input_train=input_train, target_train=target_train, input_valid=input_test,
-                              target_valid=target_test,
+                              input_train=input_train, target_train=target_train, input_test=input_test,
+                              target_test=target_test,
                               classes_labels=classes_labels, name_db=name_db, desc=desc, col_names=col_names,
                               folds=25, **args_train)
 else:
