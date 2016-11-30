@@ -38,7 +38,11 @@ class EnsembleModel(Model):
         self.__list_models_ensemble = []
         self.__list_cost_ensemble = []
         self._type_training = None
+        self._pre_training = None
         self._params.append(0)  # the first element is reserved for combiner parameters
+
+    def set_pre_training(self, proc_pre_training, params):
+        self._pre_training = (proc_pre_training, params)
 
     def get_model_input(self):
         """ Gets model input.
@@ -391,10 +395,13 @@ class EnsembleModel(Model):
         MetricsBase
             Returns metrics got in training.
         """
-        if not self.is_need_compile_separately():
-            return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
-        else:
+        if self._pre_training is not None:
+            self._pre_training[0](self, _input, _target, **self._pre_training[1])
+
+        if self.is_need_compile_separately():
             return self.fit_separate_models(_input=_input, _target=_target, **kwargs)
+        else:
+            return super(EnsembleModel, self).fit(_input=_input, _target=_target, **kwargs)
 
     def fit_separate_models(self, _input, _target, **kwargs):
         """ Training ensemble models each separately.

@@ -9,7 +9,6 @@ __all__ = ['RecurrentLayer', 'LSTMLayer']
 
 
 class RecurrentLayer(Layer):
-
     def __init__(self, n_input=None, n_recurrent=None, activation=None):
         input_shape = n_input if isinstance(n_input, tuple) else (None, n_input)
         recurrent_shape = n_recurrent if isinstance(n_recurrent, tuple) else (None, n_recurrent)
@@ -79,16 +78,16 @@ class RecurrentLayer(Layer):
                                outputs_info=[T.zeros_like(self._b)])
         return result
 
-class LSTMLayer(Layer):
 
+class LSTMLayer(Layer):
     def __init__(self, n_input=None, n_recurrent=None, mask=None,
                  activation=ActivationFunctions.sigmoid,
                  activation2=ActivationFunctions.tanh):
         input_shape = n_input if isinstance(n_input, tuple) else (None, n_input)
         recurrent_shape = n_recurrent if isinstance(n_recurrent, tuple) else (None, n_recurrent)
         super(LSTMLayer, self).__init__(input_shape=input_shape,
-                                             output_shape=recurrent_shape,
-                                             non_linearity=activation)
+                                        output_shape=recurrent_shape,
+                                        non_linearity=activation)
         self._W_f = None
         self._W_c = None
         self._W_o = None
@@ -128,9 +127,9 @@ class LSTMLayer(Layer):
         self._b_c = shared(np.zeros(self.get_shape_b(), dtype=config.floatX), 'b_c', borrow=True)
         self._b_o = shared(np.zeros(self.get_shape_b(), dtype=config.floatX), 'b_o', borrow=True)
 
-        self.params = [self._W, self._W_f, self._W_c, self._W_o,
-                       self._U_i, self._U_f, self._U_c, self._U_o,
-                       self._b, self._b_f, self._b_c, self._b_o]
+        self._params = [self._W, self._W_f, self._W_c, self._W_o,
+                        self._U_i, self._U_f, self._U_c, self._U_o,
+                        self._b, self._b_f, self._b_c, self._b_o]
 
     def get_shape_Wr(self):
         """ Gets shape weights of layer.

@@ -161,13 +161,25 @@ def test_models(models, input_train, target_train, input_test, target_test,
 
     return data_models
 
+
 def show_info_model(_model):
-    # Print Info model
+    """ Print Info model
+    Parameters
+    ----------
+    _model : Model
+        Model.
+
+    Returns
+    -------
+    None
+    """
     Logger().log('info:\n%s' % _model.get_info())
+
 
 def show_info_data_base(classes_labels, name_db, desc, col_names):
     Logger().log('Data (%s):\n DESC: %s.\n Features(%d): %s\n Classes(%d): %s' %
                  (name_db, desc, len(col_names), col_names, len(classes_labels), classes_labels))
+
 
 def show_info_training(input_train, target_train, input_test, target_test, folds, max_epoch, batch_size):
     Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
@@ -321,6 +333,7 @@ def plot_scores_classifications(models, input_train, target_train, input_test, t
             test_means.append(metric(target_test, data['test']))
 
         plot_hist_train_test(train_means, test_means, 'score', key, labels)
+
 
 def plot_pdf(ax, x, label, x_min=-1, x_max=1, n_points=1000):
     N = len(x)

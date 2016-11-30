@@ -951,7 +951,7 @@ class Model(Serializable):
 
         """
         # define default size of validation set
-        valid_size = valid_size if (valid_size < 1.0 and valid_size >= 0) else 0.2
+        valid_size = valid_size if (1.0 > valid_size >= 0) else 0.2
 
         if self.is_classifier():
             input_train, input_valid, target_train, target_valid = \

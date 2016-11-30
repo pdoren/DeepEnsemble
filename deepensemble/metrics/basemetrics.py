@@ -7,6 +7,7 @@ from ..utils.utils_plot import *
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
+
 def concatenate_data(x, y):
     """ Concatenate 2 arrays """
     x = x[:, np.newaxis] if len(x.shape) == 1 else x
@@ -14,9 +15,11 @@ def concatenate_data(x, y):
 
     return np.vstack((x, y))
 
+
 class FactoryMetrics:
     """ Factory Metrics
     """
+
     def __init__(self):
         pass
 
@@ -177,7 +180,7 @@ class BaseMetrics(Serializable):
 
         n_data_score = 1 if self._model.is_fast_compiled() else len(self._model.get_scores())
         return add_data(labels, self._model.get_name(),
-                        self.get_scores(type_set_data),  n_data_score, n, data, epoch)
+                        self.get_scores(type_set_data), n_data_score, n, data, epoch)
 
     def plot_cost(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate cost plot.

@@ -1,4 +1,5 @@
 import theano.tensor as T
+import numpy as np
 
 __all__ = ['ActivationFunctions', 'ITLFunctions', 'DiversityFunctions']
 
@@ -240,7 +241,7 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        return ITLFunctions.norm(x, s)
+        return T.exp(- T.power(x, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
 
     @staticmethod
     def silverman(x, N, d):
@@ -312,6 +313,26 @@ class ITLFunctions:
         N = t.shape[0]  # Total samples
         S = t.shape[1]  # Size vector sample
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
+
+    @staticmethod
+    def cross_information_potential(Y, kernel, s):
+        DY = []
+        for y in Y:
+            dy = T.tile(y, (y.shape[0], 1, 1))
+            dy = dy - T.transpose(dy, axes=(1, 0, 2))
+            DY.append(dy)
+
+        DYK = [kernel(dy, s) for dy in DY]
+
+        V_J = T.mean(np.prod(DYK))
+
+        V_k = [T.mean(dyk) for dyk in DYK]
+
+        V_nc = T.mean(np.prod([T.mean(kernel(dy, s), axis=1) for dy in DY]))
+
+        V_c = T.power(V_nc, 2) / (V_J * np.prod(V_k))
+
+        return V_c
 
 
 class DiversityFunctions:

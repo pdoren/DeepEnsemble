@@ -21,6 +21,7 @@ class MaskLayer(Layer):
     seed
         Number of used as seed for random number generator (see numpy.random.seed).
     """
+
     def __init__(self, input_shape=None, ratio=0.9, seed=13):
         self.__ratio = ratio
         self.__seed = seed
@@ -122,6 +123,7 @@ class MaskLayer(Layer):
         else:
             raise ValueError('Problem with dimension index mask')
 
+
 class NoiseLayer(Layer):
     """ This layer added noise.
 
@@ -142,6 +144,7 @@ class NoiseLayer(Layer):
     kwargs
         Parameters of distribution.
     """
+
     def __init__(self, input_shape=None, seed=13, rng='normal', **kwargs):
 
         srng = RandomStreams(seed=seed)

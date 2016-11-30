@@ -1,5 +1,5 @@
 from .modelcombiner import ModelCombiner
-from ..utils import *
+from ..utils.utils_classifiers import translate_output
 import numpy as np
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner']
