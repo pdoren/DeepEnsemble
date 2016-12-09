@@ -6,7 +6,7 @@ __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'neg_correntropy', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
            'itakura_saito', 'neg_mee', 'neg_klg', 'cauchy_schwarz_divergence',
-           'cip2', 'cip_diversity', 'cip_ensemble']
+           'cip_relevancy', 'cip_redundancy', 'cip_synergy']
 
 eps = 0.00001
 sqrt2 = 1.41421356237
@@ -304,7 +304,7 @@ def neg_log_likelihood(model, _input, _target):
     return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 
-def cip2(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Cross Information Potential between model output and target.
 
     Parameters
@@ -332,7 +332,7 @@ def cip2(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    return ITLFunctions.cross_information_potential([model.output(_input), _target], kernel, s)
+    return T.log(ITLFunctions.cross_information_potential([model.output(_input), _target], kernel, s))
 
 
 ############################################################################################################
@@ -485,7 +485,7 @@ def neg_klg(model, _input, _target, ensemble, lamb=0.5):
     return -lamb * T.sum((pt + eps) * (T.log(pt + eps) - T.log(pp + eps)) - pt + pp)
 
 
-def cip_diversity(model, _input, _target, ensemble, beta=0.5, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Cross Information Potential Diversity.
 
     Parameters
@@ -519,18 +519,18 @@ def cip_diversity(model, _input, _target, ensemble, beta=0.5, s=None, kernel=ITL
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    cip = []
+    redundancy = []
     om = model.output(_input)
     for _model in ensemble.get_models():
         if _model is not model:
             om_k = _model.output(_input)
-            cip.append(ITLFunctions.cross_information_potential([om, om_k], kernel, s))
+            cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+            redundancy.append(cip2)
 
-    return -beta * np.sum(cip)
+    return -beta * T.log(np.prod(redundancy))
 
-
-def cip_ensemble(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kernel_gauss):
-    """ Cross Information Potential among all models ensemble.
+def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
+    """ Cross Information Potential Synergy.
 
     Parameters
     ----------
@@ -546,6 +546,9 @@ def cip_ensemble(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.k
     ensemble : EnsembleModel
         Ensemble.
 
+    lamb : float
+        Ratio.
+
     s : float
         Size of Kernel.
 
@@ -555,12 +558,18 @@ def cip_ensemble(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.k
     Returns
     -------
     theano.tensor.matrix
-        Return Cross Information Potential.
+        Return Cross Information Potential Diversity.
     """
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    Y = [_model.output(_input) for _model in ensemble.get_models()]
-    Y.append(_target)
+    synergy = []
+    om = model.output(_input)
+    for _model in ensemble.get_models():
+        if _model is not model:
+            om_k = _model.output(_input)
+            cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+            cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
+            synergy.append(cip2 / cip3)
 
-    return ITLFunctions.cross_information_potential(Y, kernel, s)
+    return lamb * T.log(np.prod(synergy))

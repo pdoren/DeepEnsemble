@@ -26,33 +26,19 @@ def make_dirs(_dir):
         os.makedirs(_dir)
 
 
-def test_model(cls, input_train, target_train, input_test, target_test, min_score_test=0.5, folds=25,
+def test_model(cls, input_train, target_train, input_test, target_test, folds=25,
                max_epoch=300, **kwargs):
     metrics = FactoryMetrics.get_metric(cls)
 
     best_params = None
     best_score = 0
     list_score = []
-    i = 0
-    invalid_training = 0
-    while i < folds:
+    for _ in range(folds):
         metric = cls.fit(input_train, target_train, max_epoch=max_epoch, **kwargs)
 
         # Compute metrics
         score_train = metrics.append_prediction(input_train, target_train)
         score_test = metrics.append_prediction(input_test, target_test, append_last_pred=True)
-
-        if score_test < min_score_test:
-            Logger().log('Invalid training (fold: %d), score %0.4f < %.4f' % (i, score_test, min_score_test))
-            if invalid_training > 0.25 * folds:
-                min_score_test = 0.0
-            else:
-                invalid_training += 1
-                # Reset parameters
-                cls.reset()
-                continue
-        else:
-            i += 1
 
         metrics.append_metric(metric)
 
@@ -80,21 +66,15 @@ def test_model(cls, input_train, target_train, input_test, target_test, min_scor
     return metrics, best_score, list_score
 
 
-def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, min_score_test=0.5, folds=25,
+def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, folds=25,
                     max_epoch=300, save_file=True, **kwargs):
     """ Test on classifier.
     """
     if save_file:
         make_dirs(_dir)
 
-    metrics, best_score, list_score = test_model(cls, input_train, target_train, input_test, target_test,
-                                                 min_score_test, folds,
+    metrics, best_score, list_score = test_model(cls, input_train, target_train, input_test, target_test, folds,
                                                  max_epoch, **kwargs)
-
-    # Compute and Show metrics
-    metrics.classification_report()
-    if isinstance(cls, EnsembleModel):
-        metrics.diversity_report()
 
     Logger().log('The best score (test): %.4f' % best_score)
     Logger().log('wait .', end='', flush=True)
@@ -235,7 +215,7 @@ def plot_hist_train_test(train_means, test_means, ylabel, title, labels):
         for rect in rects:
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2., 1.05 * height,
-                    '%.2f' % height,
+                    '%.2f' % (height * 100),
                     ha='center', va='bottom')
 
     auto_label(rects_1)

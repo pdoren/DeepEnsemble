@@ -94,6 +94,15 @@ Utils Functions
 .. autoclass:: ITLFunctions
    :members:
 
+Utils Models
+------------
+
+.. automodule:: deepensemble.utils.utils_models
+
+.. autofunction:: ensemble_classification
+.. autofunction:: ensembleCIP_classification
+.. autofunction:: ensembleNCL_classification
+
 Utils Testing
 -------------
 

@@ -311,12 +311,13 @@ class BaseMetrics(Serializable):
         """
         _output = self._model.predict(_input)
         n = len(self._y_pred)
-        if append_last_pred and n > 0:
-            self._y_pred[n - 1] = concatenate_data(self._y_pred[n - 1], np.squeeze(_output))
-            self._y_true[n - 1] = concatenate_data(self._y_true[n - 1], np.squeeze(_target))
-        else:
-            self._y_pred += [np.squeeze(_output)]
-            self._y_true += [np.squeeze(_target)]
+        if append_last_pred:
+            if n > 0:
+                self._y_pred[n - 1] = concatenate_data(self._y_pred[n - 1], np.squeeze(_output))
+                self._y_true[n - 1] = concatenate_data(self._y_true[n - 1], np.squeeze(_target))
+            else:
+                self._y_pred += [np.squeeze(_output)]
+                self._y_true += [np.squeeze(_target)]
 
         return self.get_score_prediction(_target, _output)
 
@@ -464,10 +465,11 @@ class EnsembleMetrics(BaseMetrics):
         """
         _target = np.squeeze(_target)
         n = len(self._y_true_per_model)
-        if append_last_pred and n > 0:
-            self._y_true_per_model[n - 1] = concatenate_data(self._y_true_per_model[n - 1], _target)
-        else:
-            self._y_true_per_model += [_target]
+        if append_last_pred:
+            if n > 0:
+                self._y_true_per_model[n - 1] = concatenate_data(self._y_true_per_model[n - 1], _target)
+            else:
+                self._y_true_per_model += [_target]
 
         for _model in self._model.get_models():
             output = np.squeeze(_model.predict(_input))
@@ -475,11 +477,12 @@ class EnsembleMetrics(BaseMetrics):
                 self._y_pred_per_model[_model.get_name()] = []
 
             n = len(self._y_pred_per_model[_model.get_name()])
-            if append_last_pred and n > 0:
-                self._y_pred_per_model[_model.get_name()][n - 1] = concatenate_data(
-                    self._y_pred_per_model[_model.get_name()][n - 1], output)
-            else:
-                self._y_pred_per_model[_model.get_name()] += [output]
+            if append_last_pred:
+                if n > 0:
+                    self._y_pred_per_model[_model.get_name()][n - 1] = concatenate_data(
+                        self._y_pred_per_model[_model.get_name()][n - 1], output)
+                else:
+                    self._y_pred_per_model[_model.get_name()] += [output]
 
     def append_metric(self, metric):
         """ Adds metric of another metric model.

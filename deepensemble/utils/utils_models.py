@@ -1,5 +1,5 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip2, cip_diversity, neg_corr, cauchy_schwarz_divergence
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy
 from .regularizer_functions import L2
 from .utils_functions import ActivationFunctions
 from .logger import Logger
@@ -9,7 +9,6 @@ from ..models import EnsembleModel, Sequential
 
 __all__ = ["mlp_classification",
     "ensemble_classification", "ensembleCIP_classification", "ensembleNCL_classification"]
-
 
 
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
@@ -65,7 +64,7 @@ def ensembleCIP_classification(name,
                                input_train, target_train,
                                classes_labels,
                                n_ensemble_models, n_neurons_ensemble_per_models, fn_activation,
-                               beta=0.9, batch_size=40, max_epoch=300,
+                               beta=0.9, lamb=0.9, batch_size=40, max_epoch=300,
                                lr=0.01):
 
     ensemble = ensemble_classification(name,
@@ -73,14 +72,14 @@ def ensembleCIP_classification(name,
                                        classes_labels,
                                        n_ensemble_models, n_neurons_ensemble_per_models,
                                        fn_activation, ActivationFunctions.softmax,
-                                       lr=lr)
+                                       lr=lr/10)
 
     Logger().log_disable()
     net0 = mlp_classification("net0",
                               input_train, classes_labels,
                               n_neurons_ensemble_per_models,
                               fn_activation1=fn_activation, fn_activation2=ActivationFunctions.softmax,
-                              lr=min(0.1, 10 * lr))
+                              lr=min(0.1, lr))
     net0.compile(fast=True)
     Logger().log_enable()
 
@@ -88,13 +87,17 @@ def ensembleCIP_classification(name,
                               params={'net0': net0, 'batch_size': batch_size, 'max_epoch': max_epoch})
 
     for net in ensemble.get_models():
-        net.append_cost(cip2, name="CIP")
+        net.delete_cost('MSE')
+        net.append_cost(cip_relevancy, name="CIP Relevancy")
         net.set_update(sgd, name="SGD", learning_rate=lr)
 
-    ensemble.set_combiner(GeometricVotingCombiner())
+    ensemble.set_combiner(PluralityVotingCombiner())
 
-    if beta > 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_diversity, name="CIP Diversity", beta=beta)
+    if beta != 0:
+        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta)
+
+    if lamb != 0:
+        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb)
 
     return ensemble
 

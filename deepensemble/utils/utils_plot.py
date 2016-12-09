@@ -310,7 +310,11 @@ def plot(ax, dps, label_prefix='', label=None):
         _y = np.nanmean(y, axis=1)
         _y_std = np.nanstd(y, axis=1)
         p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3)
-        ax.fill_between(_x, _y - _y_std, _y + _y_std, alpha=0.1, color=p[0].get_color())
+
+        yn = _y - _y_std
+        yp = _y + _y_std
+
+        ax.fill_between(_x, yn, yp, alpha=0.1, color=p[0].get_color())
 
 
 def _get_data_per_col(dps):

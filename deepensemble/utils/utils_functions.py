@@ -328,7 +328,7 @@ class ITLFunctions:
 
         V_k = [T.mean(dyk) for dyk in DYK]
 
-        V_nc = T.mean(np.prod([T.mean(kernel(dy, s), axis=1) for dy in DY]))
+        V_nc = T.mean(np.prod([T.mean(dyk, axis=1) for dyk in DYK]))
 
         V_c = T.power(V_nc, 2) / (V_J * np.prod(V_k))
 
