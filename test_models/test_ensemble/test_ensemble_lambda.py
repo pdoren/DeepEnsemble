@@ -1,13 +1,9 @@
-import math
 import os
 
 import matplotlib.pylab as plt
 import numpy as np
 from sklearn import cross_validation
 
-from deepensemble.combiner import *
-from deepensemble.layers import *
-from deepensemble.models import *
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ActivationFunctions
 
@@ -60,25 +56,26 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Fa
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _lamb, fast=True):
     ensemble = ensembleNCL_classification(name=_name,
-                                         input_train=input_train,
-                                         classes_labels=classes_labels,
-                                         n_ensemble_models=n_ensemble_models,
-                                         n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                         fn_activation=ActivationFunctions.tanh,
-                                         lamb=_lamb, lr=lr)
+                                          input_train=input_train,
+                                          classes_labels=classes_labels,
+                                          n_ensemble_models=n_ensemble_models,
+                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          fn_activation1=ActivationFunctions.tanh,
+                                          fn_activation2=ActivationFunctions.sigmoid,
+                                          lamb=_lamb, lr=lr)
     ensemble.compile(fast=fast)
 
     return ensemble
 
 
-def get_ensemble_ckl(_name, _lamb, fast=True):
+def get_ensemble_cip(_name, _lamb, fast=True):
     ensemble = ensembleCIP_classification(name=_name,
-                                         input_train=input_train, target_train=target_train,
-                                         classes_labels=classes_labels,
-                                         n_ensemble_models=n_ensemble_models,
-                                         n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                         fn_activation=ActivationFunctions.tanh,
-                                         beta=_lamb, lr=5 * lr)
+                                          input_train=input_train, classes_labels=classes_labels,
+                                          n_ensemble_models=n_ensemble_models,
+                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          fn_activation1=ActivationFunctions.tanh,
+                                          fn_activation2=ActivationFunctions.sigmoid,
+                                          beta=_lamb, lr=lr)
     ensemble.compile(fast=fast)
 
     return ensemble
@@ -89,7 +86,7 @@ def get_ensemble_ckl(_name, _lamb, fast=True):
 #############################################################################################################
 parameters = np.linspace(0, 1.5, 20)
 
-list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_ckl, 'Ensemble CIP')]
+list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
 path_data = 'test_ensemble_lambda/'
 
 for get_ensemble, name in list_ensemble:

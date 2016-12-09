@@ -66,7 +66,7 @@ class ModelCombiner(Serializable):
 
         Returns
         -------
-        theano.Op
+        theano.tensor.matrix
             Returns the mixing prediction of ensemble's models.
         """
         raise NotImplementedError

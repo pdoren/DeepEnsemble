@@ -6,14 +6,14 @@ from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import *
 from deepensemble.utils import Logger, score_ensemble_ambiguity, test_models, plot_scores_classifications
 
+
 def test_classifiers(name_db, input_train, target_train, input_test, target_test, classes_labels,
                      only_cip=False,
                      lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      folds=5, lr=0.01, training=True, max_epoch=300, batch_size=40):
-
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
-                  'improvement_threshold': 0.9995, 'update_sets': True}
+                  'improvement_threshold': 0.995, 'update_sets': True}
 
     #############################################################################################################
     # Define Parameters nets
@@ -29,7 +29,6 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
     n_neurons = (n_output + n_inputs) // 2
 
     n_neurons_ensemble_per_models = n_neurons
-
 
     #############################################################################################################
     # Define Models
@@ -50,23 +49,22 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = ensembleCIP_classification(name='Ensamble CIP',
-                                       input_train=input_train, target_train=target_train,
-                                       classes_labels=classes_labels,
-                                       n_ensemble_models=n_ensemble_models,
-                                       n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                       fn_activation=fn_activation1,
-                                       beta=beta_cip, lamb=lamb_cip, lr=lr)
+                                             input_train=input_train, classes_labels=classes_labels,
+                                             n_ensemble_models=n_ensemble_models,
+                                             n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                             fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                             beta=beta_cip, lamb=lamb_cip, lr=lr)
 
     models.append(ensembleCIP)
 
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = ensembleNCL_classification(name='Ensamble NCL',
-                                       input_train=input_train,
-                                       classes_labels=classes_labels,
-                                       n_ensemble_models=n_ensemble_models,
-                                       n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                       fn_activation=fn_activation1,
-                                       lamb=lamb_ncl, lr=lr)
+                                             input_train=input_train,
+                                             classes_labels=classes_labels,
+                                             n_ensemble_models=n_ensemble_models,
+                                             n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                             fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                             lamb=lamb_ncl, lr=lr)
 
     models.append(ensembleNCL)
 
@@ -79,13 +77,12 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     models.append(netMLP)
 
-
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = mlp_classification("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_ensemble_per_models),
-                                input_train, classes_labels,
-                                n_ensemble_models * n_neurons_ensemble_per_models,
-                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                cost=mse, name_cost="MSE", lr=lr)
+                                    input_train, classes_labels,
+                                    n_ensemble_models * n_neurons_ensemble_per_models,
+                                    fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                    cost=mse, name_cost="MSE", lr=lr)
 
     models.append(netMLP_MAX)
 
@@ -117,16 +114,17 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     if training:
         # Training Models >======================================================================================
+        # noinspection PyUnusedLocal
         data_models = test_models(models=models,
                                   input_train=input_train, target_train=target_train,
                                   input_test=input_test, target_test=target_test,
                                   folds=folds, name_db=name_db, save_file=True, **args_train)
     else:
         # Load Data
-        dir = name_db + '/'
+        _dir = name_db + '/'
         for model in models:
             name = model.get_name()
-            model.load(dir + '%s/%s_classifier.pkl' % (name, name))
+            model.load(_dir + '%s/%s_classifier.pkl' % (name, name))
 
     #############################################################################################################
     #

@@ -742,7 +742,7 @@ class Model(Serializable):
 
             iteration = epoch * n_train
 
-            if epoch % validation_jump == 0 or epoch == max_epoch:
+            if epoch % validation_jump == 0 or epoch >= (max_epoch - 1):
                 # Evaluate test set
                 self._current_data_valid = self.batch_eval(self._data_valid, batch_size=batch_size, train=False,
                                                            shuffle=update_sets)

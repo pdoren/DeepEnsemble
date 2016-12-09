@@ -1,23 +1,13 @@
 from .update_functions import sgd
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy
 from .regularizer_functions import L2
-from .utils_functions import ActivationFunctions
 from .logger import Logger
 
-from ..combiner import PluralityVotingCombiner, GeometricVotingCombiner
+from ..combiner import PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["mlp_classification",
-    "ensemble_classification", "ensembleCIP_classification", "ensembleNCL_classification"]
-
-
-def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
-    Logger().log_disable()
-    for net in _ensemble.get_models():
-        net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
-        net.load_params(net0.save_params())
-        net0.reset()
-    Logger().log_enable()
+           "ensemble_classification", "ensembleCIP_classification", "ensembleNCL_classification"]
 
 
 def mlp_classification(name,
@@ -25,7 +15,6 @@ def mlp_classification(name,
                        n_neurons,
                        fn_activation1, fn_activation2,
                        cost=mse, name_cost="MSE", lr=0.01):
-
     from ..layers.dense import Dense
 
     n_output = len(classes_labels)
@@ -45,7 +34,6 @@ def ensemble_classification(name,
                             n_ensemble_models, n_neurons_ensemble_per_models,
                             fn_activation1, fn_activation2,
                             cost=mse, name_cost="MSE", lr=0.01):
-
     ensemble = EnsembleModel(name=name)
     for i in range(n_ensemble_models):
         net = mlp_classification("net%d" % (i + 1),
@@ -61,27 +49,34 @@ def ensemble_classification(name,
 
 
 def ensembleCIP_classification(name,
-                               input_train, target_train,
-                               classes_labels,
-                               n_ensemble_models, n_neurons_ensemble_per_models, fn_activation,
+                               input_train, classes_labels,
+                               n_ensemble_models, n_neurons_ensemble_per_models,
+                               fn_activation1, fn_activation2,
                                beta=0.9, lamb=0.9, batch_size=40, max_epoch=300,
                                lr=0.01):
-
     ensemble = ensemble_classification(name,
                                        input_train,
                                        classes_labels,
                                        n_ensemble_models, n_neurons_ensemble_per_models,
-                                       fn_activation, ActivationFunctions.softmax,
-                                       lr=lr/10)
+                                       fn_activation1, fn_activation2,
+                                       lr=lr)
 
     Logger().log_disable()
     net0 = mlp_classification("net0",
                               input_train, classes_labels,
                               n_neurons_ensemble_per_models,
-                              fn_activation1=fn_activation, fn_activation2=ActivationFunctions.softmax,
-                              lr=min(0.1, lr))
+                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                              lr=min(0.1, 5 * lr))
     net0.compile(fast=True)
     Logger().log_enable()
+
+    def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
+        Logger().log_disable()
+        for net in _ensemble.get_models():
+            net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
+            net.load_params(net0.save_params())
+            net0.reset()
+        Logger().log_enable()
 
     ensemble.set_pre_training(proc_pre_training=_proc_pre_training,
                               params={'net0': net0, 'batch_size': batch_size, 'max_epoch': max_epoch})
@@ -105,13 +100,14 @@ def ensembleCIP_classification(name,
 def ensembleNCL_classification(name,
                                input_train,
                                classes_labels,
-                               n_ensemble_models, n_neurons_ensemble_per_models, fn_activation,
+                               n_ensemble_models, n_neurons_ensemble_per_models,
+                               fn_activation1, fn_activation2,
                                lamb=0.6, lr=0.01, lamb_L2=0):
     ensemble = ensemble_classification(name,
                                        input_train,
                                        classes_labels,
                                        n_ensemble_models, n_neurons_ensemble_per_models,
-                                       fn_activation, ActivationFunctions.sigmoid,
+                                       fn_activation1, fn_activation2,
                                        lr=lr)
 
     if lamb_L2 > 0:

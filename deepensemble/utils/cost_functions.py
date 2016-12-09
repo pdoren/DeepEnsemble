@@ -529,6 +529,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
 
     return -beta * T.log(np.prod(redundancy))
 
+
 def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
     """ Cross Information Potential Synergy.
 

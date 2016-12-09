@@ -1,4 +1,3 @@
-import math
 import os
 
 import matplotlib.pylab as plt
@@ -145,8 +144,8 @@ for get_ensemble, name in list_ensemble:
     list_dp = []
 
     for i in range(folds):
-        y = [data[l]['list_score'][i] for l in parameters]
-        x = np.array(parameters) / n_features
+        y = list([data[l]['list_score'][i] for l in parameters])
+        x = list(np.array(parameters) / n_features)
         dp = DataPlot(name=name, _type='score')
         dp.set_data(x, y)
         list_dp.append(dp)

@@ -8,7 +8,7 @@ from ..metrics import *
 from ..models import *
 from .logger import *
 
-__all__ = ['test_classifier', 'test_models', 'test_model',
+__all__ = ['test_models', 'test_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
            'plot_pdf']
@@ -66,10 +66,8 @@ def test_model(cls, input_train, target_train, input_test, target_test, folds=25
     return metrics, best_score, list_score
 
 
-def test_classifier(_dir, cls, input_train, target_train, input_test, target_test, folds=25,
-                    max_epoch=300, save_file=True, **kwargs):
-    """ Test on classifier.
-    """
+def testing_model(_dir, cls, input_train, target_train, input_test, target_test, folds=25,
+                  max_epoch=300, save_file=True, **kwargs):
     if save_file:
         make_dirs(_dir)
 
@@ -108,10 +106,11 @@ def test_classifier(_dir, cls, input_train, target_train, input_test, target_tes
                 fig_.append((metrics.get_models_metric()[key].plot_scores(max_epoch),
                              dir_model_scores + 'score_' + _model.get_name()))
 
-            # Diversity current model in metrics, so best model
-            dir_diversity = 'diversity/'
-            make_dirs(_dir + dir_diversity)
-            fig_ += metrics.plot_diversity(input_test, target_test, prefix=dir_diversity + 'diversity')
+            if cls.is_classifier():
+                # Diversity current model in metrics, so best model
+                dir_diversity = 'diversity/'
+                make_dirs(_dir + dir_diversity)
+                fig_ += metrics.plot_diversity(input_test, target_test, prefix=dir_diversity + 'diversity')
 
         for fig, name in fig_:
             if fig is not None:
@@ -130,14 +129,13 @@ def test_models(models, input_train, target_train, input_test, target_test,
                 folds, name_db='', save_file=True, **kwargs):
     """ Test models.
     """
-
     data_models = []
 
     for _model in models:
         Logger().reset()
         _dir = name_db + '/' + _model.get_name() + '/'
-        data_models.append(test_classifier(_dir, _model, input_train, target_train, input_test, target_test,
-                                           folds=folds, save_file=save_file, **kwargs))
+        data_models.append(testing_model(_dir, _model, input_train, target_train, input_test, target_test,
+                                         folds=folds, save_file=save_file, **kwargs))
 
     return data_models
 
@@ -161,7 +159,7 @@ def show_info_data_base(classes_labels, name_db, desc, col_names):
                  (name_db, desc, len(col_names), col_names, len(classes_labels), classes_labels))
 
 
-def show_info_training(input_train, target_train, input_test, target_test, folds, max_epoch, batch_size):
+def show_info_training(input_train, input_test, folds, max_epoch, batch_size):
     Logger().log('Training:\n total data: %d | train: %d, validation: %d ' %
                  (input_train.shape[0] + input_test.shape[0], input_train.shape[0], input_test.shape[0]))
     Logger().log(' folds: %d | Epoch: %d, Batch Size: %d ' %

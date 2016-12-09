@@ -56,25 +56,26 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Tr
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _n_models, fast=True):
     ensemble = ensembleNCL_classification(name=_name,
-                                         input_train=input_train,
-                                         classes_labels=classes_labels,
-                                         n_ensemble_models=_n_models,
-                                         n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                         fn_activation=ActivationFunctions.tanh,
-                                         lamb=0.6, lr=lr)
+                                          input_train=input_train,
+                                          classes_labels=classes_labels,
+                                          n_ensemble_models=_n_models,
+                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          fn_activation1=ActivationFunctions.tanh,
+                                          fn_activation2=ActivationFunctions.sigmoid,
+                                          lamb=0.6, lr=lr)
     ensemble.compile(fast=fast)
 
     return ensemble
 
 
-def get_ensemble_ckl(_name, _n_models, fast=True):
+def get_ensemble_cip(_name, _n_models, fast=True):
     ensemble = ensembleCIP_classification(name=_name,
-                                         input_train=input_train, target_train=target_train,
-                                         classes_labels=classes_labels,
-                                         n_ensemble_models=_n_models,
-                                         n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                         fn_activation=ActivationFunctions.tanh,
-                                         beta=0.3, lr=5 * lr)
+                                          input_train=input_train, classes_labels=classes_labels,
+                                          n_ensemble_models=_n_models,
+                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          fn_activation1=ActivationFunctions.tanh,
+                                          fn_activation2=ActivationFunctions.sigmoid,
+                                          beta=0.3, lr=5 * lr)
     ensemble.compile(fast=fast)
 
     return ensemble
@@ -85,7 +86,7 @@ def get_ensemble_ckl(_name, _n_models, fast=True):
 #############################################################################################################
 parameters = [n for n in range(1, 20, 3)]
 
-list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_ckl, 'Ensemble CIP')]
+list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
 path_data = 'test_ensemble_n_models/'
 
 for get_ensemble, name in list_ensemble:
@@ -133,8 +134,8 @@ for get_ensemble, name in list_ensemble:
     list_dp = []
 
     for i in range(folds):
-        y = [data[l]['list_score'][i] for l in parameters]
-        x = np.array(parameters) / n_features
+        y = list([data[l]['list_score'][i] for l in parameters])
+        x = list(np.array(parameters) / n_features)
         dp = DataPlot(name=name, _type='score')
         dp.set_data(x, y)
         list_dp.append(dp)

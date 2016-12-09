@@ -1,4 +1,3 @@
-import math
 import os
 
 import matplotlib.pylab as plt
@@ -37,7 +36,6 @@ fn_activation = ActivationFunctions.sigmoid
 
 n_ensemble_models = 4
 n_neurons = n_features * 2
-
 
 lr = 0.05
 reg_l1 = 0.0001
@@ -148,7 +146,6 @@ for get_ensemble, name in list_ensemble:
     ax = f.gca(projection='3d')
     plt.hold(True)
     list_dp = []
-
 
     z = [np.mean(data[(l1, l2)]['list_score']) for l1, l2 in parameters]
     s = [np.std(data[(l1, l2)]['list_score']) for l1, l2 in parameters]

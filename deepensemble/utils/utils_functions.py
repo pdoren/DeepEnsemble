@@ -260,7 +260,7 @@ class ITLFunctions:
 
         Returns
         -------
-        float
+        theano.tensor.scalar
             Returns a size kernel computed with Silverman Rule.
         """
         K = T.power(4.0 / (N * (2.0 * d + 1.0)), 1.0 / (d + 4.0))
@@ -306,7 +306,7 @@ class ITLFunctions:
 
         Returns
         -------
-        float
+        theano.tensor.scalar
             Returns a float with error rates.
         """
         M = T.prod(t.shape)  # Total elements

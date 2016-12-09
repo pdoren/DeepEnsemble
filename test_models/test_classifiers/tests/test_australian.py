@@ -20,6 +20,6 @@ target_test = data_target[518:690]
 
 test_classifiers(name_db, input_train, target_train, input_test, target_test, classes_labels,
                  only_cip=True,
-                 lamb_ncl=0.6, beta_cip=0.5, lamb_cip=0.01,
+                 lamb_ncl=0.6, beta_cip=0.4, lamb_cip=0.04,
                  fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                 folds=5, lr=0.02, training=True, max_epoch=500, batch_size=40)
+                 folds=5, lr=0.02, training=True, max_epoch=500, batch_size=50)
