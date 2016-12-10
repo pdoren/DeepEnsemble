@@ -303,7 +303,8 @@ class EnsembleModel(Model):
 
         for model in self.get_models():
             cost_model = model.get_cost()
-            update_model = model.get_update_function(cost_model)
+            error_model = model.get_error()
+            update_model = model.get_update_function(cost_model, error_model)
             for key in update_model.keys():
                 updates[key] = update_model[key]
 

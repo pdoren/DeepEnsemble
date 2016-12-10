@@ -1,10 +1,13 @@
 import numpy as np
 
+from collections import OrderedDict
+import theano.tensor as T
+from theano import shared, config
 from .layer import Layer
 from theano import config
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
-__all__ = ['MaskLayer', 'NoiseLayer']
+__all__ = ['MaskLayer', 'NoiseLayer', 'BiasLayer']
 
 
 class MaskLayer(Layer):
@@ -188,3 +191,70 @@ class NoiseLayer(Layer):
 
         return _input + self._rng(input_shape,
                                   dtype=config.floatX, **self._rng_params)
+
+
+class BiasLayer(Layer):
+    """ This layer added noise.
+
+    Parameters
+    ----------
+    input_shape : tuple[]
+        Tuple input layer.
+
+    seed
+        Number of used as seed for random number generator.
+
+    rng : str
+        Type of distribution (uniform, binomial, normal).
+
+    seed
+        Number of used as seed for random number generator.
+
+    kwargs
+        Parameters of distribution.
+    """
+
+    def __init__(self, net, input_shape=None, **kwargs):
+        net.append_update(self.update, 'Update BiasLayer')
+        super(BiasLayer, self).__init__(input_shape=input_shape, output_shape=input_shape, exclude_params=True)
+
+    def update(self, error):
+        updates = OrderedDict()
+        updates[self._b] = -T.mean(error, axis=0, dtype=config.floatX)
+        return updates
+
+    def get_shape_b(self):
+        """ Gets shape bias of layer.
+        """
+        return self.get_fan_out(),
+
+    def set_input_shape(self, shape):
+        """ Set input shape.
+
+        Parameters
+        ----------
+        shape : tuple[]
+            Shape of input.
+        """
+        self._input_shape = shape
+        self._output_shape = shape
+        self._b = shared(np.zeros(shape=self.get_shape_b(), dtype=config.floatX), name='bias', borrow=True)
+        self._b.set_value(np.zeros(shape=self.get_shape_b(), dtype=config.floatX))
+
+    def output(self, _input):
+        """ Gets output of layer.
+
+        Parameters
+        ----------
+        _input : theano.tensor or numpy.array
+            Input sample.
+
+        Returns
+        -------
+        theano.tensor
+            Returns input plus noise.
+        """
+        if _input.ndim > 2:
+            x = _input.flatten(2)
+
+        return _input + self._b.dimshuffle('x', 0)

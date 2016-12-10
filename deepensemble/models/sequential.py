@@ -138,5 +138,6 @@ class Sequential(Model):
         self._define_output()
 
         cost = self.get_cost()
+        error = self.get_error()
 
-        return cost, self.get_update_function(cost), [], []
+        return cost, self.get_update_function(cost, error), [], []

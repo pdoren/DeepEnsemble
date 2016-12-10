@@ -9,7 +9,7 @@ from deepensemble.utils import Logger, score_ensemble_ambiguity, test_models, pl
 
 def test_classifiers(name_db, input_train, target_train, input_test, target_test, classes_labels,
                      only_cip=False,
-                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2,
+                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      folds=5, lr=0.01, training=True, max_epoch=300, batch_size=40):
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
@@ -26,7 +26,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
     n_inputs = n_features
 
     n_ensemble_models = 4
-    n_neurons = (n_output + n_inputs) // 2
+    n_neurons = int(0.75 * (n_output + n_inputs))
 
     n_neurons_ensemble_per_models = n_neurons
 
@@ -53,7 +53,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
                                              n_ensemble_models=n_ensemble_models,
                                              n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
                                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                             beta=beta_cip, lamb=lamb_cip, lr=lr)
+                                             beta=beta_cip, lamb=lamb_cip, s=s, bias_layer= bias_layer, lr=lr)
 
     models.append(ensembleCIP)
 
@@ -112,6 +112,9 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
     #
     #############################################################################################################
 
+    #l = ensembleCIP.get_models()[0].get_layers()[2]
+    #print('%g\n' % l.get_b().eval())
+
     if training:
         # Training Models >======================================================================================
         # noinspection PyUnusedLocal
@@ -133,5 +136,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
     #############################################################################################################
 
     plot_scores_classifications(models, input_train, target_train, input_test, target_test, classes_labels)
+
+    #print('%g\n' % l.get_b().eval())
 
     plt.show()

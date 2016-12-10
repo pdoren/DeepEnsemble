@@ -1,5 +1,5 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, cip_full
 from .regularizer_functions import L2
 from .logger import Logger
 
@@ -22,8 +22,10 @@ def mlp_classification(name,
                        input_train, classes_labels,
                        n_neurons,
                        fn_activation1, fn_activation2,
+                       bias_layer=False,
                        cost=mse, name_cost="MSE", lr=0.01):
     from ..layers.dense import Dense
+    from ..layers.utils_layers import BiasLayer
 
     n_output = len(classes_labels)
     n_inputs = input_train.shape[1]
@@ -31,6 +33,8 @@ def mlp_classification(name,
     net = Sequential(name, "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons, activation=fn_activation1))
     net.add_layer(Dense(n_output=n_output, activation=fn_activation2))
+    if bias_layer:
+        net.add_layer(BiasLayer(net, n_output=n_output))
     net.append_cost(cost, name=name_cost)
     net.set_update(sgd, name="SGD", learning_rate=lr)
 
@@ -41,6 +45,7 @@ def ensemble_classification(name,
                             input_train, classes_labels,
                             n_ensemble_models, n_neurons_ensemble_per_models,
                             fn_activation1, fn_activation2,
+                            bias_layer=False,
                             cost=mse, name_cost="MSE", lr=0.01):
     ensemble = EnsembleModel(name=name)
     for i in range(n_ensemble_models):
@@ -48,6 +53,7 @@ def ensemble_classification(name,
                                  input_train, classes_labels,
                                  n_neurons_ensemble_per_models,
                                  fn_activation1, fn_activation2,
+                                 bias_layer=bias_layer,
                                  cost=cost, name_cost=name_cost, lr=lr)
         ensemble.append_model(net)
 
@@ -60,13 +66,15 @@ def ensembleCIP_classification(name,
                                input_train, classes_labels,
                                n_ensemble_models, n_neurons_ensemble_per_models,
                                fn_activation1, fn_activation2,
-                               beta=0.9, lamb=0.9, batch_size=40, max_epoch=300,
+                               beta=0.9, lamb=0.9, s=None, bias_layer=True,
+                               batch_size=40, max_epoch=300,
                                lr=0.01):
     ensemble = ensemble_classification(name,
                                        input_train,
                                        classes_labels,
                                        n_ensemble_models, n_neurons_ensemble_per_models,
                                        fn_activation1, fn_activation2,
+                                       bias_layer= bias_layer,
                                        lr=lr)
 
     Logger().log_disable()
@@ -74,7 +82,7 @@ def ensembleCIP_classification(name,
                               input_train, classes_labels,
                               n_neurons_ensemble_per_models,
                               fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                              lr=min(0.1, 5 * lr))
+                              lr=min(0.1, lr))
     net0.compile(fast=True)
     Logger().log_enable()
 
@@ -83,16 +91,16 @@ def ensembleCIP_classification(name,
 
     for net in ensemble.get_models():
         net.delete_cost('MSE')
-        net.append_cost(cip_relevancy, name="CIP Relevancy")
+        net.append_cost(cip_relevancy, name="CIP Relevancy", s=s)
         net.set_update(sgd, name="SGD", learning_rate=lr)
 
     ensemble.set_combiner(PluralityVotingCombiner())
 
     if beta != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta)
+        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s)
 
     if lamb != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb)
+        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s)
 
     return ensemble
 

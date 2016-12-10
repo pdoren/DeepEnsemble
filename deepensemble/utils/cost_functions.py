@@ -6,7 +6,7 @@ __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'neg_correntropy', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
            'itakura_saito', 'neg_mee', 'neg_klg', 'cauchy_schwarz_divergence',
-           'cip_relevancy', 'cip_redundancy', 'cip_synergy']
+           'cip_relevancy', 'cip_redundancy', 'cip_synergy', 'cip_full']
 
 eps = 0.00001
 sqrt2 = 1.41421356237
@@ -118,12 +118,12 @@ def cauchy_schwarz_divergence(model, _input, _target, s=None, kernel=ITLFunction
     pt = _target
     pp = model.output(_input)
     if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     e = pt - pp
-    Kij = ITLFunctions.information_potential(e - T.mean(e), kernel, s)
-    Kii = ITLFunctions.information_potential(pt - T.mean(pt), kernel, s)
-    Kjj = ITLFunctions.information_potential(pp - T.mean(pp), kernel, s)
+    Kij = ITLFunctions.information_potential(e - T.mean(e), kernel, sqrt2 * s)
+    Kii = ITLFunctions.information_potential(pt - T.mean(pt), kernel, sqrt2 * s)
+    Kjj = ITLFunctions.information_potential(pp - T.mean(pp), kernel, sqrt2 * s)
 
     return -2 * T.log(Kij + eps) + T.log(Kii + eps) + T.log(Kjj + eps)
 
@@ -276,9 +276,9 @@ def mee(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
         Return MEE.
     """
     if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
     e = model.error(_input, _target)
-    return -T.log(ITLFunctions.information_potential(e, kernel, s))
+    return -T.log(ITLFunctions.information_potential(e, kernel, sqrt2 * s))
 
 
 def neg_log_likelihood(model, _input, _target):
@@ -329,10 +329,11 @@ def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gau
     theano.tensor.matrix
         Return Cross Information Potential between model output and target.
     """
+    om = model.output(_input)
     if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    return T.log(ITLFunctions.cross_information_potential([model.output(_input), _target], kernel, s))
+    return ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s)
 
 
 ############################################################################################################
@@ -527,7 +528,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
             cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
             redundancy.append(cip2)
 
-    return -beta * T.log(np.prod(redundancy))
+    return -beta * np.prod(redundancy)
 
 
 def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
@@ -573,4 +574,41 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
             cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
             synergy.append(cip2 / cip3)
 
-    return lamb * T.log(np.prod(synergy))
+    return lamb * np.prod(synergy)
+
+def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kernel_gauss):
+    """ Cross Information Potential among all models ensemble.
+
+    Parameters
+    ----------
+    model : theano.tensor.matrix
+        Current model that one would want to calculate the cost.
+
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    ensemble : EnsembleModel
+        Ensemble.
+
+    s : float
+        Size of Kernel.
+
+    kernel : callable
+        Kernel for compute divergence.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Return Cross Information Potential.
+    """
+    if s is None:
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+
+    Y = [_model.output(_input) for _model in ensemble.get_models()]
+    Y.append(_target)
+
+    return ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s)
+

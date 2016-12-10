@@ -19,7 +19,7 @@ target_test = data_target[518:690]
 #############################################################################################################
 
 test_classifiers(name_db, input_train, target_train, input_test, target_test, classes_labels,
-                 only_cip=True,
-                 lamb_ncl=0.6, beta_cip=0.4, lamb_cip=0.04,
+                 only_cip=False,
+                 lamb_ncl=0.6, beta_cip=0.1, lamb_cip=0.01, s=0.2, bias_layer=False,
                  fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                 folds=1, lr=0.02, training=True, max_epoch=500, batch_size=50)
+                 folds=10, lr=0.02, training=True, max_epoch=500, batch_size=40)

@@ -5,6 +5,7 @@ import theano.tensor as T
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score, mean_squared_error
 from theano import config, function
+from collections import OrderedDict
 
 from ..metrics import FactoryMetrics
 from ..utils import Logger, score_accuracy, score_rms
@@ -45,8 +46,8 @@ class Model(Serializable):
         This is a list of function for compute a score to models, for classifier model is accuracy by default
         and for regressor model is RMS by default.
 
-    _update_function : tuple
-        This function allow to update the model's parameters.
+    _update_functions : list[]
+        List of functions allow to update the model's parameters. The first element is the principal update function,
 
     name : str
         This model's name is useful to identify it later.
@@ -96,7 +97,7 @@ class Model(Serializable):
         self._cost_function_list = {'list': [], 'changed': True, 'result': []}
         self._reg_function_list = []
 
-        self._update_function = None
+        self._update_functions = None
         self.set_update(sgd, name='SGD', learning_rate=0.1)  # default training algorithm
 
         self._train_eval = None
@@ -820,10 +821,7 @@ class Model(Serializable):
 
         cost, updates, extra_results, labels_extra_results = self._compile(fast=fast, **kwargs)
 
-        if self.is_classifier():
-            error = T.mean(T.neq(self.output(self._model_input, prob=False), self._model_target))
-        else:
-            error = T.mean(self.error(self._model_input, self._model_target))
+        error = T.mean(self.get_error())
 
         self._labels_result_train = []
         result = [error, cost]
@@ -906,7 +904,7 @@ class Model(Serializable):
         self._info_model['info'] = ''  # Reset info model
         self._info_model['info'] += self._get_spec_model() + '\n'
 
-        self._info_model['info'] += 'Update params:\n' + self.__extract_info([self._update_function]) + '\n'
+        self._info_model['info'] += 'Update params:\n' + self.__extract_info([self._update_functions[0]]) + '\n'
 
         self._info_model['info'] += 'Cost functions:\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
 
@@ -1125,8 +1123,8 @@ class Model(Serializable):
                 del self._reg_function_list[j]
                 self.reset_compile()
 
-    def set_update(self, fun_update, name, **kwargs):
-        """ Adds an extra item in the cost function.
+    def append_update(self, fun_update, name, **kwargs):
+        """ Adds an extra update function.
 
         Parameters
         ----------
@@ -1139,7 +1137,35 @@ class Model(Serializable):
         **kwargs
             Extra parameters of update function.
         """
-        self._update_function = (fun_update, name, kwargs)
+        if self._update_functions is None:
+            self._update_functions = [None]
+
+        self._update_functions.append((fun_update, name, kwargs))
+
+    def set_update(self, fun_update, name, **kwargs):
+        """ Sets a update function.
+
+        Parameters
+        ----------
+        fun_update : theano.function
+            Function of update parameters of models.
+
+        name : str
+            This string identify regularization function, is useful for plot metrics.
+
+        **kwargs
+            Extra parameters of update function.
+        """
+        if self._update_functions is None:
+            self._update_functions = [(fun_update, name, kwargs)]
+        else:
+            self._update_functions[0] = (fun_update, name, kwargs)
+
+    def get_error(self):
+        if self.is_classifier():
+            return T.neq(self.output(self._model_input, prob=False), self._model_target)
+        else:
+            return self.error(self._model_input, self._model_target)
 
     def get_cost(self):
         """ Get cost function.
@@ -1229,7 +1255,7 @@ class Model(Serializable):
         """
         return [l for _, l, _ in self._score_function_list['list']]
 
-    def get_update_function(self, cost):
+    def get_update_function(self, cost, error):
         """ Gets dict for update model parameters.
 
         Parameters
@@ -1242,7 +1268,14 @@ class Model(Serializable):
         OrderedDict
             A dictionary mapping each parameter to its update expression.
         """
-        return self._update_function[0](cost, self._params, **self._update_function[2])
+        updates = OrderedDict()
+        for i, f in enumerate(self._update_functions):
+            if i == 0:
+                fu = f[0](cost, self._params, **f[2])
+            else:
+                fu = f[0](error, **f[2])
+            updates.update(fu)
+        return updates
 
     def score(self, _input, _target):
         """ Gets score prediction.

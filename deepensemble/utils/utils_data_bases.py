@@ -1,4 +1,4 @@
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_breast_cancer
 from sklearn.datasets.mldata import fetch_mldata
 from scipy.sparse import csr_matrix
 
@@ -6,7 +6,7 @@ import theano
 import collections
 import numpy as np
 
-__all__ = ['load_data', 'load_data_iris', 'mackey_glass', 'mso', 'lorentz',
+__all__ = ['load_data', 'load_data_iris', 'mackey_glass', 'mso', 'lorentz', 'load_data_cancer',
            'jacobs', 'friendman',
            'add_noise']
 
@@ -71,6 +71,26 @@ def load_data_iris():
     classes_labels = iris.target_names
 
     return data_input, data_target, classes_labels, 'Iris'
+
+
+def load_data_cancer(normalize=True):
+    """ Load data Iris.
+
+    Returns
+    -------
+    tuple
+        Returns a tuple with data as follow:
+        (input data, target data, labels classes, name data base)
+    """
+    data = load_breast_cancer()
+    data_input = np.asarray(data.data, dtype=theano.config.floatX)
+    data_target = data.target_names[data.target]
+    classes_labels = data.target_names
+
+    if normalize:
+        data_input = (data_input - np.mean(data_input, axis=0)) / np.var(data_input, axis=0)
+
+    return data_input, data_target, classes_labels, 'Breast Cancer', data.DESCR, data.feature_names
 
 
 # ===============================================================================
