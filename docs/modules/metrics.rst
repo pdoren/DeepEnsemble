@@ -60,3 +60,14 @@ Pairwise metrics
 .. autofunction:: double_fault_measure
 .. autofunction:: kappa_statistic
 .. autofunction:: q_statistic
+
+Non Pairwise metrics
+--------------------
+
+.. autofunction:: kohavi_wolpert_variance
+.. autofunction:: interrater_agreement
+.. autofunction:: entropy_cc
+.. autofunction:: entropy_sk
+.. autofunction:: coincident_failure
+.. autofunction:: difficulty
+.. autofunction:: generalized_diversity

@@ -111,7 +111,7 @@ for get_ensemble, name in list_ensemble:
                                                          folds=folds, **args_train)
 
             scores.append(best_score)
-            data[_p] = {'model': model, 'metrics': metrics, 'list_score': list_score}
+            data[_p] = {'list_score': list_score}
             Logger().log_enable()
 
         scores = np.array(scores)

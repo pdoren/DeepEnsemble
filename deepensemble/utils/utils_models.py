@@ -10,6 +10,14 @@ __all__ = ["mlp_classification",
            "ensemble_classification", "ensembleCIP_classification", "ensembleNCL_classification"]
 
 
+def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
+    Logger().log_disable()
+    for net in _ensemble.get_models():
+        net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
+        net.load_params(net0.save_params())
+        net0.reset()
+    Logger().log_enable()
+
 def mlp_classification(name,
                        input_train, classes_labels,
                        n_neurons,
@@ -69,14 +77,6 @@ def ensembleCIP_classification(name,
                               lr=min(0.1, 5 * lr))
     net0.compile(fast=True)
     Logger().log_enable()
-
-    def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
-        Logger().log_disable()
-        for net in _ensemble.get_models():
-            net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
-            net.load_params(net0.save_params())
-            net0.reset()
-        Logger().log_enable()
 
     ensemble.set_pre_training(proc_pre_training=_proc_pre_training,
                               params={'net0': net0, 'batch_size': batch_size, 'max_epoch': max_epoch})
