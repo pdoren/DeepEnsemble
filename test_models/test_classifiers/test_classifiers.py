@@ -1,25 +1,26 @@
 import matplotlib.pylab as plt
 
-from deepensemble.models import EnsembleModel
 from deepensemble.utils.cost_functions import mse
 from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import *
-from deepensemble.utils import Logger, score_ensemble_ambiguity, test_models, plot_scores_classifications
+from deepensemble.utils import cross_validation_score, ITLFunctions
 
 
-def test_classifiers(name_db, input_train, target_train, input_test, target_test, classes_labels,
+def test_classifiers(name_db, data_input, data_target, classes_labels,
                      only_cip=False,
-                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, bias_layer=False,
+                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss,
+                     bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                     folds=5, lr=0.01, training=True, max_epoch=300, batch_size=40):
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
-                  'improvement_threshold': 0.995, 'update_sets': True}
+                     folds=10, test_size=0.1, lr=0.01, max_epoch=300, batch_size=40):
+
+    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False, 'test_size': test_size,
+                  'improvement_threshold': 0.995, 'update_sets': True, 'no_update_best_parameters': False}
 
     #############################################################################################################
     # Define Parameters nets
     #############################################################################################################
 
-    n_features = input_train.shape[1]
+    n_features = data_input.shape[1]
     n_classes = len(classes_labels)
 
     n_output = n_classes
@@ -38,7 +39,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< Ensemble        >==============================================================================
     ensemble = ensemble_classification(name='Ensamble',
-                                       input_train=input_train,
+                                       n_feature=n_features,
                                        classes_labels=classes_labels,
                                        n_ensemble_models=n_ensemble_models,
                                        n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
@@ -49,9 +50,10 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = ensembleCIP_classification(name='Ensamble CIP',
-                                             input_train=input_train, classes_labels=classes_labels,
+                                             n_feature=n_features, classes_labels=classes_labels,
                                              n_ensemble_models=n_ensemble_models,
                                              n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                             kernel=kernel,
                                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                              beta=beta_cip, lamb=lamb_cip, s=s, bias_layer= bias_layer, lr=lr)
 
@@ -59,7 +61,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = ensembleNCL_classification(name='Ensamble NCL',
-                                             input_train=input_train,
+                                             input_train=n_features,
                                              classes_labels=classes_labels,
                                              n_ensemble_models=n_ensemble_models,
                                              n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
@@ -70,7 +72,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< MLP MSE  >======================================================================================
     netMLP = mlp_classification("MLP (%d neuronas)" % n_neurons_ensemble_per_models,
-                                input_train, classes_labels,
+                                n_features, classes_labels,
                                 n_neurons_ensemble_per_models,
                                 fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                 cost=mse, name_cost="MSE", lr=lr)
@@ -79,7 +81,7 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = mlp_classification("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_ensemble_per_models),
-                                    input_train, classes_labels,
+                                    n_features, classes_labels,
                                     n_ensemble_models * n_neurons_ensemble_per_models,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     cost=mse, name_cost="MSE", lr=lr)
@@ -91,52 +93,16 @@ def test_classifiers(name_db, input_train, target_train, input_test, target_test
 
     plt.style.use('ggplot')
 
-    # ============================================================================================================
-    # Compile models and define extra score functions  >==========================================================
-
-    if training:  # compile only if training models
-        Logger().reset()
-        for model in models:
-            # Extra Scores
-            if isinstance(model, EnsembleModel):
-                model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
-
-            # Compile
-            model.compile(fast=False)
-
-        Logger().save_buffer('info_%s_compile.txt' % name_db)
-
     #############################################################################################################
     #
     #  TRAINING ALL MODELS
     #
     #############################################################################################################
 
-    #l = ensembleCIP.get_models()[0].get_layers()[2]
-    #print('%g\n' % l.get_b().eval())
+    path_db = name_db + '/'
 
-    if training:
-        # Training Models >======================================================================================
-        # noinspection PyUnusedLocal
-        data_models = test_models(models=models,
-                                  input_train=input_train, target_train=target_train,
-                                  input_test=input_test, target_test=target_test,
-                                  folds=folds, name_db=name_db, save_file=True, **args_train)
-    else:
-        # Load Data
-        _dir = name_db + '/'
-        for model in models:
-            name = model.get_name()
-            model.load(_dir + '%s/%s_classifier.pkl' % (name, name))
+    # noinspection PyUnusedLocal
+    scores = cross_validation_score(models, data_input, data_target,
+                                    folds=folds, path_db=path_db, **args_train)
 
-    #############################################################################################################
-    #
-    #  PLOT DATA CLASSIFIERS
-    #
-    #############################################################################################################
-
-    plot_scores_classifications(models, input_train, target_train, input_test, target_test, classes_labels)
-
-    #print('%g\n' % l.get_b().eval())
-
-    plt.show()
+    return scores

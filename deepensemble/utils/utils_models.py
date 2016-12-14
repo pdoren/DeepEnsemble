@@ -1,7 +1,8 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, cip_full
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, cip_synergy2, cip_full
 from .regularizer_functions import L2
 from .logger import Logger
+from .utils_functions import ITLFunctions
 
 from ..combiner import PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
@@ -13,13 +14,13 @@ __all__ = ["mlp_classification",
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
     Logger().log_disable()
     for net in _ensemble.get_models():
+        net0.reset()
         net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
         net.load_params(net0.save_params())
-        net0.reset()
     Logger().log_enable()
 
 def mlp_classification(name,
-                       input_train, classes_labels,
+                       n_feature, classes_labels,
                        n_neurons,
                        fn_activation1, fn_activation2,
                        bias_layer=False,
@@ -28,7 +29,7 @@ def mlp_classification(name,
     from ..layers.utils_layers import BiasLayer
 
     n_output = len(classes_labels)
-    n_inputs = input_train.shape[1]
+    n_inputs = n_feature
 
     net = Sequential(name, "classifier", classes_labels)
     net.add_layer(Dense(n_input=n_inputs, n_output=n_neurons, activation=fn_activation1))
@@ -42,7 +43,7 @@ def mlp_classification(name,
 
 
 def ensemble_classification(name,
-                            input_train, classes_labels,
+                            n_feature, classes_labels,
                             n_ensemble_models, n_neurons_ensemble_per_models,
                             fn_activation1, fn_activation2,
                             bias_layer=False,
@@ -50,7 +51,7 @@ def ensemble_classification(name,
     ensemble = EnsembleModel(name=name)
     for i in range(n_ensemble_models):
         net = mlp_classification("net%d" % (i + 1),
-                                 input_train, classes_labels,
+                                 n_feature, classes_labels,
                                  n_neurons_ensemble_per_models,
                                  fn_activation1, fn_activation2,
                                  bias_layer=bias_layer,
@@ -63,14 +64,14 @@ def ensemble_classification(name,
 
 
 def ensembleCIP_classification(name,
-                               input_train, classes_labels,
+                               n_feature, classes_labels,
                                n_ensemble_models, n_neurons_ensemble_per_models,
                                fn_activation1, fn_activation2,
-                               beta=0.9, lamb=0.9, s=None, bias_layer=True,
+                               beta=0.9, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, bias_layer=True,
                                batch_size=40, max_epoch=300,
                                lr=0.01):
     ensemble = ensemble_classification(name,
-                                       input_train,
+                                       n_feature,
                                        classes_labels,
                                        n_ensemble_models, n_neurons_ensemble_per_models,
                                        fn_activation1, fn_activation2,
@@ -79,10 +80,10 @@ def ensembleCIP_classification(name,
 
     Logger().log_disable()
     net0 = mlp_classification("net0",
-                              input_train, classes_labels,
+                              n_feature, classes_labels,
                               n_neurons_ensemble_per_models,
                               fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                              lr=min(0.1, lr))
+                              lr=min(0.1, 5 * lr))
     net0.compile(fast=True)
     Logger().log_enable()
 
@@ -91,16 +92,16 @@ def ensembleCIP_classification(name,
 
     for net in ensemble.get_models():
         net.delete_cost('MSE')
-        net.append_cost(cip_relevancy, name="CIP Relevancy", s=s)
+        net.append_cost(cip_relevancy, name="CIP Relevancy", s=s, kernel=kernel)
         net.set_update(sgd, name="SGD", learning_rate=lr)
 
     ensemble.set_combiner(PluralityVotingCombiner())
 
     if beta != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s)
+        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s, kernel=kernel)
 
     if lamb != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s)
+        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, kernel=kernel)
 
     return ensemble
 

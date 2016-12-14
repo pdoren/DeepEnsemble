@@ -42,7 +42,7 @@ class Logger(Singleton):
         self.log_activate = True
         self.tic = []
         self.buffer = ""
-        self.fold = 0
+        self.fold = [0]
 
     def reset(self):
         """ Reset intern parameters.
@@ -50,7 +50,7 @@ class Logger(Singleton):
         """
         self.tic = []
         self.buffer = ""
-        self.fold = 0
+        self.fold[-1] = 0
 
     def log_enable(self):
         """ Enable print on console.
@@ -182,12 +182,16 @@ class Logger(Singleton):
 
         it = range(0, max_epoch)
         count = len(it)
-        self.fold += 1
-        prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
         size = 20
         tic = time.time()
 
+        self.fold[-1] += 1
+
         def _show(_i):
+            if _i == 0:
+                self.fold.append(1)
+
+            prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold[-1])
             postfix = "| error: %.4f, score: %.4f / %.4f" % (
                 model.get_train_error(), model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
@@ -203,6 +207,7 @@ class Logger(Singleton):
             yield item
             _show(i + 1)
         self.write("\n")
+        self.fold.pop()
 
     def progressbar_training2(self, it, model):
         """ Show a progressbar (it is necessary called for increment counter).
@@ -221,12 +226,16 @@ class Logger(Singleton):
             Returns a iterator each time is called.
         """
         count = len(it)
-        self.fold += 1
-        prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold)
         size = 20
         tic = time.time()
 
+        self.fold[-1] += 1
+
         def _show(_i):
+            if _i == 0:
+                self.fold.append(1)
+
+            prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold[-1])
             postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
             toc = time.time()
@@ -241,6 +250,7 @@ class Logger(Singleton):
             yield item
             _show(i + 1)
         self.write("\n")
+        self.fold.pop()
 
     def progressbar(self, it, prefix="", postfix="", end="", size=20):
         """ Show a progressbar (it is necessary called for increment counter).

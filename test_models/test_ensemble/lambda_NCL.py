@@ -70,7 +70,7 @@ def get_ensemble_ncl(_name, _lamb, fast=True):
 
 def get_ensemble_cip(_name, _lamb, fast=True):
     ensemble = ensembleCIP_classification(name=_name,
-                                          input_train=input_train, classes_labels=classes_labels,
+                                          n_feature=input_train, classes_labels=classes_labels,
                                           n_ensemble_models=n_ensemble_models,
                                           n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
                                           fn_activation1=ActivationFunctions.tanh,

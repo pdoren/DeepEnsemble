@@ -22,4 +22,4 @@ test_classifiers(name_db, input_train, target_train, input_test, target_test, cl
                  only_cip=True,
                  lamb_ncl=0.6, beta_cip=0, lamb_cip=0, s=0.1,
                  fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                 folds=1, lr=0.02, training=True, max_epoch=500, batch_size=40)
+                 folds=1, lr=0.02, reset_files=True, max_epoch=500, batch_size=40)

@@ -755,8 +755,8 @@ class Model(Serializable):
                     if validation_cost < best_validation_cost * improvement_threshold:
                         patience = max(patience, iteration * patience_increase)
 
-                    best_params = self.save_params()
                     best_validation_cost = validation_cost
+                    best_params = self.save_params()
 
             if early_stop and patience <= iteration:
                 Logger().log()

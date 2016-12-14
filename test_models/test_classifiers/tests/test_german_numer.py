@@ -23,4 +23,4 @@ test_classifiers(name_db, input_train, target_train, input_test, target_test, cl
                  only_cip=True,
                  lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2,
                  fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                 folds=5, lr=0.01, training=True, max_epoch=300, batch_size=40)
+                 folds=5, lr=0.01, reset_files=True, max_epoch=300, batch_size=40)

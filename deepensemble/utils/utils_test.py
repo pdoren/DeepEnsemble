@@ -1,14 +1,17 @@
 import os
 import numpy as np
-from sklearn.metrics import *
 import matplotlib.pylab as plt
+from sklearn.metrics import *
+from sklearn import cross_validation
 from sklearn.neighbors.kde import KernelDensity
+from sklearn.cross_validation import KFold
 
 from ..metrics import *
 from ..models import *
 from .logger import *
+from ..utils import *
 
-__all__ = ['test_models', 'test_model',
+__all__ = ['cross_validation_score', 'test_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
            'plot_pdf']
@@ -125,19 +128,77 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
     return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
 
-def test_models(models, input_train, target_train, input_test, target_test,
-                folds, name_db='', save_file=True, **kwargs):
-    """ Test models.
-    """
-    data_models = []
+def cross_validation_score(models, data_input, data_target,
+                           folds=10, path_db='', seed=13, test_size=0.3, **kwargs):
 
+    Logger().reset()
+
+
+    # Generate data models
+    models_data = []
+    list_data_training_models = {}
     for _model in models:
-        Logger().reset()
-        _dir = name_db + '/' + _model.get_name() + '/'
-        data_models.append(testing_model(_dir, _model, input_train, target_train, input_test, target_test,
-                                         folds=folds, save_file=save_file, **kwargs))
+        _dir =  path_db +  _model.get_name() + '/'
+        make_dirs(_dir)
+        file_model = _dir + 'model.pkl'
+        if not os.path.exists(file_model):
+            # Extra Scores
+            if isinstance(model, EnsembleModel):
+                _model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
+            # Compile
+            _model.compile(fast=False)
+            # Save model
+            _model.save(file_model)
+        else:
+            # Load model
+            Logger().log('Load Model: %s' % file_model)
+            _model.load(file_model)
 
-    return data_models
+        models_data.append((_model, _dir))
+        list_data_training_models[_model.get_name()] = []
+
+    Logger().reset()
+    Logger().log_enable()
+    # kf = KFold(n_folds=folds)
+    for fold in range(folds):
+        Logger().log('Fold: %d' % (fold + 1))
+        file_sets_fold = path_db + 'sets_fold_%d.pkl' % fold
+        if not os.path.exists(file_sets_fold):
+            # Generate testing and training sets
+            input_train, input_test, target_train, target_test = \
+                cross_validation.train_test_split(data_input, data_target, test_size=test_size,
+                                                  stratify=data_target, random_state=seed)
+            sets_data = Serializable((input_train, input_test, target_train, target_test))
+            sets_data.save(file_sets_fold)
+        else:
+            # Load sets
+            Logger().log('Load sets: %s' % file_sets_fold)
+            sets_data = Serializable()
+            sets_data.load(file_sets_fold)
+            input_train, input_test, target_train, target_test = sets_data.get_data()
+
+        for (_model, _dir) in models_data:
+
+            file_model_fold = _dir + 'data_fold_%d.pkl' % fold
+            if not os.path.exists(file_model_fold):
+                metric = _model.fit(input_train, target_train, **kwargs)
+                # Compute metrics
+                score_train = metric.append_prediction(input_train, target_train)
+                score_test = metric.append_prediction(input_test, target_test, append_last_pred=True)
+                s_data = Serializable((score_train, score_test, metric, _model.save_params()))
+                s_data.save(file_model_fold)
+                # Reset parameters
+                _model.reset()
+            else:
+                # Load sets
+                Logger().log('Load file: %s' % file_model_fold)
+                s_data = Serializable()
+                s_data.load(file_model_fold)
+                score_train, score_test, _, _ = s_data.get_data()
+
+            list_data_training_models[_model.get_name()].append((score_train, score_test))
+
+    return list_data_training_models
 
 
 def show_info_model(_model):

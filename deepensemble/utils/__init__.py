@@ -11,3 +11,4 @@ from .utils_data_bases import *
 from .utils_test import *
 from .utils_plot import *
 from .utils_models import *
+from .utils_functions import *
