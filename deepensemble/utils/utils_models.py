@@ -1,5 +1,5 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, cip_synergy2, cip_full
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy
 from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions
@@ -67,6 +67,7 @@ def ensembleCIP_classification(name,
                                n_feature, classes_labels,
                                n_ensemble_models, n_neurons_ensemble_per_models,
                                fn_activation1, fn_activation2,
+                               dist='CS',
                                beta=0.9, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, bias_layer=True,
                                batch_size=40, max_epoch=300,
                                lr=0.01):
@@ -92,16 +93,18 @@ def ensembleCIP_classification(name,
 
     for net in ensemble.get_models():
         net.delete_cost('MSE')
-        net.append_cost(cip_relevancy, name="CIP Relevancy", s=s, kernel=kernel)
+        net.append_cost(cip_relevancy, name="CIP Relevancy", s=s, kernel=kernel, dist=dist)
         net.set_update(sgd, name="SGD", learning_rate=lr)
 
     ensemble.set_combiner(PluralityVotingCombiner())
 
     if beta != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s, kernel=kernel)
+        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta,
+                                   s=s, kernel=kernel, dist=dist)
 
     if lamb != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, kernel=kernel)
+        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb,
+                                   s=s, kernel=kernel, dist=dist)
 
     return ensemble
 

@@ -6,7 +6,7 @@ __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'neg_correntropy', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
            'itakura_saito', 'neg_mee', 'neg_klg', 'cauchy_schwarz_divergence',
-           'cip_relevancy', 'cip_redundancy', 'cip_synergy', 'cip_synergy2', 'cip_full']
+           'cip_relevancy', 'cip_redundancy', 'cip_synergy', 'cip_full']
 
 eps = 0.00001
 sqrt2 = 1.41421356237
@@ -304,7 +304,7 @@ def neg_log_likelihood(model, _input, _target):
     return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 
-def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
     """ Cross Information Potential between model output and target.
 
     Parameters
@@ -333,7 +333,12 @@ def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gau
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    return ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s)
+    if dist == 'CS':
+        return T.log(ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s))
+    elif dist == 'ED':
+        return -ITLFunctions.mutual_information_ed([om, _target], kernel, sqrt2 * s)
+    else:
+        raise ValueError('the distance must be CS or ED.')
 
 
 ############################################################################################################
@@ -486,7 +491,7 @@ def neg_klg(model, _input, _target, ensemble, lamb=0.5):
     return -lamb * T.sum((pt + eps) * (T.log(pt + eps) - T.log(pp + eps)) - pt + pp)
 
 
-def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
     """ Cross Information Potential Diversity.
 
     Parameters
@@ -525,13 +530,19 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
     for _model in ensemble.get_models():
         if _model is not model:
             om_k = _model.output(_input)
-            cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
-            redundancy.append(cip2)
+            if dist == 'CS':
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+                redundancy.append(T.log(cip2))
+            elif dist == 'ED':
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
+                redundancy.append(-I2)
+            else:
+                raise ValueError('the distance must be CS or ED.')
 
-    return -beta * np.prod(redundancy)
+    return -beta * np.sum(redundancy)
 
 
-def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
     """ Cross Information Potential Synergy.
 
     Parameters
@@ -567,60 +578,21 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
 
     synergy = []
     om = model.output(_input)
-    # oe = ensemble.output(_input)
     for _model in ensemble.get_models():
         if _model is not model:
             om_k = _model.output(_input)
-            cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
-            cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
-            synergy.append(cip2 / cip3)
+            if dist == 'CS':
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
+                synergy.append(T.log(cip2) - T.log(cip3))
+            elif dist == 'ED':
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
+                I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], kernel, s)
+                synergy.append(-I2 + I3)
+            else:
+                raise ValueError('the distance must be CS or ED.')
 
-    return lamb * np.prod(synergy)
-
-
-def cip_synergy2(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss):
-    """ Cross Information Potential Synergy.
-
-    Parameters
-    ----------
-    model : theano.tensor.matrix
-        Current model that one would want to calculate the cost.
-
-    _input : theano.tensor.matrix
-        Input sample.
-
-    _target : theano.tensor.matrix
-        Target sample.
-
-    ensemble : EnsembleModel
-        Ensemble.
-
-    lamb : float
-        Ratio.
-
-    s : float
-        Size of Kernel.
-
-    kernel : callable
-        Kernel for compute divergence.
-
-    Returns
-    -------
-    theano.tensor.matrix
-        Return Cross Information Potential Diversity.
-    """
-    if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
-
-    synergy2 = []
-    om = model.output(_input)
-    for _model in ensemble.get_models():
-        if _model is not model:
-            om_k = _model.output(_input)
-            cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
-            synergy2.append(cip3)
-
-    return -lamb * np.prod(synergy2)
+    return lamb * np.sum(synergy)
 
 
 def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kernel_gauss):

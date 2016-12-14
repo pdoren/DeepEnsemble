@@ -14,7 +14,7 @@ from ..utils import *
 __all__ = ['cross_validation_score', 'test_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
-           'plot_pdf']
+           'plot_pdf', 'make_dirs']
 
 
 def make_dirs(_dir):
@@ -132,8 +132,6 @@ def cross_validation_score(models, data_input, data_target,
                            folds=10, path_db='', seed=13, test_size=0.3, **kwargs):
 
     Logger().reset()
-
-
     # Generate data models
     models_data = []
     list_data_training_models = {}

@@ -334,6 +334,26 @@ class ITLFunctions:
 
         return V_c
 
+    @staticmethod
+    def mutual_information_ed(Y, kernel, s):
+        DY = []
+        for y in Y:
+            dy = T.tile(y, (y.shape[0], 1, 1))
+            dy = dy - T.transpose(dy, axes=(1, 0, 2))
+            DY.append(dy)
+
+        DYK = [kernel(dy, s) for dy in DY]
+
+        V_J = T.mean(np.prod(DYK))
+
+        V_k = [T.mean(dyk) for dyk in DYK]
+
+        V_nc = T.mean(np.prod([T.mean(dyk, axis=1) for dyk in DYK]))
+
+        V_M = np.prod(V_k)
+
+        return V_J - 2 * V_nc + V_M
+
 
 class DiversityFunctions:
     """ Static class with useful diversity functions (Ensembles diversity).

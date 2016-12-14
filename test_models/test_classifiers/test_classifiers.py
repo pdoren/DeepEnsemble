@@ -8,7 +8,7 @@ from deepensemble.utils import cross_validation_score, ITLFunctions
 
 def test_classifiers(name_db, data_input, data_target, classes_labels,
                      only_cip=False,
-                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss,
+                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
                      bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      folds=10, test_size=0.1, lr=0.01, max_epoch=300, batch_size=40):
@@ -53,7 +53,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                              n_feature=n_features, classes_labels=classes_labels,
                                              n_ensemble_models=n_ensemble_models,
                                              n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
-                                             kernel=kernel,
+                                             kernel=kernel, dist=dist,
                                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                              beta=beta_cip, lamb=lamb_cip, s=s, bias_layer= bias_layer, lr=lr)
 
