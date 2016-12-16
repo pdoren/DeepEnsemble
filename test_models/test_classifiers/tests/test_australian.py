@@ -21,11 +21,12 @@ s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eva
 
 # 10-Cross Validation (sets: 90% train 10% test)
 scores = test_classifiers(name_db, data_input, data_target, classes_labels,
-                         only_cip=False,
-                         lamb_ncl=0.6, beta_cip=0.4, lamb_cip=0, s=None, bias_layer=False, dist='ED',
+                          is_binary=False, early_stop=False,
+                          only_cip=False, n_ensemble_models=3,
+                          lamb_ncl=0.6, beta_cip=0.3, lamb_cip=0, s=s, bias_layer=False, dist='CS',
                           kernel=ITLFunctions.kernel_gauss,
-                         fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                         folds=1, test_size=0.1, lr=0.02, max_epoch=500, batch_size=40)
+                          fn_activation1=ActivationFunctions.sigmoid, fn_activation2=ActivationFunctions.softmax,
+                          folds=10, test_size=0.1, lr=0.01, max_epoch=500, batch_size=40)
 r_score = {}
 for s in scores:
     d = scores[s]

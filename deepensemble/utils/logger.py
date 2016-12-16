@@ -52,6 +52,9 @@ class Logger(Singleton):
         self.buffer = ""
         self.fold[-1] = 0
 
+    def is_log_activate(self):
+        return self.log_activate
+
     def log_enable(self):
         """ Enable print on console.
 

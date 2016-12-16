@@ -1,5 +1,5 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, kullback_leibler_generalized
 from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions
@@ -12,12 +12,14 @@ __all__ = ["mlp_classification",
 
 
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
+    state_log = Logger().is_log_activate()
     Logger().log_disable()
     for net in _ensemble.get_models():
         net0.reset()
         net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
         net.load_params(net0.save_params())
-    Logger().log_enable()
+    if state_log:
+        Logger().log_enable()
 
 def mlp_classification(name,
                        n_feature, classes_labels,
@@ -44,7 +46,7 @@ def mlp_classification(name,
 
 def ensemble_classification(name,
                             n_feature, classes_labels,
-                            n_ensemble_models, n_neurons_ensemble_per_models,
+                            n_ensemble_models, n_neurons_model,
                             fn_activation1, fn_activation2,
                             bias_layer=False,
                             cost=mse, name_cost="MSE", lr=0.01):
@@ -52,7 +54,7 @@ def ensemble_classification(name,
     for i in range(n_ensemble_models):
         net = mlp_classification("net%d" % (i + 1),
                                  n_feature, classes_labels,
-                                 n_neurons_ensemble_per_models,
+                                 n_neurons_model,
                                  fn_activation1, fn_activation2,
                                  bias_layer=bias_layer,
                                  cost=cost, name_cost=name_cost, lr=lr)
@@ -65,7 +67,7 @@ def ensemble_classification(name,
 
 def ensembleCIP_classification(name,
                                n_feature, classes_labels,
-                               n_ensemble_models, n_neurons_ensemble_per_models,
+                               n_ensemble_models, n_neurons_models,
                                fn_activation1, fn_activation2,
                                dist='CS',
                                beta=0.9, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, bias_layer=True,
@@ -74,7 +76,7 @@ def ensembleCIP_classification(name,
     ensemble = ensemble_classification(name,
                                        n_feature,
                                        classes_labels,
-                                       n_ensemble_models, n_neurons_ensemble_per_models,
+                                       n_ensemble_models, n_neurons_models,
                                        fn_activation1, fn_activation2,
                                        bias_layer= bias_layer,
                                        lr=lr)
@@ -82,9 +84,9 @@ def ensembleCIP_classification(name,
     Logger().log_disable()
     net0 = mlp_classification("net0",
                               n_feature, classes_labels,
-                              n_neurons_ensemble_per_models,
+                              n_neurons_models,
                               fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                              lr=min(0.1, 5 * lr))
+                              lr=min(0.1, 5 * lr), cost=kullback_leibler_generalized, name_cost='KLG')
     net0.compile(fast=True)
     Logger().log_enable()
 
@@ -112,13 +114,13 @@ def ensembleCIP_classification(name,
 def ensembleNCL_classification(name,
                                input_train,
                                classes_labels,
-                               n_ensemble_models, n_neurons_ensemble_per_models,
+                               n_ensemble_models, n_neurons_models,
                                fn_activation1, fn_activation2,
                                lamb=0.6, lr=0.01, lamb_L2=0):
     ensemble = ensemble_classification(name,
                                        input_train,
                                        classes_labels,
-                                       n_ensemble_models, n_neurons_ensemble_per_models,
+                                       n_ensemble_models, n_neurons_models,
                                        fn_activation1, fn_activation2,
                                        lr=lr)
 

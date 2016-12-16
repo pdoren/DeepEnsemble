@@ -59,7 +59,7 @@ def get_ensemble_ncl(_name, _lamb, fast=True):
                                           input_train=input_train,
                                           classes_labels=classes_labels,
                                           n_ensemble_models=n_ensemble_models,
-                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          n_neurons_models=n_neurons_ensemble_per_models,
                                           fn_activation1=ActivationFunctions.tanh,
                                           fn_activation2=ActivationFunctions.sigmoid,
                                           lamb=_lamb, lr=lr)
@@ -72,7 +72,7 @@ def get_ensemble_cip(_name, _lamb, fast=True):
     ensemble = ensembleCIP_classification(name=_name,
                                           n_feature=input_train, classes_labels=classes_labels,
                                           n_ensemble_models=n_ensemble_models,
-                                          n_neurons_ensemble_per_models=n_neurons_ensemble_per_models,
+                                          n_neurons_models=n_neurons_ensemble_per_models,
                                           fn_activation1=ActivationFunctions.tanh,
                                           fn_activation2=ActivationFunctions.sigmoid,
                                           beta=_lamb, lr=lr)

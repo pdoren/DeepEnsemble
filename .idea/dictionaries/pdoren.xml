@@ -88,6 +88,7 @@
       <w>vmax</w>
       <w>vmin</w>
       <w>wolpert</w>
+      <w>xlabel</w>
       <w>xmax</w>
       <w>xmin</w>
       <w>xscale</w>
@@ -97,6 +98,7 @@
       <w>yscale</w>
       <w>zeiler</w>
       <w>zhou</w>
+      <w>zlabel</w>
     </words>
   </dictionary>
 </component>

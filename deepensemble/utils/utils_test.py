@@ -14,7 +14,7 @@ from ..utils import *
 __all__ = ['cross_validation_score', 'test_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
-           'plot_pdf', 'make_dirs']
+           'plot_pdf', 'make_dirs', 'get_scores']
 
 
 def make_dirs(_dir):
@@ -127,8 +127,25 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
 
     return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
+def get_scores(_model, file_model_fold, input_train, target_train, input_test, target_test, **kwargs):
+    if not os.path.exists(file_model_fold):
+        metric = _model.fit(input_train, target_train, **kwargs)
+        # Compute metrics
+        score_train = metric.append_prediction(input_train, target_train)
+        score_test = metric.append_prediction(input_test, target_test, append_last_pred=True)
+        s_data = Serializable((score_train, score_test, metric, _model.save_params()))
+        s_data.save(file_model_fold)
+    else:
+        # Load sets
+        Logger().log('Load file: %s' % file_model_fold)
+        s_data = Serializable()
+        s_data.load(file_model_fold)
+        score_train, score_test, _, _ = s_data.get_data()
 
-def cross_validation_score(models, data_input, data_target,
+    return score_train, score_test
+
+
+def cross_validation_score(models, data_input, data_target, _compile=True,
                            folds=10, path_db='', seed=13, test_size=0.3, **kwargs):
 
     Logger().reset()
@@ -144,7 +161,8 @@ def cross_validation_score(models, data_input, data_target,
             if isinstance(model, EnsembleModel):
                 _model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
             # Compile
-            _model.compile(fast=False)
+            if _compile:
+                _model.compile(fast=False)
             # Save model
             _model.save(file_model)
         else:
@@ -178,22 +196,8 @@ def cross_validation_score(models, data_input, data_target,
         for (_model, _dir) in models_data:
 
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
-            if not os.path.exists(file_model_fold):
-                metric = _model.fit(input_train, target_train, **kwargs)
-                # Compute metrics
-                score_train = metric.append_prediction(input_train, target_train)
-                score_test = metric.append_prediction(input_test, target_test, append_last_pred=True)
-                s_data = Serializable((score_train, score_test, metric, _model.save_params()))
-                s_data.save(file_model_fold)
-                # Reset parameters
-                _model.reset()
-            else:
-                # Load sets
-                Logger().log('Load file: %s' % file_model_fold)
-                s_data = Serializable()
-                s_data.load(file_model_fold)
-                score_train, score_test, _, _ = s_data.get_data()
-
+            score_train, score_test = get_scores(_model, file_model_fold,
+                                                 input_train, target_train, input_test, target_test, **kwargs)
             list_data_training_models[_model.get_name()].append((score_train, score_test))
 
     return list_data_training_models

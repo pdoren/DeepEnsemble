@@ -466,6 +466,15 @@ class Model(Serializable):
         else:
             return len(self._cost_function_list['list']) + len(self._reg_function_list) + 2
 
+    def set_name(self, name):
+        """ Setter name.
+
+        Returns
+        -------
+        None
+        """
+        self._name = name
+
     def get_name(self):
         """ Getter name.
 
@@ -674,7 +683,7 @@ class Model(Serializable):
         else:
             return fun_eval(_input, _target, 1.0)
 
-    def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.20,
+    def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.1,
             no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Function for training sequential model.
 

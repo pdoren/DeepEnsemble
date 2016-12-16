@@ -1,4 +1,5 @@
 import theano.tensor as T
+from theano import config
 import numpy as np
 from .utils_functions import ITLFunctions
 
@@ -519,7 +520,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
 
     Returns
     -------
-    theano.tensor.matrix
+    theano.tensor.matrix or float
         Return Cross Information Potential Diversity.
     """
     if s is None:
@@ -527,7 +528,15 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
 
     redundancy = []
     om = model.output(_input)
+    not_arrive = True
     for _model in ensemble.get_models():
+        # jump until get current model
+        if not_arrive and _model is not model:
+            continue
+        else:
+            not_arrive = False
+
+        # compute relevancy from next model
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
@@ -539,8 +548,10 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
             else:
                 raise ValueError('the distance must be CS or ED.')
 
-    return -beta * np.sum(redundancy)
-
+    if len(redundancy) > 0:
+        return -beta * np.sum(redundancy)
+    else:
+        return T.constant(0.0, dtype=config.floatX)
 
 def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
     """ Cross Information Potential Synergy.
@@ -578,7 +589,15 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
 
     synergy = []
     om = model.output(_input)
+    not_arrive = True
     for _model in ensemble.get_models():
+        # jump until get current model
+        if not_arrive and _model is not model:
+            continue
+        else:
+            not_arrive = False
+
+        # compute relevancy from next model
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
@@ -592,7 +611,10 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
             else:
                 raise ValueError('the distance must be CS or ED.')
 
-    return lamb * np.sum(synergy)
+    if len(synergy) > 0:
+        return lamb * np.sum(synergy)
+    else:
+        return T.constant(0.0, dtype=config.floatX)
 
 
 def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kernel_gauss):
