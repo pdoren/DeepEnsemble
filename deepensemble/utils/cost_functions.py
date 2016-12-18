@@ -91,7 +91,7 @@ def itakura_saito(model, _input, _target):
     return T.sum((pt + eps) / (pp + eps) - (T.log(pt + eps) - T.log(pp + eps)) - 1)
 
 
-def cauchy_schwarz_divergence(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
+def cauchy_schwarz_divergence(model, _input, _target):
     """ Cauchy Schwarz divergence.
 
     Parameters
@@ -118,15 +118,8 @@ def cauchy_schwarz_divergence(model, _input, _target, s=None, kernel=ITLFunction
     """
     pt = _target
     pp = model.output(_input)
-    if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    e = pt - pp
-    Kij = ITLFunctions.information_potential(e - T.mean(e), kernel, sqrt2 * s)
-    Kii = ITLFunctions.information_potential(pt - T.mean(pt), kernel, sqrt2 * s)
-    Kjj = ITLFunctions.information_potential(pp - T.mean(pp), kernel, sqrt2 * s)
-
-    return -2 * T.log(Kij + eps) + T.log(Kii + eps) + T.log(Kjj + eps)
+    return -2 * T.log(T.sum(pp * pt) + eps) + T.log(T.sum(pp * pp) + eps) + T.log(T.sum(pt * pt) + eps)
 
 
 def kullback_leibler_generalized(model, _input, _target):

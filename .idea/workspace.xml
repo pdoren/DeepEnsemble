@@ -2,36 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_regresion/test_regression.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_regresion/test_regresion.py" afterPath="$PROJECT_DIR$/test_models/test_regresion/test_regresion_v1.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/pdoren.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/geometriccombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/geometriccombiner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" afterPath="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" afterPath="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" afterPath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/sequential.py" afterPath="$PROJECT_DIR$/deepensemble/models/sequential.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/wrapper.py" afterPath="$PROJECT_DIR$/deepensemble/models/wrapper.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_a1a.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_a1a.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_cancer.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_cancer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_diabetes.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_diabetes.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_german_numer.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_german_numer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_w1a.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_w1a.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/lambda_CIP.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/lambda_CIP.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/lambda_NCL.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/lambda_NCL.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_models.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons_vs_models.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons_vs_models.py" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -91,13 +63,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="lambda_CIP.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lambda_CIP.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/lambda_CIP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1590">
+            <state relative-caret-position="-1815">
               <caret line="74" column="44" selection-start-line="74" selection-start-column="44" selection-end-line="74" selection-end-column="44" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cost_functions.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="116" column="41" selection-start-line="116" selection-start-column="41" selection-end-line="116" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -173,7 +157,6 @@
         <option value="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons_vs_models.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
         <option value="$PROJECT_DIR$/test_models/test_regresion/test_regression.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" />
         <option value="$PROJECT_DIR$/deepensemble/combiner/geometriccombiner.py" />
         <option value="$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py" />
@@ -195,6 +178,7 @@
         <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_w1a.py" />
         <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_a1a.py" />
         <option value="$PROJECT_DIR$/test_models/test_ensemble/lambda_CIP.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
       </list>
     </option>
   </component>
@@ -308,7 +292,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
+              <option name="myItemId" value="deepensemble" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -322,29 +306,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
+              <option name="myItemId" value="deepensemble" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test_ensemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_classifiers" />
+              <option name="myItemId" value="utils" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -792,13 +758,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00062" summary="Fixed inspect error typo in Weight Average Combiner (PEP8).">
-      <created>1474245608254</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1474245608255</updated>
-    </task>
     <task id="LOCAL-00063" summary="Changed content LICENCE (MIT).">
       <created>1474246682639</created>
       <option name="number" value="00063" />
@@ -1135,7 +1094,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481855335511</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="Changed models and training of Ensemble CIPL (changed CIP to Kullback Leibler)&#10;Changed test models.&#10;&#10;">
+      <created>1482046335648</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1482046335648</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1191,7 +1157,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32447553" sideWeight="0.4404591" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19010043" sideWeight="0.5167364" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29090908" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2733142" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2733142" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26853147" sideWeight="0.5215208" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18938307" sideWeight="0.50104386" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32447553" sideWeight="0.46628407" order="1" side_tool="false" content_ui="tabs" />
@@ -1237,7 +1203,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added useful function for data base and testing model in utils.&#10;Changed some warning (inspector and PEP8)&#10;" />
     <MESSAGE value="Added Serializable Class.&#10;Fixed some errors in Wrapper model.&#10;" />
     <MESSAGE value="Added docstring for new classes and functions.&#10;" />
     <MESSAGE value="Updated rst files from the docs.&#10;" />
@@ -1262,7 +1227,8 @@
     <MESSAGE value="Fixed some issues in logger and models.&#10;&#10;" />
     <MESSAGE value="Added  Mutual Information compute with Euclidean distance.&#10;&#10;" />
     <MESSAGE value="Fixed CIP functions.&#10;&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed CIP functions.&#10;&#10;" />
+    <MESSAGE value="Changed models and training of Ensemble CIPL (changed CIP to Kullback Leibler)&#10;Changed test models.&#10;&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed models and training of Ensemble CIPL (changed CIP to Kullback Leibler)&#10;Changed test models.&#10;&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1637,16 +1603,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-255">
-          <caret line="93" column="4" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/metrics/basemetrics.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -1749,10 +1705,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/lambda_CIP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1590">
+        <state relative-caret-position="-1815">
           <caret line="74" column="44" selection-start-line="74" selection-start-column="44" selection-end-line="74" selection-end-column="44" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="116" column="41" selection-start-line="116" selection-start-column="41" selection-end-line="116" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
