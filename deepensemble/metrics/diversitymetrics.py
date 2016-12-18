@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['oracle', 'contingency_table',
+__all__ = ['oracle', 'contingency_table', 'fails_dist',
            # pairwise
            'disagreement_measure', 'double_fault_measure', 'q_statistic',
            'correlation_coefficient', 'kappa_statistic',
@@ -14,6 +14,7 @@ Different metrics for compute diversity
 """
 
 eps = 0.0000001
+
 
 #
 # Utils
@@ -253,6 +254,7 @@ def kappa_statistic(y, c1, c2):
     theta2 = ((a + b) * (a + c) + (c + d) * (b + d)) / (m * m)
     return (theta1 - theta2) / (1 - theta2)
 
+
 #
 # Non-PairwiseMeasures
 #
@@ -282,7 +284,8 @@ def kohavi_wolpert_variance(y, classifiers):
     T = classifiers.shape[0]
     I = [oracle(y, c) for c in classifiers]  # indicator function
     d = np.sum(I, axis=0)  # is the number of individual classifiers that classify correctly.
-    return np.mean(d * (T - d)) / (T**2)
+    return np.mean(d * (T - d)) / (T ** 2)
+
 
 def interrater_agreement(y, classifiers):
     """ Interrater agreement.
@@ -311,6 +314,7 @@ def interrater_agreement(y, classifiers):
     d = np.sum(I, axis=0)  # is the number of individual classifiers that classify correctly.
     p = np.mean(I)
     return 1 - ((np.mean(d * (T - d))) / (T * (T - 1) * p * (1 - p) + eps))
+
 
 def entropy_cc(y, classifiers):
     """ Entropy Cuningham and Carney [2000].
@@ -366,6 +370,17 @@ def entropy_sk(y, classifiers):
     d = np.sum(I, axis=0)  # is the number of individual classifiers that classify correctly.
     _min = np.min((d, T - d), axis=0)
     return 2 * np.mean(_min) / (T - 1)
+
+
+def fails_dist(y, classifiers):
+    T = classifiers.shape[0]
+    I = [oracle(y, c) for c in classifiers]  # indicator function
+    pi = []
+    fail = T - np.sum(I, axis=0)
+    for i in range(T + 1):
+        ff = np.sum(fail == i)
+        pi.append(ff)
+    return pi
 
 
 def prY(y, classifiers):
@@ -490,7 +505,7 @@ def test_non_pairwise():
            John Wiley & Sons, 2004.
     """
 
-    ys = np.array( [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    ys = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
     Cs = np.array([[1, 1, 1, 0, 1, 0, 0, 0, 0, 0],
                    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])

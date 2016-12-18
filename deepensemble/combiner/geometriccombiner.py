@@ -1,5 +1,5 @@
 from .modelcombiner import ModelCombiner
-from ..utils import *
+from ..utils import translate_output
 import numpy as np
 import theano.tensor as T
 

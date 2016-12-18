@@ -1,5 +1,5 @@
 from .model import Model
-from ..metrics import *
+from ..metrics import ClassifierMetrics, RegressionMetrics
 from ..utils.utils_classifiers import translate_output
 
 __all__ = ['Sequential']

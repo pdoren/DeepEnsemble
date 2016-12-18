@@ -8,21 +8,19 @@ from deepensemble.utils.utils_test import make_dirs
 from deepensemble.utils.utils_functions import ActivationFunctions
 from theano import shared
 from sklearn import cross_validation
-from collections import defaultdict
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import matplotlib.pyplot as plt
 from matplotlib.mlab import griddata
+from scipy.interpolate import griddata as griddata2
 
 
-SEED = 13
 plt.style.use('ggplot')
 
 #############################################################################################################
 # Load Data
 #############################################################################################################
 data_input, data_target, classes_labels, name_db, desc, col_names = \
-    load_data('germannumer_scale', data_home='../data')
+    load_data('germannumer_scale', data_home='../data', normalize=False)
 
 #############################################################################################################
 # Define Parameters nets
@@ -37,18 +35,16 @@ n_inputs = n_features
 fn_activation = ActivationFunctions.sigmoid
 
 n_ensemble_models = 3
-n_neurons = (n_output + n_inputs) // 2
+n_neurons_model = (n_output + n_inputs)
 
-n_neurons_models = n_neurons // n_ensemble_models
-
-lr = 0.02
+lr = 0.01
 
 #############################################################################################################
 # Define Parameters training
 #############################################################################################################
 
 # 10-Cross Validation, 300 epoch and 40 size mini-batch
-args_train = {'max_epoch': 300, 'batch_size': 40, 'early_stop': True,
+args_train = {'max_epoch': 300, 'batch_size': 40, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True}
 
 
@@ -58,18 +54,22 @@ s_beta = shared(np.cast['float32'](0))
 s_lambda = shared(np.cast['float32'](0))
 s_sigma = shared(np.cast['float32'](0))
 
-ensemble = ensembleCIP_classification(name='ensemble',
-                                      n_feature=n_features, classes_labels=classes_labels,
-                                      n_ensemble_models=n_ensemble_models,
-                                      n_neurons_models=n_neurons_models,
-                                      fn_activation1=ActivationFunctions.tanh,
-                                      fn_activation2=ActivationFunctions.sigmoid,
-                                      beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr)
+ensemble = get_ensembleCIP_model(name='Ensamble CIP',
+                                n_input=n_features, n_output=n_output,
+                                n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                classification=True,
+                                classes_labels=classes_labels,
+                                fn_activation1=fn_activation, fn_activation2=fn_activation,
+                                kernel=ITLFunctions.kernel_gauss, dist='CS',
+                                beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
+                                params_update={'learning_rate': lr})
 
 ensemble.compile(fast=True)
+default_params_ensemble = ensemble.save_params()
 
 def get_ensemble_cip(_name, _beta, _lamb, s):
     ensemble.set_name(_name)
+    ensemble.load_params(default_params_ensemble)
     s_beta.set_value(np.cast['float32'](_beta))
     s_lambda.set_value(np.cast['float32'](_lamb))
     s_sigma.set_value(np.cast['float32'](s))
@@ -105,9 +105,8 @@ Logger().log('Processing %s' % name)
 
 Logger().reset()
 models = []
-folds = 10
+folds = 1
 test_size = 0.1
-seed = 13
 
 for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
     # gets name ensemble
@@ -143,8 +142,7 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
             if not os.path.exists(file_sets_fold):
                 # Generate testing and training sets
                 input_train, input_test, target_train, target_test = \
-                    cross_validation.train_test_split(data_input, data_target, test_size=test_size,
-                                                      stratify=data_target, random_state=seed)
+                    cross_validation.train_test_split(data_input, data_target, test_size=test_size)
                 sets_data = Serializable((input_train, input_test, target_train, target_test))
                 sets_data.save(file_sets_fold)
             else:
@@ -155,7 +153,7 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
                 input_train, input_test, target_train, target_test = sets_data.get_data()
 
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
-            score_train, score_test = get_scores(_model, file_model_fold,
+            score_train, score_test, _ = get_scores(_model, file_model_fold,
                                                  input_train, target_train, input_test, target_test, **args_train)
 
             m_scores.append((score_train, score_test))
@@ -181,13 +179,14 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
     prediction[(b, l, s)] = data['prediction']
 
 
-def get_best_score(_scores, _s):
+def get_best_score(_scores, _s, train=False):
     best_scores = []
     beta = []
     lamb = []
+    i = 0 if train else 1
     for key, value in _scores.items():
         if abs(key[2] - _s) < 0.0001:
-            best_scores.append(np.max(value, axis=0)[1])
+            best_scores.append(np.max(value, axis=0)[i])
             beta.append(key[0])
             lamb.append(key[1])
     return beta, lamb, best_scores
@@ -245,30 +244,39 @@ def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
 
     fig.colorbar(surf, ticks=np.linspace(z_min, z_max, 5))
 
-def plot_graph2(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
+def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
 
-    x = np.linspace(min(X), max(X), 100)
-    y = np.linspace(min(Y), max(Y), 100)
+    x = np.linspace(min(X), max(X), 200)
+    y = np.linspace(min(Y), max(Y), 200)
 
-    zz = griddata(X, Y, Z, x, y, interp='linear')
     xx, yy = np.meshgrid(x, y)
+    # zz = griddata(X, Y, Z, x, y, interp='linear')
+    zz = griddata2((X, Y), Z, (xx, yy), method='cubic')
 
     x = xx.flatten()
     y = yy.flatten()
     z = zz.flatten()
 
     p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())
-    cb = fig.colorbar(p)
-
+    ax.title.set_text(s_title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
-fig, _ = plt.subplots()
-for i, s1 in enumerate(ss):
-    #fig = plt.figure()
-    #ax = fig.gca(projection='3d')
-    ax = plt.subplot(3, 2, i + 1)
-    X, Y, Z = get_mean_score(scores, s1, False)
-    plot_graph2(fig, ax, X, Y, Z, r'$\lambda$', r'$\beta$', r'Accuracy')
+    return p
 
+
+fig, axes = plt.subplots(nrows=3, ncols=2)
+for s1, ax in zip(ss, axes.flat):
+    X, Y, Z = get_best_score(scores, s1, False)
+    ks = (s1 / silverman)
+    if ks == 1:
+        s_title = r'$\sigma=\sigma_s$'
+    else:
+        s_title = r'$\sigma=%.4g\sigma_s$' % (s1/silverman)
+    p = plot_graph2(ax, X, Y, Z, r'$\lambda$', r'$\beta$', r'Accuracy', s_title)
+
+plt.tight_layout()
+fig.subplots_adjust(right=0.8)
+cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+fig.colorbar(p, cax=cbar_ax, ax=axes.ravel().tolist())
 plt.show()

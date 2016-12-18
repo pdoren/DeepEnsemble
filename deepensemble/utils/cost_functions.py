@@ -325,6 +325,9 @@ def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gau
     kernel : callable
         Kernel for compute divergence.
 
+    dist : str
+        This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
+
     Returns
     -------
     theano.tensor.matrix
@@ -518,6 +521,9 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
     kernel : callable
         Kernel for compute divergence.
 
+    dist : str
+        This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
+
     Returns
     -------
     theano.tensor.matrix or float
@@ -553,6 +559,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
     else:
         return T.constant(0.0, dtype=config.floatX)
 
+
 def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
     """ Cross Information Potential Synergy.
 
@@ -578,6 +585,9 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
 
     kernel : callable
         Kernel for compute divergence.
+
+    dist : str
+        This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
 
     Returns
     -------
@@ -652,4 +662,3 @@ def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kerne
     Y.append(_target)
 
     return ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s)
-

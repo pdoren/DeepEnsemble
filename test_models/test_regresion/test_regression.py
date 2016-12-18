@@ -1,24 +1,21 @@
 import matplotlib.pylab as plt
 
-from deepensemble.utils.cost_functions import mse, kullback_leibler_generalized
+from deepensemble.utils.cost_functions import *
 from deepensemble.utils.utils_functions import ActivationFunctions
-from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model,\
-    get_ensembleNCL_model, get_mlp_model
+from deepensemble.utils.utils_models import *
 from deepensemble.utils import cross_validation_score, ITLFunctions
 
 
 def test_classifiers(name_db, data_input, data_target, classes_labels,
                      factor_number_neurons=0.75,
                      is_binary=False, early_stop=True, no_update_best_parameters=False,
-                     only_cip=False, n_ensemble_models=4,
-                     lamb_ncl=0.6,
-                     beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
-                     cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
+                     only_cip=False, n_ensemble_models = 4,
+                     lamb_ncl=0.6, beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
                      bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                     folds=10, lr=0.01, max_epoch=300, batch_size=40):
+                     folds=10, test_size=0.1, lr=0.01, max_epoch=300, batch_size=40):
 
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
+    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop, 'test_size': test_size,
                   'improvement_threshold': 0.995, 'update_sets': True,
                   'no_update_best_parameters': no_update_best_parameters}
 
@@ -32,7 +29,9 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     n_output = 1 if is_binary and n_classes == 2 else n_classes
     n_inputs = n_features
 
-    n_neurons_model = int(factor_number_neurons * (n_output + n_inputs))
+    n_neurons = int(0.75 * (n_output + n_inputs))
+
+    n_neurons_model = n_neurons
 
     #############################################################################################################
     # Define Models
@@ -47,8 +46,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                   classification=True,
                                   classes_labels=classes_labels,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                  cost=kullback_leibler_generalized, name_cost="CIP Relevancy",
-                                  params_update={'learning_rate': lr})
+                                  params_cost={'learning_rate': lr})
 
     models.append(ensemble)
 
@@ -60,9 +58,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         classes_labels=classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         kernel=kernel, dist=dist,
-                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
-                                        cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
-                                        params_update={'learning_rate': 0.01})
+                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer= bias_layer, lr=lr)
 
     models.append(ensembleCIP)
 
@@ -73,7 +69,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         classification=True,
                                         classes_labels=classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                        lamb=lamb_ncl, params_update={'learning_rate': lr})
+                                        lamb=lamb_ncl, lr=lr)
 
     models.append(ensembleNCL)
 
@@ -84,7 +80,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                            classification=True,
                            classes_labels=classes_labels,
                            fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
+                           cost=mse, name_cost="MSE", params_cost={'learning_rate': lr})
 
     models.append(netMLP)
 
@@ -95,7 +91,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                classification=True,
                                classes_labels=classes_labels,
                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                               cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
+                               cost=mse, name_cost="MSE", params_cost={'learning_rate': lr})
 
     models.append(netMLP_MAX)
 

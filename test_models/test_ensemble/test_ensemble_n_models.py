@@ -7,7 +7,6 @@ from sklearn import cross_validation
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ActivationFunctions
 
-SEED = 13
 plt.style.use('ggplot')
 
 #############################################################################################################
@@ -16,8 +15,7 @@ plt.style.use('ggplot')
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale', data_home='../data')
 
 input_train, input_test, target_train, target_test = \
-    cross_validation.train_test_split(data_input, data_target, test_size=0.3, stratify=data_target,
-                                      random_state=SEED)
+    cross_validation.train_test_split(data_input, data_target, test_size=0.3)
 
 #############################################################################################################
 # Define Parameters nets
@@ -55,27 +53,27 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Tr
 
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _n_models, fast=True):
-    ensemble = ensembleNCL_classification(name=_name,
-                                          input_train=input_train,
-                                          classes_labels=classes_labels,
-                                          n_ensemble_models=_n_models,
-                                          n_neurons_models=n_neurons_ensemble_per_models,
-                                          fn_activation1=ActivationFunctions.tanh,
-                                          fn_activation2=ActivationFunctions.sigmoid,
-                                          lamb=0.6, lr=lr)
+    ensemble = get_ensembleNCL_model(name=_name,
+                                     n_input=input_train,
+                                     classes_labels=classes_labels,
+                                     n_ensemble_models=_n_models,
+                                     n_neurons_models=n_neurons_ensemble_per_models,
+                                     fn_activation1=ActivationFunctions.tanh,
+                                     fn_activation2=ActivationFunctions.sigmoid,
+                                     lamb=0.6, lr=lr)
     ensemble.compile(fast=fast)
 
     return ensemble
 
 
 def get_ensemble_cip(_name, _n_models, fast=True):
-    ensemble = ensembleCIP_classification(name=_name,
-                                          n_feature=input_train, classes_labels=classes_labels,
-                                          n_ensemble_models=_n_models,
-                                          n_neurons_models=n_neurons_ensemble_per_models,
-                                          fn_activation1=ActivationFunctions.tanh,
-                                          fn_activation2=ActivationFunctions.sigmoid,
-                                          beta=0.3, lr=5 * lr)
+    ensemble = get_ensembleCIP_model(name=_name,
+                                     n_input=input_train, classes_labels=classes_labels,
+                                     n_ensemble_models=_n_models,
+                                     n_neurons_models=n_neurons_ensemble_per_models,
+                                     fn_activation1=ActivationFunctions.tanh,
+                                     fn_activation2=ActivationFunctions.sigmoid,
+                                     beta=0.3, lr=5 * lr)
     ensemble.compile(fast=fast)
 
     return ensemble

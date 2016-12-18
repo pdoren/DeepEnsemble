@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, mean_squared_error
 import matplotlib.pylab as plt
 from collections import OrderedDict
 from ..utils.serializable import Serializable
-from ..utils.utils_plot import *
+from ..utils.utils_plot import add_point, add_data, plot_data, plot_list_data
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 

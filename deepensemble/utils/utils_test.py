@@ -1,15 +1,14 @@
 import os
-import numpy as np
-import matplotlib.pylab as plt
-from sklearn.metrics import *
-from sklearn import cross_validation
-from sklearn.neighbors.kde import KernelDensity
-from sklearn.cross_validation import KFold
 
-from ..metrics import *
-from ..models import *
-from .logger import *
-from ..utils import *
+import matplotlib.pylab as plt
+import numpy as np
+from sklearn.cross_validation import StratifiedKFold
+from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
+from sklearn.neighbors.kde import KernelDensity
+
+from ..metrics import FactoryMetrics
+from ..models import Model, EnsembleModel
+from ..utils import Logger, Serializable, score_ensemble_ambiguity
 
 __all__ = ['cross_validation_score', 'test_model',
            'plot_hist_train_test',
@@ -127,6 +126,7 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
 
     return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
+
 def get_scores(_model, file_model_fold, input_train, target_train, input_test, target_test, **kwargs):
     if not os.path.exists(file_model_fold):
         metric = _model.fit(input_train, target_train, **kwargs)
@@ -140,25 +140,23 @@ def get_scores(_model, file_model_fold, input_train, target_train, input_test, t
         Logger().log('Load file: %s' % file_model_fold)
         s_data = Serializable()
         s_data.load(file_model_fold)
-        score_train, score_test, _, _ = s_data.get_data()
+        score_train, score_test, metric, _ = s_data.get_data()
 
-    return score_train, score_test
-
+    return score_train, score_test, metric
 
 def cross_validation_score(models, data_input, data_target, _compile=True,
-                           folds=10, path_db='', seed=13, test_size=0.3, **kwargs):
-
+                           folds=10, path_db='', **kwargs):
     Logger().reset()
     # Generate data models
     models_data = []
     list_data_training_models = {}
     for _model in models:
-        _dir =  path_db +  _model.get_name() + '/'
+        _dir = path_db + _model.get_name() + '/'
         make_dirs(_dir)
         file_model = _dir + 'model.pkl'
         if not os.path.exists(file_model):
             # Extra Scores
-            if isinstance(model, EnsembleModel):
+            if isinstance(_model, EnsembleModel):
                 _model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
             # Compile
             if _compile:
@@ -175,15 +173,14 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
 
     Logger().reset()
     Logger().log_enable()
-    # kf = KFold(n_folds=folds)
-    for fold in range(folds):
+    skf = StratifiedKFold(data_target, n_folds=folds)
+    for fold, (train_index, test_index) in enumerate(skf):
         Logger().log('Fold: %d' % (fold + 1))
         file_sets_fold = path_db + 'sets_fold_%d.pkl' % fold
         if not os.path.exists(file_sets_fold):
             # Generate testing and training sets
             input_train, input_test, target_train, target_test = \
-                cross_validation.train_test_split(data_input, data_target, test_size=test_size,
-                                                  stratify=data_target, random_state=seed)
+                data_input[train_index], data_input[test_index], data_target[train_index], data_target[test_index]
             sets_data = Serializable((input_train, input_test, target_train, target_test))
             sets_data.save(file_sets_fold)
         else:
@@ -194,11 +191,11 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
             input_train, input_test, target_train, target_test = sets_data.get_data()
 
         for (_model, _dir) in models_data:
-
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
-            score_train, score_test = get_scores(_model, file_model_fold,
+            score_train, score_test, metric = get_scores(_model, file_model_fold,
                                                  input_train, target_train, input_test, target_test, **kwargs)
-            list_data_training_models[_model.get_name()].append((score_train, score_test))
+
+            list_data_training_models[_model.get_name()].append((score_train, score_test, metric))
 
     return list_data_training_models
 

@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 from .model import Model
 from .wrapper import Wrapper
-from ..metrics import *
+from ..metrics import FactoryMetrics, EnsembleClassifierMetrics, EnsembleRegressionMetrics
 from ..utils import Logger, score_accuracy, score_rms
 
 __all__ = ['EnsembleModel']
@@ -461,7 +461,7 @@ class EnsembleModel(Model):
 
         return metrics
 
-    def __fit_bagging(self, _input, _target, seeds=None, ratio_bootstrap=0.9, **kwargs):
+    def __fit_bagging(self, _input, _target, ratio_bootstrap=0.9, **kwargs):
         """ Train the Ensemble with Bagging algorithm.
 
         Parameters
@@ -486,10 +486,6 @@ class EnsembleModel(Model):
         metrics = FactoryMetrics().get_metric(self)
         Logger().log('Bagging train ', flush=True)
 
-        M = self.get_num_models()
-        if seeds is None or len(seeds) < M:
-            seeds = [i * 13 for i in range(M)]
-
         N = len(_input)
 
         n_bootstrap = int(ratio_bootstrap * N)
@@ -499,7 +495,7 @@ class EnsembleModel(Model):
             Logger().log_disable()
 
             # Generate bootstrap
-            rns = np.random.RandomState(seeds[i])
+            rns = np.random.RandomState()
             index_bootstrap = rns.randint(0, N, n_bootstrap)
 
             # Training model

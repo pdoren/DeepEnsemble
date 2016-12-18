@@ -4,8 +4,10 @@ import matplotlib.pylab as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
-from .basemetrics import *
-from .diversitymetrics import *
+from .diversitymetrics import fails_dist
+from .basemetrics import BaseMetrics, EnsembleMetrics
+from .diversitymetrics import correlation_coefficient, kappa_statistic, q_statistic,\
+    double_fault_measure, disagreement_measure, generalized_diversity
 from ..utils import Logger
 
 __all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics']
@@ -204,6 +206,24 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
     def __init__(self, model):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 
+    def get_fails(self):
+        list_classifiers = []
+        for _model in self._model.get_models():
+            list_classifiers.append(self._y_pred_per_model[_model.get_name()])
+
+        list_classifiers = np.array(list_classifiers)
+        data = []
+        for i, target in enumerate(self._y_true_per_model):
+            data += [fails_dist(target, list_classifiers[:, i, :])]
+        return np.mean(data, axis=0), np.std(data, axis=0)
+
+    def get_diversity(self, metric=generalized_diversity):
+        list_classifiers = []
+        for _model in self._model.get_models():
+            list_classifiers.append(self._y_pred_per_model[_model.get_name()])
+
+        return self.statistic_metric_non_pairwise(metric, self._y_true_per_model, np.array(list_classifiers))
+
     def diversity_report(self):
         """ Generate diversity report of ensemble model.
 
@@ -243,14 +263,14 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
                 list_c1 = self._y_pred_per_model[model1.get_name()]
                 for model2 in self._model.get_models():
                     list_c2 = self._y_pred_per_model[model2.get_name()]
-                    mean, std = self.statistic_metric(metric, self._y_true_per_model, list_c1, list_c2)
+                    mean, std = self.statistic_metric_pairwise(metric, self._y_true_per_model, list_c1, list_c2)
                     value = "%+.4f +-%.4f" % (mean, std)
                     Logger().log(cell_format2.format(value), end="")
                 Logger().log("")  # new line
             Logger().log("")  # new line
 
     @staticmethod
-    def statistic_metric(metric, list_target, list_c1, list_c2):
+    def statistic_metric_pairwise(metric, list_target, list_c1, list_c2):
         """
 
         Parameters
@@ -275,6 +295,31 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         data = []
         for i, target in enumerate(list_target):
             data += [metric(target, list_c1[i], list_c2[i])]
+        return np.mean(data), np.std(data)
+
+    @staticmethod
+    def statistic_metric_non_pairwise(metric, list_target, list_classifiers):
+        """
+
+        Parameters
+        ----------
+        metric
+            Diversity metric.
+
+        list_target : list or array
+            List of target.
+
+        list_classifiers : list or array
+            Predictions of classifiers.
+
+        Returns
+        -------
+        tuple
+            Returns average between two metric models.
+        """
+        data = []
+        for i, target in enumerate(list_target):
+            data += [metric(target, list_classifiers[:, i, :])]
         return np.mean(data), np.std(data)
 
     def plot_diversity(self, input_test, target_test, prefix='diversity'):

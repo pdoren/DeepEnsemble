@@ -1,11 +1,12 @@
-import numpy as np
-
 from collections import OrderedDict
+
+import numpy as np
 import theano.tensor as T
-from theano import shared, config
-from .layer import Layer
 from theano import config
+from theano import shared
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+
+from .layer import Layer
 
 __all__ = ['MaskLayer', 'NoiseLayer', 'BiasLayer']
 
@@ -214,6 +215,7 @@ class BiasLayer(Layer):
         Parameters of distribution.
     """
 
+    # noinspection PyUnusedLocal
     def __init__(self, net, input_shape=None, **kwargs):
         net.append_update(self.update, 'Update BiasLayer')
         super(BiasLayer, self).__init__(input_shape=input_shape, output_shape=input_shape, exclude_params=True)
@@ -254,7 +256,8 @@ class BiasLayer(Layer):
         theano.tensor
             Returns input plus noise.
         """
+        x = _input
         if _input.ndim > 2:
             x = _input.flatten(2)
 
-        return _input + self._b.dimshuffle('x', 0)
+        return x + self._b.dimshuffle('x', 0)

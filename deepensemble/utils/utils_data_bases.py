@@ -1,6 +1,7 @@
 from sklearn.datasets import load_iris, load_breast_cancer
 from sklearn.datasets.mldata import fetch_mldata
 from scipy.sparse import csr_matrix
+from sklearn.preprocessing import StandardScaler
 
 import theano
 import collections
@@ -36,9 +37,15 @@ def load_data(db_name, classes_labels=None, normalize=True, data_home='data'):
     """
     db = fetch_mldata(db_name, data_home=data_home)
     if isinstance(db.data, csr_matrix):
-        data_input = np.asarray(db.data.todense(), dtype=theano.config.floatX)
+        data_input = db.data.todense()
     else:
-        data_input = np.asarray(db.data, dtype=theano.config.floatX)
+        data_input = db.data
+
+    if normalize:
+        scaler = StandardScaler()
+        scaler.fit(data_input)
+        data_input = scaler.transform(data_input)
+    data_input = np.asarray(data_input, dtype=theano.config.floatX)
 
     if hasattr(db, 'target_names'):
         classes_labels = db.target_names
@@ -49,9 +56,6 @@ def load_data(db_name, classes_labels=None, normalize=True, data_home='data'):
     classes_labels = np.asarray(classes_labels, dtype='<U10')
     db.target[db.target == -1] = 0
     data_target = classes_labels[np.asarray(db.target, dtype=int)]
-
-    if normalize:
-        data_input = (data_input - np.mean(data_input, axis=0)) / np.var(data_input, axis=0)
 
     return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
 
@@ -83,12 +87,15 @@ def load_data_cancer(normalize=True):
         (input data, target data, labels classes, name data base)
     """
     data = load_breast_cancer()
-    data_input = np.asarray(data.data, dtype=theano.config.floatX)
     data_target = data.target_names[data.target]
     classes_labels = data.target_names
 
+    data_input = data.data
     if normalize:
-        data_input = (data_input - np.mean(data_input, axis=0)) / np.var(data_input, axis=0)
+        scaler = StandardScaler()
+        scaler.fit(data_input)
+        data_input = scaler.transform(data_input)
+    data_input = np.asarray(data_input, dtype=theano.config.floatX)
 
     return data_input, data_target, classes_labels, 'Breast Cancer', data.DESCR, data.feature_names
 

@@ -11,7 +11,8 @@ from ..metrics import FactoryMetrics
 from ..utils import Logger, score_accuracy, score_rms
 from ..utils.serializable import Serializable
 from ..utils.update_functions import sgd
-from ..utils.utils_classifiers import *
+from ..utils.utils_classifiers import get_index_label_classes,\
+    translate_binary_target, translate_output, translate_target
 
 __all__ = ['Model']
 
@@ -962,7 +963,7 @@ class Model(Serializable):
 
         if self.is_classifier():
             input_train, input_valid, target_train, target_valid = \
-                cross_validation.train_test_split(_input, _target, test_size=valid_size, stratify=_target)
+                cross_validation.train_test_split(_input, _target, stratify=_target, test_size=valid_size)
             target_train = self.translate_target(_target=target_train)
             target_valid = self.translate_target(_target=target_valid)
         else:
@@ -1149,6 +1150,7 @@ class Model(Serializable):
         if self._update_functions is None:
             self._update_functions = [None]
 
+        # noinspection PyTypeChecker
         self._update_functions.append((fun_update, name, kwargs))
 
     def set_update(self, fun_update, name, **kwargs):
@@ -1271,6 +1273,9 @@ class Model(Serializable):
         ----------
         cost : theano.tensor.TensorVariable
             Cost function.
+
+        error : theano.tensor.TensorVariable
+            Error prediction (computed between output model and target).
 
         Returns
         -------
