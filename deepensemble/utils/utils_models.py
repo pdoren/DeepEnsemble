@@ -89,11 +89,20 @@ def get_ensembleCIP_model(name,
                           classes_labels=None,
                           classification=False,
                           dist='CS',
-                          beta=0.9, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, bias_layer=True,
+                          beta=0.9, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, bias_layer=False,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                          pre_training=False):
+                          pre_training=False, is_relevancy=False):
+
+    cost_models = kullback_leibler_generalized
+    name_cost_models = 'KLG'
+    params_cost_models = {}
+    if is_relevancy:
+        cost_models = cip_relevancy
+        name_cost_models = 'CIP Relevancy'
+        params_cost_models = {'s': s, 'kernel': kernel, 'dist': dist}
+
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
                                   n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_models,
@@ -101,8 +110,8 @@ def get_ensembleCIP_model(name,
                                   classes_labels=classes_labels,
                                   classification=classification,
                                   bias_layer=bias_layer,
-                                  cost=kullback_leibler_generalized, name_cost="CIP Relevancy",
-                                  # params_cost={'s': s, 'kernel': kernel, 'dist': dist},
+                                  cost=cost_models, name_cost=name_cost_models,
+                                  params_cost=params_cost_models,
                                   update=update, name_update=name_update, params_update=params_update)
 
     if pre_training:

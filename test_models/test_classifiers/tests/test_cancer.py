@@ -1,13 +1,13 @@
+import os
+
+import numpy as np
+import pandas as pd
+from theano import shared
+
 from deepensemble.utils import load_data_cancer, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from deepensemble.utils.cost_functions import mse
 from test_models.test_classifiers.test_classifiers import test_classifiers
-
-import os
-import pandas as pd
-import numpy as np
-from theano import shared
 
 #############################################################################################################
 # Load Data

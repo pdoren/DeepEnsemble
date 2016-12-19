@@ -1,7 +1,6 @@
 from deepensemble.utils import load_data, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from deepensemble.utils.cost_functions import mse
 from test_models.test_classifiers.test_classifiers import test_classifiers
 
 import os
@@ -30,7 +29,8 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               only_cip=False, n_ensemble_models=3,
                               lamb_ncl=1.0,
-                              beta_cip=0.8, lamb_cip=0.01, s=s, dist='CS',
+                              beta_cip=1.0, lamb_cip=0.1, s=s, dist='CS',
+                              is_relevancy=False, pre_training=False,
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,

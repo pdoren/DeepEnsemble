@@ -14,7 +14,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                      lamb_ncl=0.6,
                      beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
                      cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
-                     bias_layer=False,
+                     bias_layer=False, is_relevancy=False, pre_training=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      folds=10, lr=0.01, max_epoch=300, batch_size=40):
 
@@ -47,10 +47,22 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                   classification=True,
                                   classes_labels=classes_labels,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                  cost=kullback_leibler_generalized, name_cost="CIP Relevancy",
+                                  cost=mse, name_cost="MSE",
                                   params_update={'learning_rate': lr})
 
     models.append(ensemble)
+
+    # ==========< Ensemble        >==============================================================================
+    ensembleKLG = get_ensemble_model(name='Ensamble KLG',
+                                  n_input=n_features, n_output=n_output,
+                                  n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_model,
+                                  classification=True,
+                                  classes_labels=classes_labels,
+                                  fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                  cost=kullback_leibler_generalized, name_cost="KLG",
+                                  params_update={'learning_rate': lr})
+
+    models.append(ensembleKLG)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -61,8 +73,9 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         kernel=kernel, dist=dist,
                                         beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
+                                        is_relevancy=is_relevancy, pre_training=pre_training,
                                         cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
-                                        params_update={'learning_rate': 0.01})
+                                        params_update={'learning_rate': lr})
 
     models.append(ensembleCIP)
 
@@ -88,6 +101,17 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
 
     models.append(netMLP)
 
+    # ==========< MLP KLG  >======================================================================================
+    netMLP_KLG = get_mlp_model("MLP KLG (%d neuronas)" % n_neurons_model,
+                           n_input=n_features, n_output=n_output,
+                           n_neurons=n_neurons_model,
+                           classification=True,
+                           classes_labels=classes_labels,
+                           fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                           cost=kullback_leibler_generalized, name_cost="KLG", params_update={'learning_rate': lr})
+
+    models.append(netMLP_KLG)
+
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
                                n_input=n_features, n_output=n_output,
@@ -98,6 +122,18 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
 
     models.append(netMLP_MAX)
+
+    # ==========< MLP KLG MAX  >==================================================================================
+    netMLP_KLG_MAX = get_mlp_model("MLP KLG (%d neuronas)" % (n_ensemble_models * n_neurons_model),
+                                   n_input=n_features, n_output=n_output,
+                                   n_neurons=n_ensemble_models * n_neurons_model,
+                                   classification=True,
+                                   classes_labels=classes_labels,
+                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                   cost=kullback_leibler_generalized, name_cost="KLG",
+                                   params_update={'learning_rate': lr})
+
+    models.append(netMLP_KLG_MAX)
 
     if only_cip:
         models = [ensembleCIP]

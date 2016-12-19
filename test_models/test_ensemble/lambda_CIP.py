@@ -3,13 +3,13 @@ import os
 import matplotlib.pylab as plt
 import numpy as np
 
-from deepensemble.utils import *
+from deepensemble.utils import get_ensembleCIP_model, Logger, get_index_label_classes, translate_target, get_scores,\
+    Serializable, load_data
 from deepensemble.utils.utils_test import make_dirs
-from deepensemble.utils.utils_functions import ActivationFunctions
+from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from theano import shared
 from sklearn import cross_validation
 from matplotlib import cm
-import matplotlib.pyplot as plt
 from matplotlib.mlab import griddata
 from scipy.interpolate import griddata as griddata2
 
@@ -19,8 +19,9 @@ plt.style.use('ggplot')
 #############################################################################################################
 # Load Data
 #############################################################################################################
+name_data = 'germannumer_scale'
 data_input, data_target, classes_labels, name_db, desc, col_names = \
-    load_data('germannumer_scale', data_home='../data', normalize=False)
+    load_data(name_data, data_home='../data', normalize=False)
 
 #############################################################################################################
 # Define Parameters nets
@@ -267,7 +268,7 @@ def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
 
 fig, axes = plt.subplots(nrows=3, ncols=2)
 for s1, ax in zip(ss, axes.flat):
-    X, Y, Z = get_best_score(scores, s1, False)
+    X, Y, Z = get_mean_score(scores, s1, False)
     ks = (s1 / silverman)
     if ks == 1:
         s_title = r'$\sigma=\sigma_s$'

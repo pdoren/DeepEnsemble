@@ -1,13 +1,13 @@
+import os
+
+import numpy as np
+import pandas as pd
+from theano import shared
+
 from deepensemble.utils import load_data, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from deepensemble.utils.cost_functions import mse
 from test_models.test_classifiers.test_classifiers import test_classifiers
-
-import os
-import pandas as pd
-import numpy as np
-from theano import shared
 
 #############################################################################################################
 # Load Data
@@ -30,7 +30,7 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               only_cip=False, n_ensemble_models=3,
                               lamb_ncl=1.0,
-                              beta_cip=1.0, lamb_cip=0.1, s=s, dist='CS',
+                              beta_cip=1.0, lamb_cip=0.5, s=s, dist='CS',
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
