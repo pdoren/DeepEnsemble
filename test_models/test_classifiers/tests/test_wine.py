@@ -3,7 +3,7 @@ import os
 import numpy as np
 from theano import shared
 
-from deepensemble.utils import load_data, Serializable, kullback_leibler_generalized
+from deepensemble.utils import load_data, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
@@ -11,8 +11,8 @@ from test_models.test_classifiers.test_classifiers import test_classifiers, show
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale',
-                                                                              data_home='../../data', normalize=False)
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('wine',
+                                                                              data_home='../../data', normalize=True)
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
@@ -28,14 +28,13 @@ if not os.path.exists(file_scores):
                               factor_number_neurons=1.0,
                               is_binary=False, early_stop=False,
                               n_ensemble_models=3,
-                              lamb_ncl=0.5,
-                              beta_cip=0.4, lamb_cip=0.2, s=s, dist='CS',
+                              lamb_ncl=1.0,
+                              beta_cip=1.0, lamb_cip=0.5, s=s, dist='CS',
                               beta_cip_kl=8, lamb_cip_kl=2,
-                              cost_cip=kullback_leibler_generalized, name_cost_cip='KLG',
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=500, batch_size=40)
+                              folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

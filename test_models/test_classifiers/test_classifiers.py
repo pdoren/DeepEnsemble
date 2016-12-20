@@ -17,7 +17,9 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                      is_binary=False, early_stop=True, no_update_best_parameters=False,
                      n_ensemble_models=4,
                      lamb_ncl=0.6,
-                     beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
+                     beta_cip=0.6, lamb_cip=0.2,
+                     beta_cip_kl=8.0, lamb_cip_kl=2.0,
+                     s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
                      cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
                      bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
@@ -92,7 +94,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                            fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                            kernel=kernel, dist=dist,
                                            is_relevancy=False,
-                                           beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
+                                           beta=beta_cip_kl, lamb=lamb_cip_kl, s=s, bias_layer=bias_layer, lr=lr_klg,
                                            cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
                                            params_update={'learning_rate': lr_klg})
 
@@ -172,7 +174,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     return scores
 
 
-def show_data(name_db, scores):
+def show_data_classification(name_db, scores):
     plt.style.use('ggplot')
     r_score = {}
     d_diversity = {}
@@ -183,7 +185,7 @@ def show_data(name_db, scores):
             metrics = [t1.get_fails() for _, _, t1 in d_score]
             print(s)
             print(metrics)
-        if "Ensamble CIP" in s:
+        if "Ensamble" in s:
             _model = load_model(name_db, s)
             metrics = EnsembleClassifierMetrics(_model)
             for _, _, metric in d_score:

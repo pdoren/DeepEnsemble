@@ -8,6 +8,7 @@ import collections
 import numpy as np
 
 __all__ = ['load_data', 'load_data_iris', 'mackey_glass', 'mso', 'lorentz', 'load_data_cancer', 'load_ionosphere',
+           'load_data_segment',
            'jacobs', 'friendman',
            'add_noise']
 
@@ -54,10 +55,64 @@ def load_data(db_name, classes_labels=None, normalize=True, data_home='data'):
         classes_labels = ['Class %s' % i for i in set(db.target)]
 
     classes_labels = np.asarray(classes_labels, dtype='<U10')
-    db.target[db.target == -1] = 0
+    if len(classes_labels) > 2:
+        if np.min(db.target) > 0:
+            db.target -= 1
+    else:
+        db.target[db.target == -1] = 0
+
     data_target = classes_labels[np.asarray(db.target, dtype=int)]
 
     return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
+
+
+def load_data_segment(normalize=True, data_home='data'):
+    """ Load segment data set from mldata.org.
+
+    Parameters
+    ----------
+    normalize : bool
+        Flag for indicate if it necessary to normalize the data.
+
+    data_home : str
+        String with path of data bases directory.
+
+    Returns
+    -------
+    tuple
+        Returns a tuple with data as follow:
+        (input data, target data, labels classes, name data base, description data base, list with feature names)
+    """
+    db_name = 'uci 20070111 segment'
+    db = fetch_mldata(db_name, data_home=data_home)
+    if isinstance(db.data, csr_matrix):
+        data_input = db.data.todense()
+    else:
+        data_input = db.data
+
+    if normalize:
+        scaler = StandardScaler()
+        scaler.fit(data_input)
+        data_input = scaler.transform(data_input)
+    data_input = np.asarray(data_input, dtype=theano.config.floatX)
+
+    if hasattr(db, 'target_names'):
+        classes_labels = db.target_names
+
+    if classes_labels is None:
+        classes_labels = ['Class %s' % i for i in set(db.target)]
+
+    classes_labels = np.asarray(classes_labels, dtype='<U10')
+    if len(classes_labels) > 2:
+        if np.min(db.target) > 0:
+            db.target -= 1
+    else:
+        db.target[db.target == -1] = 0
+
+    data_target = classes_labels[np.asarray(db.target, dtype=int)]
+
+    return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
+
 
 def load_ionosphere(classes_labels=None, normalize=True, data_home='data'):
     """ Load data UCI Ionosphere from mldata.org.

@@ -6,7 +6,7 @@ from theano import shared
 from deepensemble.utils import load_data_cancer, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from test_models.test_classifiers.test_classifiers import test_classifiers, show_data
+from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
 
 #############################################################################################################
 # Load Data
@@ -42,4 +42,4 @@ else:
     scores = scores_data.get_data()
 
 
-show_data(name_db, scores)
+show_data_classification(name_db, scores)

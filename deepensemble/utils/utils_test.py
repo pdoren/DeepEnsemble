@@ -5,6 +5,9 @@ import numpy as np
 from sklearn.cross_validation import StratifiedKFold, KFold
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 from sklearn.neighbors.kde import KernelDensity
+from matplotlib import cm
+from matplotlib.mlab import griddata
+from scipy.interpolate import griddata as griddata2
 
 from ..metrics import FactoryMetrics
 from ..models import Model, EnsembleModel
@@ -395,3 +398,88 @@ def plot_pdf(ax, x, label, x_min=-1, x_max=1, n_points=1000):
     x_plot = np.linspace(x_min, x_max, n_points)[:, np.newaxis]
     y = np.exp(kde.score_samples(x_plot))
     ax.plot(x_plot, y / np.sum(y), label=label)
+
+
+def get_best_score(_scores, _s, train=False):
+    best_scores = []
+    beta = []
+    lamb = []
+    i = 0 if train else 1
+    for key, value in _scores.items():
+        if abs(key[2] - _s) < 0.0001:
+            best_scores.append(np.max(value, axis=0)[i])
+            beta.append(key[0])
+            lamb.append(key[1])
+    return beta, lamb, best_scores
+
+
+def get_mean_score(_scores, _s, train=False):
+    best_scores = []
+    beta = []
+    lamb = []
+    i = 0 if train else 1
+    for key, value in _scores.items():
+        if abs(key[2] - _s) < 0.0001:
+            d = np.mean(value, axis=0)
+            best_scores.append(d[i])
+            beta.append(key[0])
+            lamb.append(key[1])
+    return beta, lamb, best_scores
+
+
+def get_mean_diversity(_predictions, _s, train=False):
+    best_scores = []
+    beta = []
+    lamb = []
+    i = 0 if train else 1
+    for key, value in _predictions.items():
+        if abs(key[2] - _s) < 0.0001:
+            d = np.mean(value, axis=0)
+            best_scores.append(d[i])
+            beta.append(key[0])
+            lamb.append(key[1])
+    return beta, lamb, best_scores
+
+
+def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
+
+    x = np.linspace(min(X), max(X), 25)
+    y = np.linspace(min(Y), max(Y), 25)
+
+    zz = griddata(X, Y, Z, x, y, interp='linear')
+    xx, yy = np.meshgrid(x, y)
+
+    x = xx.flatten()
+    y = yy.flatten()
+    z = zz.flatten()
+    z_max = np.max(z)
+    z_min = np.min(z)
+
+    surf = ax.plot_trisurf(x, y, z, cmap=cm.jet, linewidth=0.2)
+    surf.set_clim([z_min, z_max])
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
+    ax.set_zlim(z_min, z_max)
+
+    fig.colorbar(surf, ticks=np.linspace(z_min, z_max, 5))
+
+def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
+
+    x = np.linspace(min(X), max(X), 200)
+    y = np.linspace(min(Y), max(Y), 200)
+
+    xx, yy = np.meshgrid(x, y)
+    zz = griddata2((X, Y), Z, (xx, yy), method='cubic')
+
+    x = xx.flatten()
+    y = yy.flatten()
+    z = zz.flatten()
+
+    p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())
+    ax.title.set_text(s_title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    return p

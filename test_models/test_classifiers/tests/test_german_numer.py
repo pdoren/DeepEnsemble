@@ -6,7 +6,7 @@ from theano import shared
 from deepensemble.utils import load_data, Serializable
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from test_models.test_classifiers.test_classifiers import test_classifiers, show_data
+from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
 
 
 #############################################################################################################
@@ -31,6 +31,7 @@ if not os.path.exists(file_scores):
                               n_ensemble_models=3,
                               lamb_ncl=1.0,
                               beta_cip=1.0, lamb_cip=0.1, s=s, dist='CS',
+                              beta_cip_kl=8.0, lamb_cip_kl=1.0,
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
@@ -43,4 +44,4 @@ else:
     scores = scores_data.get_data()
 
 
-show_data(name_db, scores)
+show_data_classification(name_db, scores)
