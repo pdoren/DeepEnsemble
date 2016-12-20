@@ -1,10 +1,11 @@
 from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, kullback_leibler_generalized
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy,\
+    kullback_leibler_generalized
 from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions, ActivationFunctions
 
-from ..combiner import AverageCombiner, PluralityVotingCombiner, WeightedVotingCombiner, WeightAverageCombiner
+from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
@@ -14,8 +15,8 @@ __all__ = ["get_mlp_model",
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
     state_log = Logger().is_log_activate()
     Logger().log_disable()
+    net0.reset()
     for net in _ensemble.get_models():
-        net0.reset()
         net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
         net.load_params(net0.save_params())
     if state_log:
@@ -93,15 +94,16 @@ def get_ensembleCIP_model(name,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                          pre_training=False, is_relevancy=False):
+                          is_relevancy=True):
 
-    cost_models = kullback_leibler_generalized
-    name_cost_models = 'KLG'
-    params_cost_models = {}
     if is_relevancy:
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': s, 'kernel': kernel, 'dist': dist}
+    else:
+        cost_models = kullback_leibler_generalized
+        name_cost_models = 'KLG'
+        params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
@@ -114,7 +116,12 @@ def get_ensembleCIP_model(name,
                                   params_cost=params_cost_models,
                                   update=update, name_update=name_update, params_update=params_update)
 
-    if pre_training:
+    if classification:
+        ensemble.set_combiner(PluralityVotingCombiner())
+    else:
+        ensemble.set_combiner(AverageCombiner())
+
+    if is_relevancy:
         Logger().log_disable()
         fn_activation3 = fn_activation2
         if cost == kullback_leibler_generalized:
@@ -133,11 +140,6 @@ def get_ensembleCIP_model(name,
 
         ensemble.set_pre_training(proc_pre_training=_proc_pre_training,
                                   params={'net0': net0, 'batch_size': batch_size, 'max_epoch': max_epoch})
-
-    if classification:
-        ensemble.set_combiner(PluralityVotingCombiner())
-    else:
-        ensemble.set_combiner(AverageCombiner())
 
     if beta != 0:
         ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta,

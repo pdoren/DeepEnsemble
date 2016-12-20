@@ -506,13 +506,16 @@ class EnsembleMetrics(BaseMetrics):
             else:
                 self._models_metric[metric._model.get_name()] = metric
 
-    def plot_costs(self, max_epoch, title='Cost', log_xscale=False, log_yscale=False):
+    def plot_costs(self, max_epoch, name=None, title='Cost', log_xscale=False, log_yscale=False):
         """ Generate costs plot.
 
         Parameters
         ----------
         max_epoch : int
             Number of epoch of training.
+
+        name : str
+            Name plot.
 
         title : str
             Plot title of cost.
@@ -523,13 +526,16 @@ class EnsembleMetrics(BaseMetrics):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if name is None:
+            name = self._model.get_name()
+
         costs = {'train': {}, 'test': {}}
         for name_model in self._models_metric:
             model_metric = self._models_metric[name_model]
             for type_set_data in ['train', 'test']:
                 for key in model_metric.get_costs(type_set_data):
                     cost = model_metric.get_costs(type_set_data)[key]
-                    cost[0].set_name(self._model.get_name())
+                    cost[0].set_name(name)
                     if key in self._costs[type_set_data]:
                         costs[type_set_data][key] += cost
                     else:

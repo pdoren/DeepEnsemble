@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
-from sklearn.cross_validation import StratifiedKFold
+from sklearn.cross_validation import StratifiedKFold, KFold
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 from sklearn.neighbors.kde import KernelDensity
 
@@ -10,7 +10,7 @@ from ..metrics import FactoryMetrics
 from ..models import Model, EnsembleModel
 from ..utils import Logger, Serializable, score_ensemble_ambiguity
 
-__all__ = ['cross_validation_score', 'test_model',
+__all__ = ['cross_validation_score', 'test_model', 'load_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
            'plot_pdf', 'make_dirs', 'get_scores']
@@ -145,7 +145,7 @@ def get_scores(_model, file_model_fold, input_train, target_train, input_test, t
     return score_train, score_test, metric
 
 def cross_validation_score(models, data_input, data_target, _compile=True,
-                           folds=10, path_db='', **kwargs):
+                           folds=10, path_db='', classification=True, **kwargs):
     Logger().reset()
     # Generate data models
     models_data = []
@@ -173,7 +173,13 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
 
     Logger().reset()
     Logger().log_enable()
-    skf = StratifiedKFold(data_target, n_folds=folds)
+
+    # K-Cross Validation
+    if classification:
+        skf = StratifiedKFold(data_target, n_folds=folds)
+    else:
+        skf = KFold(len(data_target), n_folds=folds)
+
     for fold, (train_index, test_index) in enumerate(skf):
         Logger().log('Fold: %d' % (fold + 1))
         file_sets_fold = path_db + 'sets_fold_%d.pkl' % fold
@@ -198,6 +204,13 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
             list_data_training_models[_model.get_name()].append((score_train, score_test, metric))
 
     return list_data_training_models
+
+
+def load_model(name_db, name_model):
+    file_model = name_db + '/' + name_model + '/model.pkl'
+    s_model = Serializable()
+    s_model.load(file_model)
+    return s_model.get_data()
 
 
 def show_info_model(_model):

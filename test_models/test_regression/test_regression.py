@@ -9,14 +9,14 @@ from deepensemble.utils import cross_validation_score, ITLFunctions
 
 def test_regression(name_db, data_input, data_target,
                      factor_number_neurons=0.75,
-                     is_binary=False, early_stop=True, no_update_best_parameters=False,
-                     only_cip=False, n_ensemble_models=4,
+                     early_stop=True, no_update_best_parameters=False,
+                     n_ensemble_models=4,
                      lamb_ncl=0.6,
                      beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
                      cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
                      bias_layer=False, is_relevancy=False, pre_training=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                     folds=10, lr=0.01, max_epoch=300, batch_size=40):
+                     folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=300, batch_size=40):
 
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
                   'improvement_threshold': 0.995, 'update_sets': True,
@@ -44,7 +44,7 @@ def test_regression(name_db, data_input, data_target,
                                   classification=False,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   cost=mse, name_cost="MSE",
-                                  params_update={'learning_rate': lr})
+                                  params_update={'learning_rate': lr_mse})
 
     models.append(ensemble)
 
@@ -55,9 +55,9 @@ def test_regression(name_db, data_input, data_target,
                                   classification=False,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   cost=kullback_leibler_generalized, name_cost="KLG",
-                                  params_update={'learning_rate': lr})
+                                  params_update={'learning_rate': lr_klg})
 
-    models.append(ensembleKLG)
+    # models.append(ensembleKLG)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -66,10 +66,10 @@ def test_regression(name_db, data_input, data_target,
                                         classification=False,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         kernel=kernel, dist=dist,
-                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
+                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
                                         is_relevancy=is_relevancy, pre_training=pre_training,
                                         cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
-                                        params_update={'learning_rate': lr})
+                                        params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP)
 
@@ -79,7 +79,7 @@ def test_regression(name_db, data_input, data_target,
                                         n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                         classification=False,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                        lamb=lamb_ncl, params_update={'learning_rate': lr})
+                                        lamb=lamb_ncl, params_update={'learning_rate': lr_mse})
 
     models.append(ensembleNCL)
 
@@ -89,7 +89,7 @@ def test_regression(name_db, data_input, data_target,
                            n_neurons=n_neurons_model,
                            classification=False,
                            fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
+                           cost=mse, name_cost="MSE", params_update={'learning_rate': lr_mse})
 
     models.append(netMLP)
 
@@ -99,9 +99,9 @@ def test_regression(name_db, data_input, data_target,
                            n_neurons=n_neurons_model,
                            classification=False,
                            fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=kullback_leibler_generalized, name_cost="KLG", params_update={'learning_rate': lr})
+                           cost=kullback_leibler_generalized, name_cost="KLG", params_update={'learning_rate': lr_klg})
 
-    models.append(netMLP_KLG)
+    # models.append(netMLP_KLG)
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
@@ -109,7 +109,7 @@ def test_regression(name_db, data_input, data_target,
                                n_neurons=n_ensemble_models * n_neurons_model,
                                classification=False,
                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                               cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
+                               cost=mse, name_cost="MSE", params_update={'learning_rate': lr_mse})
 
     models.append(netMLP_MAX)
 
@@ -120,12 +120,9 @@ def test_regression(name_db, data_input, data_target,
                                    classification=False,
                                    fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                    cost=kullback_leibler_generalized, name_cost="KLG",
-                                   params_update={'learning_rate': lr})
+                                   params_update={'learning_rate': lr_klg})
 
-    models.append(netMLP_KLG_MAX)
-
-    if only_cip:
-        models = [ensembleCIP]
+    # models.append(netMLP_KLG_MAX)
 
     plt.style.use('ggplot')
 
@@ -139,6 +136,6 @@ def test_regression(name_db, data_input, data_target,
 
     # noinspection PyUnusedLocal
     scores = cross_validation_score(models, data_input, data_target,
-                                    folds=folds, path_db=path_db, **args_train)
+                                    folds=folds, path_db=path_db, classification=False, **args_train)
 
     return scores
