@@ -85,10 +85,8 @@ def load_data_segment(normalize=True, data_home='data'):
     """
     db_name = 'uci 20070111 segment'
     db = fetch_mldata(db_name, data_home=data_home)
-    if isinstance(db.data, csr_matrix):
-        data_input = db.data.todense()
-    else:
-        data_input = db.data
+
+    data_input = np.transpose(np.concatenate((np.transpose(db.data), db['double3'], db['int2'], db['target'])))
 
     if normalize:
         scaler = StandardScaler()
@@ -96,21 +94,10 @@ def load_data_segment(normalize=True, data_home='data'):
         data_input = scaler.transform(data_input)
     data_input = np.asarray(data_input, dtype=theano.config.floatX)
 
-    if hasattr(db, 'target_names'):
-        classes_labels = db.target_names
+    data_target = [str(i[0][0]) for i in np.transpose(db['class'])]
 
-    if classes_labels is None:
-        classes_labels = ['Class %s' % i for i in set(db.target)]
-
-    classes_labels = np.asarray(classes_labels, dtype='<U10')
-    if len(classes_labels) > 2:
-        if np.min(db.target) > 0:
-            db.target -= 1
-    else:
-        db.target[db.target == -1] = 0
-
-    data_target = classes_labels[np.asarray(db.target, dtype=int)]
-
+    classes_labels = [i for i in sorted(set(data_target))]
+    data_target = np.asarray(data_target, dtype='<U10')
     return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
 
 

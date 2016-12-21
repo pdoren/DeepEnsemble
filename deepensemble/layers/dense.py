@@ -39,13 +39,16 @@ class Dense(Layer):
         """
         return self.get_fan_out(),
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
+            Flag for changing behavior of some layers.
 
         Returns
         -------

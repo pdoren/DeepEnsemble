@@ -107,13 +107,16 @@ class MaskLayer(Layer):
         self._output_shape = self.__get_output_shape(shape, self.__ratio)
         self.__index = self.__generate_index(self._input_shape, self._output_shape, self.__seed)
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Gets output of model
 
         Parameters
         ----------
         _input : theano.tensor or numpy.array
             Input sample.
+
+        prob : bool
+            Flag for changing behavior of some layers.
 
         Returns
         -------
@@ -243,7 +246,7 @@ class BiasLayer(Layer):
         self._b = shared(np.zeros(shape=self.get_shape_b(), dtype=config.floatX), name='bias', borrow=True)
         self._b.set_value(np.zeros(shape=self.get_shape_b(), dtype=config.floatX))
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Gets output of layer.
 
         Parameters
@@ -251,13 +254,19 @@ class BiasLayer(Layer):
         _input : theano.tensor or numpy.array
             Input sample.
 
+        prob : bool
+            This flag activates bias.
+
         Returns
         -------
         theano.tensor
             Returns input plus noise.
         """
         x = _input
-        if _input.ndim > 2:
-            x = _input.flatten(2)
+        if not prob:
+            if _input.ndim > 2:
+                x = _input.flatten(2)
 
-        return x + self._b.dimshuffle('x', 0)
+            return x + self._b.dimshuffle('x', 0)
+        else:
+            return x

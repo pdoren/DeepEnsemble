@@ -95,7 +95,7 @@ class Sequential(Model):
 
             if self._output[_type]['changed']:
                 for layer in self.__layers:
-                    _input = layer.output(_input)
+                    _input = layer.output(_input, prob)
 
                 self._output[_type]['result'] = _input
 
@@ -110,7 +110,7 @@ class Sequential(Model):
         else:
 
             for layer in self.__layers:
-                _input = layer.output(_input)
+                _input = layer.output(_input, prob)
             _output = _input
 
             if not prob and self.is_classifier():

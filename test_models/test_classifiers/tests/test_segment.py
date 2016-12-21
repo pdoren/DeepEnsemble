@@ -12,7 +12,7 @@ from test_models.test_classifiers.test_classifiers import test_classifiers, show
 # Load Data
 #############################################################################################################
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data_segment(data_home='../../data',
-                                                                                      normalize=False)
+                                                                                      normalize=True)
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
@@ -43,4 +43,4 @@ else:
     scores = scores_data.get_data()
 
 
-show_data_classification(name_db, scores)
+show_data_classification(name_db, scores, 500)

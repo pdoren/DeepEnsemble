@@ -43,13 +43,17 @@ class Layer(Serializable):
         self._non_linearity = non_linearity
         self.__exclude_params = exclude_params
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
 
         Returns
         -------

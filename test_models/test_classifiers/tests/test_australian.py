@@ -44,4 +44,4 @@ else:
     scores = scores_data.get_data()
 
 
-show_data_classification(name_db, scores)
+show_data_classification(name_db, scores, 500)

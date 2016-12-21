@@ -315,7 +315,7 @@ class ITLFunctions:
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
     @staticmethod
-    def cross_information_potential(Y, kernel, s):
+    def cross_information_potential(Y, kernel, s, normalize=True):
         DY = []
         for y in Y:
             dy = T.tile(y, (y.shape[0], 1, 1))
@@ -332,10 +332,13 @@ class ITLFunctions:
 
         V_c = T.power(V_nc, 2) / (V_J * np.prod(V_k))
 
-        return V_c
+        if normalize:
+            return V_c
+        else:
+            return V_nc
 
     @staticmethod
-    def mutual_information_ed(Y, kernel, s):
+    def mutual_information_ed(Y, kernel, s, normalize=True):
         DY = []
         for y in Y:
             dy = T.tile(y, (y.shape[0], 1, 1))
@@ -352,7 +355,10 @@ class ITLFunctions:
 
         V_M = np.prod(V_k)
 
-        return V_J - 2 * V_nc + V_M
+        if normalize:
+            return V_J - 2 * V_nc + V_M
+        else:
+            return V_nc
 
 
 class DiversityFunctions:

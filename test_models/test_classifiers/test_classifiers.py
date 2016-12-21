@@ -69,7 +69,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                      cost=kullback_leibler_generalized, name_cost="KLG",
                                      params_update={'learning_rate': lr_klg})
 
-    models.append(ensembleKLG)
+    # models.append(ensembleKLG)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -98,7 +98,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                            cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
                                            params_update={'learning_rate': lr_klg})
 
-    models.append(ensembleCIP_KL)
+    # models.append(ensembleCIP_KL)
 
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = get_ensembleNCL_model(name='Ensamble NCL',
@@ -132,7 +132,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                cost=kullback_leibler_generalized, name_cost="KLG",
                                params_update={'learning_rate': lr_klg})
 
-    models.append(netMLP_KLG)
+    # models.append(netMLP_KLG)
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
@@ -155,7 +155,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                    cost=kullback_leibler_generalized, name_cost="KLG",
                                    params_update={'learning_rate': lr_klg})
 
-    models.append(netMLP_KLG_MAX)
+    # models.append(netMLP_KLG_MAX)
 
     plt.style.use('ggplot')
 
@@ -174,25 +174,25 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     return scores
 
 
-def show_data_classification(name_db, scores):
+def show_data_classification(name_db, scores, max_epoch):
     plt.style.use('ggplot')
     r_score = {}
     d_diversity = {}
     for s in scores:
         d_score = scores[s]
         d = [(t1, t2) for t1, t2, _ in d_score]
-        if "Ensamble" in s:
+        if "Ensamble CIP" in s:
             metrics = [t1.get_fails() for _, _, t1 in d_score]
             print(s)
             print(metrics)
-        if "Ensamble" in s:
+        if "Ensamble CIP" in s:
             _model = load_model(name_db, s)
             metrics = EnsembleClassifierMetrics(_model)
             for _, _, metric in d_score:
                 metrics.append_metric(metric)
-            metrics.plot_cost(title='Costo %s' % s, max_epoch=300)
-            metrics.plot_costs(name=s, title='Costos %s' % s, max_epoch=300)
-            metrics.plot_scores(title='Desempeño %s' % s, max_epoch=300)
+            metrics.plot_cost(title='Costo %s' % s, max_epoch=max_epoch)
+            metrics.plot_costs(name=s, title='Costos %s' % s, max_epoch=max_epoch)
+            metrics.plot_scores(title='Desempeño %s' % s, max_epoch=max_epoch)
         _mean = np.mean(d, axis=0)
         _std = np.std(d, axis=0)
         max_score = np.max(d, axis=0)

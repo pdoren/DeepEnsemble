@@ -27,7 +27,7 @@ class Dropout(Layer):
         self._input_shape = shape
         self._output_shape = shape
 
-    def output(self, x):
+    def output(self, x, prob=True):
         if self._p <= 0.0 or self._p > 1.0:
             return x
         else:

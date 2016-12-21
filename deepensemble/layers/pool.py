@@ -46,7 +46,7 @@ class PoolBase(Layer):
         self._ignore_border = ignore_border
         self._mode = mode
 
-    def output(self, x):
+    def output(self, x, prob=True):
         raise NotImplementedError
 
     def set_input_shape(self, shape):
@@ -111,13 +111,16 @@ class Pool1D(PoolBase):
 
         self._output_shape = tuple(output_shape)
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
+            Flag for changing behavior of some layers.
 
         Returns
         -------
@@ -185,13 +188,16 @@ class Pool2D(PoolBase):
 
         self._output_shape = tuple(output_shape)
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
+            Flag for changing behavior of some layers.
 
         Returns
         -------

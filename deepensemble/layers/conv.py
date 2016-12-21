@@ -147,13 +147,16 @@ class ConvolutionBase(Layer):
         """
         return self._num_filters,
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
+            No used.
 
         Returns
         -------

@@ -54,7 +54,7 @@ class RecurrentLayer(Layer):
             else self._non_linearity(lin_output)
         )
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
@@ -200,13 +200,16 @@ class LSTMLayer(Layer):
 
         return T.cast(h, dtype=config.floatX), T.cast(c, dtype=config.floatX)
 
-    def output(self, x):
+    def output(self, x, prob=True):
         """ Return output of layers
 
         Parameters
         ----------
         x : theano.tensor.matrix
-            Input sample
+            Input sample.
+
+        prob : bool
+            Flag for changing behavior of some layers.
 
         Returns
         -------
