@@ -241,7 +241,8 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        return T.exp(- T.power(x, 2.0) / (T.constant(2.0) * T.power(s, 2.0))) / (sqrt2pi * s)
+        norm_L2 = T.sum(T.power(x, 2), axis=-1)
+        return T.exp(- norm_L2 / (2.0 * T.power(s, 2))) / (sqrt2pi * s)
 
     @staticmethod
     def silverman(x, N, d):
@@ -314,31 +315,9 @@ class ITLFunctions:
         S = t.shape[1]  # Size vector sample
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
-    @staticmethod
-    def cross_information_potential(Y, kernel, s, normalize=True):
-        DY = []
-        for y in Y:
-            dy = T.tile(y, (y.shape[0], 1, 1))
-            dy = dy - T.transpose(dy, axes=(1, 0, 2))
-            DY.append(dy)
-
-        DYK = [kernel(dy, s) for dy in DY]
-
-        V_J = T.mean(np.prod(DYK))
-
-        V_k = [T.mean(dyk) for dyk in DYK]
-
-        V_nc = T.mean(np.prod([T.mean(dyk, axis=1) for dyk in DYK]))
-
-        V_c = T.power(V_nc, 2) / (V_J * np.prod(V_k))
-
-        if normalize:
-            return V_c
-        else:
-            return V_nc
 
     @staticmethod
-    def mutual_information_ed(Y, kernel, s, normalize=True):
+    def _get_cip(Y, kernel, s):
         DY = []
         for y in Y:
             dy = T.tile(y, (y.shape[0], 1, 1))
@@ -354,6 +333,22 @@ class ITLFunctions:
         V_nc = T.mean(np.prod([T.mean(dyk, axis=1) for dyk in DYK]))
 
         V_M = np.prod(V_k)
+
+        return V_nc, V_J, V_M
+
+
+    @staticmethod
+    def cross_information_potential(Y, kernel, s, normalize=True):
+        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
+
+        if normalize:
+            return T.power(V_nc, 2) / (V_J * V_M)
+        else:
+            return V_nc
+
+    @staticmethod
+    def mutual_information_ed(Y, kernel, s, normalize=True):
+        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
 
         if normalize:
             return V_J - 2 * V_nc + V_M

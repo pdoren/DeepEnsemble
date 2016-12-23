@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
-from sklearn.cross_validation import StratifiedKFold, KFold
+from sklearn import cross_validation
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 from sklearn.neighbors.kde import KernelDensity
 from matplotlib import cm
@@ -147,7 +147,7 @@ def get_scores(_model, file_model_fold, input_train, target_train, input_test, t
 
     return score_train, score_test, metric
 
-def cross_validation_score(models, data_input, data_target, _compile=True,
+def cross_validation_score(models, data_input, data_target, _compile=True, test_size=0.1,
                            folds=10, path_db='', classification=True, **kwargs):
     Logger().reset()
     # Generate data models
@@ -177,19 +177,13 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
     Logger().reset()
     Logger().log_enable()
 
-    # K-Cross Validation
-    if classification:
-        skf = StratifiedKFold(data_target, n_folds=folds)
-    else:
-        skf = KFold(len(data_target), n_folds=folds)
-
-    for fold, (train_index, test_index) in enumerate(skf):
+    for fold in range(folds):
         Logger().log('Fold: %d' % (fold + 1))
         file_sets_fold = path_db + 'sets_fold_%d.pkl' % fold
         if not os.path.exists(file_sets_fold):
             # Generate testing and training sets
             input_train, input_test, target_train, target_test = \
-                data_input[train_index], data_input[test_index], data_target[train_index], data_target[test_index]
+                cross_validation.train_test_split(data_input, data_target, test_size=test_size)
             sets_data = Serializable((input_train, input_test, target_train, target_test))
             sets_data.save(file_sets_fold)
         else:
@@ -201,6 +195,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True,
 
         for (_model, _dir) in models_data:
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
+            _model.reset()
             score_train, score_test, metric = get_scores(_model, file_model_fold,
                                                  input_train, target_train, input_test, target_test, **kwargs)
 

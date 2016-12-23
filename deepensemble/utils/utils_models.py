@@ -5,7 +5,7 @@ from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions, ActivationFunctions
 
-from ..combiner import AverageCombiner, PluralityVotingCombiner
+from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
@@ -117,7 +117,7 @@ def get_ensembleCIP_model(name,
                                   update=update, name_update=name_update, params_update=params_update)
 
     if classification:
-        ensemble.set_combiner(PluralityVotingCombiner())
+        ensemble.set_combiner(SoftVotingCombiner())
     else:
         ensemble.set_combiner(AverageCombiner())
 

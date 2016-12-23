@@ -1,6 +1,6 @@
 from .modelcombiner import ModelCombiner
 from ..utils.utils_classifiers import translate_output
-import theano.tensor as T
+from ..utils.utils_classifiers import get_index_label_classes
 import numpy as np
 
 __all__ = ['AverageCombiner', 'PluralityVotingCombiner', 'SoftVotingCombiner']
@@ -221,55 +221,6 @@ class SoftVotingCombiner(ModelCombiner):
         numpy.array
             Return the prediction of model.
         """
-        voting = [{} for _ in range(_input.shape[0])]
-        for model in ensemble_model.get_models():
-            votes = model.predict(_input)
-            prob = T.max(model.output(_input, prob=True), axis=1).eval()
-            SoftVotingCombiner._vote(voting, votes, prob)
-
-        return SoftVotingCombiner._result(voting)
-
-    @staticmethod
-    def _vote(voting, votes, prob):
-        """ Counting votes.
-
-        Parameters
-        ----------
-        voting : list[dict]
-            This dictionary keeps the votes.
-
-        votes : list[]
-            This list has votes.
-
-        prob : list[]
-            List of probability of class.
-
-        Returns
-        -------
-        None
-        """
-        for i, vote in enumerate(votes):
-            if vote in voting[i]:
-                (voting[i])[vote] += prob[i]
-            else:
-                (voting[i])[vote] = prob[i]
-
-    @staticmethod
-    def _result(voting):
-        """ Gets the result of voting.
-
-        Parameters
-        ----------
-        voting : list[dict]
-            This dictionary has recount.
-
-        Returns
-        -------
-        numpy.array
-            Returns a list with results of voting.
-        """
-        result = []
-        for votes in voting:
-            result.append(max(votes, key=lambda key: votes[key]))
-
-        return np.array(result)
+        output = ensemble_model.output(_input, prob=False)
+        labels = ensemble_model.get_target_labels()
+        return np.squeeze(labels[get_index_label_classes(output, ensemble_model.is_binary_classification())])
