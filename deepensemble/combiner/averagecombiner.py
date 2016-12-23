@@ -157,6 +157,7 @@ class PluralityVotingCombiner(ModelCombiner):
 
         return np.array(result)
 
+
 class SoftVotingCombiner(ModelCombiner):
     """ Combiner classifier method where each model in ensemble votes by one class and the class with more votes win.
 

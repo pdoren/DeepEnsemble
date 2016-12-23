@@ -195,8 +195,7 @@ class Logger(Singleton):
                 self.fold.append(1)
 
             prefix = "%s - fold: %d, epoch:" % (model.get_name(), self.fold[-1])
-            postfix = "| error: %.4f, score: %.4f / %.4f" % (
-                model.get_train_error(), model.get_train_score(), model.get_test_score())
+            postfix = "| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score())
             x = int(size * _i / count)
             toc = time.time()
             dt = toc - tic

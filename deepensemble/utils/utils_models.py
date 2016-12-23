@@ -1,11 +1,13 @@
 from .update_functions import sgd
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy,\
-    kullback_leibler_generalized
+    kullback_leibler_generalized, kullback_leibler
 from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions, ActivationFunctions
+from .score_functions import mutual_information_cs
 
-from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner
+from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner,\
+    WeightedVotingCombiner, SoftWeightVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
@@ -79,6 +81,8 @@ def get_ensemble_model(name,
     else:
         ensemble.set_combiner(AverageCombiner())
 
+    ensemble.append_score(mutual_information_cs, name='Ics')
+
     return ensemble
 
 
@@ -102,7 +106,7 @@ def get_ensembleCIP_model(name,
         params_cost_models = {'s': s, 'kernel': kernel, 'dist': dist}
     else:
         cost_models = kullback_leibler_generalized
-        name_cost_models = 'KLG'
+        name_cost_models = 'KL'
         params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
@@ -117,7 +121,7 @@ def get_ensembleCIP_model(name,
                                   update=update, name_update=name_update, params_update=params_update)
 
     if classification:
-        ensemble.set_combiner(SoftVotingCombiner())
+        ensemble.set_combiner(SoftWeightVotingCombiner(n_ensemble_models))
     else:
         ensemble.set_combiner(AverageCombiner())
 

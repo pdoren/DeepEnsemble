@@ -5,9 +5,9 @@ import theano.tensor as T
 from theano import shared, config
 
 from .modelcombiner import ModelCombiner
-from ..utils import translate_output
+from ..utils import translate_output, get_index_label_classes
 
-__all__ = ['WeightAverageCombiner', 'WeightedVotingCombiner']
+__all__ = ['WeightAverageCombiner', 'WeightedVotingCombiner', 'SoftWeightVotingCombiner']
 
 
 #
@@ -213,3 +213,79 @@ class WeightedVotingCombiner(WeightAverageCombiner):
             result.append(max(votes, key=lambda key: votes[key]))
 
         return np.array(result)
+
+
+class SoftWeightVotingCombiner(WeightAverageCombiner):
+    """ Class for compute the average the output models.
+
+    Parameters
+    ----------
+    n_models : int
+        Number of models of ensemble.
+
+    References
+    ----------
+    .. [1] Zhi-Hua Zhou. (2012), pp 74:
+           Ensemble Methods Foundations and Algorithms
+           Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
+    """
+    def __init__(self, n_models):
+        super(SoftWeightVotingCombiner, self).__init__(n_models=n_models, type_model="classifier")
+
+    # noinspection PyMethodMayBeStatic
+    def output(self, ensemble_model, _input, prob):
+        """ Average the output of the ensemble's models.
+
+        Parameters
+        ----------
+        ensemble_model : EnsembleModel
+            Ensemble Model it uses for get ensemble's models.
+
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        prob : bool
+            In the case of classifier if is True the output is probability, for False means the output is translated.
+            Is recommended hold True for training because the translate function is non-differentiable.
+
+        Returns
+        -------
+        theano.Op
+            Returns the average of the output models.
+        """
+        if prob:
+            return super(SoftWeightVotingCombiner, self).output(ensemble_model, _input, prob)
+        else:
+            outputs = [translate_output(model.output(_input, prob),
+                                        ensemble_model.get_fan_out(),
+                                        ensemble_model.is_binary_classification()) for model in
+                       ensemble_model.get_models()]
+            if _input == ensemble_model.get_model_input():
+                for i, model in enumerate(outputs):
+                    outputs[i] *= self._params[i, 0]  # index TensorVariable
+            else:
+                params = self._params.get_value()
+                for i, model in enumerate(outputs):
+                    outputs[i] *= params[i]
+            return translate_output(sum(outputs), ensemble_model.get_fan_out(),
+                                    ensemble_model.is_binary_classification())
+
+    def predict(self, ensemble_model, _input):
+        """ Returns the class with more votes.
+
+        Parameters
+        ----------
+        ensemble_model : EnsembleModel
+            Ensemble model where gets the output.
+
+        _input : theano.tensor.matrix or numpy.array
+            Input sample.
+
+        Returns
+        -------
+        numpy.array
+            Return the prediction of model.
+        """
+        output = ensemble_model.output(_input, prob=False)
+        labels = ensemble_model.get_target_labels()
+        return np.squeeze(labels[get_index_label_classes(output, ensemble_model.is_binary_classification())])

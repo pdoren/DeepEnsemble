@@ -29,13 +29,11 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               n_ensemble_models=3,
                               lamb_ncl=0.5,
-                              beta_cip=0.4, lamb_cip=0.2, s=s, dist='CS',
-                              beta_cip_kl=8, lamb_cip_kl=2,
-                              cost_cip=kullback_leibler_generalized, name_cost_cip='KLG',
+                              beta_cip=0.4, lamb_cip=0.5, s=None, dist='CS',
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=500, batch_size=40)
+                              folds=10, lr_mse=0.05, lr_klg=0.02, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

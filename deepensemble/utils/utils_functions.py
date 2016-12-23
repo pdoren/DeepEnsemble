@@ -315,7 +315,6 @@ class ITLFunctions:
         S = t.shape[1]  # Size vector sample
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
-
     @staticmethod
     def _get_cip(Y, kernel, s):
         DY = []
@@ -335,7 +334,6 @@ class ITLFunctions:
         V_M = np.prod(V_k)
 
         return V_nc, V_J, V_M
-
 
     @staticmethod
     def cross_information_potential(Y, kernel, s, normalize=True):

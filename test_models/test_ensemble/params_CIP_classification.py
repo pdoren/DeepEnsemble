@@ -84,8 +84,8 @@ y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
 ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20 ])
-beta = [-1.0, -0.5, -0.2, 0, 0.1, 0.2, 0.4, 0.8, 1.0]
-lamb = [-1.0, -0.5, -0.2, 0, 0.1, 0.2, 0.5, 1.0]
+beta = [-1.0, -0.6, -0.2, 0, 0.2, 0.6, 1.0]
+lamb = [-1.0, -0.6, -0.2, 0, 0.2, 0.6, 1.0]
 
 bb, ll, sss = np.meshgrid(beta, lamb, ss)
 parameters = list(zip(bb.flatten(), ll.flatten(), sss.flatten()))
@@ -128,7 +128,6 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
 
         if not os.path.exists(file_model):
             # Save ensemble
-            models.append(_model)
             _model.save(file_model)
         else:
             # Load model

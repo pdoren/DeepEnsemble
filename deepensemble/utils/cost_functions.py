@@ -105,12 +105,6 @@ def cauchy_schwarz_divergence(model, _input, _target):
     _target : theano.tensor.matrix
         Target sample.
 
-    s : float
-        Size of Kernel.
-
-    kernel : callable
-        Kernel for compute divergence.
-
     Returns
     -------
     theano.tensor.matrix
@@ -540,15 +534,15 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
             om_k = _model.output(_input)
             if dist == 'CS':
                 cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
-                redundancy.append(-T.log(cip2))
+                redundancy.append(T.log(cip2))
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
-                redundancy.append(-I2)
+                redundancy.append(I2)
             else:
                 raise ValueError('the distance must be CS or ED.')
 
     if len(redundancy) > 0:
-        return -beta * np.sum(redundancy)
+        return beta * np.sum(redundancy)
     else:
         return T.constant(0.0, dtype=config.floatX)
 
@@ -606,16 +600,16 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
             if dist == 'CS':
                 cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
                 cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
-                synergy.append(-T.log(cip2) + T.log(cip3))
+                synergy.append(T.log(cip2) - T.log(cip3))
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
                 I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], kernel, s)
-                synergy.append(-I2 + I3)
+                synergy.append(I2 - I3)
             else:
                 raise ValueError('the distance must be CS or ED.')
 
     if len(synergy) > 0:
-        return -lamb * np.sum(synergy)
+        return lamb * np.sum(synergy)
     else:
         return T.constant(0.0, dtype=config.floatX)
 

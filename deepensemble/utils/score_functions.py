@@ -6,7 +6,8 @@ __all__ = [
     'score_accuracy',
     'score_ensemble_ambiguity',
     'score_rms',
-    'score_silverman'
+    'score_silverman',
+    'mutual_information_cs'
 ]
 
 
@@ -152,3 +153,33 @@ def score_rms(_input, _output, _target, model):
     """
     e = _output - _target
     return T.mean(T.power(e, 2.0))
+
+def mutual_information_cs(_input, _output, _target, model, kernel=ITLFunctions.kernel_gauss, eps=0.00001):
+    """ Mutual Information Cauchy-Schwarz
+
+    Parameters
+    ----------
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _output : theano.tensor.matrix
+        Output sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    model : Model
+        Model.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Returns Mutual Information Cauchy-Schwarz.
+    """
+    s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+
+    Y = [_model.output(_input) for _model in model.get_models()]
+    Y.append(_target)
+
+    sqrt2 = 1.41421356237
+    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s))

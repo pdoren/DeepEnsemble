@@ -147,8 +147,9 @@ def get_scores(_model, file_model_fold, input_train, target_train, input_test, t
 
     return score_train, score_test, metric
 
+
 def cross_validation_score(models, data_input, data_target, _compile=True, test_size=0.1,
-                           folds=10, path_db='', classification=True, **kwargs):
+                           folds=10, path_db='', **kwargs):
     Logger().reset()
     # Generate data models
     models_data = []
@@ -197,7 +198,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
             _model.reset()
             score_train, score_test, metric = get_scores(_model, file_model_fold,
-                                                 input_train, target_train, input_test, target_test, **kwargs)
+                                                         input_train, target_train, input_test, target_test, **kwargs)
 
             list_data_training_models[_model.get_name()].append((score_train, score_test, metric))
 
@@ -437,7 +438,6 @@ def get_mean_diversity(_predictions, _s, train=False):
 
 
 def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
-
     x = np.linspace(min(X), max(X), 25)
     y = np.linspace(min(Y), max(Y), 25)
 
@@ -460,17 +460,13 @@ def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
 
     fig.colorbar(surf, ticks=np.linspace(z_min, z_max, 5))
 
-def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
 
+def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
     x = np.linspace(min(X), max(X), 200)
     y = np.linspace(min(Y), max(Y), 200)
 
     xx, yy = np.meshgrid(x, y)
     zz = griddata2((X, Y), Z, (xx, yy), method='cubic')
-
-    x = xx.flatten()
-    y = yy.flatten()
-    z = zz.flatten()
 
     p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())
     ax.title.set_text(s_title)

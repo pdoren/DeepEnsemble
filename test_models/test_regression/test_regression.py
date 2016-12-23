@@ -136,6 +136,6 @@ def test_regression(name_db, data_input, data_target,
 
     # noinspection PyUnusedLocal
     scores = cross_validation_score(models, data_input, data_target,
-                                    folds=folds, path_db=path_db, classification=False, **args_train)
+                                    folds=folds, path_db=path_db, **args_train)
 
     return scores
