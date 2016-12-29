@@ -33,7 +33,7 @@ n_inputs = n_features
 
 fn_activation = ActivationFunctions.sigmoid
 
-n_ensemble_models = 3
+n_ensemble_models = 1
 n_neurons_model = (n_output + n_inputs)
 
 lr = 0.01
@@ -53,13 +53,14 @@ s_beta = shared(np.cast['float32'](0))
 s_lambda = shared(np.cast['float32'](0))
 s_sigma = shared(np.cast['float32'](0))
 
-ensemble = get_ensembleCIP_model(name='Ensamble CIP',
+ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
                                 n_input=n_features, n_output=n_output,
                                 n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                 classification=True,
                                 classes_labels=classes_labels,
                                 fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                kernel=ITLFunctions.kernel_gauss, dist='CS',
+                                kernel=ITLFunctions.kernel_gauss, dist='CIP',
+                                is_relevancy=False,
                                 beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
                                 params_update={'learning_rate': lr})
 
@@ -84,8 +85,8 @@ y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
 ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20 ])
-beta = [-1.0, -0.6, -0.2, 0, 0.2, 0.6, 1.0]
-lamb = [-1.0, -0.6, -0.2, 0, 0.2, 0.6, 1.0]
+beta = [-10, -5.0, -3.0, -1.0, -0.5,  0, 0.5, 1.0, 3.0, 5.0, 10.0]
+lamb = [-10, -5.0, -3.0, -1.0, -0.5,  0, 0.5, 1.0, 3.0, 5.0, 10.0]
 
 bb, ll, sss = np.meshgrid(beta, lamb, ss)
 parameters = list(zip(bb.flatten(), ll.flatten(), sss.flatten()))
@@ -185,7 +186,7 @@ for s1, ax in zip(ss, axes.flat):
         s_title = r'$\sigma=\sigma_s$'
     else:
         s_title = r'$\sigma=%.4g\sigma_s$' % (s1/silverman)
-    p = plot_graph2(ax, X, Y, Z, r'$\lambda$', r'$\beta$', r'Accuracy', s_title)
+    p = plot_graph2(ax, X, Y, Z, r'$\beta$', r'$\lambda$', r'Accuracy', s_title)
 
 plt.tight_layout()
 fig.subplots_adjust(right=0.8)

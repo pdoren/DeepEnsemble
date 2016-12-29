@@ -607,9 +607,8 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
                 cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
                 synergy.append(T.log(cip2) - T.log(cip3))
             elif dist == 'CIP':
-                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
                 cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
-                synergy.append(cip3)
+                synergy.append(-cip3)
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
                 I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], kernel, s)
