@@ -70,7 +70,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                      cost=kullback_leibler_generalized, name_cost="KLG",
                                      params_update={'learning_rate': lr_klg})
 
-    # models.append(ensembleKLG)
+    models.append(ensembleKLG)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -133,7 +133,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                cost=kullback_leibler_generalized, name_cost="KLG",
                                params_update={'learning_rate': lr_klg})
 
-    # models.append(netMLP_KLG)
+    models.append(netMLP_KLG)
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
@@ -156,7 +156,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                    cost=kullback_leibler_generalized, name_cost="KLG",
                                    params_update={'learning_rate': lr_klg})
 
-    # models.append(netMLP_KLG_MAX)
+    models.append(netMLP_KLG_MAX)
 
     plt.style.use('ggplot')
 
@@ -179,14 +179,14 @@ def show_data_classification(name_db, scores, max_epoch):
     plt.style.use('ggplot')
     r_score = {}
     d_diversity = {}
-    for s in scores:
+    for s in sorted(scores):
         d_score = scores[s]
         d = [(t1, t2) for t1, t2, _ in d_score]
         if "Ensamble" in s:
-            metrics = [t1.get_fails() for _, _, t1 in d_score]
+            d1 = [['%.4g, %.4g, %.4g' % f for f in t1.get_max_min_accuracy()] for _, _, t1 in d_score]
             print(s)
-            print(metrics)
-        if "Ensamble" in s:
+            print(d1)
+
             _model = load_model(name_db, s)
             metrics = EnsembleClassifierMetrics(_model)
             for _, _, metric in d_score:

@@ -30,11 +30,11 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               n_ensemble_models=3,
                               lamb_ncl=1.0,
-                              beta_cip=0.4, lamb_cip=0, s=s, dist='CS',
+                              beta_cip=0.2, lamb_cip=0.3, s=s, dist='CS',
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=2, lr_mse=0.02, lr_klg=0.01, max_epoch=500, batch_size=40)
+                              folds=10, lr_mse=0.02, lr_klg=0.01, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

@@ -325,6 +325,8 @@ def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gau
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     if dist == 'CS':
+        return T.log(ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s))
+    elif dist == 'CIP':
         return ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s)
     elif dist == 'ED':
         return -ITLFunctions.mutual_information_ed([om, _target], kernel, sqrt2 * s)
@@ -535,6 +537,9 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
             if dist == 'CS':
                 cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
                 redundancy.append(T.log(cip2))
+            elif dist == 'CIP':
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+                redundancy.append(cip2)
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
                 redundancy.append(I2)
@@ -601,6 +606,10 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
                 cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
                 cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
                 synergy.append(T.log(cip2) - T.log(cip3))
+            elif dist == 'CIP':
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s)
+                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s)
+                synergy.append(cip3)
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
                 I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], kernel, s)

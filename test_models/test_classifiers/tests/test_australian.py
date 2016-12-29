@@ -29,7 +29,7 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               n_ensemble_models=3,
                               lamb_ncl=0.5,
-                              beta_cip=0.4, lamb_cip=0.5, s=None, dist='CS',
+                              beta_cip=0.4, lamb_cip=0.5, s=None, dist='CIP',
                               kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,

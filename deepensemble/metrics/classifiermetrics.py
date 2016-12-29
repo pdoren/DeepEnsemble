@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 import matplotlib.pylab as plt
 import numpy as np
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, accuracy_score
 
 from .diversitymetrics import fails_dist
 from .basemetrics import BaseMetrics, EnsembleMetrics
@@ -206,6 +206,21 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
     def __init__(self, model):
         super(EnsembleClassifierMetrics, self).__init__(model=model)
 
+    def get_max_min_accuracy(self, decimals=4):
+        list_classifiers = []
+        for _model in self._model.get_models():
+            list_classifiers.append(self._y_pred_per_model[_model.get_name()])
+
+        list_classifiers = np.array(list_classifiers)
+        data = []
+        for i, target in enumerate(self._y_true_per_model):
+            accu = [accuracy_score(target, pred) for pred in list_classifiers[:, i, :]]
+            max_accu = np.around(max(accu), decimals=decimals)
+            min_accu = np.around(min(accu), decimals=decimals)
+            accu_ensemble = np.around(accuracy_score(self._y_true[i], self._y_pred[i]), decimals=decimals)
+            data += [(max_accu, min_accu, accu_ensemble)]
+        return data
+
     def get_fails(self):
         list_classifiers = []
         for _model in self._model.get_models():
@@ -215,7 +230,7 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         data = []
         for i, target in enumerate(self._y_true_per_model):
             data += [fails_dist(target, list_classifiers[:, i, :])]
-        return np.mean(data, axis=0), np.std(data, axis=0)
+        return np.mean(data, axis=0)
 
     def get_diversity(self, metric=generalized_diversity):
         list_classifiers = []
