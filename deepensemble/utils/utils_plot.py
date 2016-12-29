@@ -306,6 +306,7 @@ def plot(ax, dps, label_prefix='', label=None):
         if label is None:
             label = dps[0].get_name()
         x, y = _get_data_per_col(dps)
+        y = np.squeeze(y)
         _x = x[:, 0]
         _y = np.nanmean(y, axis=1)
         _y_std = np.nanstd(y, axis=1)

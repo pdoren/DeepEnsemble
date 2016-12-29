@@ -2,11 +2,9 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
+from theano import shared
 from sklearn import cross_validation
 
-from deepensemble.combiner import *
-from deepensemble.layers import *
-from deepensemble.models import *
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ActivationFunctions
 
@@ -32,10 +30,9 @@ n_inputs = n_features
 
 fn_activation = ActivationFunctions.sigmoid
 
-n_ensemble_models = 4
-n_neurons = n_features * 2
+n_neurons = n_inputs + n_output
 
-lr = 0.05
+lr = 0.01
 reg_l1 = 0.0001
 reg_l2 = 0.0001
 
@@ -52,38 +49,38 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Tr
               'improvement_threshold': 0.9995, 'update_sets': True}
 
 
+y = get_index_label_classes(translate_target(data_target, classes_labels))
+silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
+
+s_beta = 5.0
+s_lambda = 5.0
+s_sigma = silverman
+
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _n_neurons, fast=True):
-    ensemble = EnsembleModel(name=_name)
-    for _i in range(n_ensemble_models):
-        net = Sequential("net%d" % (_i + 1), "classifier", classes_labels)
-        net.add_layer(Dense(n_input=n_inputs, n_output=_n_neurons,
-                            activation=fn_activation))
-        net.add_layer(Dense(n_output=n_output, activation=fn_activation))
-        net.append_cost(mse, name="MSE")
-        net.set_update(sgd, name="SGD", learning_rate=lr)
-        ensemble.append_model(net)
-
-    ensemble.add_cost_ensemble(fun_cost=neg_corr, name="NEG_CORR", lamb_neg_corr=0.6)
-    ensemble.set_combiner(PluralityVotingCombiner())
+    ensemble = get_ensembleNCL_model(name=_name,
+                                     n_input=n_features, n_output=n_output,
+                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
+                                     classification=True,
+                                     classes_labels=classes_labels,
+                                     fn_activation1=fn_activation, fn_activation2=fn_activation,
+                                     lamb=1.0, params_update={'learning_rate': lr})
     ensemble.compile(fast=fast)
 
     return ensemble
 
 
-def get_ensemble_ckl(_name, _n_neurons, fast=True):
-    ensemble = EnsembleModel(name=_name)
-    for _i in range(n_ensemble_models):
-        net = Sequential("net%d" % (_i + 1), "classifier", classes_labels)
-        net.add_layer(Dense(n_input=n_inputs, n_output=_n_neurons,
-                            activation=fn_activation))
-        net.add_layer(Dense(n_output=n_output, activation=fn_activation))
-        net.append_cost(kullback_leibler_generalized, name="Kullback Leibler Generalized")
-        net.set_update(sgd, name="SGD", learning_rate=lr)
-        ensemble.append_model(net)
-
-    ensemble.add_cost_ensemble(fun_cost=neg_correntropy, name="NEG_CORRPY", lamb_corr=0.6)
-    ensemble.set_combiner(PluralityVotingCombiner())
+def get_ensemble_cip(_name, _n_neurons, fast=True):
+    ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
+                                     n_input=n_features, n_output=n_output,
+                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
+                                     classification=True,
+                                     classes_labels=classes_labels,
+                                     fn_activation1=fn_activation, fn_activation2=fn_activation,
+                                     kernel=ITLFunctions.kernel_gauss, dist='CIP',
+                                     is_relevancy=False,
+                                     beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
+                                     params_update={'learning_rate': lr})
     ensemble.compile(fast=fast)
 
     return ensemble
@@ -92,10 +89,10 @@ def get_ensemble_ckl(_name, _n_neurons, fast=True):
 #############################################################################################################
 #  TEST
 #############################################################################################################
-parameters = [n for n in range(1, n_neurons, 2)]
+parameters = [n for n in range(3, 2 * n_neurons, 2)]
 
-list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_ckl, 'Ensemble KLG Correntropy')]
-path_data = 'test_ensemble_n_neurons/'
+list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
+path_data = 'test_ensemble_n_models/'
 
 for get_ensemble, name in list_ensemble:
 
@@ -111,7 +108,7 @@ for get_ensemble, name in list_ensemble:
         Logger().reset()
         for _p in Logger().progressbar(it=parameters, end='Finish'):
             Logger().log_disable()
-            model = get_ensemble(_name=name, _n_neurons=_p)
+            model = get_ensemble(_name=name, _n_models=_p)
 
             metrics, best_score, list_score = test_model(cls=model,
                                                          input_train=input_train, target_train=target_train,
