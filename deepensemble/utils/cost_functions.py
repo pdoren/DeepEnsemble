@@ -622,22 +622,19 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
         return T.constant(0.0, dtype=config.floatX)
 
 
-def cip_full(model, _input, _target, ensemble, s=None):
+def cip_full(model, _input, _target, s=None):
     """ Cross Information Potential among all models ensemble.
 
     Parameters
     ----------
     model : theano.tensor.matrix
-        Current model that one would want to calculate the cost.
+        Ensemble model.
 
     _input : theano.tensor.matrix
         Input sample.
 
     _target : theano.tensor.matrix
         Target sample.
-
-    ensemble : EnsembleModel
-        Ensemble.
 
     s : float
         Size of Kernel.
@@ -652,7 +649,7 @@ def cip_full(model, _input, _target, ensemble, s=None):
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    Y = [_model.output(_input) for _model in ensemble.get_models()]
+    Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)
 
     return ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s)

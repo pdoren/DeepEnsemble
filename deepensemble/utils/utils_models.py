@@ -143,7 +143,7 @@ def get_ensembleCIP_model(name,
                                   params={'net0': net0, 'batch_size': batch_size, 'max_epoch': max_epoch})
 
     if is_cip_full:
-        ensemble.add_cost_ensemble(fun_cost=cip_full, name="CIP Full", s=s)
+        ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s)
     else:
         if beta != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta,

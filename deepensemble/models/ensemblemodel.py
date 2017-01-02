@@ -275,6 +275,7 @@ class EnsembleModel(Model):
                     model.append_cost(fun_cost=fun_cost, name=name, ensemble=self, **params_cost)
 
         cost = []
+        cost_ensemble = self.get_cost()
         extra_results = []
         labels_extra_results = []
         if not fast:  # compute all the scores and costs of the models in ensemble
@@ -294,7 +295,10 @@ class EnsembleModel(Model):
                 cost_model = model.get_cost()
                 cost += [cost_model]
 
-        cost = sum(cost) / self.get_num_models()
+        if cost_ensemble == 0:
+            cost = sum(cost) / self.get_num_models()
+        else:
+            cost = cost_ensemble
 
         update_combiner = self.__combiner.update_parameters(self, self._model_input, self._model_target)
         updates = OrderedDict()
@@ -303,11 +307,15 @@ class EnsembleModel(Model):
 
         for model in self.get_models():
             cost_model = model.get_cost()
+            cost_model = cost if cost_model == 0 else cost_model
             error_model = model.get_error()
             update_model = model.get_update_function(cost_model, error_model)
             for key in update_model.keys():
                 updates[key] = update_model[key]
 
+        ind_er = np.nonzero(extra_results)[0]
+        extra_results = list(np.array(extra_results)[ind_er])
+        labels_extra_results = list(np.array(labels_extra_results)[ind_er])
         return cost, updates, extra_results, labels_extra_results
 
     def add_cost_ensemble(self, fun_cost, name, **kwargs):

@@ -36,7 +36,8 @@ class MaskLayer(Layer):
             output_shape = self.__get_output_shape(input_shape, ratio)
             self.__index = self.__generate_index(input_shape, output_shape, seed)
 
-        super(MaskLayer, self).__init__(input_shape=input_shape, output_shape=output_shape, exclude_params=True)
+        super(MaskLayer, self).__init__(input_shape=input_shape, output_shape=output_shape,
+                                        include_b=False, include_w=False)
 
     @staticmethod
     def __get_output_shape(input_shape, ratio):
@@ -176,7 +177,7 @@ class NoiseLayer(Layer):
         self._input_shape = shape
         self._output_shape = shape
 
-    def output(self, _input):
+    def output(self, _input, prob=True):
         """ Gets output of layer.
 
         Parameters
@@ -230,7 +231,7 @@ class BiasLayer(Layer):
         self._updates = OrderedDict()
 
     def update(self, error):
-        self._updates[self.get_b()] = -T.mean(error, axis=0, dtype=config.floatX)
+        self._updates[self.get_b()] = T.mean(error, axis=0, dtype=config.floatX)
         return self._updates
 
     def set_b(self, b):
@@ -269,4 +270,4 @@ class BiasLayer(Layer):
         if _input.ndim > 2:
             x = _input.flatten(2)
 
-        return x + self.get_b().dimshuffle('x', 0)
+        return x - self.get_b().dimshuffle('x', 0)

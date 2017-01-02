@@ -177,6 +177,8 @@ class BaseMetrics(Serializable):
         if n_cost > 1:
             n = add_data(labels, self._model.get_name(),
                          self.get_costs(type_set_data), n_cost, n, data, epoch)
+        elif n_cost == 1:
+            n += 1
 
         n_data_score = 1 if self._model.is_fast_compiled() else len(self._model.get_scores())
         return add_data(labels, self._model.get_name(),
@@ -409,17 +411,18 @@ class EnsembleMetrics(BaseMetrics):
                 if s_model not in self._models_metric:
                     self._models_metric[s_model] = FactoryMetrics().get_metric(model)
 
-                n += 1
-                add_point(self._models_metric[s_model].get_cost(type_set_data), epoch, data[n],
-                          labels[n], model.get_name())
+                n_costs = len(model.get_costs())
+                if n_costs > 0:
+                    n += 1
+                add_point(self._models_metric[s_model].get_cost(type_set_data), epoch, data[n], labels[n], model.get_name())
 
-                n = add_data(labels, model.get_name(),
-                             self._models_metric[s_model].get_costs(type_set_data),
-                             len(model.get_costs()), n, data, epoch)
+                n = add_data(labels=labels, model_name=model.get_name(),
+                             data_dict=self._models_metric[s_model].get_costs(type_set_data),
+                             n_data=n_costs, index=n, data=data, epoch=epoch)
 
-                n = add_data(labels, model.get_name(),
-                             self._models_metric[s_model].get_scores(type_set_data),
-                             len(model.get_scores()), n, data, epoch)
+                n = add_data(labels=labels, model_name=model.get_name(),
+                             data_dict=self._models_metric[s_model].get_scores(type_set_data),
+                             n_data=len(model.get_scores()), index=n, data=data, epoch=epoch)
 
         return n
 
