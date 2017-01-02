@@ -7,11 +7,14 @@ from .utils_functions import ITLFunctions, ActivationFunctions
 from .score_functions import mutual_information_cs
 
 from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner,\
-    WeightedVotingCombiner, SoftWeightVotingCombiner
+    WeightedVotingCombiner, SoftWeightVotingCombiner, GeometricVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
-           "get_ensemble_model", "get_ensembleCIP_model", "get_ensembleNCL_model", "get_ensembleCIP_KL_model"]
+           "get_ensemble_model",
+           "get_ensembleCIP_model",
+           "get_ensembleNCL_model",
+           "get_ensembleCIP_KL_model"]
 
 
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
@@ -80,7 +83,7 @@ def get_ensemble_model(name,
         ensemble.append_model(net)
 
     if classification:
-        ensemble.set_combiner(PluralityVotingCombiner())
+        ensemble.set_combiner(GeometricVotingCombiner())
     else:
         ensemble.set_combiner(AverageCombiner())
 

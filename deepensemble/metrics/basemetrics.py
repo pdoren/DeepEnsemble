@@ -177,7 +177,7 @@ class BaseMetrics(Serializable):
         if n_cost > 1:
             n = add_data(labels, self._model.get_name(),
                          self.get_costs(type_set_data), n_cost, n, data, epoch)
-        elif n_cost == 1:
+        elif n_cost == 1 and not self._model.is_fast_compiled():
             n += 1
 
         n_data_score = 1 if self._model.is_fast_compiled() else len(self._model.get_scores())

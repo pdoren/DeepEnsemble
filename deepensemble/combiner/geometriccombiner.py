@@ -38,11 +38,8 @@ class GeometricCombiner(ModelCombiner):
             Returns the average of the output models.
         """
         L = ensemble_model.get_num_models()
-        prod = 1.0
-        for model in ensemble_model.get_models():
-            prod *= model.output(_input, prob)
 
-        return T.power(prod, 1.0 / L)
+        return T.power(np.prod([model.output(_input, prob) for model in ensemble_model.get_models()]), 1.0 / L)
 
 
 #
@@ -78,11 +75,8 @@ class GeometricVotingCombiner(ModelCombiner):
         """
         if prob:
             L = ensemble_model.get_num_models()
-            prod = 1.0
-            for model in ensemble_model.get_models():
-                prod *= model.output(_input, prob)
 
-            return T.power(prod, 1.0 / L)
+            return T.power(np.prod([model.output(_input, prob) for model in ensemble_model.get_models()]), 1.0 / L)
         else:
             outputs = [translate_output(model.output(_input, prob),
                                         ensemble_model.get_fan_out(),

@@ -47,18 +47,18 @@ s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eva
 #############################################################################################################
 
 # ==========< Ensemble  CIP   >===============================================================================
-bias_layer=True
+bias_layer=False
 ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                  n_input=n_features, n_output=n_output,
                                  n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                  classification=True,
-                                 is_cip_full=False,
+                                 is_cip_full=True,
                                  classes_labels=classes_labels,
                                  fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                  dist='CIP',
                                  # cost=kullback_leibler_generalized, name_cost="KLG",
                                  beta=0, lamb=0, s=s, bias_layer=bias_layer,
-                                 params_update={'learning_rate': 0.1},
+                                 params_update={'learning_rate': 0.001},
                                  # update=adagrad, name_update='ADAGRAD', params_update={'learning_rate': 0.01}
             )
 
@@ -69,10 +69,6 @@ args_train = {'max_epoch': max_epoch, 'batch_size': 40, 'early_stop': False,
                   'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
-
-#if bias_layer:
-#    for _model in ensembleCIP.get_models():
-#        _model.get_layers()[-1].set_b([0.5, 0.5])
 
 e_train = ensembleCIP.error(input_train, ensembleCIP.translate_target(target_train)).eval()
 e_test = ensembleCIP.error(input_test, ensembleCIP.translate_target(target_test)).eval()
@@ -90,7 +86,22 @@ plot_pdf(ax, e_train[:, 0], label='Train Class 1', x_min=-2, x_max=2, n_points=1
 plot_pdf(ax, e_train[:, 1], label='Train Class 2', x_min=-2, x_max=2, n_points=1000)
 plt.legend()
 
+f = plt.figure()
+
+for i, model in enumerate(ensembleCIP.get_models()):
+    e_train = model.error(input_train, model.translate_target(target_train)).eval()
+    e_test = model.error(input_test, model.translate_target(target_test)).eval()
+
+    ax = plt.subplot(2, 2, i + 1)
+    plot_pdf(ax, e_test[:, 0], label='Test Class 1', x_min=-2, x_max=2, n_points=1000)
+    plot_pdf(ax, e_test[:, 1], label='Test Class 2', x_min=-2, x_max=2, n_points=1000)
+    plt.legend()
+    plt.title('Model %d' % (i + 1))
+
+plt.tight_layout()
+
 metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
+metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
 metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
 
 plt.show()
