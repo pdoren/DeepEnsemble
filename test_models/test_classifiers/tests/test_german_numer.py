@@ -28,14 +28,13 @@ if not os.path.exists(file_scores):
     scores = test_classifiers(name_db, data_input, data_target, classes_labels,
                               factor_number_neurons=1.0,
                               is_binary=False, early_stop=False,
-                              n_ensemble_models=3,
-                              lamb_ncl=1.0,
-                              beta_cip=0.8, lamb_cip=0.8, s=s, dist='CIP',
+                              n_ensemble_models=2,
+                              lamb_ncl=0.6,
+                              beta_cip=0, lamb_cip=-0.8, s=s, dist='CS',
                               beta_cip_kl=5.0, lamb_cip_kl=5.0,
-                              kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=500, batch_size=40)
+                              folds=2, lr_mse=0.02, lr_klg=0.02, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

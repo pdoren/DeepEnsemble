@@ -43,7 +43,11 @@ class WeightAverageCombiner(ModelCombiner):
     def __init__(self, n_models, **kwargs):
         super(WeightAverageCombiner, self).__init__(**kwargs)
         self.n_models = n_models
-        self._params = shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True)
+        self._param = { 'name': 'Wa_ens',
+                        'value': shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True),
+                        'shape': (n_models, 1),
+                        'init': True,
+                        'include': True}
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input, prob):
@@ -69,11 +73,11 @@ class WeightAverageCombiner(ModelCombiner):
         output = 0.0
         if _input == ensemble_model.get_model_input():
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input, prob) * self._params[i, 0]  # index TensorVariable
+                output += model.output(_input, prob) * self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
         else:
-            params = self._params.get_value()
+            param = self.get_param(only_values=True)['value'].get_value()
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input, prob) * params[i]
+                output += model.output(_input, prob) * param[i]
         return output
 
     def update_parameters(self, ensemble_model, _input, _target):
@@ -113,7 +117,10 @@ class WeightAverageCombiner(ModelCombiner):
             inv_sum_sum_inv_Ckj += d
 
         update_param = (1.0 / inv_sum_sum_inv_Ckj) * inv_sum_Cij
-        updates[self._params] = T.set_subtensor(self._params[:, 0], update_param[:])
+
+        param = self.get_param(only_values=True)['value']
+        updates[param] = T.set_subtensor(param[:, 0], update_param[:])
+
         return updates
 
 
@@ -167,11 +174,11 @@ class WeightedVotingCombiner(WeightAverageCombiner):
                        ensemble_model.get_models()]
             if _input == ensemble_model.get_model_input():
                 for i, model in enumerate(outputs):
-                    outputs[i] *= self._params[i, 0]  # index TensorVariable
+                    outputs[i] *= self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
             else:
-                params = self._params.get_value()
+                param = self.get_param(only_values=True)['value'].get_value()
                 for i, model in enumerate(outputs):
-                    outputs[i] *= params[i]
+                    outputs[i] *= param[i]
             return translate_output(sum(outputs), ensemble_model.get_fan_out(),
                                     ensemble_model.is_binary_classification())
 
@@ -194,7 +201,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         voting = [{} for _ in range(_input.shape[0])]
         for i, model in enumerate(ensemble_model.get_models()):
             votes = model.predict(_input)
-            WeightedVotingCombiner._vote(voting, votes, self._params[i].eval())
+            WeightedVotingCombiner._vote(voting, votes, self.get_param(only_values=True)['value'][i].eval())
 
         return WeightedVotingCombiner._result(voting)
 
@@ -262,11 +269,11 @@ class SoftWeightVotingCombiner(WeightAverageCombiner):
                        ensemble_model.get_models()]
             if _input == ensemble_model.get_model_input():
                 for i, model in enumerate(outputs):
-                    outputs[i] *= self._params[i, 0]  # index TensorVariable
+                    outputs[i] *= self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
             else:
-                params = self._params.get_value()
+                param = self.get_param(only_values=True)['value'].get_value()
                 for i, model in enumerate(outputs):
-                    outputs[i] *= params[i]
+                    outputs[i] *= param[i]
             return translate_output(sum(outputs), ensemble_model.get_fan_out(),
                                     ensemble_model.is_binary_classification())
 

@@ -38,7 +38,7 @@ class PoolBase(Layer):
 
     def __init__(self, pool_size, input_shape=None, output_shape=None, stride=1, pad=0, ignore_border=True, mode='max'):
         super(PoolBase, self).__init__(input_shape=input_shape, output_shape=output_shape,
-                                       non_linearity=None, exclude_params=True)
+                                       non_linearity=None, include_w=False, include_b=False)
 
         self._pool_size = pool_size
         self._stride = stride

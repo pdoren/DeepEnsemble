@@ -307,9 +307,11 @@ def plot(ax, dps, label_prefix='', label=None):
             label = dps[0].get_name()
         x, y = _get_data_per_col(dps)
         y = np.squeeze(y)
+        if y.ndim <= 1:
+            y = y[:,np.newaxis]
         _x = x[:, 0]
-        _y = np.nanmean(y, axis=1)
-        _y_std = np.nanstd(y, axis=1)
+        _y = np.nanmean(y, axis=-1)
+        _y_std = np.nanstd(y, axis=-1)
         p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3)
 
         yn = _y - _y_std

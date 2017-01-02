@@ -220,18 +220,21 @@ class BiasLayer(Layer):
 
     # noinspection PyUnusedLocal
     def __init__(self, net, input_shape=None, **kwargs):
+        super(BiasLayer, self).__init__(input_shape=input_shape, output_shape=input_shape,
+                                        include_w=False, include_b=True)
+
+        self._b[0]['name'] = 'bias'
+        self.set_include_b(False)
+
         net.append_update(self.update, 'Update BiasLayer')
-        super(BiasLayer, self).__init__(input_shape=input_shape, output_shape=input_shape, exclude_params=True)
+        self._updates = OrderedDict()
 
     def update(self, error):
-        updates = OrderedDict()
-        updates[self._b] = -T.mean(error, axis=0, dtype=config.floatX)
-        return updates
+        self._updates[self.get_b()] = -T.mean(error, axis=0, dtype=config.floatX)
+        return self._updates
 
-    def get_shape_b(self):
-        """ Gets shape bias of layer.
-        """
-        return self.get_fan_out(),
+    def set_b(self, b):
+        return self.get_b().set_value(b)
 
     def set_input_shape(self, shape):
         """ Set input shape.
@@ -243,8 +246,7 @@ class BiasLayer(Layer):
         """
         self._input_shape = shape
         self._output_shape = shape
-        self._b = shared(np.zeros(shape=self.get_shape_b(), dtype=config.floatX), name='bias', borrow=True)
-        self._b.set_value(np.zeros(shape=self.get_shape_b(), dtype=config.floatX))
+        self.update_b_shape()
 
     def output(self, _input, prob=True):
         """ Gets output of layer.
@@ -263,10 +265,8 @@ class BiasLayer(Layer):
             Returns input plus noise.
         """
         x = _input
-        if not prob:
-            if _input.ndim > 2:
-                x = _input.flatten(2)
 
-            return x + self._b.dimshuffle('x', 0)
-        else:
-            return x
+        if _input.ndim > 2:
+            x = _input.flatten(2)
+
+        return x + self.get_b().dimshuffle('x', 0)

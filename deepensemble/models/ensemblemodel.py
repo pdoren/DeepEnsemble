@@ -39,7 +39,7 @@ class EnsembleModel(Model):
         self.__list_cost_ensemble = []
         self._type_training = None
         self._pre_training = None
-        self._params.append(0)  # the first element is reserved for combiner parameters
+        self._params.append(None)  # the first element is reserved for combiner parameters
 
     def set_pre_training(self, proc_pre_training, params):
         self._pre_training = (proc_pre_training, params)
@@ -116,7 +116,7 @@ class EnsembleModel(Model):
         """
         if combiner.get_type_model() is self.get_type_model():
             self.__combiner = combiner
-            self._params[0] = combiner.get_params()
+            self._params[0] = combiner.get_param()
         else:
             raise ValueError("Combiner method must be same type, in this case %s." % self.__type_model)
 

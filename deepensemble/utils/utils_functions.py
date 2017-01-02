@@ -241,8 +241,14 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        norm_L2 = T.sum(T.power(x, 2), axis=-1)
-        return T.exp(- norm_L2 / (2.0 * T.power(s, 2))) / (sqrt2pi * s)
+        divisor = T.cast(2.0 * s ** 2, T.config.floatX)
+
+        exp_arg = -(x ** 2) / divisor
+        z = 1. / (sqrt2pi * s)
+
+        if exp_arg.ndim > 1:
+            exp_arg = T.sum(exp_arg, axis=-1)  # Norm L2
+        return T.exp(exp_arg) * z
 
     @staticmethod
     def silverman(x, N, d):
@@ -327,9 +333,11 @@ class ITLFunctions:
 
         V_J = T.mean(np.prod(DYK))
 
-        V_k = [T.mean(dyk) for dyk in DYK]
+        V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
 
-        V_nc = T.mean(np.prod([T.mean(dyk, axis=1) for dyk in DYK]))
+        V_k = [T.mean(V_i) for V_i in V_k_i]
+
+        V_nc = T.mean(np.prod(V_k_i))
 
         V_M = np.prod(V_k)
 
@@ -341,6 +349,15 @@ class ITLFunctions:
 
         if normalize:
             return T.power(V_nc, 2) / (V_J * V_M)
+        else:
+            return V_nc
+
+    @staticmethod
+    def mutual_information_cs(Y, kernel, s, normalize=True):
+        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
+
+        if normalize:
+            return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
         else:
             return V_nc
 

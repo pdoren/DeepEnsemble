@@ -192,4 +192,12 @@ plt.tight_layout()
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
 fig.colorbar(p, cax=cbar_ax, ax=axes.ravel().tolist())
+
+fig, ax = plt.subplots()
+X, Y, Z = get_mean_score(scores, silverman, False)
+s_title = r'$\sigma=\sigma_s$'
+p = plot_graph2(ax, X, Y, Z, r'$\beta$', r'$\lambda$', r'Accuracy', s_title)
+plt.tight_layout()
+fig.colorbar(p, ax=ax)
+
 plt.show()

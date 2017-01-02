@@ -165,12 +165,12 @@ class ConvolutionBase(Layer):
         """
         convolution = self.convolution(x)
 
-        if self._b is None:
+        if self.get_b() is None:
             activation = convolution
         elif self._untie_biases:
-            activation = convolution + T.shape_padleft(self._b, 1)
+            activation = convolution + T.shape_padleft(self.get_b(), 1)
         else:
-            activation = convolution + self._b.dimshuffle(('x', 0) + ('x',) * self.get_dim_conv())
+            activation = convolution + self.get_b().dimshuffle(('x', 0) + ('x',) * self.get_dim_conv())
 
         return self._non_linearity(activation)
 
@@ -264,7 +264,7 @@ class Convolution1D(ConvolutionBase):
             Returns convolution 1D.
         """
         border_mode = 'half' if self._pad == 'same' else self._pad
-        return conv1d_mc0(_input, self._W,
+        return conv1d_mc0(_input, self.get_W(),
                           self._input_shape, self.get_shape_W(),
                           subsample=self._stride,
                           border_mode=border_mode,
@@ -299,7 +299,7 @@ class Convolution2D(ConvolutionBase):
             Returns convolution 1D.
         """
         border_mode = 'half' if self._pad == 'same' else self._pad
-        return _conv(_input, self._W,
+        return _conv(_input, self.get_W(),
                      self._input_shape, self.get_shape_W(),
                      subsample=self._stride,
                      border_mode=border_mode,

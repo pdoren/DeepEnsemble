@@ -292,7 +292,7 @@ def neg_log_likelihood(model, _input, _target):
     return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 
-def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
+def cip_relevancy(model, _input, _target, s=None, dist='CS'):
     """ Cross Information Potential between model output and target.
 
     Parameters
@@ -320,6 +320,8 @@ def cip_relevancy(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gau
     theano.tensor.matrix
         Return Cross Information Potential between model output and target.
     """
+    kernel = ITLFunctions.kernel_gauss
+
     om = model.output(_input)
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
@@ -484,7 +486,7 @@ def neg_klg(model, _input, _target, ensemble, lamb=0.5):
     return -lamb * T.sum((pt + eps) * (T.log(pt + eps) - T.log(pp + eps)) - pt + pp)
 
 
-def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
+def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'):
     """ Cross Information Potential Diversity.
 
     Parameters
@@ -507,9 +509,6 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
     s : float
         Size of Kernel.
 
-    kernel : callable
-        Kernel for compute divergence.
-
     dist : str
         This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
 
@@ -518,6 +517,8 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
     theano.tensor.matrix or float
         Return Cross Information Potential Diversity.
     """
+    kernel = ITLFunctions.kernel_gauss
+
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
@@ -552,7 +553,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, kernel=IT
         return T.constant(0.0, dtype=config.floatX)
 
 
-def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS'):
+def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
     """ Cross Information Potential Synergy.
 
     Parameters
@@ -575,9 +576,6 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
     s : float
         Size of Kernel.
 
-    kernel : callable
-        Kernel for compute divergence.
-
     dist : str
         This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
 
@@ -586,6 +584,8 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
     theano.tensor.matrix
         Return Cross Information Potential Diversity.
     """
+    kernel = ITLFunctions.kernel_gauss
+
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
@@ -622,7 +622,7 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, kernel=ITLFu
         return T.constant(0.0, dtype=config.floatX)
 
 
-def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kernel_gauss):
+def cip_full(model, _input, _target, ensemble, s=None):
     """ Cross Information Potential among all models ensemble.
 
     Parameters
@@ -642,14 +642,13 @@ def cip_full(model, _input, _target, ensemble, s=None, kernel=ITLFunctions.kerne
     s : float
         Size of Kernel.
 
-    kernel : callable
-        Kernel for compute divergence.
-
     Returns
     -------
     theano.tensor.matrix
         Return Cross Information Potential.
     """
+    kernel = ITLFunctions.kernel_gauss
+
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 

@@ -2,6 +2,8 @@ import inspect
 
 import numpy as np
 import theano.tensor as T
+import copy
+
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score, mean_squared_error
 from theano import config, function
@@ -34,7 +36,7 @@ class Model(Serializable):
     target_labels : numpy.array
         Labels of classes.
 
-    _params : list
+    _params : list[]
         List of model's parameters.
 
     _cost_function_list : dict
@@ -486,7 +488,7 @@ class Model(Serializable):
         """
         return self._name
 
-    def get_params(self):
+    def get_params(self, only_values=False):
         """ Getter model parameters.
 
         Returns
@@ -494,7 +496,15 @@ class Model(Serializable):
         theano.shared
             Returns model parameters.
         """
-        return self._params
+        if not only_values:
+            return self._params
+        else:
+            params = []
+            for p in self._params:
+                if p['include']:
+                    params.append(p['value'])
+
+            return params
 
     def get_target_labels(self):
         """ Getter target labels.
@@ -785,7 +795,15 @@ class Model(Serializable):
         list[]
             Returns a list with the parameters model.
         """
-        return [i.get_value() for i in self.get_params()]
+        params = []
+        for p in self.get_params():
+            sp = copy.deepcopy(p)
+            if isinstance(p['value'], T.TensorVariable):
+                sp['value'] = p['value'].get_value()
+            params.append(sp)
+
+        return params
+
 
     def load_params(self, params):
         """ Load parameters.
@@ -795,8 +813,10 @@ class Model(Serializable):
         params : list[]
             List of parameters.
         """
-        for p, value in zip(self.get_params(), params):
-            p.set_value(value)
+        for p, sp in zip(self.get_params(), params):
+            p = sp
+            if isinstance(p['value'], T.TensorVariable):
+                p['value'].set_value(sp['value'])
 
     def _compile(self, fast=True, **kwargs):
         """ Prepare training.
@@ -1148,7 +1168,7 @@ class Model(Serializable):
             Extra parameters of update function.
         """
         if self._update_functions is None:
-            self._update_functions = [None]
+            self._update_functions = [None]  # the first update function is completed after (compilation time)
 
         # noinspection PyTypeChecker
         self._update_functions.append((fun_update, name, kwargs))
@@ -1172,8 +1192,8 @@ class Model(Serializable):
         else:
             self._update_functions[0] = (fun_update, name, kwargs)
 
-    def get_error(self):
-        if self.is_classifier():
+    def get_error(self, prob=False):
+        if not prob and self.is_classifier():
             return T.neq(self.output(self._model_input, prob=False), self._model_target)
         else:
             return self.error(self._model_input, self._model_target)
@@ -1285,7 +1305,7 @@ class Model(Serializable):
         updates = OrderedDict()
         for i, f in enumerate(self._update_functions):
             if i == 0:
-                fu = f[0](cost, self._params, **f[2])
+                fu = f[0](cost, self.get_params(only_values=True), **f[2])
             else:
                 fu = f[0](error, **f[2])
             updates.update(fu)

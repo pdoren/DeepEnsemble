@@ -13,7 +13,8 @@ plt.style.use('ggplot')
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale', data_home='../data')
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('germannumer_scale',
+                                                                              data_home='../data', normalize=False)
 
 input_train, input_test, target_train, target_test = \
     cross_validation.train_test_split(data_input, data_target, test_size=0.3)
@@ -41,7 +42,7 @@ reg_l2 = 0.0001
 #############################################################################################################
 
 max_epoch = 300
-folds = 5
+folds = 1
 batch_size = 32
 training = True
 
@@ -52,34 +53,32 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Tr
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
-s_beta = 5.0
-s_lambda = 5.0
 s_sigma = silverman
 
 # ==========< Ensemble   >===================================================================================
-def get_ensemble_ncl(_name, _n_neurons, fast=True):
+def get_ensemble_ncl(_name, _param, fast=True):
     ensemble = get_ensembleNCL_model(name=_name,
                                      n_input=n_features, n_output=n_output,
-                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
+                                     n_ensemble_models=3, n_neurons_models=n_neurons,
                                      classification=True,
                                      classes_labels=classes_labels,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                     lamb=1.0, params_update={'learning_rate': lr})
+                                     lamb=_param, params_update={'learning_rate': lr})
     ensemble.compile(fast=fast)
 
     return ensemble
 
 
-def get_ensemble_cip(_name, _n_neurons, fast=True):
+def get_ensemble_cip(_name, _param, fast=True):
     ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
                                      n_input=n_features, n_output=n_output,
-                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
+                                     n_ensemble_models=3, n_neurons_models=n_neurons,
                                      classification=True,
                                      classes_labels=classes_labels,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
                                      kernel=ITLFunctions.kernel_gauss, dist='CIP',
                                      is_relevancy=False,
-                                     beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
+                                     beta=_param, lamb=_param, s=s_sigma, lr=lr,
                                      params_update={'learning_rate': lr})
     ensemble.compile(fast=fast)
 
@@ -89,10 +88,10 @@ def get_ensemble_cip(_name, _n_neurons, fast=True):
 #############################################################################################################
 #  TEST
 #############################################################################################################
-parameters = [n for n in range(3, 2 * n_neurons, 2)]
+parameters = [n for n in np.linspace(-10, 10, 21)]
 
-list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
-path_data = 'test_ensemble_n_neurons/'
+list_ensemble = [(get_ensemble_cip, 'Ensemble CIP')]
+path_data = 'test_params_beta_cip/'
 
 f, ax = plt.subplots()
 plt.hold(True)
@@ -111,7 +110,7 @@ for get_ensemble, name in list_ensemble:
         Logger().reset()
         for _p in Logger().progressbar(it=parameters, end='Finish'):
             Logger().log_disable()
-            model = get_ensemble(_name=name, _n_models=_p)
+            model = get_ensemble(_name=name, _param=_p)
 
             metrics, best_score, list_score = test_model(cls=model,
                                                          input_train=input_train, target_train=target_train,
@@ -140,16 +139,16 @@ for get_ensemble, name in list_ensemble:
     list_dp = []
     for i in range(folds):
         y = list([data[l]['list_score'][i] for l in parameters])
-        x = list(np.array(parameters) / n_features)
+        x = list(np.array(parameters))
         dp = DataPlot(name=name, _type='score')
         dp.set_data(x, y)
         list_dp.append(dp)
 
     plot_data(ax, [(list_dp, 'score')],
-              x_max=max(parameters) / n_features, x_min=min(parameters) / n_features,
+              x_max=max(parameters), x_min=min(parameters),
               title='%s Accuracy' % name)
 
-plt.xlabel('$n^o neurons / n^o features$')
+plt.xlabel('$\\beta$')
 plt.ylabel('score')
 plt.tight_layout()
 

@@ -29,16 +29,6 @@ class Dense(Layer):
         output_shape = n_output if isinstance(n_output, tuple) else (None, n_output)
         super(Dense, self).__init__(input_shape=input_shape, output_shape=output_shape, non_linearity=activation)
 
-    def get_shape_W(self):
-        """ Gets shape weights of layer.
-        """
-        return self.get_fan_in(), self.get_fan_out()
-
-    def get_shape_b(self):
-        """ Gets shape bias of layer.
-        """
-        return self.get_fan_out(),
-
     def output(self, x, prob=True):
         """ Return output of layers
 
@@ -60,7 +50,7 @@ class Dense(Layer):
         if x.ndim > 2:
             x = x.flatten(2)
 
-        lin_output = T.dot(x, self._W) + self._b.dimshuffle('x', 0)
+        lin_output = T.dot(x, self.get_W()) + self.get_b().dimshuffle('x', 0)
 
         # noinspection PyCallingNonCallable
         return (

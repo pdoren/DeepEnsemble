@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from theano import shared
 import pandas as pd
 import numpy as np
 
@@ -8,27 +7,26 @@ from deepensemble.metrics import EnsembleClassifierMetrics
 from deepensemble.utils.cost_functions import mse, kullback_leibler_generalized
 from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model, \
-    get_ensembleNCL_model, get_mlp_model
-from deepensemble.utils import cross_validation_score, ITLFunctions
+    get_ensembleNCL_model, get_mlp_model, get_ensembleCIP_KL_model
+from deepensemble.utils import cross_validation_score
 
 
 # noinspection PyDefaultArgument
 def test_classifiers(name_db, data_input, data_target, classes_labels,
                      factor_number_neurons=0.75,
                      is_klg=False,
-                     is_binary=False, early_stop=True,
+                     is_binary=False, early_stop=False,
                      n_ensemble_models=4,
                      lamb_ncl=0.6,
-                     beta_cip=0.6, lamb_cip=0.2,
-                     beta_cip_kl=0.5, lamb_cip_kl=0.5,
-                     s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
-                     cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
-                     bias_layer=False,
+                     is_cip_full=False,
+                     beta_cip=0.9, lamb_cip=0.9,
+                     beta_cip_kl=5.0, lamb_cip_kl=5.0,
+                     s=None, dist='CS', bias_layer=False,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      lr_mse=0.01, lr_klg=0.001,
                      folds=10, max_epoch=300, batch_size=40):
 
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
                   'improvement_threshold': 0.995, 'update_sets': True}
 
     #############################################################################################################
@@ -66,26 +64,25 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                      n_input=n_features, n_output=n_output,
                                      n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                      classification=True,
+                                     is_cip_full=is_cip_full,
                                      classes_labels=classes_labels,
                                      fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                     kernel=ITLFunctions.kernel_gauss, dist='CS',
-                                     beta=beta_cip, lamb=lamb_cip, s=s, lr=lr_klg,
-                                     cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
+                                     dist=dist,
+                                     beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
                                      params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP)
 
     # ==========< Ensemble  CIP KL  >=============================================================================
-    ensembleCIP_KL = get_ensembleCIP_model(name='Ensamble CIP KL',
+    ensembleCIP_KL = get_ensembleCIP_KL_model(name='Ensamble CIP KL',
                                            n_input=n_features, n_output=n_output,
                                            n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                            classification=True,
                                            classes_labels=classes_labels,
                                            fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                           kernel=kernel, dist=dist,
+                                           dist=dist,
                                            is_relevancy=False,
-                                           beta=beta_cip_kl, lamb=lamb_cip_kl, s=s, bias_layer=bias_layer, lr=lr_klg,
-                                           cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
+                                           beta=beta_cip_kl, lamb=lamb_cip_kl, s=s, lr=lr_klg,
                                            params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP_KL)
@@ -187,8 +184,10 @@ def show_data_classification(name_db, scores, max_epoch):
         d = [(t1, t2) for t1, t2, _ in d_score]
         if "Ensamble" in s:
             d1 = [['%.4g, %.4g, %.4g' % f for f in t1.get_max_min_accuracy()] for _, _, t1 in d_score]
+            d2 = [t1.get_fails() for _, _, t1 in d_score]
             print(s)
             print(d1)
+            print(d2)
 
             _model = load_model(name_db, s)
             metrics = EnsembleClassifierMetrics(_model)

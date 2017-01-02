@@ -10,7 +10,8 @@ __all__ = ['Dropout']
 class Dropout(Layer):
 
     def __init__(self, input_shape=None, p=0.5, rescale=True, seed=13):
-        super(Dropout, self).__init__(input_shape=input_shape, output_shape=input_shape, exclude_params=True)
+        super(Dropout, self).__init__(input_shape=input_shape, output_shape=input_shape,
+                                      include_w=False, include_b=False)
 
         self._p = p
         self._rescale = rescale

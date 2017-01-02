@@ -20,10 +20,10 @@ class Layer(Serializable):
     _non_linearity : theano.Op
         Activation functions.
 
-    _W : theano.shared
+    _W : list[dict[]]
         Weights.
 
-    _b : theano.shared
+    _b : list[]
         Bias.
 
     _params : list
@@ -33,15 +33,43 @@ class Layer(Serializable):
     ----------
 
     """
-    def __init__(self, input_shape=None, output_shape=None, non_linearity=None, exclude_params=False):
+
+    def __init__(self, input_shape=None, output_shape=None, non_linearity=None, include_w=True, include_b=True):
         super(Layer, self).__init__()
         self._input_shape = input_shape
         self._output_shape = output_shape
         self._params = []
-        self._W = None
-        self._b = None
+        # default W and b
+        if include_w:
+            self._W = [{'name': 'W', 'value': None, 'shape': None, 'init': include_w, 'include': include_w}]
+        else:
+            self._W = []
+
+        if include_b:
+            self._b = [{'name': 'b', 'value': None, 'shape': None, 'init': include_b, 'include': include_b}]
+        else:
+            self._b = []
+
+        self.update_W_shape()
+        self.update_b_shape()
+
         self._non_linearity = non_linearity
-        self.__exclude_params = exclude_params
+
+    def update_W_shape(self):
+        for w in self._W:
+            w['shape'] = (self.get_fan_in(), self.get_fan_out())
+
+    def update_b_shape(self):
+        for b in self._b:
+            b['shape'] = (self.get_fan_out(),)
+
+    def set_include_W(self, state=True):
+        for w in self._W:
+            w['include'] = state
+
+    def set_include_b(self, state=True):
+        for b in self._b:
+            b['include'] = state
 
     def output(self, x, prob=True):
         """ Return output of layers
@@ -62,16 +90,6 @@ class Layer(Serializable):
         """
         raise NotImplementedError
 
-    def exclude_params(self):
-        """ Flag determine if the params are included for in training update.
-
-        Returns
-        -------
-        bool
-            Returns True if the params are included in training update, False otherwise.
-        """
-        return self.__exclude_params
-
     def get_input_shape(self):
         """ Gets shape of input.
 
@@ -91,6 +109,7 @@ class Layer(Serializable):
             Shape of input.
         """
         self._input_shape = shape
+        self.update_W_shape()
 
     def get_output_shape(self):
         """ Gets output shape.
@@ -105,26 +124,41 @@ class Layer(Serializable):
     def get_shape_W(self):
         """ Gets shape weights of layer.
         """
-        return 0,
+        if len(self._W) > 0:
+            return self._W[0]['shape']
+        else:
+            return 0,
 
     def get_shape_b(self):
         """ Gets shape bias of layer.
         """
-        return 0,
+        if len(self._b) > 0:
+            return self._b[0]['shape']
+        else:
+            return 0,
 
     def initialize_parameters(self):
         """ Initialize neurons params of layers
         """
-        if not self.__exclude_params:
-            if self._W is None:
-                self._W = shared(np.zeros(shape=self.get_shape_W(), dtype=config.floatX), name='W', borrow=True)
-            if self._b is None:
-                self._b = shared(np.zeros(shape=self.get_shape_b(), dtype=config.floatX), name='b', borrow=True)
+        self._params = []
 
-            self._W.set_value(self.init_W(self.get_shape_W()))
-            self._b.set_value(np.zeros(shape=self.get_shape_b(), dtype=config.floatX))
+        for w in self._W:
+            if w['init']:
+                if w['value'] is None:
+                    w['value'] = shared(np.zeros(shape=w['shape'], dtype=config.floatX), name=w['name'], borrow=True)
 
-            self._params = [self._W, self._b]
+                w['value'].set_value(self.init_W(w['shape']))
+
+            self._params.append(w)
+
+        for b in self._b:
+            if b['init']:
+                if b['value'] is None:
+                    b['value'] = shared(np.zeros(shape=b['shape'], dtype=config.floatX), name=b['name'], borrow=True)
+
+                b['value'].set_value(np.zeros(shape=b['shape'], dtype=config.floatX))
+
+            self._params.append(b)
 
     def init_W(self, shape_W):
         """ Initialize Weights.
@@ -144,7 +178,14 @@ class Layer(Serializable):
         int
             Returns input dimension of layer.
         """
-        return int(np.prod(self._input_shape[1:]))
+        if self._input_shape is None:
+            return 0
+        else:
+            sn = np.prod(self._input_shape[1:])
+            if sn is None:
+                return 0
+            else:
+                return int(sn)
 
     def get_fan_out(self):
         """ Getter of output dimension.
@@ -154,7 +195,10 @@ class Layer(Serializable):
         int
             Returns output dimension of layer.
         """
-        return int(np.prod(self._output_shape[1:]))
+        if self._output_shape is None:
+            return 0
+        else:
+            return int(np.prod(self._output_shape[1:]))
 
     def get_parameters(self):
         """ Getter of parameters of layer.
@@ -174,7 +218,7 @@ class Layer(Serializable):
         theano.tensor.matrix
             Returns weights of layer.
         """
-        return self._W
+        return self._W[0]['value']
 
     def get_b(self):
         """ Get bias of Layer.
@@ -184,4 +228,4 @@ class Layer(Serializable):
         theano.tensor.matrix
             Returns bias of layer.
         """
-        return self._b
+        return self._b[0]['value']

@@ -10,7 +10,7 @@ class ModelCombiner(Serializable):
 
     Attributes
     ----------
-    _params : theano.shared
+    _param : theano.shared
         Parameters of combiner method.
 
     _type_model : str, "regressor" by default
@@ -24,9 +24,9 @@ class ModelCombiner(Serializable):
     type_model : str
         Type of model: regressor or classifier
     """
-    def __init__(self, params=shared(0), type_model="regressor"):
+    def __init__(self, param=None, type_model="regressor"):
         super(ModelCombiner, self).__init__()
-        self._params = params
+        self._param = {'name': 'Combiner', 'value': None, 'shape': None, 'init': False, 'include': False}
         self._type_model = type_model
 
     def get_type_model(self):
@@ -39,15 +39,22 @@ class ModelCombiner(Serializable):
         """
         return self._type_model
 
-    def get_params(self):
+    def get_param(self, only_values=False):
         """ Getter model combinator parameters.
 
         Returns
         -------
         theano.shared
-            Returns parameters.
+            Returns model parameters.
         """
-        return self._params
+        if not only_values:
+            return self._param
+        else:
+            params = []
+            if self._param is not None and self._param['include']:
+                params.append(self._param['value'])
+
+            return params
 
     def output(self, ensemble_model, _input, prob):
         """ Mixing the output or prediction of ensemble's models.

@@ -89,10 +89,13 @@ def get_ensemble_cip(_name, _n_models, fast=True):
 #############################################################################################################
 #  TEST
 #############################################################################################################
-parameters = [n for n in range(1, 20, 3)]
+parameters = [n for n in range(1, 17, 3)]
 
 list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
 path_data = 'test_ensemble_n_models/'
+
+f, ax = plt.subplots()
+plt.hold(True)
 
 for get_ensemble, name in list_ensemble:
 
@@ -116,7 +119,8 @@ for get_ensemble, name in list_ensemble:
                                                          folds=folds, **args_train)
 
             scores.append(best_score)
-            data[_p] = {'model': model, 'metrics': metrics, 'list_score': list_score}
+
+            data[_p] = {'list_score': list_score}
             Logger().log_enable()
 
         scores = np.array(scores)
@@ -134,23 +138,21 @@ for get_ensemble, name in list_ensemble:
     #
     #############################################################################################################
 
-    f, ax = plt.subplots()
-    plt.hold(True)
     list_dp = []
-
     for i in range(folds):
         y = list([data[l]['list_score'][i] for l in parameters])
-        x = list(np.array(parameters) / n_features)
+        x = list(np.array(parameters))
         dp = DataPlot(name=name, _type='score')
         dp.set_data(x, y)
         list_dp.append(dp)
 
     plot_data(ax, [(list_dp, 'score')],
-              x_max=max(parameters) / n_features, x_min=min(parameters) / n_features,
+              x_max=max(parameters), x_min=min(parameters),
               title='%s Accuracy' % name)
 
-    plt.xlabel('$n^o models / n^o features$')
-    plt.ylabel('score')
-    plt.tight_layout()
+plt.legend()
+plt.xlabel('$n^o models$')
+plt.ylabel('score')
+plt.tight_layout()
 
 plt.show()
