@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from theano import shared
+
 from ..utils.serializable import Serializable
 
 __all__ = ['ModelCombiner']
@@ -10,7 +10,7 @@ class ModelCombiner(Serializable):
 
     Attributes
     ----------
-    _param : theano.shared
+    _param : dict
         Parameters of combiner method.
 
     _type_model : str, "regressor" by default
@@ -18,12 +18,13 @@ class ModelCombiner(Serializable):
 
     Parameters
     ----------
-    params : theano.shared
+    param : dict
         Parameters of combiner method.
 
     type_model : str
         Type of model: regressor or classifier
     """
+    # noinspection PyUnusedLocal
     def __init__(self, param=None, type_model="regressor"):
         super(ModelCombiner, self).__init__()
         self._param = {'name': 'Combiner', 'value': None, 'shape': None, 'init': False, 'include': False}

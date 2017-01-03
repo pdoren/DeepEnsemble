@@ -217,6 +217,7 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
             accu = [accuracy_score(target, pred) for pred in list_classifiers[:, i, :]]
             max_accu = np.around(max(accu), decimals=decimals)
             min_accu = np.around(min(accu), decimals=decimals)
+            # noinspection PyTypeChecker
             accu_ensemble = np.around(accuracy_score(self._y_true[i], self._y_pred[i]), decimals=decimals)
             data += [(max_accu, min_accu, accu_ensemble)]
         return data

@@ -186,10 +186,10 @@ def conv1d_mc0(_input, filters, image_shape=None, filter_shape=None,
 
     Parameters
     ----------
-    _input : theano.tensor
+    _input : theano.tensor.shared
         Input layer.
 
-    filters : theano.tensor
+    filters : theano.tensor.shared
         Filters.
 
     image_shape : tuple[]

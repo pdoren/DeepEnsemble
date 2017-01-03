@@ -1,9 +1,8 @@
+import theano.tensor as T
+from theano import config, scan
+
 from .layer import Layer
 from ..utils.utils_functions import ActivationFunctions
-
-import theano.tensor as T
-from theano import config, shared, scan
-import numpy as np
 
 __all__ = ['RecurrentLayer', 'LSTMLayer']
 
@@ -52,6 +51,8 @@ class RecurrentLayer(Layer):
         ----------
         x : theano.tensor.matrix
             Input sample
+
+        prob : bool
 
         Returns
         -------

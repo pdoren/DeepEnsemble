@@ -40,14 +40,15 @@ class WeightAverageCombiner(ModelCombiner):
            for Spech and Vision, pages 126-142. Chapman & Hall, New York, NY,
            1993.
     """
+
     def __init__(self, n_models, **kwargs):
         super(WeightAverageCombiner, self).__init__(**kwargs)
         self.n_models = n_models
-        self._param = { 'name': 'Wa_ens',
-                        'value': shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True),
-                        'shape': (n_models, 1),
-                        'init': True,
-                        'include': True}
+        self._param = {'name': 'Wa_ens',
+                       'value': shared(np.ones(shape=(n_models, 1), dtype=config.floatX), name='Wa_ens', borrow=True),
+                       'shape': (n_models, 1),
+                       'init': True,
+                       'include': True}
 
     # noinspection PyMethodMayBeStatic
     def output(self, ensemble_model, _input, prob):
@@ -73,7 +74,8 @@ class WeightAverageCombiner(ModelCombiner):
         output = 0.0
         if _input == ensemble_model.get_model_input():
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input, prob) * self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
+                output += model.output(_input, prob) * self.get_param(only_values=True)['value'][
+                    i, 0]  # index TensorVariable
         else:
             param = self.get_param(only_values=True)['value'].get_value()
             for i, model in enumerate(ensemble_model.get_models()):
@@ -141,6 +143,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
            Ensemble Methods Foundations and Algorithms
            Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
     """
+
     def __init__(self, n_models):
         super(WeightedVotingCombiner, self).__init__(n_models=n_models, type_model="classifier")
 
@@ -236,6 +239,7 @@ class SoftWeightVotingCombiner(WeightAverageCombiner):
            Ensemble Methods Foundations and Algorithms
            Chapman & Hall/CRC Machine Learning & Pattern Recognition Series.
     """
+
     def __init__(self, n_models):
         super(SoftWeightVotingCombiner, self).__init__(n_models=n_models, type_model="classifier")
 

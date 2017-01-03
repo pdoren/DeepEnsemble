@@ -155,7 +155,9 @@ def score_rms(_input, _output, _target, model):
     e = _output - _target
     return T.mean(T.power(e, 2.0))
 
-def mutual_information_cs(_input, _output, _target, model, kernel=ITLFunctions.kernel_gauss, eps=0.00001):
+
+# noinspection PyUnusedLocal
+def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     """ Mutual Information Cauchy-Schwarz
 
     Parameters
@@ -172,11 +174,15 @@ def mutual_information_cs(_input, _output, _target, model, kernel=ITLFunctions.k
     model : Model
         Model.
 
+    eps : float
+
     Returns
     -------
     theano.tensor.matrix
         Returns Mutual Information Cauchy-Schwarz.
     """
+    kernel = ITLFunctions.kernel_gauss
+
     s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     Y = [_model.output(_input) for _model in model.get_models()]

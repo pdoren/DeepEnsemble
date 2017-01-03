@@ -13,7 +13,7 @@ from ..metrics import FactoryMetrics
 from ..utils import Logger, score_accuracy, score_rms
 from ..utils.serializable import Serializable
 from ..utils.update_functions import sgd
-from ..utils.utils_classifiers import get_index_label_classes,\
+from ..utils.utils_classifiers import get_index_label_classes, \
     translate_binary_target, translate_output, translate_target
 
 __all__ = ['Model']
@@ -36,7 +36,7 @@ class Model(Serializable):
     target_labels : numpy.array
         Labels of classes.
 
-    _params : list[]
+    _params : list[dict[]]
         List of model's parameters.
 
     _cost_function_list : dict
@@ -488,6 +488,7 @@ class Model(Serializable):
         """
         return self._name
 
+    # noinspection PyTypeChecker
     def get_params(self, only_values=False):
         """ Getter model parameters.
 
@@ -803,7 +804,6 @@ class Model(Serializable):
             params.append(sp)
 
         return params
-
 
     def load_params(self, params):
         """ Load parameters.

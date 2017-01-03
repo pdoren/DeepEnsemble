@@ -242,13 +242,14 @@ def rmsprop(cost_function, params, learning_rate=1.0, rho=0.9, epsilon=1e-6):
     for param, grad in zip(params, gparams):
         value = param.get_value(borrow=True)
         accu = shared(np.zeros(value.shape, dtype=value.dtype),
-                             broadcastable=param.broadcastable)
+                      broadcastable=param.broadcastable)
         accu_new = rho * accu + (one - rho) * grad ** 2
         updates[accu] = accu_new
         updates[param] = param - (learning_rate * grad /
                                   T.sqrt(accu_new + epsilon))
 
     return updates
+
 
 def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
          beta2=0.999, epsilon=1e-8):
@@ -299,18 +300,18 @@ def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
     one = T.constant(1)
 
     t = t_prev + 1
-    a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
+    a_t = learning_rate * T.sqrt(one - beta2 ** t) / (one - beta1 ** t)
 
     for param, g_t in zip(params, gparams):
         value = param.get_value(borrow=True)
         m_prev = shared(np.zeros(value.shape, dtype=value.dtype),
-                               broadcastable=param.broadcastable)
+                        broadcastable=param.broadcastable)
         v_prev = shared(np.zeros(value.shape, dtype=value.dtype),
-                               broadcastable=param.broadcastable)
+                        broadcastable=param.broadcastable)
 
-        m_t = beta1*m_prev + (one-beta1)*g_t
-        v_t = beta2*v_prev + (one-beta2)*g_t**2
-        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
+        m_t = beta1 * m_prev + (one - beta1) * g_t
+        v_t = beta2 * v_prev + (one - beta2) * g_t ** 2
+        step = a_t * m_t / (T.sqrt(v_t) + epsilon)
 
         updates[m_prev] = m_t
         updates[v_prev] = v_t

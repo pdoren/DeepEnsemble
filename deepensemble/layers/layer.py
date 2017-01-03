@@ -6,6 +6,7 @@ from ..utils.serializable import Serializable
 __all__ = ['Layer']
 
 
+# noinspection PyTypeChecker
 class Layer(Serializable):
     """ Base class layers.
 
@@ -20,7 +21,7 @@ class Layer(Serializable):
     _non_linearity : theano.Op
         Activation functions.
 
-    _W : list[dict[]]
+    _W : list[dict]
         Weights.
 
     _b : list[]

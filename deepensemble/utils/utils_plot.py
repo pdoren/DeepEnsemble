@@ -308,7 +308,7 @@ def plot(ax, dps, label_prefix='', label=None):
         x, y = _get_data_per_col(dps)
         y = np.squeeze(y)
         if y.ndim <= 1:
-            y = y[:,np.newaxis]
+            y = y[:, np.newaxis]
         _x = x[:, 0]
         _y = np.nanmean(y, axis=-1)
         _y_std = np.nanstd(y, axis=-1)

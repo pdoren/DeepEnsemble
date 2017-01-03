@@ -3,14 +3,13 @@ import os
 import matplotlib.pylab as plt
 import numpy as np
 
-from deepensemble.utils import get_ensembleCIP_model, Logger, get_index_label_classes, translate_target, get_scores,\
+from deepensemble.utils import get_ensembleCIP_model, Logger, get_index_label_classes, translate_target, get_scores, \
     Serializable, load_data
 from deepensemble.utils.utils_test import get_mean_score, plot_graph2
 from deepensemble.utils.utils_test import make_dirs
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from theano import shared
 from sklearn import cross_validation
-
 
 plt.style.use('ggplot')
 
@@ -46,33 +45,32 @@ lr = 0.01
 args_train = {'max_epoch': 300, 'batch_size': 40, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True}
 
-
-
 # ==========< Ensemble CIP  >================================================================================
 s_beta = shared(np.cast['float32'](0))
 s_lambda = shared(np.cast['float32'](0))
 s_sigma = shared(np.cast['float32'](0))
 
 ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
-                                n_input=n_features, n_output=n_output,
-                                n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                classification=True,
-                                classes_labels=classes_labels,
-                                fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                kernel=ITLFunctions.kernel_gauss, dist='CIP',
-                                is_relevancy=False,
-                                beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
-                                params_update={'learning_rate': lr})
+                                 n_input=n_features, n_output=n_output,
+                                 n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                 classification=True,
+                                 classes_labels=classes_labels,
+                                 fn_activation1=fn_activation, fn_activation2=fn_activation,
+                                 dist='CIP',
+                                 is_relevancy=False,
+                                 beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
+                                 params_update={'learning_rate': lr})
 
 ensemble.compile(fast=True)
 default_params_ensemble = ensemble.save_params()
 
-def get_ensemble_cip(_name, _beta, _lamb, s):
+
+def get_ensemble_cip(_name, _beta, _lamb, _s):
     ensemble.set_name(_name)
     ensemble.load_params(default_params_ensemble)
     s_beta.set_value(np.cast['float32'](_beta))
     s_lambda.set_value(np.cast['float32'](_lamb))
-    s_sigma.set_value(np.cast['float32'](s))
+    s_sigma.set_value(np.cast['float32'](_s))
 
     return ensemble
 
@@ -84,9 +82,9 @@ def get_ensemble_cip(_name, _beta, _lamb, s):
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
-ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20 ])
-beta = [-10, -5.0, -3.0, -1.0, -0.5,  0, 0.5, 1.0, 3.0, 5.0, 10.0]
-lamb = [-10, -5.0, -3.0, -1.0, -0.5,  0, 0.5, 1.0, 3.0, 5.0, 10.0]
+ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20])
+beta = [-10, -5.0, -3.0, -1.0, -0.5, 0, 0.5, 1.0, 3.0, 5.0, 10.0]
+lamb = [-10, -5.0, -3.0, -1.0, -0.5, 0, 0.5, 1.0, 3.0, 5.0, 10.0]
 
 bb, ll, sss = np.meshgrid(beta, lamb, ss)
 parameters = list(zip(bb.flatten(), ll.flatten(), sss.flatten()))
@@ -101,7 +99,6 @@ if not os.path.exists(path_data):
     os.makedirs(path_data)
 
 Logger().log('Processing %s' % name)
-
 
 Logger().reset()
 models = []
@@ -122,7 +119,7 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
 
         Logger().log_disable()
 
-        _model = get_ensemble_cip(_name=name_model, _beta=b, _lamb=l, s=s)
+        _model = get_ensemble_cip(_name=name_model, _beta=b, _lamb=l, _s=s)
 
         m_scores = []
         m_prediction = []
@@ -153,13 +150,13 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
 
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
             score_train, score_test, _ = get_scores(_model, file_model_fold,
-                                                 input_train, target_train, input_test, target_test, **args_train)
+                                                    input_train, target_train, input_test, target_test, **args_train)
 
             m_scores.append((score_train, score_test))
 
             pred_models = []
             for m in _model.get_models():
-                pred_models.append(((m.predict(input_train), m.predict(input_test))))
+                pred_models.append((m.predict(input_train), m.predict(input_test)))
 
             m_prediction.append(pred_models)
 
@@ -177,7 +174,6 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
     scores[(b, l, s)] = data['scores']
     prediction[(b, l, s)] = data['prediction']
 
-
 fig, axes = plt.subplots(nrows=3, ncols=2)
 for s1, ax in zip(ss, axes.flat):
     X, Y, Z = get_mean_score(scores, s1, False)
@@ -185,12 +181,13 @@ for s1, ax in zip(ss, axes.flat):
     if ks == 1:
         s_title = r'$\sigma=\sigma_s$'
     else:
-        s_title = r'$\sigma=%.4g\sigma_s$' % (s1/silverman)
+        s_title = r'$\sigma=%.4g\sigma_s$' % (s1 / silverman)
     p = plot_graph2(ax, X, Y, Z, r'$\beta$', r'$\lambda$', r'Accuracy', s_title)
 
 plt.tight_layout()
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+# noinspection PyUnboundLocalVariable
 fig.colorbar(p, cax=cbar_ax, ax=axes.ravel().tolist())
 
 fig, ax = plt.subplots()

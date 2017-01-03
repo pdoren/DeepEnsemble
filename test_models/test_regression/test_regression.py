@@ -1,23 +1,23 @@
 import matplotlib.pylab as plt
 
+from deepensemble.utils import cross_validation_score
 from deepensemble.utils.cost_functions import mse, kullback_leibler_generalized
 from deepensemble.utils.utils_functions import ActivationFunctions
-from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model,\
+from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model, \
     get_ensembleNCL_model, get_mlp_model
-from deepensemble.utils import cross_validation_score, ITLFunctions
 
 
+# noinspection PyDefaultArgument
 def test_regression(name_db, data_input, data_target,
-                     factor_number_neurons=0.75,
-                     early_stop=True, no_update_best_parameters=False,
-                     n_ensemble_models=4,
-                     lamb_ncl=0.6,
-                     beta_cip=0.6, lamb_cip=0.2, s=None, kernel=ITLFunctions.kernel_gauss, dist='CS',
-                     cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
-                     bias_layer=False, is_relevancy=False, pre_training=False,
-                     fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
-                     folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=300, batch_size=40):
-
+                    factor_number_neurons=0.75,
+                    early_stop=True, no_update_best_parameters=False,
+                    n_ensemble_models=4,
+                    lamb_ncl=0.6,
+                    beta_cip=0.6, lamb_cip=0.2, s=None, dist='CS',
+                    cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
+                    bias_layer=False, is_relevancy=False, fn_activation1=ActivationFunctions.tanh,
+                    fn_activation2=ActivationFunctions.sigmoid,
+                    folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=300, batch_size=40):
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
                   'improvement_threshold': 0.995, 'update_sets': True,
                   'no_update_best_parameters': no_update_best_parameters}
@@ -50,14 +50,14 @@ def test_regression(name_db, data_input, data_target,
 
     # ==========< Ensemble        >==============================================================================
     ensembleKLG = get_ensemble_model(name='Ensamble KLG',
-                                  n_input=n_inputs, n_output=n_output,
-                                  n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_model,
-                                  classification=False,
-                                  fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                  cost=kullback_leibler_generalized, name_cost="KLG",
-                                  params_update={'learning_rate': lr_klg})
+                                     n_input=n_inputs, n_output=n_output,
+                                     n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_model,
+                                     classification=False,
+                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                     cost=kullback_leibler_generalized, name_cost="KLG",
+                                     params_update={'learning_rate': lr_klg})
 
-    # models.append(ensembleKLG)
+    models.append(ensembleKLG)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -65,10 +65,10 @@ def test_regression(name_db, data_input, data_target,
                                         n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                         classification=False,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                        kernel=kernel, dist=dist,
+                                        dist=dist,
                                         beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
-                                        is_relevancy=is_relevancy, pre_training=pre_training,
-                                        cost=cost_cip, name_cost=name_cost_cip, params_cost=params_cost_cip,
+                                        is_relevancy=is_relevancy, cost=cost_cip, name_cost=name_cost_cip,
+                                        params_cost=params_cost_cip,
                                         params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP)
@@ -95,13 +95,14 @@ def test_regression(name_db, data_input, data_target,
 
     # ==========< MLP KLG  >======================================================================================
     netMLP_KLG = get_mlp_model("MLP KLG (%d neuronas)" % n_neurons_model,
-                           n_input=n_inputs, n_output=n_output,
-                           n_neurons=n_neurons_model,
-                           classification=False,
-                           fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=kullback_leibler_generalized, name_cost="KLG", params_update={'learning_rate': lr_klg})
+                               n_input=n_inputs, n_output=n_output,
+                               n_neurons=n_neurons_model,
+                               classification=False,
+                               fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                               cost=kullback_leibler_generalized, name_cost="KLG",
+                               params_update={'learning_rate': lr_klg})
 
-    # models.append(netMLP_KLG)
+    models.append(netMLP_KLG)
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
@@ -122,7 +123,7 @@ def test_regression(name_db, data_input, data_target,
                                    cost=kullback_leibler_generalized, name_cost="KLG",
                                    params_update={'learning_rate': lr_klg})
 
-    # models.append(netMLP_KLG_MAX)
+    models.append(netMLP_KLG_MAX)
 
     plt.style.use('ggplot')
 

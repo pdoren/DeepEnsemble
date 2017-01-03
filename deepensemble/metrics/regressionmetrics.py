@@ -13,6 +13,7 @@ class RegressionMetrics(BaseMetrics):
     model : Model
         Model.
     """
+
     def __init__(self, model):
         super(RegressionMetrics, self).__init__(model=model)
 
@@ -25,6 +26,7 @@ class EnsembleRegressionMetrics(RegressionMetrics, EnsembleMetrics):
     model : Ensemble Model
         Ensemble Model.
     """
+
     def __init__(self, model):
         super(EnsembleRegressionMetrics, self).__init__(model=model)
 

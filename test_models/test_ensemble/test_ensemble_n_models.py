@@ -48,13 +48,13 @@ training = True
 args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': True,
               'improvement_threshold': 0.9995, 'update_sets': True}
 
-
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
 
 s_beta = 5.0
 s_lambda = 5.0
 s_sigma = silverman
+
 
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _n_models, fast=True):
@@ -70,6 +70,7 @@ def get_ensemble_ncl(_name, _n_models, fast=True):
     return ensemble
 
 
+# noinspection PyUnusedLocal
 def get_ensemble_cip(_name, _n_models, fast=True):
     ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
                                      n_input=n_features, n_output=n_output,
@@ -77,7 +78,7 @@ def get_ensemble_cip(_name, _n_models, fast=True):
                                      classification=True,
                                      classes_labels=classes_labels,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                     kernel=ITLFunctions.kernel_gauss, dist='CIP',
+                                     dist='CIP',
                                      is_relevancy=False,
                                      beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
                                      params_update={'learning_rate': lr})

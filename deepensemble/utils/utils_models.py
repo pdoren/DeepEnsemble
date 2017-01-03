@@ -1,13 +1,10 @@
-from .update_functions import sgd
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy,\
-    kullback_leibler_generalized, cip_full, mee
-from .regularizer_functions import L2
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, \
+    kullback_leibler_generalized, cip_full
 from .logger import Logger
-from .utils_functions import ITLFunctions, ActivationFunctions
+from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
-
-from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner,\
-    WeightedVotingCombiner, SoftWeightVotingCombiner
+from .update_functions import sgd
+from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
@@ -107,7 +104,6 @@ def get_ensembleCIP_model(name,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
                           is_relevancy=True):
-
     if is_cip_full:
         cost_models = None
         name_cost_models = None
@@ -162,18 +158,14 @@ def get_ensembleCIP_model(name,
 
 # noinspection PyDefaultArgument
 def get_ensembleCIP_KL_model(name,
-                              n_input, n_output,
-                              n_ensemble_models, n_neurons_models,
-                              fn_activation1, fn_activation2,
-                              classes_labels=None,
-                              classification=False,
-                              dist='CS',
-                              beta=0.9, lamb=0.9, s=None,
-                              batch_size=40, max_epoch=300,
-                              cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
-                              update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                              is_relevancy=True):
-
+                             n_input, n_output,
+                             n_ensemble_models, n_neurons_models,
+                             fn_activation1, fn_activation2,
+                             classes_labels=None,
+                             classification=False,
+                             dist='CS',
+                             beta=0.9, lamb=0.9, s=None,
+                             update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
     cost_models = kullback_leibler_generalized
     name_cost_models = 'KL'
     params_cost_models = {}

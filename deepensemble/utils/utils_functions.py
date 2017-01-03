@@ -246,6 +246,7 @@ class ITLFunctions:
         exp_arg = -(x ** 2) / divisor
         z = 1. / (sqrt2pi * s)
 
+        # noinspection PyUnresolvedReferences
         if exp_arg.ndim > 1:
             exp_arg = T.sum(exp_arg, axis=-1)  # Norm L2
         return T.exp(exp_arg) * z

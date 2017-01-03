@@ -5,6 +5,7 @@
       <w>accu</w>
       <w>adadelta</w>
       <w>adagrad</w>
+      <w>cbar</w>
       <w>cdot</w>
       <w>cmap</w>
       <w>cnmem</w>
@@ -14,6 +15,7 @@
       <w>correntropy</w>
       <w>corrpy</w>
       <w>costo</w>
+      <w>coursera</w>
       <w>cuningham</w>
       <w>datasets</w>
       <w>deepensemble</w>
@@ -23,13 +25,17 @@
       <w>feedforward</w>
       <w>frac</w>
       <w>friendman</w>
+      <w>germannumer</w>
       <w>ggplot</w>
       <w>gparams</w>
+      <w>griddata</w>
       <w>hazan</w>
+      <w>hyperparameter</w>
       <w>interrater</w>
       <w>interscience</w>
       <w>itakura</w>
       <w>jmlr</w>
+      <w>kingma</w>
       <w>kohavi</w>
       <w>krzanowski</w>
       <w>kullback</w>
@@ -66,6 +72,7 @@
       <w>relu</w>
       <w>rmsprop</w>
       <w>saito</w>
+      <w>satimage</w>
       <w>scaler</w>
       <w>schwarz</w>
       <w>scikit</w>
@@ -86,6 +93,7 @@
       <w>svmwt</w>
       <w>tanh</w>
       <w>theano</w>
+      <w>tieleman</w>
       <w>timeseries</w>
       <w>timestep</w>
       <w>timesteps</w>

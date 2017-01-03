@@ -1,18 +1,13 @@
-import os
-
-import numpy as np
-from theano import shared, config
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import cross_validation
+from sklearn.metrics import accuracy_score
+from theano import shared
 
-from deepensemble.utils import load_data, Serializable, plot_pdf
+from deepensemble.utils import load_data, plot_pdf
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
-from deepensemble.utils.cost_functions import kullback_leibler_generalized
-from deepensemble.utils.update_functions import rmsprop, adadelta, adagrad, adam
 from deepensemble.utils.utils_models import get_ensembleCIP_model
-from sklearn import cross_validation
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, accuracy_score
 
 #############################################################################################################
 # Load Data
@@ -50,24 +45,24 @@ S = s
 
 # ==========< Ensemble  CIP   >===============================================================================
 ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
-                                 n_input=n_features, n_output=n_output,
-                                 n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                 classification=True,
-                                 is_cip_full=False,
-                                 classes_labels=classes_labels,
-                                 fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                 dist='CIP',
-                                 # cost=kullback_leibler_generalized, name_cost="KLG",
-                                 beta=0.9, lamb=0, s=S, bias_layer=True,
-                                 params_update={'learning_rate': 0.01},
-                                 # update=adagrad, name_update='ADAGRAD', params_update={'learning_rate': 0.01}
-            )
+                                    n_input=n_features, n_output=n_output,
+                                    n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                    classification=True,
+                                    is_cip_full=False,
+                                    classes_labels=classes_labels,
+                                    fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                    dist='CIP',
+                                    # cost=kullback_leibler_generalized, name_cost="KLG",
+                                    beta=0.9, lamb=0, s=S, bias_layer=True,
+                                    params_update={'learning_rate': 0.01},
+                                    # update=adagrad, name_update='ADAGRAD', params_update={'learning_rate': 0.01}
+                                    )
 
 ensembleCIP.compile(fast=False)
 
-max_epoch=500
+max_epoch = 500
 args_train = {'max_epoch': max_epoch, 'batch_size': 40, 'early_stop': False,
-                  'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
 
@@ -87,6 +82,7 @@ plot_pdf(ax, e_train[:, 0], label='Train Class 1', x_min=-2, x_max=2, n_points=1
 plot_pdf(ax, e_train[:, 1], label='Train Class 2', x_min=-2, x_max=2, n_points=1000)
 plt.legend()
 
+# noinspection PyRedeclaration
 f = plt.figure()
 
 for i, model in enumerate(ensembleCIP.get_models()):
@@ -109,10 +105,10 @@ metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
 metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
 metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
 
-
 om_train = ensembleCIP.output(input_train).eval()
 om_test = ensembleCIP.output(input_test).eval()
 
+# noinspection PyRedeclaration
 f = plt.figure()
 ax = plt.subplot(2, 1, 1)
 ax.plot(om_train[:, 0] - om_train[:, 1], '.', label='Train')

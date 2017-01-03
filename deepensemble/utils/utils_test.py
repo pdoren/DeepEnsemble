@@ -441,6 +441,7 @@ def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
     x = np.linspace(min(X), max(X), 25)
     y = np.linspace(min(Y), max(Y), 25)
 
+    # noinspection PyTypeChecker,PyTypeChecker
     zz = griddata(X, Y, Z, x, y, interp='linear')
     xx, yy = np.meshgrid(x, y)
 
@@ -461,11 +462,13 @@ def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
     fig.colorbar(surf, ticks=np.linspace(z_min, z_max, 5))
 
 
+# noinspection PyUnusedLocal
 def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
     x = np.linspace(min(X), max(X), 200)
     y = np.linspace(min(Y), max(Y), 200)
 
     xx, yy = np.meshgrid(x, y)
+    # noinspection PyTypeChecker,PyTypeChecker
     zz = griddata2((X, Y), Z, (xx, yy), method='cubic')
 
     p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())

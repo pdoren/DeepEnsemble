@@ -313,6 +313,7 @@ class EnsembleModel(Model):
             for key in update_model.keys():
                 updates[key] = update_model[key]
 
+        # noinspection PyUnresolvedReferences
         ind_er = np.nonzero(extra_results)[0]
         extra_results = list(np.array(extra_results)[ind_er])
         labels_extra_results = list(np.array(labels_extra_results)[ind_er])

@@ -5,11 +5,10 @@ __project__ = 'DeepEnsemble'
 
 
 class TestITLFunctions(TestCase):
+    # noinspection PyStringFormat
     def test_cross_information_potential(self):
         from deepensemble.utils.utils_functions import ITLFunctions
         import numpy as np
-        import theano.tensor as T
-        from sklearn.metrics import mutual_info_score
 
         N = 4
         n_classes = 2
@@ -36,7 +35,7 @@ class TestITLFunctions(TestCase):
             DYK.append(ITLFunctions.kernel_gauss(dy, s).eval())
 
         p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
-        self.assertTrue(p1.size == N**2, 'Problem V_J2 (%g != %g)' % (p1.size, N**2))
+        self.assertTrue(p1.size == N ** 2, 'Problem V_J2 (%g != %g)' % (p1.size, N ** 2))
         V_J2 = np.mean(p1)
 
         V_k_i = []
@@ -60,8 +59,7 @@ class TestITLFunctions(TestCase):
 
         V_c2 = V_nc2 ** 2 / (V_J2 * V_M2)
         V_c1 = ITLFunctions.cross_information_potential(Y, kernel=ITLFunctions.kernel_gauss, s=s)
-        self.assertTrue(abs(V_c1.eval() - V_c2) < 0.00001, 'Problem V_c (%g != %g)' % (V_c1.eval(), V_c2) )
-
+        self.assertTrue(abs(V_c1.eval() - V_c2) < 0.00001, 'Problem V_c (%g != %g)' % (V_c1.eval(), V_c2))
 
     def test_mutual_information_cs(self):
         from deepensemble.utils.utils_functions import ITLFunctions

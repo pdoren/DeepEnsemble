@@ -37,8 +37,7 @@ if not os.path.exists(file_scores):
                              n_ensemble_models=4,
                              lamb_ncl=0.8,
                              beta_cip=0.3, lamb_cip=0.1, s=s, dist='CS',
-                             is_relevancy=True, pre_training=True, bias_layer=False,
-                             kernel=ITLFunctions.kernel_gauss,
+                             is_relevancy=True, bias_layer=False,
                              fn_activation1=ActivationFunctions.sigmoid,
                              fn_activation2=ActivationFunctions.sigmoid,
                              folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=300, batch_size=40)
@@ -53,13 +52,14 @@ r_score = {}
 d_diversity = {}
 for s in scores:
     d_score = scores[s]
+    # noinspection PyRedeclaration
     d = [(t1, t2) for t1, t2, _ in d_score]
     if "Ensamble" in s:
         _model = load_model(name_db, s)
         metrics = EnsembleRegressionMetrics(_model)
         for _, _, metric in d_score:
             metrics.append_metric(metric)
-        metrics.plot_cost(title='Costo %s' % s ,max_epoch=300)
+        metrics.plot_cost(title='Costo %s' % s, max_epoch=300)
         metrics.plot_scores(title='Desempeño %s' % s, max_epoch=300)
     _mean = np.mean(d, axis=0)
     _std = np.std(d, axis=0)

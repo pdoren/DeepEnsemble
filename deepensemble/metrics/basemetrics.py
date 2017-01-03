@@ -414,7 +414,8 @@ class EnsembleMetrics(BaseMetrics):
                 n_costs = len(model.get_costs())
                 if n_costs > 0:
                     n += 1
-                add_point(self._models_metric[s_model].get_cost(type_set_data), epoch, data[n], labels[n], model.get_name())
+                add_point(self._models_metric[s_model].get_cost(type_set_data), epoch, data[n], labels[n],
+                          model.get_name())
 
                 n = add_data(labels=labels, model_name=model.get_name(),
                              data_dict=self._models_metric[s_model].get_costs(type_set_data),

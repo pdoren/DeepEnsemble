@@ -309,9 +309,6 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
     s : float
         Size of Kernel.
 
-    kernel : callable
-        Kernel for compute divergence.
-
     dist : str
         This string means if the CIP is compute with Euclidean or Cauchy-Schwarz divergence.
 

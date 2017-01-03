@@ -1,14 +1,13 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.neighbors.kde import KernelDensity
 
-from deepensemble.utils.utils_functions import ActivationFunctions
-from deepensemble.models.sequential import Sequential
+from deepensemble.combiner import *
 from deepensemble.layers.dense import Dense
 from deepensemble.layers.recurrent import RecurrentLayer
-from deepensemble.models.ensemblemodel import EnsembleModel
-from deepensemble.combiner import *
 from deepensemble.metrics import *
+from deepensemble.models.ensemblemodel import EnsembleModel
+from deepensemble.models.sequential import Sequential
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ITLFunctions
 

@@ -41,6 +41,7 @@
         <list>
           <option value="matplotlib.cm.Blues" />
           <option value="six.moves" />
+          <option value="matplotlib.cm.jet" />
         </list>
       </option>
     </inspection_tool>

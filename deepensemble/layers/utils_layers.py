@@ -3,7 +3,6 @@ from collections import OrderedDict
 import numpy as np
 import theano.tensor as T
 from theano import config
-from theano import shared
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 from .layer import Layer
@@ -164,7 +163,8 @@ class NoiseLayer(Layer):
         else:
             self._rng = srng.normal
 
-        super(NoiseLayer, self).__init__(input_shape=input_shape, output_shape=input_shape, exclude_params=True)
+        super(NoiseLayer, self).__init__(input_shape=input_shape, output_shape=input_shape,
+                                         include_w=False, include_b=False)
 
     def set_input_shape(self, shape):
         """ Set input shape.
@@ -184,6 +184,8 @@ class NoiseLayer(Layer):
         ----------
         _input : theano.tensor or numpy.array
             Input sample.
+
+        prob : bool
 
         Returns
         -------

@@ -11,9 +11,9 @@ def calc_MI(X, Y, bins=25):
     c_X = np.histogram(X, bins)[0]
     c_Y = np.histogram(Y, bins)[0]
 
-    H_X = shan_entropy(c_X)
-    H_Y = shan_entropy(c_Y)
-    H_XY = shan_entropy(c_XY)
+    H_X = shannon_entropy(c_X)
+    H_Y = shannon_entropy(c_Y)
+    H_XY = shannon_entropy(c_XY)
 
     MI = H_X + H_Y - H_XY
     return MI
@@ -57,8 +57,9 @@ def calc_ICS(X, Y, bins=25):
     return np.log(np.sum(np.power(d1, 2))) + np.log(np.sum(np.power(d2, 2))) - 2. * np.log(np.sum(d3))
 
 
-def shan_entropy(c):
+def shannon_entropy(c):
     c_normalized = c / float(np.sum(c))
+    # noinspection PyTypeChecker
     c_normalized = c_normalized[np.nonzero(c_normalized)]
     H = -sum(c_normalized * np.log(c_normalized))
     return H
@@ -102,7 +103,7 @@ plt.style.use('ggplot')
 f = plt.figure()
 
 plt.subplot(2, 1, 1)
-#plt.plot(AUC, I, label='$I$')
+# plt.plot(AUC, I, label='$I$')
 plt.plot(AUC, Is, 'r', label='$I_S$')
 plt.plot(AUC, Ied, 'g', label='$I_{ED}$')
 plt.plot(AUC, Ied2, 'b', label='$I_{ED2}$')
@@ -111,9 +112,9 @@ plt.ylabel('Mutual Information')
 plt.legend()
 
 plt.subplot(2, 1, 2)
-#plt.plot(AUC, I, label='$I$')
-plt.plot(AUC, Is, 'r',label='$I_S$')
-plt.plot(AUC, Ics, 'g',label='$I_{CS}$')
+# plt.plot(AUC, I, label='$I$')
+plt.plot(AUC, Is, 'r', label='$I_S$')
+plt.plot(AUC, Ics, 'g', label='$I_{CS}$')
 plt.plot(AUC, Ics2, 'b', label='$I_{CS2}$')
 plt.xlabel('AUC')
 plt.ylabel('Mutual Information')

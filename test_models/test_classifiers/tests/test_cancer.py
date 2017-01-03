@@ -31,7 +31,6 @@ if not os.path.exists(file_scores):
                               lamb_ncl=1.0,
                               beta_cip=0.8, lamb_cip=0.01, s=s, dist='CIP',
                               beta_cip_kl=5.0, lamb_cip_kl=5.0,
-                              kernel=ITLFunctions.kernel_gauss,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
                               folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=500, batch_size=40)

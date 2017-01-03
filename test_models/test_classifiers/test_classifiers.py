@@ -25,7 +25,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                      fn_activation1=ActivationFunctions.tanh, fn_activation2=ActivationFunctions.sigmoid,
                      lr_mse=0.01, lr_klg=0.001,
                      folds=10, max_epoch=300, batch_size=40):
-
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
                   'improvement_threshold': 0.995, 'update_sets': True}
 
@@ -61,29 +60,28 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
-                                     n_input=n_features, n_output=n_output,
-                                     n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                     classification=True,
-                                     is_cip_full=is_cip_full,
-                                     classes_labels=classes_labels,
-                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                     dist=dist,
-                                     beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
-                                     params_update={'learning_rate': lr_klg})
+                                        n_input=n_features, n_output=n_output,
+                                        n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                        classification=True,
+                                        is_cip_full=is_cip_full,
+                                        classes_labels=classes_labels,
+                                        fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                        dist=dist,
+                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
+                                        params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP)
 
     # ==========< Ensemble  CIP KL  >=============================================================================
     ensembleCIP_KL = get_ensembleCIP_KL_model(name='Ensamble CIP KL',
-                                           n_input=n_features, n_output=n_output,
-                                           n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                           classification=True,
-                                           classes_labels=classes_labels,
-                                           fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                           dist=dist,
-                                           is_relevancy=False,
-                                           beta=beta_cip_kl, lamb=lamb_cip_kl, s=s, lr=lr_klg,
-                                           params_update={'learning_rate': lr_klg})
+                                              n_input=n_features, n_output=n_output,
+                                              n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                              classification=True,
+                                              classes_labels=classes_labels,
+                                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                              dist=dist,
+                                              beta=beta_cip_kl, lamb=lamb_cip_kl, s=s,
+                                              params_update={'learning_rate': lr_klg})
 
     models.append(ensembleCIP_KL)
 
@@ -121,7 +119,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     models.append(netMLP_MAX)
 
     if is_klg:
-
         # ==========< Ensemble  KLG      >===========================================================================
         ensembleKLG = get_ensemble_model(name='Ensamble KLG',
                                          n_input=n_features, n_output=n_output,
@@ -178,7 +175,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
 def show_data_classification(name_db, scores, max_epoch):
     plt.style.use('ggplot')
     r_score = {}
-    d_diversity = {}
     for s in sorted(scores):
         d_score = scores[s]
         d = [(t1, t2) for t1, t2, _ in d_score]
