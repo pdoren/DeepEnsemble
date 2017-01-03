@@ -1,4 +1,5 @@
 import theano.tensor as T
+import numpy as np
 from ..utils.utils_functions import ITLFunctions
 
 __all__ = [
@@ -181,5 +182,4 @@ def mutual_information_cs(_input, _output, _target, model, kernel=ITLFunctions.k
     Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)
 
-    sqrt2 = 1.41421356237
-    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s))
+    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, np.sqrt(2) * s))

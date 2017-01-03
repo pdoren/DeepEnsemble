@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-from theano import shared
+from theano import shared, config
 import matplotlib.pyplot as plt
 
 from deepensemble.utils import load_data, Serializable, plot_pdf
@@ -12,11 +12,12 @@ from deepensemble.utils.cost_functions import kullback_leibler_generalized
 from deepensemble.utils.update_functions import rmsprop, adadelta, adagrad, adam
 from deepensemble.utils.utils_models import get_ensembleCIP_model
 from sklearn import cross_validation
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, accuracy_score
 
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('germannumer_scale',
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale',
                                                                               data_home='../../data', normalize=False)
 
 # Generate testing and training sets
@@ -33,7 +34,7 @@ n_classes = len(classes_labels)
 n_output = n_classes
 n_inputs = n_features
 
-n_neurons_model = int(1.0 * (n_output + n_inputs))
+n_neurons_model = int(0.5 * (n_output + n_inputs))
 
 n_ensemble_models = 4
 fn_activation1 = ActivationFunctions.sigmoid
@@ -41,24 +42,24 @@ fn_activation2 = ActivationFunctions.sigmoid
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
+S = s
 
 #############################################################################################################
 # Testing
 #############################################################################################################
 
 # ==========< Ensemble  CIP   >===============================================================================
-bias_layer=False
 ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                  n_input=n_features, n_output=n_output,
                                  n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                  classification=True,
-                                 is_cip_full=True,
+                                 is_cip_full=False,
                                  classes_labels=classes_labels,
                                  fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                  dist='CIP',
                                  # cost=kullback_leibler_generalized, name_cost="KLG",
-                                 beta=0, lamb=0, s=s, bias_layer=bias_layer,
-                                 params_update={'learning_rate': 0.001},
+                                 beta=0.9, lamb=0, s=S, bias_layer=True,
+                                 params_update={'learning_rate': 0.01},
                                  # update=adagrad, name_update='ADAGRAD', params_update={'learning_rate': 0.01}
             )
 
@@ -98,10 +99,27 @@ for i, model in enumerate(ensembleCIP.get_models()):
     plt.legend()
     plt.title('Model %d' % (i + 1))
 
+    print('Accuracy model %d: %.4g' % (i + 1, accuracy_score(model.predict(input_test), target_test)))
+
+print('Accuracy Ensemble: %.4g' % (accuracy_score(ensembleCIP.predict(input_test), target_test)))
+
 plt.tight_layout()
 
 metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
 metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
 metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
+
+
+om_train = ensembleCIP.output(input_train).eval()
+om_test = ensembleCIP.output(input_test).eval()
+
+f = plt.figure()
+ax = plt.subplot(2, 1, 1)
+ax.plot(om_train[:, 0] - om_train[:, 1], '.', label='Train')
+plt.legend()
+
+ax = plt.subplot(2, 1, 2)
+ax.plot(om_test[:, 0] - om_test[:, 1], '.', label='Test')
+plt.legend()
 
 plt.show()

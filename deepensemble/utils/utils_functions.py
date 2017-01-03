@@ -322,7 +322,7 @@ class ITLFunctions:
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
     @staticmethod
-    def _get_cip(Y, kernel, s):
+    def get_cip(Y, kernel, s):
         DY = []
         for y in Y:
             dy = T.tile(y, (y.shape[0], 1, 1))
@@ -331,13 +331,13 @@ class ITLFunctions:
 
         DYK = [kernel(dy, s) for dy in DY]
 
-        V_J = T.mean(np.prod(DYK))
+        V_J = T.mean(np.prod(DYK, axis=-1))
 
         V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
 
         V_k = [T.mean(V_i) for V_i in V_k_i]
 
-        V_nc = T.mean(np.prod(V_k_i))
+        V_nc = T.mean(np.prod(V_k_i, axis=-1))
 
         V_M = np.prod(V_k)
 
@@ -345,7 +345,7 @@ class ITLFunctions:
 
     @staticmethod
     def cross_information_potential(Y, kernel, s, normalize=True):
-        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
 
         if normalize:
             return T.power(V_nc, 2) / (V_J * V_M)
@@ -354,7 +354,7 @@ class ITLFunctions:
 
     @staticmethod
     def mutual_information_cs(Y, kernel, s, normalize=True):
-        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
 
         if normalize:
             return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
@@ -363,7 +363,7 @@ class ITLFunctions:
 
     @staticmethod
     def mutual_information_ed(Y, kernel, s, normalize=True):
-        V_nc, V_J, V_M = ITLFunctions._get_cip(Y, kernel, s)
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
 
         if normalize:
             return V_J - 2 * V_nc + V_M

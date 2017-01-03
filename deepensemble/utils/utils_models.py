@@ -1,13 +1,13 @@
 from .update_functions import sgd
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy,\
-    kullback_leibler_generalized, cip_full
+    kullback_leibler_generalized, cip_full, mee
 from .regularizer_functions import L2
 from .logger import Logger
 from .utils_functions import ITLFunctions, ActivationFunctions
 from .score_functions import mutual_information_cs
 
 from ..combiner import AverageCombiner, PluralityVotingCombiner, SoftVotingCombiner,\
-    WeightedVotingCombiner, SoftWeightVotingCombiner, GeometricVotingCombiner
+    WeightedVotingCombiner, SoftWeightVotingCombiner
 from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
@@ -83,7 +83,7 @@ def get_ensemble_model(name,
         ensemble.append_model(net)
 
     if classification:
-        ensemble.set_combiner(GeometricVotingCombiner())
+        ensemble.set_combiner(PluralityVotingCombiner())
     else:
         ensemble.set_combiner(AverageCombiner())
 
@@ -116,6 +116,7 @@ def get_ensembleCIP_model(name,
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': s, 'dist': dist}
+        # params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,

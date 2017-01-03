@@ -65,7 +65,7 @@ def shan_entropy(c):
 
 
 N = 500
-y1 = np.random.binomial(1, 0.5, N)
+y1 = np.random.binomial(1, 0.7, N)
 y1 = y1.astype(dtype=config.floatX)
 y1 = y1[:, np.newaxis]
 

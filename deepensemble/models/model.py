@@ -814,9 +814,9 @@ class Model(Serializable):
             List of parameters.
         """
         for p, sp in zip(self.get_params(), params):
-            p = sp
-            if isinstance(p['value'], T.TensorVariable):
-                p['value'].set_value(sp['value'])
+            p = copy.deepcopy(sp)
+            if p['value'] is not None:
+                p['value'].set_value(sp['value'].get_value())
 
     def _compile(self, fast=True, **kwargs):
         """ Prepare training.
