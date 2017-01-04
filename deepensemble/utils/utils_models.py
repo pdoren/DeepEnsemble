@@ -1,9 +1,12 @@
+from theano import shared
+import theano.tensor as T
+
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, \
-    kullback_leibler_generalized, cip_full
+    kullback_leibler_generalized, cip_full, mee
 from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
-from .update_functions import sgd
+from .update_functions import sgd, annealing
 from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
 
@@ -17,10 +20,12 @@ __all__ = ["get_mlp_model",
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
     state_log = Logger().is_log_activate()
     Logger().log_disable()
-    net0.reset()
+
     for net in _ensemble.get_models():
+        net0.reset()
         net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
         net.load_params(net0.save_params())
+
     if state_log:
         Logger().log_enable()
 
@@ -99,11 +104,15 @@ def get_ensembleCIP_model(name,
                           dist='CS',
                           is_cip_full=False,
                           beta=0.9, lamb=0.9, s=None,
-                          bias_layer=False,
+                          bias_layer=False, mse_first_epoch=False,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
-                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                          is_relevancy=True):
+                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
+    sp = 1.5 * s
+    sm = 0.5 * s
+    i = shared(0.0, 'i')
+    si = sp * T.power((sm / sp), i)
+
     if is_cip_full:
         cost_models = None
         name_cost_models = None
@@ -111,7 +120,7 @@ def get_ensembleCIP_model(name,
     else:
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
-        params_cost_models = {'s': s, 'dist': dist}
+        params_cost_models = {'s': si, 'dist': dist}
         # params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
@@ -125,7 +134,7 @@ def get_ensembleCIP_model(name,
                                   params_cost=params_cost_models,
                                   update=update, name_update=name_update, params_update=params_update)
 
-    if not is_cip_full and is_relevancy and not bias_layer:
+    if mse_first_epoch:
         Logger().log_disable()
 
         net0 = get_mlp_model("net0",
@@ -146,12 +155,12 @@ def get_ensembleCIP_model(name,
         ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s)
     else:
         if beta != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta,
-                                       s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s, dist=dist)
 
         if lamb != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb,
-                                       s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
+
+    ensemble.append_update(annealing, 'Annealing', max_epoch=500, _i=i)
 
     return ensemble
 

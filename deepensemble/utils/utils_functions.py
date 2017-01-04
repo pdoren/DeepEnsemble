@@ -249,7 +249,7 @@ class ITLFunctions:
         # noinspection PyUnresolvedReferences
         if exp_arg.ndim > 1:
             exp_arg = T.sum(exp_arg, axis=-1)  # Norm L2
-        return T.exp(exp_arg) * z
+        return T.cast(T.exp(exp_arg) * z, T.config.floatX)
 
     @staticmethod
     def silverman(x, N, d):
@@ -272,7 +272,7 @@ class ITLFunctions:
             Returns a size kernel computed with Silverman Rule.
         """
         K = T.power(4.0 / (N * (2.0 * d + 1.0)), 1.0 / (d + 4.0))
-        return T.std(x) * K
+        return T.cast(T.std(x) * K, T.config.floatX)
 
     @staticmethod
     def information_potential(x, kernel, s):

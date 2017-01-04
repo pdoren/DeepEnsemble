@@ -310,8 +310,7 @@ class EnsembleModel(Model):
             cost_model = cost if cost_model == 0 else cost_model
             error_model = model.get_error()
             update_model = model.get_update_function(cost_model, error_model)
-            for key in update_model.keys():
-                updates[key] = update_model[key]
+            updates.update(update_model)
 
         # noinspection PyUnresolvedReferences
         ind_er = np.nonzero(extra_results)[0]

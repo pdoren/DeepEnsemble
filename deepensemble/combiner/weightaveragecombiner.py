@@ -74,10 +74,9 @@ class WeightAverageCombiner(ModelCombiner):
         output = 0.0
         if _input == ensemble_model.get_model_input():
             for i, model in enumerate(ensemble_model.get_models()):
-                output += model.output(_input, prob) * self.get_param(only_values=True)['value'][
-                    i, 0]  # index TensorVariable
+                output += model.output(_input, prob) * self.get_param(only_values=True)[i, 0]  # index TensorVariable
         else:
-            param = self.get_param(only_values=True)['value'].get_value()
+            param = self.get_param(only_values=True).get_value()
             for i, model in enumerate(ensemble_model.get_models()):
                 output += model.output(_input, prob) * param[i]
         return output
@@ -120,7 +119,7 @@ class WeightAverageCombiner(ModelCombiner):
 
         update_param = (1.0 / inv_sum_sum_inv_Ckj) * inv_sum_Cij
 
-        param = self.get_param(only_values=True)['value']
+        param = self.get_param(only_values=True)
         updates[param] = T.set_subtensor(param[:, 0], update_param[:])
 
         return updates
@@ -177,9 +176,9 @@ class WeightedVotingCombiner(WeightAverageCombiner):
                        ensemble_model.get_models()]
             if _input == ensemble_model.get_model_input():
                 for i, model in enumerate(outputs):
-                    outputs[i] *= self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
+                    outputs[i] *= self.get_param(only_values=True)[i, 0]  # index TensorVariable
             else:
-                param = self.get_param(only_values=True)['value'].get_value()
+                param = self.get_param(only_values=True).get_value()
                 for i, model in enumerate(outputs):
                     outputs[i] *= param[i]
             return translate_output(sum(outputs), ensemble_model.get_fan_out(),
@@ -204,7 +203,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         voting = [{} for _ in range(_input.shape[0])]
         for i, model in enumerate(ensemble_model.get_models()):
             votes = model.predict(_input)
-            WeightedVotingCombiner._vote(voting, votes, self.get_param(only_values=True)['value'][i].eval())
+            WeightedVotingCombiner._vote(voting, votes, self.get_param(only_values=True)[i].eval())
 
         return WeightedVotingCombiner._result(voting)
 
@@ -273,9 +272,9 @@ class SoftWeightVotingCombiner(WeightAverageCombiner):
                        ensemble_model.get_models()]
             if _input == ensemble_model.get_model_input():
                 for i, model in enumerate(outputs):
-                    outputs[i] *= self.get_param(only_values=True)['value'][i, 0]  # index TensorVariable
+                    outputs[i] *= self.get_param(only_values=True)[i, 0]  # index TensorVariable
             else:
-                param = self.get_param(only_values=True)['value'].get_value()
+                param = self.get_param(only_values=True).get_value()
                 for i, model in enumerate(outputs):
                     outputs[i] *= param[i]
             return translate_output(sum(outputs), ensemble_model.get_fan_out(),

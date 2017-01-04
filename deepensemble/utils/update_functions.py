@@ -5,7 +5,7 @@ import numpy as np
 
 # Thanks to the library Lasagne.
 
-__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam']
+__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam', 'sgd_cip', 'annealing']
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
@@ -68,6 +68,34 @@ def adagrad(cost_function, params, learning_rate=0.1, epsilon=1e-6):
         accu_new = accu + grad ** 2
         updates[accu] = accu_new
         updates[param] = param - (learning_rate * grad / T.sqrt(accu_new + epsilon))
+
+    return updates
+
+
+def sgd_cip(cost_function, params, learning_rate=0.1):
+    """ Stochastic Gradient Descent (SGD).
+
+    Parameters
+    ----------
+    cost_function : theano.function
+        Function cost.
+
+    params : theano.share
+        List of params model.
+
+    learning_rate : float, 0.1 by default
+        The learning rate controlling the size of update steps.
+
+    Returns
+    -------
+    OrderedDict
+        A dictionary mapping each parameter to its update expression.
+    """
+    gparams = [T.grad(cost_function, param) for param in params]
+    updates = OrderedDict()
+
+    for param, grad in zip(params, gparams):
+        updates[param] = param - learning_rate * grad
 
     return updates
 
@@ -319,4 +347,10 @@ def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
 
     updates[t_prev] = t
 
+    return updates
+
+
+def annealing(self, error, max_epoch=500, _i=None):
+    updates = OrderedDict()
+    updates[_i] += 1.0 / max_epoch
     return updates

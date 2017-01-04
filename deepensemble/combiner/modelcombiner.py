@@ -51,11 +51,7 @@ class ModelCombiner(Serializable):
         if not only_values:
             return self._param
         else:
-            params = []
-            if self._param is not None and self._param['include']:
-                params.append(self._param['value'])
-
-            return params
+            return self._param['value']
 
     def output(self, ensemble_model, _input, prob):
         """ Mixing the output or prediction of ensemble's models.

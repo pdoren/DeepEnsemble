@@ -129,21 +129,20 @@ class Model(Serializable):
         -------
         None
         """
-        if self.is_compiled():
-            self._output['prob']['changed'] = True
-            self._output['crisp']['changed'] = True
+        self._output['prob']['changed'] = True
+        self._output['crisp']['changed'] = True
 
-            self._cost_function_list['changed'] = True
-            self._score_function_list['changed'] = True
-            self._error = None
+        self._cost_function_list['changed'] = True
+        self._score_function_list['changed'] = True
+        self._error = None
 
-            self._is_compiled = True
-            self._is_fast_compile = False
+        self._is_compiled = False
+        self._is_fast_compile = False
 
-            self._train_eval = None
-            self._valid_eval = None
-            self._data_train = {'input': None, 'target': None}
-            self._data_valid = {'input': None, 'target': None}
+        self._train_eval = None
+        self._valid_eval = None
+        self._data_train = {'input': None, 'target': None}
+        self._data_valid = {'input': None, 'target': None}
 
     def _define_input(self):
         """ Generate a shared variable for input.

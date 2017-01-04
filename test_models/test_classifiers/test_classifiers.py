@@ -73,17 +73,17 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     models.append(ensembleCIP)
 
     # ==========< Ensemble  CIP KL  >=============================================================================
-    ensembleCIP_KL = get_ensembleCIP_KL_model(name='Ensamble CIP KL',
-                                              n_input=n_features, n_output=n_output,
-                                              n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                              classification=True,
-                                              classes_labels=classes_labels,
-                                              fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                              dist=dist,
-                                              beta=beta_cip_kl, lamb=lamb_cip_kl, s=s,
-                                              params_update={'learning_rate': lr_klg})
+    #ensembleCIP_KL = get_ensembleCIP_KL_model(name='Ensamble CIP KL',
+    #                                          n_input=n_features, n_output=n_output,
+    #                                          n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+    #                                          classification=True,
+    #                                          classes_labels=classes_labels,
+    #                                          fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+    #                                          dist=dist,
+    #                                          beta=beta_cip_kl, lamb=lamb_cip_kl, s=s,
+    #                                          params_update={'learning_rate': lr_klg})
 
-    models.append(ensembleCIP_KL)
+    #models.append(ensembleCIP_KL)
 
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = get_ensembleNCL_model(name='Ensamble NCL',

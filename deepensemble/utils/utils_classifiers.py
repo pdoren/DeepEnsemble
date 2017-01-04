@@ -27,7 +27,7 @@ def translate_target(_target, target_labels):
     target = np.zeros(shape=(len(_target), n_classes), dtype=theano.config.floatX)
     for i, label in enumerate(_target):
         target[i, list(target_labels).index(label)] = 1.0
-    return target
+    return target.astype(dtype=theano.config.floatX)
 
 
 def translate_binary_target(_target, target_labels):
@@ -53,7 +53,7 @@ def translate_binary_target(_target, target_labels):
 
     for i, label in enumerate(_target):
         target[i] = dict_value[list(target_labels).index(label)]
-    return target
+    return target.astype(dtype=theano.config.floatX)
 
 
 def get_index_label_classes(_output, is_binary_classification=False):
