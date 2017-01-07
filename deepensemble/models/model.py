@@ -4,6 +4,7 @@ import numpy as np
 import theano.tensor as T
 import copy
 
+from theano import shared
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score, mean_squared_error
 from theano import config, function
@@ -796,11 +797,11 @@ class Model(Serializable):
             Returns a list with the parameters model.
         """
         params = []
-        for p in self.get_params():
-            sp = copy.deepcopy(p)
-            if isinstance(p['value'], T.TensorVariable):
-                sp['value'] = p['value'].get_value()
-            params.append(sp)
+        for i, _ in enumerate(self._params):
+            param = copy.deepcopy(self._params[i])
+            if isinstance(param['value'], T.Variable):
+                param['value'] = shared(self._params[i]['value'].get_value())
+            params.append(param)
 
         return params
 
@@ -812,10 +813,12 @@ class Model(Serializable):
         params : list[]
             List of parameters.
         """
-        for p, sp in zip(self.get_params(), params):
-            p = copy.deepcopy(sp)
-            if p['value'] is not None:
-                p['value'].set_value(sp['value'].get_value())
+        for i, _ in enumerate(self._params):
+            value = self._params[i]['value']
+            self._params[i] = copy.deepcopy(params[i])
+            if isinstance(value, T.Variable):
+                value.set_value(params[i]['value'].get_value())
+            self._params[i]['value'] = value
 
     def _compile(self, fast=True, **kwargs):
         """ Prepare training.
@@ -1301,6 +1304,9 @@ class Model(Serializable):
         OrderedDict
             A dictionary mapping each parameter to its update expression.
         """
+        if cost is None or type(cost) == int or type(cost) == float:
+            raise ValueError('The cost function is not defined')
+
         updates = OrderedDict()
         for i, f in enumerate(self._update_functions):
             if i == 0:

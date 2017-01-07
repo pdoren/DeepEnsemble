@@ -241,15 +241,12 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        divisor = T.cast(2.0 * s ** 2, T.config.floatX)
+        divisor = T.cast(2.0 * T.power(s, 2), T.config.floatX)
 
-        exp_arg = -(x ** 2) / divisor
+        exp_arg = -T.power(x, 2) / divisor
         z = 1. / (sqrt2pi * s)
 
-        # noinspection PyUnresolvedReferences
-        if exp_arg.ndim > 1:
-            exp_arg = T.sum(exp_arg, axis=-1)  # Norm L2
-        return T.cast(T.exp(exp_arg) * z, T.config.floatX)
+        return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
 
     @staticmethod
     def silverman(x, N, d):
@@ -345,31 +342,27 @@ class ITLFunctions:
         return V_nc, V_J, V_M
 
     @staticmethod
-    def cross_information_potential(Y, kernel, s, normalize=True):
+    def cross_information_potential(Y, kernel, s, dist='ED'):
         V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
 
-        if normalize:
+        if dist == 'CS':
             return T.power(V_nc, 2) / (V_J * V_M)
-        else:
-            return V_nc
-
-    @staticmethod
-    def mutual_information_cs(Y, kernel, s, normalize=True):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
-
-        if normalize:
-            return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
-        else:
-            return V_nc
-
-    @staticmethod
-    def mutual_information_ed(Y, kernel, s, normalize=True):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
-
-        if normalize:
+        elif dist == 'ED':
             return V_J - 2 * V_nc + V_M
         else:
-            return V_nc
+            raise ValueError('The dist must be CS or ED')
+
+    @staticmethod
+    def mutual_information_cs(Y, kernel, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
+
+        return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
+
+    @staticmethod
+    def mutual_information_ed(Y, kernel, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
+
+        return V_J - 2 * V_nc + V_M
 
 
 class DiversityFunctions:

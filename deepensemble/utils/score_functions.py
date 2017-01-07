@@ -4,6 +4,7 @@ from ..utils.utils_functions import ITLFunctions
 
 __all__ = [
     'dummy_score',
+    'get_accuracy',
     'score_accuracy',
     'score_ensemble_ambiguity',
     'score_rms',
@@ -41,6 +42,8 @@ def dummy_score(_input, _output, _target, model):
 #
 # Classification Functions
 #
+def get_accuracy(Y, T):
+    return float(np.sum(Y == T)) / float(T.shape[0])
 
 # noinspection PyUnusedLocal
 def score_accuracy(_input, _output, _target, model):
@@ -188,4 +191,4 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)
 
-    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, np.sqrt(2) * s))
+    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, np.sqrt(2) * s, dist='CS'))
