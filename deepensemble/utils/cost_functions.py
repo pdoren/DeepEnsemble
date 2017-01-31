@@ -10,7 +10,6 @@ __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'cip_relevancy', 'cip_redundancy', 'cip_synergy', 'cip_full']
 
 eps = 0.00001
-sqrt2 = 1.41421356237
 
 
 # noinspection PyUnusedLocal
@@ -266,7 +265,7 @@ def mee(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
     e = model.error(_input, _target)
-    return -T.log(ITLFunctions.information_potential(e, kernel, sqrt2 * s))
+    return -T.log(ITLFunctions.information_potential(e, kernel, s))
 
 
 def neg_log_likelihood(model, _input, _target):
@@ -322,13 +321,13 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     if dist == 'CS':
-        return -ITLFunctions.mutual_information_cs([om, _target], sqrt2 * s)
+        return -ITLFunctions.mutual_information_cs([om, _target], s)
     elif dist == 'ED':
-        return -ITLFunctions.mutual_information_ed([om, _target], sqrt2 * s)
+        return -ITLFunctions.mutual_information_ed([om, _target], s)
     elif dist == 'CS-CIP':
-        return ITLFunctions.cross_information_potential([om, _target], sqrt2 * s, dist='CS')
+        return ITLFunctions.cross_information_potential([om, _target], s, dist='CS')
     elif dist == 'ED-CIP':
-        return -ITLFunctions.cross_information_potential([om, _target], sqrt2 * s, dist='ED')
+        return -ITLFunctions.cross_information_potential([om, _target], s, dist='ED')
     else:
         raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
 
@@ -450,7 +449,7 @@ def neg_mee(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=ITLFuncti
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    return lamb * T.log(ITLFunctions.information_potential(h, kernel, sqrt2 * s))
+    return lamb * T.log(ITLFunctions.information_potential(h, kernel, s))
 
 
 def neg_klg(model, _input, _target, ensemble, lamb=0.5):
@@ -516,7 +515,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'
     """
 
     if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     redundancy = []
     om = model.output(_input)
@@ -585,7 +584,7 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
     """
 
     if s is None:
-        s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     synergy = []
     om = model.output(_input)
@@ -653,9 +652,9 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     Y.append(_target)
 
     if dist == 'CS-CIP' or dist == 'CS':
-        return ITLFunctions.cross_information_potential(Y, sqrt2 * s, dist='CS')
+        return ITLFunctions.cross_information_potential(Y, s, dist='CS')
     elif dist == 'ED-CIP' or dist == 'ED':
-        return -ITLFunctions.cross_information_potential(Y, sqrt2 * s, dist='ED')
+        return -ITLFunctions.cross_information_potential(Y, s, dist='ED')
     else:
         raise ValueError('The dist must be CS-CIP or ED-CIP')
 

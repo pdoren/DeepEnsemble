@@ -73,10 +73,10 @@ y1 = y1[:, np.newaxis]
 _y2 = T.matrix('y2')
 s = 1.06 * np.std(y1) * (len(y1)) ** (-0.2)  # Silverman
 
-_Ics = ITLFunctions.mutual_information_cs([_y2, shared(y1)], kernel=ITLFunctions.kernel_gauss, s=np.sqrt(2) * s)
+_Ics = ITLFunctions.mutual_information_cs([_y2, shared(y1)], s=np.sqrt(2) * s)
 fn_Ics = function([_y2], outputs=_Ics, allow_input_downcast=True)
 
-_Ied = ITLFunctions.mutual_information_ed([_y2, shared(y1)], kernel=ITLFunctions.kernel_gauss, s=np.sqrt(2) * s)
+_Ied = ITLFunctions.mutual_information_ed([_y2, shared(y1)], s=np.sqrt(2) * s)
 fn_Ied = function([_y2], outputs=_Ied, allow_input_downcast=True)
 
 Ics = []

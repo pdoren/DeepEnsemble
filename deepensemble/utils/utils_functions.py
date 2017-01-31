@@ -4,6 +4,7 @@ import numpy as np
 __all__ = ['ActivationFunctions', 'ITLFunctions', 'DiversityFunctions']
 
 sqrt2pi = T.constant(2.50662827)  # sqrt(2 * pi)
+sqrt2 = 1.41421356237  # sqrt(2)
 
 
 class ActivationFunctions:
@@ -317,7 +318,7 @@ class ITLFunctions:
         """
         dx = T.tile(x, (x.shape[0], 1, 1))
         dx = dx - T.transpose(dx, axes=(1, 0, 2))
-        return T.mean(kernel(dx, s))
+        return T.mean(kernel(dx, sqrt2 * s))
 
     @staticmethod
     def error_rate(y, t):
@@ -352,11 +353,11 @@ class ITLFunctions:
             dy = T.transpose(dy, axes=(1, 0, 2)) - dy
             DY.append(dy)
 
-        DYK = [kernel(dy, s) for dy in DY]
+        DYK = [kernel(dy, sqrt2 * s) for dy in DY]
 
         V_J = T.mean(np.prod(DYK, axis=0))
 
-        V_k_i = [T.mean(dyk, axis=1) for dyk in DYK]
+        V_k_i = [T.mean(dyk, axis=0) for dyk in DYK]
 
         V_k = [T.mean(V_i) for V_i in V_k_i]
 
@@ -377,15 +378,14 @@ class ITLFunctions:
 
         DYK = []
         for dy in DY:
-            DYK.append(kernel(dy, s))
+            DYK.append(kernel(dy, sqrt2 * s))
 
-        p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
-        V_J = np.mean(p1)
+        V_J = np.mean(np.prod(np.array([dyk for dyk in DYK]), axis=0))
 
         V_k_i = []
 
         for dyk in DYK:
-            V_k_i.append(np.mean(dyk, axis=0))
+            V_k_i.append(np.mean(dyk, axis=1))
 
         V_k = [np.mean(V_i) for V_i in V_k_i]
 
@@ -410,7 +410,7 @@ class ITLFunctions:
 
         DYK = []
         for dy in DY:
-            DYK.append(kernel(dy, s))
+            DYK.append(kernel(dy, sqrt2 * s))
 
         p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
 
