@@ -249,6 +249,30 @@ class ITLFunctions:
         return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
 
     @staticmethod
+    def kernel_gauss_numpy(x, s):
+        """ Gaussian Kernel.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            Input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns Gaussian Kernel.
+        """
+        divisor = np.array(2.0 * (s ** 2), T.config.floatX)
+
+        exp_arg = -x ** 2 / divisor
+        z = 1. / (sqrt2pi * s)
+
+        return np.exp(exp_arg.sum(axis=-1)) * z
+
+    @staticmethod
     def silverman(x, N, d):
         """ Silverman
 
@@ -320,30 +344,103 @@ class ITLFunctions:
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
     @staticmethod
-    def get_cip(Y, kernel, s):
+    def get_cip(Y, s):
+        kernel=ITLFunctions.kernel_gauss
         DY = []
         for y in Y:
             dy = T.tile(y, (y.shape[0], 1, 1))
-            dy = dy - T.transpose(dy, axes=(1, 0, 2))
+            dy = T.transpose(dy, axes=(1, 0, 2)) - dy
             DY.append(dy)
 
         DYK = [kernel(dy, s) for dy in DY]
 
-        V_J = T.mean(np.prod(DYK, axis=-1))
+        V_J = T.mean(np.prod(DYK, axis=0))
 
-        V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
+        V_k_i = [T.mean(dyk, axis=1) for dyk in DYK]
 
         V_k = [T.mean(V_i) for V_i in V_k_i]
 
-        V_nc = T.mean(np.prod(V_k_i, axis=-1))
+        V_M = np.prod(V_k)
+
+        V_nc = T.mean(np.prod(V_k_i, axis=0))
+
+        return V_nc, V_J, V_M
+
+    @staticmethod
+    def get_cip_numpy(Y, s):
+        kernel=ITLFunctions.kernel_gauss_numpy
+        DY = []
+        for y in Y:
+            dy = np.tile(y, (len(y), 1, 1))
+            dy = np.transpose(dy, axes=(1, 0, 2)) - dy
+            DY.append(dy)
+
+        DYK = []
+        for dy in DY:
+            DYK.append(kernel(dy, s))
+
+        p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
+        V_J = np.mean(p1)
+
+        V_k_i = []
+
+        for dyk in DYK:
+            V_k_i.append(np.mean(dyk, axis=0))
+
+        V_k = [np.mean(V_i) for V_i in V_k_i]
+
+        p2 = np.prod(V_k_i, axis=0)
+        V_nc = np.mean(p2)
 
         V_M = np.prod(V_k)
 
         return V_nc, V_J, V_M
 
     @staticmethod
-    def cross_information_potential(Y, kernel, s, dist='ED'):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
+    def get_grad_cip_numpy(Y, X, s):
+        kernel=ITLFunctions.kernel_gauss_numpy
+        DY = []
+        for y in Y:
+            dy = np.tile(y, (len(y), 1, 1))
+            dy = dy - np.transpose(dy, axes=(1, 0, 2))
+            DY.append(dy)
+
+        dx = np.tile(X, (len(X), 1, 1))
+        dx = dx - np.transpose(dx, axes=(1, 0, 2))
+
+        DYK = []
+        for dy in DY:
+            DYK.append(kernel(dy, s))
+
+        p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
+
+        deriv = dy * dx / s ** 2
+
+        p11 = []
+        for dy in DY:
+            p11.append(np.mean(p1))
+        dV_J = np.mean(p11)
+
+        V_k_i = []
+
+        for dyk in DYK:
+            V_k_i.append(np.mean(dyk, axis=0))
+
+        V_k = [np.mean(V_i * deriv) for V_i in V_k_i]
+
+        #for dy in DY:
+            # Falta
+
+        V_M = np.prod(V_k)
+
+        p2 = np.prod(V_k_i, axis=0)
+        V_nc = np.mean(p2)
+
+        return V_nc, dV_J, V_M
+
+    @staticmethod
+    def cross_information_potential(Y, s, dist='ED'):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
 
         if dist == 'CS':
             return T.power(V_nc, 2) / (V_J * V_M)
@@ -353,14 +450,14 @@ class ITLFunctions:
             raise ValueError('The dist must be CS or ED')
 
     @staticmethod
-    def mutual_information_cs(Y, kernel, s):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
+    def mutual_information_cs(Y, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
 
         return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
 
     @staticmethod
-    def mutual_information_ed(Y, kernel, s):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, kernel, s)
+    def mutual_information_ed(Y, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
 
         return V_J - 2 * V_nc + V_M
 

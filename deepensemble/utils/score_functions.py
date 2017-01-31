@@ -191,4 +191,4 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)
 
-    return -T.log(ITLFunctions.cross_information_potential(Y, kernel, np.sqrt(2) * s, dist='CS'))
+    return -T.log(ITLFunctions.cross_information_potential(Y, np.sqrt(2) * s, dist='CS'))

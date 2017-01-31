@@ -317,20 +317,18 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
     theano.tensor.matrix
         Return Cross Information Potential between model output and target.
     """
-    kernel = ITLFunctions.kernel_gauss
-
     om = model.output(_input)
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
     if dist == 'CS':
-        return -ITLFunctions.mutual_information_cs([om, _target], kernel, sqrt2 * s)
+        return -ITLFunctions.mutual_information_cs([om, _target], sqrt2 * s)
     elif dist == 'ED':
-        return -ITLFunctions.mutual_information_ed([om, _target], kernel, sqrt2 * s)
+        return -ITLFunctions.mutual_information_ed([om, _target], sqrt2 * s)
     elif dist == 'CS-CIP':
-        return ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s, dist='CS')
+        return ITLFunctions.cross_information_potential([om, _target], sqrt2 * s, dist='CS')
     elif dist == 'ED-CIP':
-        return -ITLFunctions.cross_information_potential([om, _target], kernel, sqrt2 * s, dist='ED')
+        return -ITLFunctions.cross_information_potential([om, _target], sqrt2 * s, dist='ED')
     else:
         raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
 
@@ -516,7 +514,6 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'
     theano.tensor.matrix or float
         Return Cross Information Potential Diversity.
     """
-    kernel = ITLFunctions.kernel_gauss
 
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
@@ -535,16 +532,16 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], kernel, s)
+                I2 = ITLFunctions.mutual_information_cs([om, om_k], s)
                 redundancy.append(-I2)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], s)
                 redundancy.append(-I2)
             elif dist == 'CS-CIP':
-                cip2 = ITLFunctions.cross_information_potential([om, om_k], kernel, s, dist='CS')
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], s, dist='CS')
                 redundancy.append(cip2)
             elif dist == 'ED-CIP':
-                cip2 = -ITLFunctions.cross_information_potential([om, om_k], kernel, s, dist='ED')
+                cip2 = -ITLFunctions.cross_information_potential([om, om_k], s, dist='ED')
                 redundancy.append(cip2)
             else:
                 raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
@@ -586,7 +583,6 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
     theano.tensor.matrix
         Return Cross Information Potential Diversity.
     """
-    kernel = ITLFunctions.kernel_gauss
 
     if s is None:
         s = sqrt2 * T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
@@ -605,18 +601,18 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], kernel, s)
-                I3 = ITLFunctions.mutual_information_cs([om, om_k, _target], kernel, s)
+                I2 = ITLFunctions.mutual_information_cs([om, om_k], s)
+                I3 = ITLFunctions.mutual_information_cs([om, om_k, _target], s)
                 synergy.append(I2 - I3)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], kernel, s)
-                I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], kernel, s)
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], s)
+                I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], s)
                 synergy.append(I2 - I3)
             elif dist == 'CS-CIP':
-                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s, dist='CS')
+                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], s, dist='CS')
                 synergy.append(cip3)
             elif dist == 'ED-CIP':
-                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], kernel, s, dist='ED')
+                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], s, dist='ED')
                 synergy.append(-cip3)
             else:
                 raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
@@ -649,7 +645,6 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     theano.tensor.matrix
         Return Cross Information Potential.
     """
-    kernel = ITLFunctions.kernel_gauss
 
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
@@ -657,10 +652,10 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)
 
-    if dist == 'CS-CIP':
-        return ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s, dist='CS')
-    elif dist == 'ED-CIP':
-        return -ITLFunctions.cross_information_potential(Y, kernel, sqrt2 * s, dist='ED')
+    if dist == 'CS-CIP' or dist == 'CS':
+        return ITLFunctions.cross_information_potential(Y, sqrt2 * s, dist='CS')
+    elif dist == 'ED-CIP' or dist == 'ED':
+        return -ITLFunctions.cross_information_potential(Y, sqrt2 * s, dist='ED')
     else:
         raise ValueError('The dist must be CS-CIP or ED-CIP')
 
