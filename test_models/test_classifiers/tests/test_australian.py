@@ -29,11 +29,11 @@ if not os.path.exists(file_scores):
                               is_binary=False, early_stop=False,
                               n_ensemble_models=4,
                               lamb_ncl=0.8,
-                              is_cip_full=True, bias_layer=True,
-                              beta_cip=0.4, lamb_cip=0.2, s=s, dist='CS',
+                              is_cip_full=True, bias_layer=False, mse_first_epoch=True,
+                              beta_cip=0.3, lamb_cip=0, s=s, dist='ED-CIP',
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr_mse=0.05, lr_klg=0.05, max_epoch=500, batch_size=40)
+                              folds=10, lr=0.05, max_epoch=500, batch_size=50)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

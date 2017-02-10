@@ -34,7 +34,7 @@ if not os.path.exists(file_scores):
                               beta_cip_kl=5.0, lamb_cip_kl=5.0,
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=2, lr_mse=0.02, lr_klg=0.02, max_epoch=500, batch_size=40)
+                              folds=2, lr=0.02, lr_klg=0.02, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

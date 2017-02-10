@@ -245,7 +245,7 @@ class ITLFunctions:
         divisor = T.cast(2.0 * T.power(s, 2), T.config.floatX)
 
         exp_arg = -T.power(x, 2) / divisor
-        z = 1. / (sqrt2pi * s)
+        z = 1. / (T.power(sqrt2pi, exp_arg.shape[-1]) * s)
 
         return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
 
@@ -269,7 +269,7 @@ class ITLFunctions:
         divisor = np.array(2.0 * (s ** 2), T.config.floatX)
 
         exp_arg = -x ** 2 / divisor
-        z = 1. / (sqrt2pi * s)
+        z = 1. / (np.power(sqrt2pi, exp_arg.shape[-1]) * s)
 
         return np.exp(exp_arg.sum(axis=-1)) * z
 
@@ -460,6 +460,10 @@ class ITLFunctions:
         V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
 
         return V_J - 2 * V_nc + V_M
+
+    @staticmethod
+    def annealing(sp, sm, i, max_epoch):
+        return sp * T.power((sm / sp), i / max_epoch)
 
 
 class DiversityFunctions:

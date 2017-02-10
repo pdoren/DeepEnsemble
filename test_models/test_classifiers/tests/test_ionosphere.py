@@ -32,7 +32,7 @@ if not os.path.exists(file_scores):
                               beta_cip=8, lamb_cip=1, s=s, dist='CS',
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr_mse=0.1, lr_klg=0.01, max_epoch=500, batch_size=40)
+                              folds=10, lr=0.1, lr_klg=0.01, max_epoch=500, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:

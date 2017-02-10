@@ -35,7 +35,7 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 4
+n_ensemble_models = 3
 fn_activation1 = ActivationFunctions.sigmoid
 fn_activation2 = ActivationFunctions.sigmoid
 
@@ -55,18 +55,17 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     is_cip_full=True,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                    dist='CIP',
-                                    # cost=kullback_leibler_generalized, name_cost="KLG",
-                                    beta=0, lamb=0, s=s,
-                                    bias_layer=False, mse_first_epoch=False,
+                                    dist='ED-CIP',
+                                    beta=0, lamb=0, s=None,
+                                    bias_layer=False, mse_first_epoch=False, annealing_enable=False,
                                     update=sgd_cip, name_update='SGD CIP',
-                                    params_update={'learning_rate': 0.01}
+                                    params_update={'learning_rate': 0.05}
                                     )
 
 ensembleCIP.compile(fast=False)
 
-max_epoch = 500
-args_train = {'max_epoch': max_epoch, 'batch_size': 100, 'early_stop': False,
+max_epoch = 800
+args_train = {'max_epoch': max_epoch, 'batch_size': 50, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)

@@ -296,7 +296,7 @@ class EnsembleModel(Model):
                 cost += [cost_model]
 
         if cost_ensemble == 0:
-            cost = sum(cost) / self.get_num_models()
+            cost = sum(cost)
         else:
             cost = cost_ensemble
 
@@ -305,12 +305,15 @@ class EnsembleModel(Model):
         if update_combiner is not None:
             updates = update_combiner
 
-        for model in self.get_models():
-            cost_model = model.get_cost()
-            cost_model = cost if cost_model == 0 else cost_model
-            error_model = model.get_error()
-            update_model = model.get_update_function(cost_model, error_model)
-            updates.update(update_model)
+        # # update for each models
+        # for model in self.get_models():
+        #    cost_model = cost
+        #    error_model = model.get_error()
+        #    update_model = model.get_update_function(cost_model, error_model)
+        #    updates.update(update_model)
+
+        update_model = self.get_update_function(cost, self.get_error())
+        updates.update(update_model)
 
         # noinspection PyUnresolvedReferences
         ind_er = np.nonzero(extra_results)[0]

@@ -6,9 +6,10 @@ from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_sy
 from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
-from .update_functions import sgd, annealing
+from .update_functions import sgd, count_epoch
 from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
+from .utils_functions import ITLFunctions
 
 __all__ = ["get_mlp_model",
            "get_ensemble_model",
@@ -106,12 +107,13 @@ def get_ensembleCIP_model(name,
                           beta=0.9, lamb=0.9, s=None, lsp=1.5, lsm=0.5,
                           bias_layer=False, mse_first_epoch=False,
                           batch_size=40, max_epoch=300,
-                          cost=mse, name_cost="MSE", params_cost={}, lr=0.05,
+                          cost=mse, name_cost="MSE", params_cost={}, lr=0.05, annealing_enable=False,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
-    sp = lsp * s
-    sm = lsm * s
-    i = shared(0.0, 'i')
-    si = sp * T.power((sm / sp), i)
+    i = shared(0, 'i')  # count current epoch
+    if annealing_enable:
+        si = ITLFunctions.annealing(lsp * s, lsm * s, i, max_epoch)
+    else:
+        si = s
 
     if is_cip_full:
         cost_models = None
@@ -121,7 +123,9 @@ def get_ensembleCIP_model(name,
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': si, 'dist': dist}
-        # params_cost_models = {}
+        #cost_models = kullback_leibler_generalized
+        #name_cost_models = 'KLG'
+        #params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
@@ -160,7 +164,8 @@ def get_ensembleCIP_model(name,
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
-    ensemble.append_update(annealing, 'Annealing', max_epoch=max_epoch, _i=i)
+    ensemble.set_update(update, name=name_update, **params_update)
+    ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
 
     return ensemble
 

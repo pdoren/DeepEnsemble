@@ -5,7 +5,7 @@ import numpy as np
 
 # Thanks to the library Lasagne.
 
-__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam', 'sgd_cip', 'annealing']
+__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam', 'sgd_cip', 'count_epoch']
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
@@ -350,7 +350,7 @@ def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
     return updates
 
 
-def annealing(self, error, max_epoch=500, _i=None):
+def count_epoch(error, _i=None):
     updates = OrderedDict()
-    updates[_i] += 1.0 / max_epoch
+    updates[_i] = _i + 1
     return updates
