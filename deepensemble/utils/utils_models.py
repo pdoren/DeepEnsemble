@@ -2,7 +2,7 @@ from theano import shared
 import theano.tensor as T
 
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, \
-    kullback_leibler_generalized, cip_full, mee
+    kullback_leibler_generalized, cip_full
 from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
@@ -164,6 +164,8 @@ def get_ensembleCIP_model(name,
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
+    ensemble.update_io()
+    params_update['error'] = ensemble.get_error(prob=True)
     ensemble.set_update(update, name=name_update, **params_update)
     ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
 

@@ -648,8 +648,8 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     if s is None:
         s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
 
-    Y = [_model.output(_input) for _model in model.get_models()]
-    Y.append(_target)
+    Y = [T.cast(_model.output(_input), 'float32') for _model in model.get_models()]
+    Y.append(T.cast(_target, 'float32'))
 
     if dist == 'CS-CIP' or dist == 'CS':
         return ITLFunctions.cross_information_potential(Y, s, dist='CS')

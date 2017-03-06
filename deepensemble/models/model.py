@@ -145,7 +145,7 @@ class Model(Serializable):
         self._data_train = {'input': None, 'target': None}
         self._data_valid = {'input': None, 'target': None}
 
-    def _define_input(self):
+    def _define_input(self, overwrite=False):
         """ Generate a shared variable for input.
 
         Returns
@@ -153,10 +153,10 @@ class Model(Serializable):
         None
         """
         tmp_data = [False] * self.get_dim_input()
+        if overwrite or self._model_input is None:
+            self._model_input = T.TensorType(config.floatX, tmp_data)('model_input')
 
-        self._model_input = T.TensorType(config.floatX, tmp_data)('model_input')
-
-    def _define_output(self):
+    def _define_output(self, overwrite=False):
         """ Generate a shared variable for output.
 
         Returns
@@ -164,8 +164,8 @@ class Model(Serializable):
         None
         """
         tmp_data = [False] * self.get_dim_output()
-
-        self._model_target = T.TensorType(config.floatX, tmp_data)('model_target')
+        if overwrite or self._model_target is None:
+            self._model_target = T.TensorType(config.floatX, tmp_data)('model_target')
 
     def is_binary_classification(self):
         """ Gets True if this model is a binary classifier, False otherwise.
@@ -852,6 +852,9 @@ class Model(Serializable):
         self.review_shape_output()
 
         cost, updates, extra_results, labels_extra_results = self._compile(fast=fast, **kwargs)
+
+        #import theano
+        #theano.printing.pydotprint(cost, outfile="cost_ensemble.png", var_with_name_simple=True)
 
         error = T.mean(self.get_error())
 

@@ -62,7 +62,7 @@ class Sequential(Model):
         n = len(self.__layers)
         if n <= 0:
             self.set_input_shape(shape=new_layer.get_input_shape())
-            self._define_input()
+            self._define_input(overwrite=True)
         else:
             new_layer.set_input_shape(self.__layers[n - 1].get_output_shape())
 

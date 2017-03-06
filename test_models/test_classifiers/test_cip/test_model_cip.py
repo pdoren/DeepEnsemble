@@ -1,8 +1,9 @@
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
-from theano import shared
+from theano import shared, config
 import theano.tensor as T
 from collections import OrderedDict
 
@@ -11,6 +12,10 @@ from deepensemble.utils.utils_classifiers import get_index_label_classes, transl
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
 from deepensemble.utils.update_functions import sgd_cip
+
+config.optimizer='fast_compile'
+#config.exception_verbosity='high'
+#config.compute_test_value='warn'
 
 #############################################################################################################
 # Load Data
@@ -35,7 +40,7 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 3
+n_ensemble_models = 5
 fn_activation1 = ActivationFunctions.sigmoid
 fn_activation2 = ActivationFunctions.sigmoid
 
@@ -52,20 +57,20 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     n_input=n_features, n_output=n_output,
                                     n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                     classification=True,
-                                    is_cip_full=True,
+                                    is_cip_full=False,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='ED-CIP',
-                                    beta=0, lamb=0, s=None,
+                                    beta=0, lamb=0.3, s=s,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=False,
                                     update=sgd_cip, name_update='SGD CIP',
-                                    params_update={'learning_rate': 0.05}
+                                    params_update={'learning_rate': 0.1}
                                     )
 
 ensembleCIP.compile(fast=False)
 
-max_epoch = 800
-args_train = {'max_epoch': max_epoch, 'batch_size': 50, 'early_stop': False,
+max_epoch = 500
+args_train = {'max_epoch': max_epoch, 'batch_size': 40, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
@@ -90,11 +95,13 @@ plt.legend()
 f = plt.figure()
 msg_train = ''
 msg_test = ''
+row = math.ceil(n_ensemble_models / 2.0)
+col = 2
 for i, model in enumerate(ensembleCIP.get_models()):
     e_train = model.error(input_train, model.translate_target(target_train)).eval()
     e_test = model.error(input_test, model.translate_target(target_test)).eval()
 
-    ax = plt.subplot(2, 2, i + 1)
+    ax = plt.subplot(row, col, i + 1)
     for j in range(n_output):
         plot_pdf(ax, e_test[:, j], label='Test output %d' % (j + 1), x_min=-2, x_max=2, n_points=1000)
     plt.legend()

@@ -242,9 +242,9 @@ class ITLFunctions:
         theano.tensor.matrix
             Returns Gaussian Kernel.
         """
-        divisor = T.cast(2.0 * T.power(s, 2), T.config.floatX)
+        divisor = T.cast(2.0 * T.sqr(s), T.config.floatX)
 
-        exp_arg = -T.power(x, 2) / divisor
+        exp_arg = -T.sqr(x) / divisor
         z = 1. / (T.power(sqrt2pi, exp_arg.shape[-1]) * s)
 
         return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
@@ -269,7 +269,7 @@ class ITLFunctions:
         divisor = np.array(2.0 * (s ** 2), T.config.floatX)
 
         exp_arg = -x ** 2 / divisor
-        z = 1. / (np.power(sqrt2pi, exp_arg.shape[-1]) * s)
+        z = 1. / (np.power(sqrt2pi, exp_arg.shape[-1], 2) * s)
 
         return np.exp(exp_arg.sum(axis=-1)) * z
 
@@ -395,48 +395,6 @@ class ITLFunctions:
         V_M = np.prod(V_k)
 
         return V_nc, V_J, V_M
-
-    @staticmethod
-    def get_grad_cip_numpy(Y, X, s):
-        kernel=ITLFunctions.kernel_gauss_numpy
-        DY = []
-        for y in Y:
-            dy = np.tile(y, (len(y), 1, 1))
-            dy = dy - np.transpose(dy, axes=(1, 0, 2))
-            DY.append(dy)
-
-        dx = np.tile(X, (len(X), 1, 1))
-        dx = dx - np.transpose(dx, axes=(1, 0, 2))
-
-        DYK = []
-        for dy in DY:
-            DYK.append(kernel(dy, sqrt2 * s))
-
-        p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
-
-        deriv = dy * dx / s ** 2
-
-        p11 = []
-        for dy in DY:
-            p11.append(np.mean(p1))
-        dV_J = np.mean(p11)
-
-        V_k_i = []
-
-        for dyk in DYK:
-            V_k_i.append(np.mean(dyk, axis=0))
-
-        V_k = [np.mean(V_i * deriv) for V_i in V_k_i]
-
-        #for dy in DY:
-            # Falta
-
-        V_M = np.prod(V_k)
-
-        p2 = np.prod(V_k_i, axis=0)
-        V_nc = np.mean(p2)
-
-        return V_nc, dV_J, V_M
 
     @staticmethod
     def cross_information_potential(Y, s, dist='ED'):

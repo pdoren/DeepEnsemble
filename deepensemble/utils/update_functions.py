@@ -72,7 +72,7 @@ def adagrad(cost_function, params, learning_rate=0.1, epsilon=1e-6):
     return updates
 
 
-def sgd_cip(cost_function, params, learning_rate=0.1):
+def sgd_cip(cost_function, params, learning_rate=0.1, error=1, eps=0.000001):
     """ Stochastic Gradient Descent (SGD).
 
     Parameters

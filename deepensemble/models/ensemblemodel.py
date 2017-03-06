@@ -229,7 +229,7 @@ class EnsembleModel(Model):
         return self.__combiner.predict(self, _input)
 
     # noinspection PyProtectedMember
-    def __update_io(self):
+    def update_io(self):
         """ Update Input Output shared Theano variables """
         # Define input-output variables in ensemble
         self._define_input()
@@ -266,7 +266,7 @@ class EnsembleModel(Model):
         if self.__combiner is None:
             raise AssertionError("Not exists combiner method for %s." % self._name)
 
-        self.__update_io()
+        self.update_io()
 
         # append const ensemble for each models
         if len(self.__list_cost_ensemble) > 0:
@@ -381,7 +381,7 @@ class EnsembleModel(Model):
             Logger().start_measure_time("Start Compile %s" % self._name)
             Logger().log_disable()
 
-            self.__update_io()
+            self.update_io()
             for _model in self.get_models():
                 _model.compile(fast=fast, **kwargs)
 
