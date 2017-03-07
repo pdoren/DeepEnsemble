@@ -191,20 +191,26 @@ class ITLFunctions:
         return -T.sum(px * T.log(py))
 
     @staticmethod
-    def mutual_information(px1, px2, px1x2):
-        """
+    def mutual_information(px1, px2, px1x2, eps=1e-6):
+        """ Mutual Information.
 
         Parameters
         ----------
-        px1
-        px2
-        px1x2
+        px1 : theano.tensor.matrix
+            Probability of random variable X1.
+
+        px2 : theano.tensor.matrix
+            Probability of random variable X2.
+
+        px1x2 : theano.tensor.matrix
+            Joint Probability between X1 and X2.
 
         Returns
         -------
-
+        float
+            Returns Mutual Information.
         """
-        return T.sum(px1x2 * (T.log(px1x2) - T.log(px1 * px2)))
+        return T.sum((px1x2 + eps) * (T.log(px1x2 + eps) - T.log(px1 * px2 + eps)))
 
     @staticmethod
     def norm(x, s):
@@ -250,6 +256,33 @@ class ITLFunctions:
         return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
 
     @staticmethod
+    def kernel_gauss2(x, y, s):
+        """ Gaussian Kernel.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            The first input data.
+
+        y : theano.tensor.matrix
+            The second input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns Gaussian Kernel.
+        """
+        divisor = T.cast(2.0 * T.sqr(s), T.config.floatX)
+
+        exp_arg = -(T.sqr(x) + T.sqr(y)) / divisor
+        z = 1. / (T.power(sqrt2pi, exp_arg.shape[-1]) * s)
+
+        return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
+
+    @staticmethod
     def kernel_gauss_numpy(x, s):
         """ Gaussian Kernel.
 
@@ -269,6 +302,33 @@ class ITLFunctions:
         divisor = np.array(2.0 * (s ** 2), T.config.floatX)
 
         exp_arg = -x ** 2 / divisor
+        z = 1. / (np.power(sqrt2pi, exp_arg.shape[-1], 2) * s)
+
+        return np.exp(exp_arg.sum(axis=-1)) * z
+
+    @staticmethod
+    def kernel_gauss2_numpy(x, y, s):
+        """ Gaussian Kernel.
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            The first input data.
+
+        y : theano.tensor.matrix
+            The second input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.matrix
+            Returns Gaussian Kernel.
+        """
+        divisor = np.array(2.0 * (s ** 2), T.config.floatX)
+
+        exp_arg = -(x ** 2 + y ** 2) / divisor
         z = 1. / (np.power(sqrt2pi, exp_arg.shape[-1], 2) * s)
 
         return np.exp(exp_arg.sum(axis=-1)) * z
@@ -295,6 +355,52 @@ class ITLFunctions:
         """
         K = T.power(4.0 / (N * (2.0 * d + 1.0)), 1.0 / (d + 4.0))
         return T.cast(T.std(x) * K, T.config.floatX)
+
+    @staticmethod
+    def mutual_information_parzen(x, y, s):
+        """
+
+        Parameters
+        ----------
+        x : theano.tensor.matrix
+            The first input data.
+
+        y : theano.tensor.matrix
+            The second input data.
+
+        s : float
+            Deviation standard.
+
+        Returns
+        -------
+        theano.tensor.scalar
+            Returns mutual information
+        """
+        kernel = ITLFunctions.kernel_gauss
+        DT = []
+        for t in [x, y]:
+            dt = T.tile(t, (t.shape[0], 1, 1))
+            dt = T.transpose(dt, axes=(1, 0, 2)) - dt
+            DT.append(dt)
+
+        DTK = [kernel(dt, s) for dt in DT]
+
+        px = T.mean(DTK[0], axis=0)
+        py = T.mean(DTK[1], axis=0)
+
+        dx = T.tile(DTK[0], (DTK[0].shape[0], 1, 1))
+        dy = T.tile(DTK[1], (DTK[1].shape[0], 1, 1))
+
+        dt = dx * T.transpose(dy, axes=(1, 0, 2))
+
+        pxy = T.mean(dt, axis=0)
+
+        # Normalization
+        px = px / T.sum(px)
+        py = px / T.sum(py)
+        pxy = pxy / T.sum(pxy)
+
+        return ITLFunctions.mutual_information(px, py, pxy)
 
     @staticmethod
     def information_potential(x, kernel, s):

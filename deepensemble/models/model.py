@@ -853,8 +853,9 @@ class Model(Serializable):
 
         cost, updates, extra_results, labels_extra_results = self._compile(fast=fast, **kwargs)
 
-        #import theano
-        #theano.printing.pydotprint(cost, outfile="cost_ensemble.png", var_with_name_simple=True)
+        # import theano
+        # print cost ensemble
+        # theano.printing.pydotprint(cost, outfile="cost_ensemble.png", var_with_name_simple=True)
 
         error = T.mean(self.get_error())
 

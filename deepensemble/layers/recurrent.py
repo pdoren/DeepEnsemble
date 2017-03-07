@@ -9,15 +9,23 @@ __all__ = ['RecurrentLayer', 'LSTMLayer']
 
 class RecurrentLayer(Layer):
     def __init__(self, n_input=None, n_recurrent=None, activation=None):
+
         input_shape = n_input if isinstance(n_input, tuple) else (None, n_input)
         recurrent_shape = n_recurrent if isinstance(n_recurrent, tuple) else (None, n_recurrent)
+
+        self._Wr = {'name': 'Wr', 'value': None, 'shape': None, 'init': True, 'include': True}
+
         super(RecurrentLayer, self).__init__(input_shape=input_shape,
                                              output_shape=recurrent_shape,
                                              non_linearity=activation)
 
-        self._Wr = {'name': 'Wr', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
         self._W.append(self._Wr)
+        # update shape weights.
         self.update_W_shape()
+
+    def update_W_shape(self):
+        self._W[0]['shape'] = self.get_shape_W()
+        self._Wr['shape'] = self.get_shape_Wr()
 
     def get_shape_Wr(self):
         """ Gets shape weights of layer.
@@ -64,10 +72,10 @@ class RecurrentLayer(Layer):
         if x.ndim > 2:
             x = x.flatten(2)
 
-        x_W_b = T.dot(x, self._W) + self._b.dimshuffle('x', 0)
+        x_W_b = T.dot(x,  self.get_W()) + self.get_b().dimshuffle('x', 0)
         result, updates = scan(self._step,
                                sequences=[x_W_b],
-                               outputs_info=[T.zeros_like(self._b)])
+                               outputs_info=[T.zeros_like(self.get_b())])
         return result
 
 
@@ -81,27 +89,27 @@ class LSTMLayer(Layer):
                                         output_shape=recurrent_shape,
                                         non_linearity=activation)
 
-        self._W_f = {'name': 'Wf', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._W_f = {'name': 'Wf', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._W_f)
-        self._W_c = {'name': 'Wc', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._W_c = {'name': 'Wc', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._W_c)
-        self._W_o = {'name': 'Wo', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._W_o = {'name': 'Wo', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._W_o)
 
-        self._U_i = {'name': 'Ui', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._U_i = {'name': 'Ui', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._U_i)
-        self._U_f = {'name': 'Uf', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._U_f = {'name': 'Uf', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._U_f)
-        self._U_c = {'name': 'Uc', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._U_c = {'name': 'Uc', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._U_c)
-        self._U_o = {'name': 'Uo', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._U_o = {'name': 'Uo', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._W.append(self._U_o)
 
-        self._b_f = {'name': 'bf', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._b_f = {'name': 'bf', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._b.append(self._b_f)
-        self._b_c = {'name': 'bc', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._b_c = {'name': 'bc', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._b.append(self._b_c)
-        self._b_o = {'name': 'bo', 'value': None, 'shape': None, 'update_shape': True, 'include': True}
+        self._b_o = {'name': 'bo', 'value': None, 'shape': None, 'init': True, 'include': True}
         self._b.append(self._b_o)
 
         self._mask = mask
