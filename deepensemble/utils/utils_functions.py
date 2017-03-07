@@ -357,8 +357,30 @@ class ITLFunctions:
         return T.cast(T.std(x) * K, T.config.floatX)
 
     @staticmethod
-    def mutual_information_parzen(x, y, s):
+    def get_diff(Y):
+        """ Compute difference among each element in each set.
+
+        Parameters
+        ----------
+        Y : list
+            List of sets.
+
+        Returns
+        -------
+        list
+            Returns a list with the differences of each set.
+
         """
+        DT = []
+        for t in Y:
+            dt = T.tile(t, (t.shape[0], 1, 1))
+            dt = T.transpose(dt, axes=(1, 0, 2)) - dt
+            DT.append(dt)
+        return DT
+
+    @staticmethod
+    def mutual_information_parzen(x, y, s):
+        """ Mutual Information estimate with Parzen Windows.
 
         Parameters
         ----------
@@ -377,12 +399,7 @@ class ITLFunctions:
             Returns mutual information
         """
         kernel = ITLFunctions.kernel_gauss
-        DT = []
-        for t in [x, y]:
-            dt = T.tile(t, (t.shape[0], 1, 1))
-            dt = T.transpose(dt, axes=(1, 0, 2)) - dt
-            DT.append(dt)
-
+        DT = ITLFunctions.get_diff([x, y])
         DTK = [kernel(dt, s) for dt in DT]
 
         px = T.mean(DTK[0], axis=0)
@@ -453,15 +470,11 @@ class ITLFunctions:
     @staticmethod
     def get_cip(Y, s):
         kernel=ITLFunctions.kernel_gauss
-        DY = []
-        for y in Y:
-            dy = T.tile(y, (y.shape[0], 1, 1))
-            dy = T.transpose(dy, axes=(1, 0, 2)) - dy
-            DY.append(dy)
+        DY = ITLFunctions.get_diff(Y)
 
         DYK = [kernel(dy, sqrt2 * s) for dy in DY]
 
-        V_J = T.mean(np.prod(DYK, axis=0))
+        V_J = T.mean(np.prod(DYK))
 
         V_k_i = [T.mean(dyk, axis=0) for dyk in DYK]
 
@@ -476,11 +489,7 @@ class ITLFunctions:
     @staticmethod
     def get_cip_numpy(Y, s):
         kernel=ITLFunctions.kernel_gauss_numpy
-        DY = []
-        for y in Y:
-            dy = np.tile(y, (len(y), 1, 1))
-            dy = np.transpose(dy, axes=(1, 0, 2)) - dy
-            DY.append(dy)
+        DY = ITLFunctions.get_diff(Y)
 
         DYK = []
         for dy in DY:
@@ -491,7 +500,7 @@ class ITLFunctions:
         V_k_i = []
 
         for dyk in DYK:
-            V_k_i.append(np.mean(dyk, axis=1))
+            V_k_i.append(np.mean(dyk, axis=0))
 
         V_k = [np.mean(V_i) for V_i in V_k_i]
 
