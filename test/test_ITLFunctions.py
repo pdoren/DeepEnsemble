@@ -10,7 +10,7 @@ class TestITLFunctions(TestCase):
         from deepensemble.utils.utils_functions import ITLFunctions
         import numpy as np
 
-        N = 4
+        N = 50
         n_classes = 2
         y1 = np.squeeze(np.random.binomial(1, 0.5, (N, n_classes)))
         y2 = y1.copy()
@@ -32,7 +32,7 @@ class TestITLFunctions(TestCase):
 
         DYK = []
         for dy in DY:
-            DYK.append(ITLFunctions.kernel_gauss(dy, s).eval())
+            DYK.append(ITLFunctions.kernel_gauss(dy, np.sqrt(2) *  s).eval())
 
         p1 = np.prod(np.array([dyk for dyk in DYK]), axis=0)
         self.assertTrue(p1.size == N ** 2, 'Problem V_J2 (%g != %g)' % (p1.size, N ** 2))
@@ -58,7 +58,7 @@ class TestITLFunctions(TestCase):
         self.assertTrue(abs(V_M1.eval() - V_M2) < 0.00001, 'Problem V_M (%g != %g)' % (V_M1.eval(), V_M2))
 
         V_c2 = V_nc2 ** 2 / (V_J2 * V_M2)
-        V_c1 = ITLFunctions.cross_information_potential(Y, s=s)
+        V_c1 = ITLFunctions.cross_information_potential(Y, s=s, dist='CS')
         self.assertTrue(abs(V_c1.eval() - V_c2) < 0.00001, 'Problem V_c (%g != %g)' % (V_c1.eval(), V_c2))
 
     def test_mutual_information_cs(self):

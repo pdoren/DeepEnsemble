@@ -65,13 +65,16 @@ def shannon_entropy(c):
     return H
 
 
-N = 500
+N = 300
 y1 = np.random.binomial(1, 0.5, N)
 y1 = y1.astype(dtype=config.floatX)
 y1 = y1[:, np.newaxis]
 
 _y2 = T.matrix('y2')
 s = 1.06 * np.std(y1) * (len(y1)) ** (-0.2)  # Silverman
+
+_Ip = ITLFunctions.mutual_information_parzen(_y2, shared(y1), s=s)
+fn_Ip = function([_y2], outputs=_Ip, allow_input_downcast=True)
 
 _Ics = ITLFunctions.mutual_information_cs([_y2, shared(y1)], s=np.sqrt(2) * s)
 fn_Ics = function([_y2], outputs=_Ics, allow_input_downcast=True)
@@ -85,16 +88,18 @@ Ied = []
 Ied2 = []
 I = []
 Is = []
+Ip = []
 AUC = np.linspace(0, 1, 101)
 for auc in AUC:
     y2 = y1.copy()
     m = int(auc * N)
     y2[:m] = 1 - y2[:m]
 
+    Ip.append(fn_Ip(y2))
     Ics.append(fn_Ics(y2))
-    Ics2.append(calc_ICS(np.squeeze(y1), np.squeeze(y2)))
+    #Ics2.append(calc_ICS(np.squeeze(y1), np.squeeze(y2)))
     Ied.append(fn_Ied(y2))
-    Ied2.append(calc_IED(np.squeeze(y1), np.squeeze(y2)))
+    #Ied2.append(calc_IED(np.squeeze(y1), np.squeeze(y2)))
     Is.append(mutual_info_score(np.squeeze(y1), np.squeeze(y2)))
     I.append(calc_MI(np.squeeze(y1), np.squeeze(y2)))
 
@@ -103,19 +108,21 @@ plt.style.use('ggplot')
 f = plt.figure()
 
 plt.subplot(2, 1, 1)
-# plt.plot(AUC, I, label='$I$')
+plt.plot(AUC, I, label='$I$')
+plt.plot(AUC, Ip, label='$I_p$')
 plt.plot(AUC, Is, 'r', label='$I_S$')
 plt.plot(AUC, Ied, 'g', label='$I_{ED}$')
-plt.plot(AUC, Ied2, 'b', label='$I_{ED2}$')
+#plt.plot(AUC, Ied2, 'b', label='$I_{ED2}$')
 plt.xlabel('AUC')
 plt.ylabel('Mutual Information')
 plt.legend()
 
 plt.subplot(2, 1, 2)
-# plt.plot(AUC, I, label='$I$')
+plt.plot(AUC, I, label='$I$')
+plt.plot(AUC, Ip, label='$I_p$')
 plt.plot(AUC, Is, 'r', label='$I_S$')
 plt.plot(AUC, Ics, 'g', label='$I_{CS}$')
-plt.plot(AUC, Ics2, 'b', label='$I_{CS2}$')
+#plt.plot(AUC, Ics2, 'b', label='$I_{CS2}$')
 plt.xlabel('AUC')
 plt.ylabel('Mutual Information')
 plt.legend()
