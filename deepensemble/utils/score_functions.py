@@ -186,7 +186,7 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     """
     kernel = ITLFunctions.kernel_gauss
 
-    s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+    s = ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()) + eps
 
     Y = [_model.output(_input) for _model in model.get_models()]
     Y.append(_target)

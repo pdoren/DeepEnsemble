@@ -164,8 +164,8 @@ def get_ensembleCIP_model(name,
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
-    ensemble.update_io()
-    params_update['error'] = ensemble.get_error(prob=True)
+    # ensemble.update_io()
+    # params_update['error'] = ensemble.get_error(prob=True)
     ensemble.set_update(update, name=name_update, **params_update)
     ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
 

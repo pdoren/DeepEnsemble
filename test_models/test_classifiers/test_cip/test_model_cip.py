@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
+
 import math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -61,7 +66,7 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='ED-CIP',
-                                    beta=0, lamb=0.3, s=s,
+                                    beta=0, lamb=0, s=0.5*s,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=False,
                                     update=sgd_cip, name_update='SGD CIP',
                                     params_update={'learning_rate': 0.1}
