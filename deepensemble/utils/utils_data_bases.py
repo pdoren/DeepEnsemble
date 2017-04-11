@@ -163,7 +163,7 @@ def load_data_iris():
     data_target = iris.target_names[iris.target]
     classes_labels = iris.target_names
 
-    return data_input, data_target, classes_labels, 'Iris'
+    return data_input, data_target, classes_labels, 'Iris', iris.DESCR, iris.feature_names
 
 
 def load_data_cancer(normalize=True):

@@ -56,9 +56,6 @@ class Model(Serializable):
     name : str
         This model's name is useful to identify it later.
 
-    _output : theano.tensor.TensorVariable
-        Output model (Theano).
-
     Parameters
     ----------
     target_labels: list or numpy.array
@@ -111,9 +108,6 @@ class Model(Serializable):
 
         self._name = name
 
-        self._output = {'prob': {'changed': True, 'result': None},
-                        'crisp': {'changed': True, 'result': None}}
-        self._error = None
         self._labels_result_train = None
 
         self._current_data_train = None
@@ -130,12 +124,8 @@ class Model(Serializable):
         -------
         None
         """
-        self._output['prob']['changed'] = True
-        self._output['crisp']['changed'] = True
-
         self._cost_function_list['changed'] = True
         self._score_function_list['changed'] = True
-        self._error = None
 
         self._is_compiled = False
         self._is_fast_compile = False
@@ -549,12 +539,7 @@ class Model(Serializable):
             Returns error of model prediction.
 
         """
-        if _input == self._model_input and _target == self._model_target:
-            if self._error is None:
-                self._error = self.output(_input, prob=prob) - _target
-            return self._error
-        else:
-            return self.output(_input, prob=prob) - _target
+        return self.output(_input, prob=prob) - _target
 
     def __eq__(self, other):
         """ Evaluate if 'other' model has the same form. The items for the comparison are:

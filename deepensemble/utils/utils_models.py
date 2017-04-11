@@ -7,7 +7,7 @@ from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
 from .update_functions import sgd, count_epoch
-from ..combiner import AverageCombiner, PluralityVotingCombiner
+from ..combiner import AverageCombiner, PluralityVotingCombiner, TheBestVotingCombiner
 from ..models import EnsembleModel, Sequential
 from .utils_functions import ITLFunctions
 
@@ -123,9 +123,6 @@ def get_ensembleCIP_model(name,
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': si, 'dist': dist}
-        #cost_models = kullback_leibler_generalized
-        #name_cost_models = 'KLG'
-        #params_cost_models = {}
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
@@ -167,7 +164,9 @@ def get_ensembleCIP_model(name,
     # ensemble.update_io()
     # params_update['error'] = ensemble.get_error(prob=True)
     ensemble.set_update(update, name=name_update, **params_update)
-    ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
+
+    if annealing_enable:
+        ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
 
     return ensemble
 

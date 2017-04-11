@@ -89,34 +89,14 @@ class Sequential(Model):
         theano.tensor.matrix or numpy.array
             Returns the output sequential model.
         """
-        if _input == self._model_input:
+        for layer in self.__layers:
+            _input = layer.output(_input, prob)
+        _output = _input
 
-            _type = 'prob' if prob else 'crisp'
+        if not prob and self.is_classifier():
+            _output = translate_output(_output, self.get_fan_out(), self.is_binary_classification())
 
-            if self._output[_type]['changed']:
-                for layer in self.__layers:
-                    _input = layer.output(_input, prob)
-
-                self._output[_type]['result'] = _input
-
-                if _type == 'crisp' and self.is_classifier():
-                    self._output[_type]['result'] = translate_output(self._output[_type]['result'],
-                                                                     self.get_fan_out(),
-                                                                     self.is_binary_classification())
-                self._output[_type]['changed'] = False
-
-            return self._output[_type]['result']
-
-        else:
-
-            for layer in self.__layers:
-                _input = layer.output(_input, prob)
-            _output = _input
-
-            if not prob and self.is_classifier():
-                self._output = translate_output(_output, self.get_fan_out(), self.is_binary_classification())
-
-            return _output
+        return _output
 
     def reset(self):
         """ Reset parameters

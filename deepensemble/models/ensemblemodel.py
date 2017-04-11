@@ -200,18 +200,7 @@ class EnsembleModel(Model):
         theano.tensor.matrix or numpy.array
             Returns of combiner the outputs of the different the ensemble's models.
         """
-        _type = 'prob' if prob else 'crisp'
-
-        if _input == self._model_input:
-
-            if self._output[_type]['changed']:
-                self._output[_type]['result'] = self.__combiner.output(self, _input, prob)
-
-            return self._output[_type]['result']
-
-        else:
-
-            return self.__combiner.output(self, _input, prob)
+        return self.__combiner.output(self, _input, prob)
 
     def predict(self, _input):
         """ Compute the prediction of model.

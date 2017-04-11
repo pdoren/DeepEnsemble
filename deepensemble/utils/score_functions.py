@@ -45,6 +45,7 @@ def dummy_score(_input, _output, _target, model):
 def get_accuracy(Y, T):
     return float(np.sum(Y == T)) / float(T.shape[0])
 
+
 # noinspection PyUnusedLocal
 def score_accuracy(_input, _output, _target, model):
     """ Accuracy score in a classifier models.
