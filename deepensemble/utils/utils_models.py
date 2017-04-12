@@ -124,6 +124,11 @@ def get_ensembleCIP_model(name,
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': si, 'dist': dist}
 
+        #cost_models = kullback_leibler_generalized
+        #name_cost_models = 'KLG'
+        #params_cost_models = {}
+
+
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
                                   n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_models,
@@ -161,8 +166,8 @@ def get_ensembleCIP_model(name,
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
-    # ensemble.update_io()
-    # params_update['error'] = ensemble.get_error(prob=True)
+    ensemble.update_io()
+    params_update['error'] = ensemble.get_error(prob=True)
     ensemble.set_update(update, name=name_update, **params_update)
 
     if annealing_enable:

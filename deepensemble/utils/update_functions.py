@@ -93,10 +93,14 @@ def sgd_cip(cost_function, params, learning_rate=0.1, error=1, eps=0.000001):
     """
     gparams = [T.grad(cost_function, param) for param in params]
     updates = OrderedDict()
-
+    error_curr = shared(np.float32(0.0))
+    error_curr_new = T.mean(T.sqr(error))
+    delta_error = error_curr_new - error_curr
+    gparams = [T.grad(cost_function, param) for param in params]
     for param, grad in zip(params, gparams):
         updates[param] = param - learning_rate * grad
 
+    updates[error_curr] = error_curr_new
     return updates
 
 
