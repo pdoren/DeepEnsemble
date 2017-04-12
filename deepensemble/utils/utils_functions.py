@@ -256,30 +256,6 @@ class ITLFunctions:
         return T.cast(T.exp(exp_arg.sum(axis=-1)) * z, T.config.floatX)
 
     @staticmethod
-    def kernel_gauss_jenssen(x, s):
-        """ Gaussian Kernel.
-
-        Parameters
-        ----------
-        x : theano.tensor.matrix
-            Input data.
-
-        s : float
-            Deviation standard.
-
-        Returns
-        -------
-        theano.tensor.matrix
-            Returns Gaussian Kernel.
-        """
-        divisor = T.cast(2.0 * T.sqr(s), T.config.floatX)
-
-        exp_arg = -T.sqr(x) / divisor
-        z = 1. / (T.power(sqrt2pi, exp_arg.shape[-1]) * s)
-
-        return T.cast((1.0 - (x - T.abs_(x)) / 2.0) * T.exp(exp_arg) * z, T.config.floatX)
-
-    @staticmethod
     def kernel_gauss2(x, y, s):
         """ Gaussian Kernel.
 
