@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
-from sklearn import cross_validation
+from sklearn import model_selection
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 from sklearn.neighbors.kde import KernelDensity
 from matplotlib import cm
@@ -184,7 +184,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
         if not os.path.exists(file_sets_fold):
             # Generate testing and training sets
             input_train, input_test, target_train, target_test = \
-                cross_validation.train_test_split(data_input, data_target, test_size=test_size)
+                model_selection.train_test_split(data_input, data_target, test_size=test_size)
             sets_data = Serializable((input_train, input_test, target_train, target_test))
             sets_data.save(file_sets_fold)
         else:

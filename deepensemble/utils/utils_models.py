@@ -57,7 +57,8 @@ def get_mlp_model(name,
     if cost is not None:
         net.append_cost(cost, name=name_cost, **params_cost)
 
-    net.set_update(update, name=name_update, **params_update)
+    if update is not None:
+        net.set_update(update, name=name_update, **params_update)
 
     return net
 
@@ -115,19 +116,16 @@ def get_ensembleCIP_model(name,
     else:
         si = s
 
+    update_models = update
     if is_cip_full:
         cost_models = None
         name_cost_models = None
         params_cost_models = None
+        update_models = None
     else:
         cost_models = cip_relevancy
         name_cost_models = 'CIP Relevancy'
         params_cost_models = {'s': si, 'dist': dist}
-
-        #cost_models = kullback_leibler_generalized
-        #name_cost_models = 'KLG'
-        #params_cost_models = {}
-
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
@@ -138,7 +136,7 @@ def get_ensembleCIP_model(name,
                                   bias_layer=bias_layer,
                                   cost=cost_models, name_cost=name_cost_models,
                                   params_cost=params_cost_models,
-                                  update=update, name_update=name_update, params_update=params_update)
+                                  update=update_models, name_update=name_update, params_update=params_update)
 
     if mse_first_epoch:
         Logger().log_disable()

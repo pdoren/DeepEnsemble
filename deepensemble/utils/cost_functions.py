@@ -4,9 +4,9 @@ import numpy as np
 from .utils_functions import ITLFunctions
 
 __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
-           'neg_corr', 'neg_correntropy', 'cross_entropy',
+           'neg_corr', 'cross_entropy',
            'kullback_leibler', 'kullback_leibler_generalized',
-           'itakura_saito', 'neg_mee', 'neg_klg', 'cauchy_schwarz_divergence',
+           'itakura_saito', 'cauchy_schwarz_divergence',
            'cip_relevancy', 'cip_redundancy', 'cip_synergy', 'cip_full']
 
 eps = 0.00001
@@ -366,120 +366,6 @@ def neg_corr(model, _input, _target, ensemble, lamb=0.5):
         Return Negative Correlation.
     """
     return T.mean(T.constant(-lamb) * T.power(model.output(_input) - ensemble.output(_input), 2.0))
-
-
-# noinspection PyUnusedLocal
-def neg_correntropy(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=ITLFunctions.kernel_gauss):
-    """ Compute the Correntropy regularization in Ensemble.
-
-    Parameters
-    ----------
-    model : theano.tensor.matrix
-        Current model that one would want to calculate the cost.
-
-    _input : theano.tensor.matrix
-        Input sample.
-
-    _target : theano.tensor.matrix
-        Target sample.
-
-    ensemble : EnsembleModel
-        Ensemble.
-
-    lamb : float, 0.5 by default
-        Ratio negative correlation.
-
-    s : float
-        Size of Kernel.
-
-    kernel : callable
-        Kernel for compute correntropy.
-
-    Returns
-    -------
-    theano.tensor.matrix
-        Return Negative Correntropy.
-    """
-    om = model.output(_input)
-    oe = ensemble.output(_input)
-    h = om - oe
-
-    if s is None:
-        s = T.max(ITLFunctions.silverman(oe, _target.shape[0], ensemble.get_dim_output()), eps)
-
-    return T.mean(lamb * kernel(h, s))
-
-
-# noinspection PyUnusedLocal
-def neg_mee(model, _input, _target, ensemble, lamb=0.5, s=None, kernel=ITLFunctions.kernel_gauss):
-    """ Compute the MEE regularization in Ensemble.
-
-    Parameters
-    ----------
-    model : theano.tensor.matrix
-        Current model that one would want to calculate the cost.
-
-    _input : theano.tensor.matrix
-        Input sample.
-
-    _target : theano.tensor.matrix
-        Target sample.
-
-    ensemble : EnsembleModel
-        Ensemble.
-
-    lamb : float, 0.5 by default
-        Ratio negative correlation.
-
-    s : float
-        Size of Kernel.
-
-    kernel : callable
-        Kernel for compute correntropy.
-
-    Returns
-    -------
-    theano.tensor.matrix
-        Return Negative Correntropy.
-    """
-    om = model.error(_input, _target)
-    oe = ensemble.error(_input, _target)
-    h = om - oe
-
-    if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
-
-    return lamb * T.log(ITLFunctions.information_potential(h, kernel, s))
-
-
-def neg_klg(model, _input, _target, ensemble, lamb=0.5):
-    """
-
-    Parameters
-    ----------
-    model : theano.tensor.matrix
-        Current model that one would want to calculate the cost.
-
-    _input : theano.tensor.matrix
-        Input sample.
-
-    _target : theano.tensor.matrix
-        Target sample.
-
-    ensemble : EnsembleModel
-        Ensemble.
-
-    lamb : float, 0.5 by default
-        Ratio negative correlation.
-
-    Returns
-    -------
-    theano.tensor.matrix
-        Return Negative KLG.
-    """
-    pt = ensemble.error(_input, _target)
-    pp = model.error(_input, _target)
-    return -lamb * T.sum((pt + eps) * (T.log(pt + eps) - T.log(pp + eps)) - pt + pp)
 
 
 def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'):

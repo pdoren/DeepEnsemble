@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Added some changes for testing.&#10;Fixed issues with Recurrent Layers.&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Some test.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/score_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/score_functions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/wrapper.py" afterPath="$PROJECT_DIR$/deepensemble/models/wrapper.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
     </list>
@@ -21,51 +22,52 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetests_in_test_ITLFunctions.coverage" NAME="Nosetests in test_ITLFunctions Coverage Results" MODIFIED="1488910538957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_regresion.coverage" NAME="test_regresion Coverage Results" MODIFIED="1480497171291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$lambda_CIP_no_s.coverage" NAME="lambda_CIP_no_s Coverage Results" MODIFIED="1481686718611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$logger.coverage" NAME="logger Coverage Results" MODIFIED="1474585451829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/utils" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble.coverage" NAME="test_ensemble Coverage Results" MODIFIED="1478049682363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$params_CIP_classification.coverage" NAME="params_CIP_classification Coverage Results" MODIFIED="1483004759673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_models.coverage" NAME="test_ensemble_n_models Coverage Results" MODIFIED="1483003415513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_theano.coverage" NAME="test_theano Coverage Results" MODIFIED="1474162467533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_data.coverage" NAME="test_data Coverage Results" MODIFIED="1477462466367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$params_CIP_beta_classification.coverage" NAME="params_CIP_beta_classification Coverage Results" MODIFIED="1483004977563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_model_cip.coverage" NAME="test_model_cip Coverage Results" MODIFIED="1491766342300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_classifiers.coverage" NAME="test_classifiers Coverage Results" MODIFIED="1481655992410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$diversitymetrics.coverage" NAME="diversitymetrics Coverage Results" MODIFIED="1481347361513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/metrics" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_neurons_vs_models.coverage" NAME="test_ensemble_n_neurons_vs_models Coverage Results" MODIFIED="1478159037399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$ann_linear_multiclassification.coverage" NAME="ann_linear_multiclassification Coverage Results" MODIFIED="1478229324099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_lambda.coverage" NAME="test_ensemble_lambda Coverage Results" MODIFIED="1481008856342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_neurons.coverage" NAME="test_ensemble_n_neurons Coverage Results" MODIFIED="1478153398786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_w1a.coverage" NAME="test_w1a Coverage Results" MODIFIED="1482246640252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetest_TestSequential_test_output.coverage" NAME="Nosetest TestSequential.test_output Coverage Results" MODIFIED="1476413877214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/models" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_cancer.coverage" NAME="test_cancer Coverage Results" MODIFIED="1482976215853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ionosphere.coverage" NAME="test_ionosphere Coverage Results" MODIFIED="1482217916379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_abalone.coverage" NAME="test_abalone Coverage Results" MODIFIED="1482330265068" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$lambda_CIP.coverage" NAME="lambda_CIP Coverage Results" MODIFIED="1482100106325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_a1a.coverage" NAME="test_a1a Coverage Results" MODIFIED="1482045029598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1476109113805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_ensemble/" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_diabetes.coverage" NAME="test_diabetes Coverage Results" MODIFIED="1482295575115" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_model_ncl.coverage" NAME="test_model_ncl Coverage Results" MODIFIED="1483561462379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_satimage.coverage" NAME="test_satimage Coverage Results" MODIFIED="1482324855579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$diversitymetrics.coverage" NAME="diversitymetrics Coverage Results" MODIFIED="1481347361513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/metrics" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_german_numer.coverage" NAME="test_german_numer Coverage Results" MODIFIED="1483134713675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetests_in_test_sequential.coverage" NAME="Nosetests in test_sequential Coverage Results" MODIFIED="1477586329466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/models" />
     <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1474332450195" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$params_CIP_classification.coverage" NAME="params_CIP_classification Coverage Results" MODIFIED="1483004759673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_CIP.coverage" NAME="test_CIP Coverage Results" MODIFIED="1488910698860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian_credit_card.coverage" NAME="test_australian_credit_card Coverage Results" MODIFIED="1476109113805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_ensemble/" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$main.coverage" NAME="main Coverage Results" MODIFIED="1478470679849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/mackeyglass" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_conv.coverage" NAME="test_conv Coverage Results" MODIFIED="1481689039644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/classification/mnist" />
-    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1474220208995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_models.coverage" NAME="test_ensemble_n_models Coverage Results" MODIFIED="1483003415513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_model.coverage" NAME="test_model Coverage Results" MODIFIED="1480497057002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ionosphere.coverage" NAME="test_ionosphere Coverage Results" MODIFIED="1482217916379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1476161463008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_models" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetest_TestSequential_test_output_bin.coverage" NAME="Nosetest TestSequential.test_output_bin Coverage Results" MODIFIED="1476415069554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/models" />
     <SUITE FILE_PATH="coverage/DeepEnsemble$test_jacobs.coverage" NAME="test_jacobs Coverage Results" MODIFIED="1482121665702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_regression" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_a1a.coverage" NAME="test_a1a Coverage Results" MODIFIED="1482045029598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian.coverage" NAME="test_australian Coverage Results" MODIFIED="1491710903504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_satimage.coverage" NAME="test_satimage Coverage Results" MODIFIED="1482324855579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_german_numer.coverage" NAME="test_german_numer Coverage Results" MODIFIED="1483134713675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_theano.coverage" NAME="test_theano Coverage Results" MODIFIED="1474162467533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_model_ncl.coverage" NAME="test_model_ncl Coverage Results" MODIFIED="1483561462379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
-    <SUITE FILE_PATH="coverage/DeepEnsemble$test_diabetes.coverage" NAME="test_diabetes Coverage Results" MODIFIED="1482295575115" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_abalone.coverage" NAME="test_abalone Coverage Results" MODIFIED="1482330265068" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_neurons.coverage" NAME="test_ensemble_n_neurons Coverage Results" MODIFIED="1478153398786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_cancer.coverage" NAME="test_cancer Coverage Results" MODIFIED="1482976215853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_model_cip.coverage" NAME="test_model_cip Coverage Results" MODIFIED="1492366055552" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble.coverage" NAME="test_ensemble Coverage Results" MODIFIED="1478049682363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$lambda_CIP.coverage" NAME="lambda_CIP Coverage Results" MODIFIED="1482100106325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_conv.coverage" NAME="test_conv Coverage Results" MODIFIED="1481689039644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/classification/mnist" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_ensemble_n_neurons_vs_models.coverage" NAME="test_ensemble_n_neurons_vs_models Coverage Results" MODIFIED="1478159037399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_regresion.coverage" NAME="test_regresion Coverage Results" MODIFIED="1480497171291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$params_CIP_beta_classification.coverage" NAME="params_CIP_beta_classification Coverage Results" MODIFIED="1483004977563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$ann_linear_multiclassification.coverage" NAME="ann_linear_multiclassification Coverage Results" MODIFIED="1478229324099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_australian.coverage" NAME="test_australian Coverage Results" MODIFIED="1491779011526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetest_TestSequential_test_output.coverage" NAME="Nosetest TestSequential.test_output Coverage Results" MODIFIED="1476413877214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$logger.coverage" NAME="logger Coverage Results" MODIFIED="1474585451829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/deepensemble/utils" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_w1a.coverage" NAME="test_w1a Coverage Results" MODIFIED="1482246640252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$main.coverage" NAME="main Coverage Results" MODIFIED="1478470679849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/mackeyglass" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_CIP.coverage" NAME="test_CIP Coverage Results" MODIFIED="1491876986709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/correntropy-and-ensembles-in-deep-learning$test_models.coverage" NAME="test_models Coverage Results" MODIFIED="1474220208995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetest_TestSequential_test_output_bin.coverage" NAME="Nosetest TestSequential.test_output_bin Coverage Results" MODIFIED="1476415069554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/models" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$test_classifiers.coverage" NAME="test_classifiers Coverage Results" MODIFIED="1481655992410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_classifiers" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$lambda_CIP_no_s.coverage" NAME="lambda_CIP_no_s Coverage Results" MODIFIED="1481686718611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test_models/test_ensemble" />
+    <SUITE FILE_PATH="coverage/DeepEnsemble$Nosetests_in_test_ITLFunctions.coverage" NAME="Nosetests in test_ITLFunctions Coverage Results" MODIFIED="1491876544346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
   <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
     <option name="GROUP_SCHEMA" value="true" />
     <option name="GROUP_CONTENTS" value="false" />
     <option name="SORT_POSITIONED" value="false" />
@@ -82,8 +84,8 @@
       <file leaf-file-name="test_model_cip.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="85" column="23" selection-start-line="85" selection-start-column="23" selection-end-line="85" selection-end-column="23" />
+            <state relative-caret-position="165">
+              <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -92,8 +94,8 @@
       <file leaf-file-name="cost_functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="602" column="43" selection-start-line="602" selection-start-column="43" selection-end-line="602" selection-end-column="43" />
+            <state relative-caret-position="239">
+              <caret line="329" column="0" lean-forward="false" selection-start-line="329" selection-start-column="0" selection-end-line="329" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -102,53 +104,31 @@
       <file leaf-file-name="utils_functions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1855">
-              <caret line="255" column="22" selection-start-line="255" selection-start-column="22" selection-end-line="255" selection-end-column="22" />
+            <state relative-caret-position="119">
+              <caret line="476" column="0" lean-forward="false" selection-start-line="476" selection-start-column="0" selection-end-line="476" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_australian.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py">
+      <file leaf-file-name="fromnumeric.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/lib64/python3.4/site-packages/numpy/core/fromnumeric.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+            <state relative-caret-position="209">
+              <caret line="2538" column="0" lean-forward="false" selection-start-line="2538" selection-start-column="0" selection-end-line="2538" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="172">
+              <caret line="321" column="8" lean-forward="false" selection-start-line="321" selection-start-column="8" selection-end-line="321" selection-end-column="8" />
               <folding>
-                <marker date="1491710694750" expanded="true" signature="0:474" ph="import ..." />
+                <element signature="e#0#14#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_classifiers.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="61" column="26" selection-start-line="61" selection-start-column="26" selection-end-line="61" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="utils_models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2355">
-              <caret line="168" column="37" selection-start-line="168" selection-start-column="36" selection-end-line="168" selection-end-column="37" />
-              <folding>
-                <marker date="1491710694688" expanded="true" signature="6622:6889" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="score_functions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/deepensemble/utils/score_functions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2880">
-              <caret line="194" column="0" selection-start-line="194" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -164,16 +144,49 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>output(</find>
+      <find>c</find>
+      <find>cr</find>
+      <find>cro</find>
+      <find>cros</find>
+      <find>cross</find>
+      <find>cross_</find>
+      <find>cross_v</find>
+      <find>cross_vli</find>
+      <find>cross_vlida</find>
+      <find>cross_vlidatoin</find>
+      <find>cross_vlidatoi</find>
+      <find>cross_vlidato</find>
+      <find>cross_vlidat</find>
+      <find>cross_vlidatio</find>
+      <find>cross_vlaidation</find>
+      <find>cross_vlidation</find>
+      <find>cross_vidation</find>
+      <find>cross_vaidation</find>
+      <find>cross_validation</find>
+      <find>n</find>
+      <find>neg</find>
+      <find>neg_</find>
+      <find>neg_m</find>
+      <find>neg_me</find>
+      <find>neg_mee</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>TheBestCombiner</replace>
+      <replace>model_selection</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/deepensemble</dir>
+    </dirStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_abalone.py" />
-        <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_pendigits.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
-        <option value="$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/logger.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/regressionmetrics.py" />
         <option value="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_params.py" />
@@ -198,7 +211,6 @@
         <option value="$PROJECT_DIR$/test_models/test_regression/test_regression.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" />
         <option value="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/layer.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/conv.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" />
@@ -208,19 +220,24 @@
         <option value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py" />
         <option value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_grad.py" />
         <option value="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
-        <option value="$PROJECT_DIR$/deepensemble/models/sequential.py" />
-        <option value="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
         <option value="$PROJECT_DIR$/test/test_CIP.py" />
-        <option value="$PROJECT_DIR$/deepensemble/models/model.py" />
         <option value="$PROJECT_DIR$/deepensemble/layers/recurrent.py" />
         <option value="$PROJECT_DIR$/test/test_ITLFunctions.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
-        <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
-        <option value="$PROJECT_DIR$/deepensemble/utils/utils_models.py" />
         <option value="$PROJECT_DIR$/deepensemble/utils/score_functions.py" />
+        <option value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
+        <option value="$PROJECT_DIR$/deepensemble/combiner/__init__.py" />
+        <option value="$PROJECT_DIR$/deepensemble/combiner/thebestcombiner.py" />
+        <option value="$PROJECT_DIR$/deepensemble/models/sequential.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/update_functions.py" />
+        <option value="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
+        <option value="$PROJECT_DIR$/deepensemble/models/model.py" />
+        <option value="$PROJECT_DIR$/deepensemble/models/wrapper.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/utils_models.py" />
         <option value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
+        <option value="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
       </list>
     </option>
   </component>
@@ -231,8 +248,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="964" />
     <option name="y" value="36" />
-    <option name="width" value="1920" />
+    <option name="width" value="956" />
     <option name="height" value="1044" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -255,14 +273,7 @@
     </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
     <ConfirmationsSetting value="2" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -279,7 +290,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope">
         <subPane subId="Default">
           <PATH>
@@ -313,12 +323,6 @@
               <option name="myItemId" value="DeepEnsemble" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="DeepEnsemble" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
@@ -335,46 +339,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="test_models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_classifiers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_classifiers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_cip" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -424,26 +388,9 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DeepEnsemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="deepensemble" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="combiner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -461,11 +408,11 @@
       <recent name="$PROJECT_DIR$/test_models/test_models/tests" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/deepensemble/combiner" />
       <recent name="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
       <recent name="$PROJECT_DIR$/test" />
       <recent name="$PROJECT_DIR$/test_models/test_classifiers" />
       <recent name="$PROJECT_DIR$/test_models/test_ensemble" />
-      <recent name="$PROJECT_DIR$/test_models/test_classifiers/tests/germannumer_scale/Ensamble CIP" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -481,6 +428,98 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.test_model_cip">
+    <configuration default="false" name="test_CIP" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="correntropy-and-ensembles-in-deep-learning" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
+        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/test_CIP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_australian" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="correntropy-and-ensembles-in-deep-learning" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
+        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_model_cip" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="correntropy-and-ensembles-in-deep-learning" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
+        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_model_ncl" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.4m" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="correntropy-and-ensembles-in-deep-learning" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
+        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
     <configuration default="false" name="Nosetests in test_ITLFunctions" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -506,94 +545,25 @@
       <option name="USE_PATTERN" value="false" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_CIP" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
         <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
       </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4m" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="correntropy-and-ensembles-in-deep-learning" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
         <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
       </EXTENSION>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/test_CIP.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_australian" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4m" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="correntropy-and-ensembles-in-deep-learning" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
-        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
-      </EXTENSION>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_model_cip" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4m" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="correntropy-and-ensembles-in-deep-learning" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
-        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
-      </EXTENSION>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_model_ncl" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="THEANO_FLAGS" value="mode=FAST_RUN,device=cpu,floatX=float32" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4m" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="correntropy-and-ensembles-in-deep-learning" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
-        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
-      </EXTENSION>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_legacyInformationCopiedToNew" value="true" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test/test_ITLFunctions.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -614,6 +584,19 @@
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerJest" factoryName="Jest">
+      <node-interpreter value="project" />
+      <working-dir value="" />
+      <envs />
+      <scope-kind value="ALL" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -667,6 +650,7 @@
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
@@ -737,33 +721,10 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
-      <command value="run-script" />
+      <command value="run" />
       <scripts />
       <node-interpreter value="project" />
       <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Attests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="correntropy-and-ensembles-in-deep-learning" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
-        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
-      </EXTENSION>
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -805,15 +766,10 @@
       <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
         <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
       </EXTENSION>
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Unittests">
@@ -830,19 +786,48 @@
       <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
         <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
       </EXTENSION>
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="correntropy-and-ensembles-in-deep-learning" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <EXTENSION ID="com.brainwy.pyvmmonitor.PyVmMonitorRunExtension">
+        <option name="PyVmMonitorInitialProfileMode" value="INHERIT_GLOBAL" />
+      </EXTENSION>
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python.test_CIP" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test_australian" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test_model_cip" />
+      <item index="3" class="java.lang.String" itemvalue="Python.test_model_ncl" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests in test_ITLFunctions" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.test_model_cip" />
+        <item index="1" class="java.lang.String" itemvalue="Python.test_CIP" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in test_ITLFunctions" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_australian" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test_model_ncl" />
+      </list>
+    </recent_temporary>
+    <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -863,29 +848,8 @@
       <option name="TEST_TYPE" value="TEST_SCRIPT" />
       <option name="PATTERN" value="" />
       <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="" />
-      <option name="keywords" value="" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in test_ITLFunctions" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test_CIP" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test_australian" />
-      <item index="3" class="java.lang.String" itemvalue="Python.test_model_cip" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_model_ncl" />
-    </list>
-    <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.test_model_cip" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_australian" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_CIP" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in test_ITLFunctions" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test_model_ncl" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
@@ -903,34 +867,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
-    </task>
-    <task id="LOCAL-00083" summary="Added changes in Logger for no saves in buffer data of progressbar.&#10;Added changes in test_models for save data of training.">
-      <created>1476063545832</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1476063545832</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Added Wrapper for SKLearn models (Scikit).">
-      <created>1476079592340</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1476079592341</updated>
-    </task>
-    <task id="LOCAL-00085" summary="Added useful function for data base and testing model in utils.&#10;Changed some warning (inspector and PEP8)&#10;">
-      <created>1476113929614</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1476113929615</updated>
-    </task>
-    <task id="LOCAL-00086" summary="Added Serializable Class.&#10;Fixed some errors in Wrapper model.&#10;">
-      <created>1476216639184</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1476216639185</updated>
     </task>
     <task id="LOCAL-00087" summary="Added docstring for new classes and functions.&#10;">
       <created>1476376658132</created>
@@ -1247,16 +1183,38 @@
       <option name="project" value="LOCAL" />
       <updated>1488913120142</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="Some test.&#10;">
+      <created>1491767066440</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1491767066441</updated>
+    </task>
+    <task id="LOCAL-00133" summary="Some test.&#10;">
+      <created>1491875897619</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1491875897619</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Some test.&#10;">
+      <created>1491962645003</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1491962645003</updated>
+    </task>
+    <task id="LOCAL-00135" summary="Some test.&#10;">
+      <created>1491990171701</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1491990171701</updated>
+    </task>
+    <option name="localTasksCounter" value="136" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_test_ITLFunctions - 2017.02.21 at 15h 08m 59s.xml">
-      <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_ITLFunctions - 2017.03.07 at 14h 45m 55s.xml">
-      <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
-    </history-entry>
     <history-entry file="Nosetests_in_test_ITLFunctions - 2017.03.07 at 14h 54m 34s.xml">
       <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
     </history-entry>
@@ -1281,6 +1239,12 @@
     <history-entry file="Nosetests_in_test_ITLFunctions - 2017.03.07 at 15h 15m 42s.xml">
       <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
     </history-entry>
+    <history-entry file="Nosetests_in_test_ITLFunctions - 2017.04.10 at 23h 08m 13s.xml">
+      <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_ITLFunctions - 2017.04.10 at 23h 09m 08s.xml">
+      <configuration name="Nosetests in test_ITLFunctions" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1292,20 +1256,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="36" width="1920" height="1044" extended-state="6" />
-    <editor active="false" />
+    <frame x="964" y="36" width="956" height="1044" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.159375" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30209792" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2796158" sideWeight="0.5796875" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18938307" sideWeight="0.50104386" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32587412" sideWeight="0.4806867" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26573426" sideWeight="0.57604015" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2796158" sideWeight="0.4203125" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20416667" sideWeight="0.49895614" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29090908" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30196938" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27899343" sideWeight="0.5816435" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27899343" sideWeight="0.41515476" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3249453" sideWeight="0.4806867" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27899343" sideWeight="0.58484524" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26263738" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32275712" sideWeight="0.58484524" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.50875276" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4059081" sideWeight="0.4108858" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40679824" sideWeight="0.42552084" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.49124727" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1314,10 +1279,8 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19010043" sideWeight="0.5167364" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24892396" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26853147" sideWeight="0.5573888" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3234649" sideWeight="0.5875179" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27461708" sideWeight="0.5573888" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1353,7 +1316,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added diversity metrics (Non pairwise).&#10;&#10;" />
     <MESSAGE value="Added Bias Layer.&#10;&#10;" />
     <MESSAGE value="Fixed some issues in logger and models.&#10;&#10;" />
     <MESSAGE value="Added  Mutual Information compute with Euclidean distance.&#10;&#10;" />
@@ -1378,7 +1340,8 @@
     <MESSAGE value="Fixed issues with Recurrent Layers.&#10;Added some changes for testing.&#10;" />
     <MESSAGE value="Added Examples.&#10;" />
     <MESSAGE value="Fixed error in definition of CIP.&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed error in definition of CIP.&#10;" />
+    <MESSAGE value="Some test.&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some test.&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1407,6 +1370,36 @@
           <line>15</line>
           <option name="timeStamp" value="759" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/models/model.py</url>
+          <line>630</line>
+          <option name="timeStamp" value="980" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py</url>
+          <line>318</line>
+          <option name="timeStamp" value="982" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py</url>
+          <line>405</line>
+          <option name="timeStamp" value="983" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py</url>
+          <line>474</line>
+          <option name="timeStamp" value="984" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py</url>
+          <line>536</line>
+          <option name="timeStamp" value="986" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/deepensemble/utils/utils_functions.py</url>
+          <line>471</line>
+          <option name="timeStamp" value="987" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -1418,139 +1411,56 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="958" />
+      <option name="time" value="988" />
     </breakpoint-manager>
-    <watches-manager />
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="ensemble" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/tests/test_cancer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="33" column="30" selection-start-line="33" selection-start-column="30" selection-end-line="33" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/params_CIP_beta_classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="194" column="19" selection-start-line="194" selection-start-column="19" selection-end-line="194" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="79" column="16" selection-start-line="79" selection-start-column="16" selection-end-line="79" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="73" column="21" selection-start-line="73" selection-start-column="21" selection-end-line="73" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_regression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib64/python3.4/site-packages/numpy/core/fromnumeric.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="220" column="33" selection-start-line="220" selection-start-column="33" selection-end-line="220" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/layers/conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-636">
-          <caret line="195" column="9" selection-start-line="195" selection-start-column="9" selection-end-line="195" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/combiner/modelcombiner.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/lib64/python3.4/site-packages/theano/gof/link.py" />
-    <entry file="file:///usr/lib64/python3.4/site-packages/theano/gradient.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="29" column="25" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/layers/utils_layers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="68" column="4" selection-start-line="68" selection-start-column="4" selection-end-line="68" selection-end-column="4" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/test_NCL.py" />
-    <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/metrics/classification.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/wrapper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="116">
-          <caret line="123" column="34" selection-start-line="123" selection-start-column="34" selection-end-line="123" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="893">
-          <caret line="88" column="41" selection-start-line="88" selection-start-column="41" selection-end-line="88" selection-end-column="41" />
+          <caret line="88" column="41" lean-forward="false" selection-start-line="88" selection-start-column="41" selection-end-line="88" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/serializable.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_grad.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
-          <caret line="22" column="60" selection-start-line="22" selection-start-column="60" selection-end-line="22" selection-end-column="60" />
+          <caret line="22" column="60" lean-forward="false" selection-start-line="22" selection-start-column="60" selection-end-line="22" selection-end-column="60" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/metrics/basemetrics.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7830">
-          <caret line="527" column="59" selection-start-line="527" selection-start-column="59" selection-end-line="527" selection-end-column="59" />
+          <caret line="527" column="59" lean-forward="false" selection-start-line="527" selection-start-column="59" selection-end-line="527" selection-end-column="59" />
         </state>
       </provider>
     </entry>
@@ -1559,161 +1469,274 @@
         <state />
       </provider>
     </entry>
-    <entry file="file:///usr/lib64/python3.4/site-packages/theano/tensor/basic.py" />
     <entry file="file:///usr/lib64/python3.4/site-packages/theano/tensor/type.py" />
     <entry file="file:///usr/lib64/python3.4/site-packages/theano/configparser.py" />
     <entry file="file:///usr/lib64/python3.4/_collections_abc.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/sequential.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="930">
-          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/update_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="97" column="46" selection-start-line="97" selection-start-column="46" selection-end-line="97" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/metrics/cluster/supervised.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="534">
-          <caret line="321" column="0" selection-start-line="321" selection-start-column="0" selection-end-line="321" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="853" column="41" selection-start-line="853" selection-start-column="41" selection-end-line="853" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/layers/dense.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="52" column="52" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/layers/layer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="58" column="4" selection-start-line="58" selection-start-column="4" selection-end-line="60" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/layers/recurrent.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/.local/share/applications/jetbrains-pycharm.desktop" />
     <entry file="file:///usr/lib64/python3.4/unittest/case.py" />
-    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3366">
-          <caret line="205" column="88" selection-start-line="205" selection-start-column="88" selection-end-line="205" selection-end-column="88" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_CIP.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="70" column="22" selection-start-line="70" selection-start-column="22" selection-end-line="70" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#59#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_ITLFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="55" column="47" selection-start-line="55" selection-start-column="47" selection-end-line="55" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="198" column="0" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/sklearn/cross_validation.py" />
-    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py">
+    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="85" column="23" selection-start-line="85" selection-start-column="23" selection-end-line="85" selection-end-column="23" />
-          <folding />
+        <state relative-caret-position="-480">
+          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+        <state relative-caret-position="360">
+          <caret line="36" column="68" lean-forward="false" selection-start-line="36" selection-start-column="68" selection-end-line="36" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="30" lean-forward="false" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib64/python3.4/site-packages/theano/gof/op.py" />
+    <entry file="file:///usr/lib64/python3.4/site-packages/theano/tensor/basic.py" />
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/weightaveragecombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1515">
+          <caret line="108" column="20" lean-forward="false" selection-start-line="108" selection-start-column="20" selection-end-line="108" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/thebestcombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="75" column="46" lean-forward="false" selection-start-line="75" selection-start-column="46" selection-end-line="75" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib64/python3.4/site-packages/theano/gradient.py" />
+    <entry file="file://$PROJECT_DIR$/test/test_ITLFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_CIP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="599">
+          <caret line="70" column="22" lean-forward="false" selection-start-line="70" selection-start-column="22" selection-end-line="70" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_data_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="165" column="0" lean-forward="false" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
           <folding>
-            <marker date="1491710694750" expanded="true" signature="0:474" ph="import ..." />
+            <marker date="1491873718915" expanded="true" signature="3212:4576" ph="..." />
+            <marker date="1491873718915" expanded="true" signature="4600:5048" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py">
+    <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/metrics/classification.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="61" column="26" selection-start-line="61" selection-start-column="26" selection-end-line="61" selection-end-column="26" />
+        <state relative-caret-position="-511">
+          <caret line="111" column="4" lean-forward="false" selection-start-line="111" selection-start-column="4" selection-end-line="111" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/combiner/averagecombiner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="157" column="0" lean-forward="false" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib64/python3.4/site-packages/theano/gradient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="524">
+          <caret line="362" column="4" lean-forward="false" selection-start-line="362" selection-start-column="4" selection-end-line="362" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/score_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/update_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1185">
+          <caret line="121" column="11" lean-forward="false" selection-start-line="121" selection-start-column="11" selection-end-line="121" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib64/python3.4/site-packages/sklearn/cross_validation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/wrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="65" column="21" lean-forward="false" selection-start-line="65" selection-start-column="21" selection-end-line="65" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="150" column="4" lean-forward="false" selection-start-line="150" selection-start-column="4" selection-end-line="150" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib64/python3.4/site-packages/theano/gof/link.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="930">
+          <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2355">
-          <caret line="168" column="37" selection-start-line="168" selection-start-column="36" selection-end-line="168" selection-end-column="37" />
+        <state relative-caret-position="126">
+          <caret line="135" column="56" lean-forward="true" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
           <folding>
-            <marker date="1491710694688" expanded="true" signature="6622:6889" ph="..." />
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/deepensemble/utils/score_functions.py">
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_classifiers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2880">
-          <caret line="194" column="0" selection-start-line="194" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
+        <state relative-caret-position="187">
+          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/utils/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/layers/layer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/layers/dense.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/layers/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#45#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding>
+            <element signature="e#40#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/sequential.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/cost_functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="602" column="43" selection-start-line="602" selection-start-column="43" selection-end-line="602" selection-end-column="43" />
+        <state relative-caret-position="239">
+          <caret line="329" column="0" lean-forward="false" selection-start-line="329" selection-start-column="0" selection-end-line="329" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="321" column="8" lean-forward="false" selection-start-line="321" selection-start-column="8" selection-end-line="321" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="228" column="24" lean-forward="true" selection-start-line="228" selection-start-column="24" selection-end-line="228" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib64/python3.4/site-packages/numpy/core/fromnumeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="2538" column="0" lean-forward="false" selection-start-line="2538" selection-start-column="0" selection-end-line="2538" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1855">
-          <caret line="255" column="22" selection-start-line="255" selection-start-column="22" selection-end-line="255" selection-end-column="22" />
+        <state relative-caret-position="119">
+          <caret line="476" column="0" lean-forward="false" selection-start-line="476" selection-start-column="0" selection-end-line="476" selection-end-column="0" />
           <folding />
         </state>
       </provider>

@@ -1,4 +1,4 @@
-from sklearn import cross_validation, clone
+from sklearn import model_selection, clone
 from copy import deepcopy
 
 from .model import Model
@@ -63,7 +63,7 @@ class Wrapper(Model):
             no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Training model.
         """
-        folds = list(cross_validation.StratifiedKFold(_target, nfolds, shuffle=True))
+        folds = list(model_selection.StratifiedKFold(_target, nfolds, shuffle=True))
         metric_model = FactoryMetrics().get_metric(self)
 
         best_score = 0

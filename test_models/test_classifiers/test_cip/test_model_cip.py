@@ -4,15 +4,19 @@ import sys
 sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
 
 import math
+
+import matplotlib
+matplotlib.use('Qt4Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import cross_validation
+from sklearn import  model_selection
 from sklearn.metrics import accuracy_score
 from theano import shared, config
 import theano.tensor as T
 from collections import OrderedDict
 
-from deepensemble.utils import load_data, plot_pdf, load_data_segment
+from deepensemble.utils import load_data, plot_pdf, load_data_segment, load_data_iris
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
@@ -27,11 +31,12 @@ config.optimizer='fast_compile'
 #############################################################################################################
 # data_db = load_data_segment(data_home='../../data', normalize=True)
 data_db = load_data('australian_scale', data_home='../../data', normalize=False)
+# data_db = load_data_iris()
 data_input, data_target, classes_labels, name_db, desc, col_names = data_db
 
 # Generate testing and training sets
 input_train, input_test, target_train, target_test = \
-    cross_validation.train_test_split(data_input, data_target, test_size=0.3)
+    model_selection.train_test_split(data_input, data_target, test_size=0.3)
 
 #############################################################################################################
 # Define Parameters nets
@@ -45,9 +50,9 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 5
+n_ensemble_models = 1
 fn_activation1 = ActivationFunctions.sigmoid
-fn_activation2 = ActivationFunctions.sigmoid
+fn_activation2 = ActivationFunctions.tanh
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
@@ -66,16 +71,16 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='ED-CIP',
-                                    beta=0, lamb=0, s=0.5*s,
+                                    beta=0, lamb=0, s=s,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=False,
                                     update=sgd_cip, name_update='SGD CIP',
-                                    params_update={'learning_rate': 0.1}
+                                    params_update={'learning_rate': 0.01}
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
-args_train = {'max_epoch': max_epoch, 'batch_size': 40, 'early_stop': False,
+args_train = {'max_epoch': max_epoch, 'batch_size': 20, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
@@ -112,10 +117,13 @@ for i, model in enumerate(ensembleCIP.get_models()):
     plt.legend()
     plt.title('Model %s' % model.get_name())
 
+    pred_test = model.predict(input_test)
+    pred_train = model.predict(input_train)
+
     msg_test += 'Accuracy model %s test: %.4g\n' %\
-                (model.get_name(), accuracy_score(model.predict(input_test), target_test))
+                (model.get_name(), accuracy_score(pred_test, target_test))
     msg_train += 'Accuracy model %s train: %.4g\n' %\
-                 (model.get_name(), accuracy_score(model.predict(input_train), target_train))
+                 (model.get_name(), accuracy_score(pred_train, target_train))
 
 print(msg_test)
 print('Accuracy Ensemble test: %.4g' % (accuracy_score(ensembleCIP.predict(input_test), target_test)))

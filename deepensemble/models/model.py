@@ -5,7 +5,7 @@ import theano.tensor as T
 import copy
 
 from theano import shared
-from sklearn import cross_validation
+from sklearn import model_selection
 from sklearn.metrics import accuracy_score, mean_squared_error
 from theano import config, function
 from collections import OrderedDict
@@ -974,7 +974,7 @@ class Model(Serializable):
 
         if self.is_classifier():
             input_train, input_valid, target_train, target_valid = \
-                cross_validation.train_test_split(_input, _target, stratify=_target, test_size=valid_size)
+                model_selection.train_test_split(_input, _target, stratify=_target, test_size=valid_size)
             target_train = self.translate_target(_target=target_train)
             target_valid = self.translate_target(_target=target_valid)
         else:
