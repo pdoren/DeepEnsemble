@@ -185,11 +185,36 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     theano.tensor.matrix
         Returns Mutual Information Cauchy-Schwarz.
     """
-    kernel = ITLFunctions.kernel_gauss
-
     s = ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()) + eps
 
-    Y = [_model.output(_input) for _model in model.get_models()]
-    Y.append(_target)
+    return -T.log(ITLFunctions.cross_information_potential([_output, _target], np.sqrt(2) * s, dist='CS'))
 
-    return -T.log(ITLFunctions.cross_information_potential(Y, np.sqrt(2) * s, dist='CS'))
+
+# noinspection PyUnusedLocal
+def mutual_information_parzen(_input, _output, _target, model, eps=0.00001):
+    """ Mutual Information (Parzen Window)
+
+    Parameters
+    ----------
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _output : theano.tensor.matrix
+        Output sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    model : Model
+        Model.
+
+    eps : float
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Returns Mutual Information (Parzen Window).
+    """
+    s = ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()) + eps
+
+    return ITLFunctions.mutual_information_parzen(_output, _target, s)

@@ -5,8 +5,8 @@ from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_sy
     kullback_leibler_generalized, cip_full
 from .logger import Logger
 from .regularizer_functions import L2
-from .score_functions import mutual_information_cs
-from .update_functions import sgd, count_epoch
+from .score_functions import mutual_information_parzen, mutual_information_cs
+from .update_functions import sgd, count_epoch, sgd_cip
 from ..combiner import AverageCombiner, PluralityVotingCombiner, TheBestVotingCombiner
 from ..models import EnsembleModel, Sequential
 from .utils_functions import ITLFunctions
@@ -91,7 +91,7 @@ def get_ensemble_model(name,
     else:
         ensemble.set_combiner(AverageCombiner())
 
-    ensemble.append_score(mutual_information_cs, name='Ics')
+    ensemble.append_score(mutual_information_cs, name='Mutual Information')
 
     return ensemble
 
@@ -110,9 +110,9 @@ def get_ensembleCIP_model(name,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.05, annealing_enable=False,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
-    i = shared(0, 'i')  # count current epoch
     if annealing_enable:
-        si = ITLFunctions.annealing(lsp * s, lsm * s, i, max_epoch)
+        current_epoch = shared(0, 'current_epoch')  # count current epoch
+        si = ITLFunctions.annealing(lsp * s, lsm * s, current_epoch, max_epoch)
     else:
         si = s
 
@@ -164,12 +164,13 @@ def get_ensembleCIP_model(name,
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
-    ensemble.update_io()
-    params_update['error'] = ensemble.get_error(prob=True)
+    if update == sgd_cip:
+        ensemble.update_io()
+        params_update['error'] = ensemble.get_error(prob=True)
     ensemble.set_update(update, name=name_update, **params_update)
 
     if annealing_enable:
-        ensemble.append_update(count_epoch, 'Count Epoch', _i=i)
+        ensemble.append_update(count_epoch, 'Count Epoch', _i=current_epoch)
 
     return ensemble
 

@@ -402,19 +402,19 @@ class ITLFunctions:
         DT = ITLFunctions.get_diff([x, y])
         DTK = [kernel(dt, s) for dt in DT]
 
-        px = T.mean(DTK[0], axis=0)
-        py = T.mean(DTK[1], axis=0)
+        px = T.mean(DTK[0], axis=-1)
+        py = T.mean(DTK[1], axis=-1)
 
         dx = T.tile(DTK[0], (DTK[0].shape[0], 1, 1))
         dy = T.tile(DTK[1], (DTK[1].shape[0], 1, 1))
 
         dt = dx * T.transpose(dy, axes=(1, 0, 2))
 
-        pxy = T.mean(dt, axis=0)
+        pxy = T.mean(dt, axis=-1)
 
         # Normalization
-        px = px / T.sum(px)
-        py = px / T.sum(py)
+        px = T.tile(px, (px.shape[0], 1)) / T.sum(px)
+        py = T.tile(py, (py.shape[0], 1)) / T.sum(py)
         pxy = pxy / T.sum(pxy)
 
         return ITLFunctions.mutual_information(px, py, pxy)

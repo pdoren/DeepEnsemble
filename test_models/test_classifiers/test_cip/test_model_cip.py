@@ -20,7 +20,7 @@ from deepensemble.utils import load_data, plot_pdf, load_data_segment, load_data
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
-from deepensemble.utils.update_functions import sgd_cip
+from deepensemble.utils.update_functions import sgd_cip, sgd, adam
 
 config.optimizer='fast_compile'
 #config.exception_verbosity='high'
@@ -67,20 +67,20 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     n_input=n_features, n_output=n_output,
                                     n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                     classification=True,
-                                    is_cip_full=False,
+                                    is_cip_full=True,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='ED-CIP',
                                     beta=0, lamb=0, s=s,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=False,
-                                    update=sgd_cip, name_update='SGD CIP',
-                                    params_update={'learning_rate': 0.01}
+                                    update=sgd, name_update='SGD',
+                                    params_update={'learning_rate': 0.1}
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
-args_train = {'max_epoch': max_epoch, 'batch_size': 20, 'early_stop': False,
+args_train = {'max_epoch': max_epoch, 'batch_size': 30, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
@@ -139,15 +139,5 @@ metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
 
 om_train = ensembleCIP.output(input_train).eval()
 om_test = ensembleCIP.output(input_test).eval()
-
-# noinspection PyRedeclaration
-#f = plt.figure()
-#ax = plt.subplot(2, 1, 1)
-#ax.plot(om_train[:, 0] - om_train[:, 1], '.', label='Train')
-#plt.legend()
-
-#ax = plt.subplot(2, 1, 2)
-#ax.plot(om_test[:, 0] - om_test[:, 1], '.', label='Test')
-#plt.legend()
 
 plt.show()

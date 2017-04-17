@@ -65,13 +65,15 @@ def shannon_entropy(c):
     return H
 
 
-N = 300
-y1 = np.random.binomial(1, 0.5, N)
+N = 200
+y1 = np.random.binomial(1, 0.4, N)
 y1 = y1.astype(dtype=config.floatX)
 y1 = y1[:, np.newaxis]
 
 _y2 = T.matrix('y2')
 s = 1.06 * np.std(y1) * (len(y1)) ** (-0.2)  # Silverman
+
+ITLFunctions.mutual_information_parzen(y1, y1, s=s)
 
 _Ip = ITLFunctions.mutual_information_parzen(_y2, shared(y1), s=s)
 fn_Ip = function([_y2], outputs=_Ip, allow_input_downcast=True)
