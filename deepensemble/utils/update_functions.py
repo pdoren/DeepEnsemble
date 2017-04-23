@@ -5,7 +5,8 @@ import numpy as np
 
 # Thanks to the library Lasagne.
 
-__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam', 'sgd_cip', 'count_epoch']
+__all__ = ['dummy_update', 'adagrad', 'sgd', 'sgd_momentum', 'adadelta', 'rmsprop', 'adam', 'sgd_cip',
+           'count_iterations']
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
@@ -358,7 +359,7 @@ def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
 
 
 # noinspection PyUnusedLocal
-def count_epoch(error, _i=None):
+def count_iterations(error, _i=None):
     updates = OrderedDict()
     updates[_i] = _i + 1
     return updates

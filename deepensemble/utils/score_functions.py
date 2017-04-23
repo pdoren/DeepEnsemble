@@ -189,7 +189,7 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     """
     s = ITLFunctions.silverman(_target) + eps
 
-    return -T.log(ITLFunctions.cross_information_potential([_output, _target], np.sqrt(2) * s, dist='CS'))
+    return -T.log(ITLFunctions.cross_information_potential([_output], _target, np.sqrt(2) * s, dist='CS'))
 
 
 # noinspection PyUnusedLocal

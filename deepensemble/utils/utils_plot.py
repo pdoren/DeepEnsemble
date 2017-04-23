@@ -1,8 +1,11 @@
-from .serializable import Serializable
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-__all__ = ['DataPlot', 'add_data', 'add_point', 'plot', 'plot_data', 'plot_list_data']
+from sklearn.metrics import accuracy_score
+from .serializable import Serializable
+
+__all__ = ['DataPlot', 'add_data', 'add_point', 'plot', 'plot_data', 'plot_list_data', 'plot_data_training_ensemble']
 
 
 class DataPlot(Serializable):
@@ -376,3 +379,65 @@ def _resize_rows(a, nr):
         na[r:nr, :] = np.NaN  # complete with nan
 
     return na
+
+def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, target_train, target_test, metrics):
+
+    from deepensemble.utils import plot_pdf
+
+    plt.style.use('ggplot')
+    f = plt.figure()
+
+    e_train = ensemble.error(input_train, ensemble.translate_target(target_train)).eval()
+    e_test = ensemble.error(input_test, ensemble.translate_target(target_test)).eval()
+
+    ax = plt.subplot(2, 1, 1)
+    for i in range(ensemble.get_fan_out()):
+        plot_pdf(ax, e_test[:, i], label='Test output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+    plt.legend()
+
+    ax = plt.subplot(2, 1, 2)
+    for i in range(ensemble.get_fan_out()):
+        plot_pdf(ax, e_train[:, i], label='Train output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+    plt.legend()
+
+    # noinspection PyRedeclaration
+    f = plt.figure()
+    msg_train = ''
+    msg_test = ''
+    row = math.ceil(ensemble.get_num_models() / 2.0)
+    col = 2
+    for i, model in enumerate(ensemble.get_models()):
+        e_train = model.error(input_train, model.translate_target(target_train)).eval()
+        e_test = model.error(input_test, model.translate_target(target_test)).eval()
+
+        ax = plt.subplot(row, col, i + 1)
+        for j in range(ensemble.get_fan_out()):
+            plot_pdf(ax, e_test[:, j], label='Test output %d' % (j + 1), x_min=-3, x_max=3, n_points=1000)
+        plt.legend()
+        plt.title('Model %s' % model.get_name())
+
+        pred_test = model.predict(input_test)
+        pred_train = model.predict(input_train)
+
+        msg_test += 'Accuracy model %s test: %.4g\n' % \
+                    (model.get_name(), accuracy_score(pred_test, target_test))
+        msg_train += 'Accuracy model %s train: %.4g\n' % \
+                     (model.get_name(), accuracy_score(pred_train, target_train))
+
+    print(msg_test)
+    print('Accuracy Ensemble test: %.4g' % (accuracy_score(ensemble.predict(input_test), target_test)))
+    print('--' * 10)
+    print(msg_train)
+    print('Accuracy Ensemble train: %.4g' % (accuracy_score(ensemble.predict(input_train), target_train)))
+
+    plt.tight_layout()
+
+    metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
+    metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
+    metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
+
+    om_train = ensemble.output(input_train).eval()
+    om_test = ensemble.output(input_test).eval()
+
+    plt.show()
+

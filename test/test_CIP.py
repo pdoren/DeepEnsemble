@@ -19,6 +19,7 @@ def calc_MI(X, Y, bins=25):
     return MI
 
 
+# noinspection PyTypeChecker
 def calc_IED(X, Y, bins=25):
     c_XY = np.histogram2d(X, Y, bins)[0]
     c_X = np.histogram(X, bins)[0]
@@ -38,6 +39,7 @@ def calc_IED(X, Y, bins=25):
     return np.sum(np.power(d1, 2)) + np.sum(np.power(d2, 2)) - 2. * np.sum(d3)
 
 
+# noinspection PyTypeChecker
 def calc_ICS(X, Y, bins=25):
     c_XY = np.histogram2d(X, Y, bins)[0]
     c_X = np.histogram(X, bins)[0]
@@ -57,9 +59,10 @@ def calc_ICS(X, Y, bins=25):
     return np.log(np.sum(np.power(d1, 2))) + np.log(np.sum(np.power(d2, 2))) - 2. * np.log(np.sum(d3))
 
 
+# noinspection PyTypeChecker
 def shannon_entropy(c):
     c_normalized = c / float(np.sum(c))
-    # noinspection PyTypeChecker
+    # noinspection PyTypeChecker,PyUnresolvedReferences
     c_normalized = c_normalized[np.nonzero(c_normalized)]
     H = -sum(c_normalized * np.log(c_normalized))
     return H
@@ -73,15 +76,17 @@ y1 = y1[:, np.newaxis]
 _y2 = T.matrix('y2')
 s = 1.06 * np.std(y1) * (len(y1)) ** (-0.2)  # Silverman
 
+# noinspection PyTypeChecker
 ITLFunctions.mutual_information_parzen(y1, y1, s=s)
 
+# noinspection PyTypeChecker
 _Ip = ITLFunctions.mutual_information_parzen(_y2, shared(y1), s=s)
 fn_Ip = function([_y2], outputs=_Ip, allow_input_downcast=True)
 
-_Ics = ITLFunctions.mutual_information_cs([_y2, shared(y1)], s=np.sqrt(2) * s)
+_Ics = ITLFunctions.mutual_information_cs([_y2], shared(y1), s=np.sqrt(2) * s)
 fn_Ics = function([_y2], outputs=_Ics, allow_input_downcast=True)
 
-_Ied = ITLFunctions.mutual_information_ed([_y2, shared(y1)], s=np.sqrt(2) * s)
+_Ied = ITLFunctions.mutual_information_ed([_y2], shared(y1), s=np.sqrt(2) * s)
 fn_Ied = function([_y2], outputs=_Ied, allow_input_downcast=True)
 
 Ics = []
@@ -99,9 +104,9 @@ for auc in AUC:
 
     Ip.append(fn_Ip(y2))
     Ics.append(fn_Ics(y2))
-    #Ics2.append(calc_ICS(np.squeeze(y1), np.squeeze(y2)))
+    # Ics2.append(calc_ICS(np.squeeze(y1), np.squeeze(y2)))
     Ied.append(fn_Ied(y2))
-    #Ied2.append(calc_IED(np.squeeze(y1), np.squeeze(y2)))
+    # Ied2.append(calc_IED(np.squeeze(y1), np.squeeze(y2)))
     Is.append(mutual_info_score(np.squeeze(y1), np.squeeze(y2)))
     I.append(calc_MI(np.squeeze(y1), np.squeeze(y2)))
 
@@ -114,7 +119,7 @@ plt.plot(AUC, I, label='$I$')
 plt.plot(AUC, Ip, label='$I_p$')
 plt.plot(AUC, Is, 'r', label='$I_S$')
 plt.plot(AUC, Ied, 'g', label='$I_{ED}$')
-#plt.plot(AUC, Ied2, 'b', label='$I_{ED2}$')
+# plt.plot(AUC, Ied2, 'b', label='$I_{ED2}$')
 plt.xlabel('AUC')
 plt.ylabel('Mutual Information')
 plt.legend()
@@ -124,7 +129,7 @@ plt.plot(AUC, I, label='$I$')
 plt.plot(AUC, Ip, label='$I_p$')
 plt.plot(AUC, Is, 'r', label='$I_S$')
 plt.plot(AUC, Ics, 'g', label='$I_{CS}$')
-#plt.plot(AUC, Ics2, 'b', label='$I_{CS2}$')
+# plt.plot(AUC, Ics2, 'b', label='$I_{CS2}$')
 plt.xlabel('AUC')
 plt.ylabel('Mutual Information')
 plt.legend()

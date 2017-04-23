@@ -351,12 +351,12 @@ class ITLFunctions:
         return T.cast(T.std(x) * K, T.config.floatX)
 
     @staticmethod
-    def get_diff(Y):
+    def get_diff(X):
         """ Compute difference among each element in each set.
 
         Parameters
         ----------
-        Y : list
+        X : list
             List of sets.
 
         Returns
@@ -366,11 +366,34 @@ class ITLFunctions:
 
         """
         DT = []
-        for t in Y:
+        for t in X:
             dt = T.tile(t, (t.shape[0], 1, 1))
             dt = T.transpose(dt, axes=(1, 0, 2)) - dt
             DT.append(dt)
         return DT
+
+    @staticmethod
+    def get_prod(x, y):
+        """ Compute difference among each element of x and y sets.
+
+        Parameters
+        ----------
+        x
+            Set 1.
+        
+        y
+            Set 2.
+
+        Returns
+        -------
+        list
+            Returns a list with the differences of each set.
+
+        """
+        dx = T.tile(x, (x.shape[0], 1, 1))
+        dy = T.tile(y, (y.shape[0], 1, 1))
+        dt = dx * dy
+        return dt
 
     # noinspection PyUnresolvedReferences
     @staticmethod
@@ -464,17 +487,42 @@ class ITLFunctions:
         return (M - T.sum(T.eq(y, t))) / (N * (S - 1))
 
     @staticmethod
-    def get_cip(Y, s):
+    def get_cip(X, y, s):
 
         kernel = ITLFunctions.kernel_gauss_diff
 
-        DY = ITLFunctions.get_diff(Y)
+        DY = ITLFunctions.get_diff(X + [y])
 
         DYK = [kernel(dy, np.sqrt(2.0) * s) for dy in DY]
 
         V_J = T.mean(np.prod(DYK))
 
         V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
+
+        V_k = [T.mean(V_i) for V_i in V_k_i]
+
+        V_M = np.prod(V_k)
+
+        V_nc = T.mean(np.prod(V_k_i))
+
+        return V_nc, V_J, V_M
+
+    @staticmethod
+    def get_cip_jenssen(X, y, s):
+
+        kernel = ITLFunctions.kernel_gauss_diff
+
+        Xy = X + [y]
+
+        DX = ITLFunctions.get_diff(Xy)
+
+        DY = [T.squeeze(T.sum(ITLFunctions.get_prod(x, y), axis=-1))  for x in Xy]
+
+        DXK = [kernel(dx, np.sqrt(2.0) * s) * dy for dx, dy in zip(DX, DY)]
+
+        V_J = T.mean(np.prod(DXK))
+
+        V_k_i = [T.mean(dxk, axis=-1) for dxk in DXK]
 
         V_k = [T.mean(V_i) for V_i in V_k_i]
 
@@ -539,8 +587,8 @@ class ITLFunctions:
         return V_nc, V_J, V_M
 
     @staticmethod
-    def cross_information_potential(Y, s, dist='ED'):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
+    def cross_information_potential(X, y, s, dist='ED'):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         if dist == 'CS':
             return T.power(V_nc, 2) / (V_J * V_M)
@@ -550,20 +598,20 @@ class ITLFunctions:
             raise ValueError('The dist must be CS or ED')
 
     @staticmethod
-    def mutual_information_cs(Y, s):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
+    def mutual_information_cs(X, y, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
 
     @staticmethod
-    def mutual_information_ed(Y, s):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(Y, s)
+    def mutual_information_ed(X, y, s):
+        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         return V_J - 2 * V_nc + V_M
 
     @staticmethod
-    def annealing(sp, sm, i, max_epoch):
-        return sp * T.power((sm / sp), i / max_epoch)
+    def annealing(sp, sm, i, num_iterations):
+        return sp * T.power((sm / sp), i / num_iterations)
 
 
 class DiversityFunctions:

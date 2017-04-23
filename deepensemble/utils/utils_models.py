@@ -5,7 +5,7 @@ from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_sy
 from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
-from .update_functions import sgd, count_epoch, sgd_cip
+from .update_functions import sgd, count_iterations, sgd_cip
 from .utils_functions import ITLFunctions
 from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
@@ -111,7 +111,7 @@ def get_ensembleCIP_model(name,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
     if annealing_enable:
         current_epoch = shared(0, 'current_epoch')  # count current epoch
-        si = ITLFunctions.annealing(lsp * s, lsm * s, current_epoch, max_epoch)
+        si = ITLFunctions.annealing(lsp * s, lsm * s, current_epoch, max_epoch * batch_size)
     else:
         si = s
 
@@ -161,7 +161,7 @@ def get_ensembleCIP_model(name,
             ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s, dist=dist)
 
         if lamb != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=-lamb, s=s, dist=dist)
 
     if update == sgd_cip:
         ensemble.update_io()
@@ -170,7 +170,7 @@ def get_ensembleCIP_model(name,
 
     if annealing_enable:
         # noinspection PyUnboundLocalVariable
-        ensemble.append_update(count_epoch, 'Count Epoch', _i=current_epoch)
+        ensemble.append_update(count_iterations, 'Count Epoch', _i=current_epoch)
 
     return ensemble
 

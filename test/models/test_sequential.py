@@ -25,6 +25,7 @@ info = 'Neural Network type MLP for test'
 
 
 class TestSequential(TestCase):
+    # noinspection PyUnresolvedReferences
     def test_initialization(self):
         seq1 = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
         seq1.append_comment(info)
@@ -120,9 +121,11 @@ class TestSequential(TestCase):
         log.debug("pred crisp= %s", pred_crisp.eval())
         log.debug("Target= %s", translate_target(dta, classes_labels))
 
+        # noinspection PyUnresolvedReferences
         self.assertEquals((T.argmax(pred_prob, axis=1).eval() == T.argmax(pred_crisp, axis=1).eval()).all(), True,
                           'Problem with difference between output probability and crisp')
 
+    # noinspection PyUnresolvedReferences
     def test_output_bin(self):
         _classes_labels = ['class_1', 'class_2']
         N = 100
@@ -164,6 +167,7 @@ class TestSequential(TestCase):
         self.assertEquals((T.argmax(pred_prob, axis=1).eval() == T.argmax(pred_crisp, axis=1).eval()).all(), True,
                           'Problem with difference between output probability and crisp')
 
+    # noinspection PyUnresolvedReferences
     def test_reset(self):
         seq9 = Sequential(name=name, type_model="classifier", target_labels=classes_labels)
         seq9.append_comment(info)

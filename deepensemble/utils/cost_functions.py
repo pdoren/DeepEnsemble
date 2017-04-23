@@ -321,13 +321,13 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
         s = T.max(ITLFunctions.silverman(_target), eps)
 
     if dist == 'CS':
-        return -ITLFunctions.mutual_information_cs([om, _target], s)
+        return ITLFunctions.mutual_information_cs([om], _target, s)
     elif dist == 'ED':
-        return -ITLFunctions.mutual_information_ed([om, _target], s)
+        return ITLFunctions.mutual_information_ed([om], _target, s)
     elif dist == 'CS-CIP':
-        return ITLFunctions.cross_information_potential([om, _target], s, dist='CS')
+        return ITLFunctions.cross_information_potential([om], _target, s, dist='CS')
     elif dist == 'ED-CIP':
-        return -ITLFunctions.cross_information_potential([om, _target], s, dist='ED')
+        return ITLFunctions.cross_information_potential([om], _target, s, dist='ED')
     else:
         raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
 
@@ -417,16 +417,16 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], s)
+                I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
                 redundancy.append(-I2)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], s)
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
                 redundancy.append(-I2)
             elif dist == 'CS-CIP':
-                cip2 = ITLFunctions.cross_information_potential([om, om_k], s, dist='CS')
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], _target, s, dist='CS')
                 redundancy.append(cip2)
             elif dist == 'ED-CIP':
-                cip2 = -ITLFunctions.cross_information_potential([om, om_k], s, dist='ED')
+                cip2 = ITLFunctions.cross_information_potential([om, om_k], _target, s, dist='ED')
                 redundancy.append(cip2)
             else:
                 raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
@@ -486,18 +486,18 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], s)
-                I3 = ITLFunctions.mutual_information_cs([om, om_k, _target], s)
+                I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
+                I3 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
                 synergy.append(I2 - I3)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], s)
-                I3 = ITLFunctions.mutual_information_ed([om, om_k, _target], s)
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
+                I3 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
                 synergy.append(I2 - I3)
             elif dist == 'CS-CIP':
-                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], s, dist='CS')
+                cip3 = ITLFunctions.cross_information_potential([om, om_k], _target, s, dist='CS')
                 synergy.append(cip3)
             elif dist == 'ED-CIP':
-                cip3 = ITLFunctions.cross_information_potential([om, om_k, _target], s, dist='ED')
+                cip3 = ITLFunctions.cross_information_potential([om, om_k], _target, s, dist='ED')
                 synergy.append(-cip3)
             else:
                 raise ValueError('the distance must be CS, ED, CS-CIP or ED-CIP.')
@@ -537,13 +537,13 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     if s is None:
         s = T.max(ITLFunctions.silverman(_target), eps)
 
-    Y = [T.cast(_model.output(_input), 'float32') for _model in model.get_models()]
-    Y.append(T.cast(_target, 'float32'))
+    X = [T.cast(_model.output(_input), 'float32') for _model in model.get_models()]
+    y = T.cast(_target, 'float32')
 
     if dist == 'CS-CIP' or dist == 'CS':
-        return ITLFunctions.cross_information_potential(Y, s, dist='CS')
+        return ITLFunctions.cross_information_potential(X, y, s, dist='CS')
     elif dist == 'ED-CIP' or dist == 'ED':
-        return -ITLFunctions.cross_information_potential(Y, s, dist='ED')
+        return ITLFunctions.cross_information_potential(X, y, s, dist='ED')
     else:
         raise ValueError('The dist must be CS-CIP or ED-CIP')
 
