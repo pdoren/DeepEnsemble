@@ -71,10 +71,7 @@ def score_accuracy(_input, _output, _target, model):
     theano.tensor.matrix
         Returns accuracy in a classifier models.
     """
-    if model.is_multi_label():
-        return T.mean(T.eq(_output - _target, T.zeros_like(_target)))
-    else:
-        return T.mean(T.eq(_output, _target))
+    return _target.shape[-1] * T.mean(_target * _output)
 
 
 # noinspection PyUnusedLocal
@@ -158,12 +155,11 @@ def score_rms(_input, _output, _target, model):
     theano.tensor.matrix
         Returns Root Mean Square.
     """
-    e = _output - _target
-    return T.mean(T.power(e, 2.0))
+    return T.mean(T.power(_output - _target, 2.0))
 
 
 # noinspection PyUnusedLocal
-def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
+def mutual_information_cs(_input, _output, _target, model):
     """ Mutual Information Cauchy-Schwarz
 
     Parameters
@@ -180,20 +176,18 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     model : Model
         Model.
 
-    eps : float
-
     Returns
     -------
     theano.tensor.matrix
         Returns Mutual Information Cauchy-Schwarz.
     """
-    s = ITLFunctions.silverman(_target) + eps
+    s = ITLFunctions.silverman(_target)
 
-    return -T.log(ITLFunctions.cross_information_potential([_output], _target, np.sqrt(2) * s, dist='CS'))
+    return -T.log(ITLFunctions.cross_information_potential([_output], _target, s, dist='CS'))
 
 
 # noinspection PyUnusedLocal
-def mutual_information_parzen(_input, _output, _target, model, eps=0.00001):
+def mutual_information_parzen(_input, _output, _target, model):
     """ Mutual Information (Parzen Window)
 
     Parameters
@@ -210,13 +204,11 @@ def mutual_information_parzen(_input, _output, _target, model, eps=0.00001):
     model : Model
         Model.
 
-    eps : float
-
     Returns
     -------
     theano.tensor.matrix
         Returns Mutual Information (Parzen Window).
     """
-    s = ITLFunctions.silverman(_target) + eps
+    s = ITLFunctions.silverman(_target)
 
     return ITLFunctions.mutual_information_parzen(_output, _target, s)
