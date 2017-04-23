@@ -294,6 +294,7 @@ def plot_hist_train_test(train_means, test_means, ylabel, title, labels):
     plt.tight_layout()
 
 
+# noinspection PyTypeChecker,PyTypeChecker
 def plot_hist_train_test2(train_means, train_std, test_means, test_std, ylabel, title, labels):
     """
 
@@ -387,6 +388,7 @@ def plot_scores_classifications(models, input_train, target_train, input_test, t
 
 def plot_pdf(ax, x, label, x_min=-1, x_max=1, n_points=1000):
     N = len(x)
+    # noinspection PyTypeChecker
     s = float(1.06 * np.std(x) / np.power(N, 0.2))  # Silverman
     kde = KernelDensity(kernel='gaussian', bandwidth=s)
     kde.fit(x[:, np.newaxis])

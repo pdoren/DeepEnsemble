@@ -63,6 +63,7 @@ class Wrapper(Model):
             no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
         """ Training model.
         """
+        # noinspection PyArgumentList,PyTypeChecker
         folds = list(model_selection.StratifiedKFold(_target, nfolds, shuffle=True))
         metric_model = FactoryMetrics().get_metric(self)
 

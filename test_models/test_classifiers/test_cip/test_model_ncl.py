@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-from sklearn import cross_validation
+from sklearn import model_selection
 from sklearn.metrics import accuracy_score
 
-from deepensemble.utils import load_data, plot_pdf, load_data_segment
+from deepensemble.utils import plot_pdf, load_data_segment
 from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import get_ensembleNCL_model
 
@@ -10,11 +10,11 @@ from deepensemble.utils.utils_models import get_ensembleNCL_model
 # Load Data
 #############################################################################################################
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data_segment(
-                                                                              data_home='../../data', normalize=True)
+    data_home='../../data', normalize=True)
 
 # Generate testing and training sets
 input_train, input_test, target_train, target_test = \
-    cross_validation.train_test_split(data_input, data_target, test_size=0.3)
+    model_selection.train_test_split(data_input, data_target, test_size=0.3)
 
 #############################################################################################################
 # Define Parameters nets
@@ -85,9 +85,9 @@ for i, model in enumerate(ensembleNCL.get_models()):
     plt.legend()
     plt.title('Model %s' % model.get_name())
 
-    msg_test += 'Accuracy model %s test: %.4g\n' %\
+    msg_test += 'Accuracy model %s test: %.4g\n' % \
                 (model.get_name(), accuracy_score(model.predict(input_test), target_test))
-    msg_train += 'Accuracy model %s train: %.4g\n' %\
+    msg_train += 'Accuracy model %s train: %.4g\n' % \
                  (model.get_name(), accuracy_score(model.predict(input_train), target_train))
 
 print(msg_test)
@@ -106,13 +106,13 @@ om_train = ensembleNCL.output(input_train).eval()
 om_test = ensembleNCL.output(input_test).eval()
 
 # noinspection PyRedeclaration
-#f = plt.figure()
-#ax = plt.subplot(2, 1, 1)
-#ax.plot(om_train[:, 0] - om_train[:, 1], '.', label='Train')
-#plt.legend()
+# f = plt.figure()
+# ax = plt.subplot(2, 1, 1)
+# ax.plot(om_train[:, 0] - om_train[:, 1], '.', label='Train')
+# plt.legend()
 
-#ax = plt.subplot(2, 1, 2)
-#ax.plot(om_test[:, 0] - om_test[:, 1], '.', label='Test')
-#plt.legend()
+# ax = plt.subplot(2, 1, 2)
+# ax.plot(om_test[:, 0] - om_test[:, 1], '.', label='Test')
+# plt.legend()
 
 plt.show()

@@ -1,30 +1,39 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
-
 import math
 
 import matplotlib
+
 matplotlib.use('Qt4Agg')
 
+# noinspection PyPep8
 import matplotlib.pyplot as plt
+# noinspection PyPep8
 import numpy as np
-from sklearn import  model_selection
+# noinspection PyPep8
+from sklearn import model_selection
+# noinspection PyPep8
 from sklearn.metrics import accuracy_score
+# noinspection PyPep8
 from theano import shared, config
-import theano.tensor as T
-from collections import OrderedDict
 
-from deepensemble.utils import load_data, plot_pdf, load_data_segment, load_data_iris
+sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
+
+# noinspection PyPep8
+from deepensemble.utils import load_data, plot_pdf
+# noinspection PyPep8
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
+# noinspection PyPep8
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
+# noinspection PyPep8
 from deepensemble.utils.utils_models import get_ensembleCIP_model
-from deepensemble.utils.update_functions import sgd_cip, sgd, adam
+# noinspection PyPep8
+from deepensemble.utils.update_functions import sgd
 
-config.optimizer='fast_compile'
-#config.exception_verbosity='high'
-#config.compute_test_value='warn'
+config.optimizer = 'fast_compile'
+# config.exception_verbosity='high'
+# config.compute_test_value='warn'
 
 #############################################################################################################
 # Load Data
@@ -50,13 +59,12 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 1
+n_ensemble_models = 5
 fn_activation1 = ActivationFunctions.sigmoid
 fn_activation2 = ActivationFunctions.tanh
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
-s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
-
+s = ITLFunctions.silverman(shared(np.array(y))).eval()
 
 #############################################################################################################
 # Testing
@@ -72,15 +80,15 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='ED-CIP',
                                     beta=0, lamb=0, s=s,
-                                    bias_layer=False, mse_first_epoch=False, annealing_enable=False,
+                                    bias_layer=False, mse_first_epoch=True, annealing_enable=False,
                                     update=sgd, name_update='SGD',
-                                    params_update={'learning_rate': 0.1}
+                                    params_update={'learning_rate': 0.01}
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
-args_train = {'max_epoch': max_epoch, 'batch_size': 30, 'early_stop': False,
+args_train = {'max_epoch': max_epoch, 'batch_size': 32, 'early_stop': False,
               'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
@@ -120,9 +128,9 @@ for i, model in enumerate(ensembleCIP.get_models()):
     pred_test = model.predict(input_test)
     pred_train = model.predict(input_train)
 
-    msg_test += 'Accuracy model %s test: %.4g\n' %\
+    msg_test += 'Accuracy model %s test: %.4g\n' % \
                 (model.get_name(), accuracy_score(pred_test, target_test))
-    msg_train += 'Accuracy model %s train: %.4g\n' %\
+    msg_train += 'Accuracy model %s train: %.4g\n' % \
                  (model.get_name(), accuracy_score(pred_train, target_train))
 
 print(msg_test)

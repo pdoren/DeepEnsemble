@@ -30,6 +30,8 @@ class ConvolutionBase(Layer):
 
     non_linearity : callable
     """
+
+    # noinspection PyTypeChecker
     def __init__(self, num_filters, filter_size, input_shape=None, stride=1, pad=0, untie_biases=False,
                  filter_flip=True, non_linearity=ActivationFunctions.linear):
 
@@ -61,6 +63,7 @@ class ConvolutionBase(Layer):
                                               output_shape=output_shape,
                                               non_linearity=non_linearity)
 
+    # noinspection PyTypeChecker
     def set_input_shape(self, shape):
         """ Set input shape.
 
@@ -147,6 +150,7 @@ class ConvolutionBase(Layer):
         """
         return self._num_filters,
 
+    # noinspection PyTypeChecker
     def output(self, x, prob=True):
         """ Return output of layers
 

@@ -1,20 +1,19 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from deepensemble.utils.utils_test import load_model
 from deepensemble.metrics import EnsembleClassifierMetrics
-from deepensemble.utils.cost_functions import mse, kullback_leibler_generalized
+from deepensemble.utils import cross_validation_score
+from deepensemble.utils.cost_functions import mse
 from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model, \
-    get_ensembleNCL_model, get_mlp_model, get_ensembleCIP_KL_model
-from deepensemble.utils import cross_validation_score
+    get_ensembleNCL_model, get_mlp_model
+from deepensemble.utils.utils_test import load_model
 
 
 # noinspection PyDefaultArgument
 def test_classifiers(name_db, data_input, data_target, classes_labels,
                      factor_number_neurons=0.75,
-                     is_klg=False,
                      is_binary=False, early_stop=False,
                      n_ensemble_models=4,
                      lamb_ncl=0.6,
@@ -24,7 +23,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                      fn_activation1=ActivationFunctions.sigmoid, fn_activation2=ActivationFunctions.sigmoid,
                      lr=0.01,
                      folds=10, max_epoch=300, batch_size=40):
-
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
                   'improvement_threshold': 0.995, 'update_sets': True}
 
@@ -63,7 +61,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         n_input=n_features, n_output=n_output,
                                         n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                         classification=True,
-                                        is_cip_full=is_cip_full, mse_first_epoch= mse_first_epoch,
+                                        is_cip_full=is_cip_full, mse_first_epoch=mse_first_epoch,
                                         classes_labels=classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         dist=dist,

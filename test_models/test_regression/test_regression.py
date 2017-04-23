@@ -15,7 +15,7 @@ def test_regression(name_db, data_input, data_target,
                     lamb_ncl=0.6,
                     beta_cip=0.6, lamb_cip=0.2, s=None, dist='CS',
                     cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
-                    bias_layer=False, is_relevancy=False, fn_activation1=ActivationFunctions.tanh,
+                    bias_layer=False, fn_activation1=ActivationFunctions.tanh,
                     fn_activation2=ActivationFunctions.sigmoid,
                     folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=300, batch_size=40):
     args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
@@ -67,7 +67,7 @@ def test_regression(name_db, data_input, data_target,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         dist=dist,
                                         beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
-                                        is_relevancy=is_relevancy, cost=cost_cip, name_cost=name_cost_cip,
+                                        cost=cost_cip, name_cost=name_cost_cip,
                                         params_cost=params_cost_cip,
                                         params_update={'learning_rate': lr_klg})
 

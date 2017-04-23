@@ -117,6 +117,7 @@ class WeightAverageCombiner(ModelCombiner):
             inv_sum_Cij.append(d)
             inv_sum_sum_inv_Ckj += d
 
+        # noinspection PyTypeChecker
         update_param = (1.0 / inv_sum_sum_inv_Ckj) * inv_sum_Cij
 
         param = self.get_param(only_values=True)

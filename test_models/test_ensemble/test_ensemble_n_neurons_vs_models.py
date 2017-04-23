@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
-from sklearn import cross_validation
+from sklearn import model_selection
 
 from deepensemble.combiner import *
 from deepensemble.layers import *
@@ -18,7 +18,7 @@ plt.style.use('ggplot')
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale', data_home='../data')
 
 input_train, input_test, target_train, target_test = \
-    cross_validation.train_test_split(data_input, data_target, test_size=0.3)
+    model_selection.train_test_split(data_input, data_target, test_size=0.3)
 
 #############################################################################################################
 # Define Parameters nets
@@ -82,7 +82,7 @@ def get_ensemble_ckl(_name, _n_neurons, n_models, fast=True):
         net.set_update(sgd, name="SGD", learning_rate=lr)
         ensemble.append_model(net)
 
-    ensemble.add_cost_ensemble(fun_cost=neg_correntropy, name="NEG_CORRPY", lamb_corr=0.6)
+    # ensemble.add_cost_ensemble(fun_cost=neg_correntropy, name="NEG_CORRPY", lamb_corr=0.6)
     ensemble.set_combiner(PluralityVotingCombiner())
     ensemble.compile(fast=fast)
 

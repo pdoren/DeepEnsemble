@@ -61,7 +61,7 @@ def information_potential(model, _input, _target, s=None, kernel=ITLFunctions.no
         Returns only zeros for each elements in _target.
     """
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
     e = model.error(_input, _target)
     return -T.log(ITLFunctions.information_potential(e, kernel, s))
 
@@ -233,7 +233,7 @@ def mcc(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
         Return MCC.
     """
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
     return -T.mean(kernel(model.error(_input, _target, prob=True), s))
 
 
@@ -263,7 +263,7 @@ def mee(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
         Return MEE.
     """
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
     e = model.error(_input, _target)
     return -T.log(ITLFunctions.information_potential(e, kernel, s))
 
@@ -318,7 +318,7 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
     """
     om = model.output(_input)
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
 
     if dist == 'CS':
         return -ITLFunctions.mutual_information_cs([om, _target], s)
@@ -401,7 +401,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='CS'
     """
 
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
 
     redundancy = []
     om = model.output(_input)
@@ -470,7 +470,7 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='CS'):
     """
 
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
 
     synergy = []
     om = model.output(_input)
@@ -524,6 +524,9 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
 
     s : float
         Size of Kernel.
+    
+    dist : string
+        Name of distance.
 
     Returns
     -------
@@ -532,7 +535,7 @@ def cip_full(model, _input, _target, s=None, dist='ED-CIP'):
     """
 
     if s is None:
-        s = T.max(ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()), eps)
+        s = T.max(ITLFunctions.silverman(_target), eps)
 
     Y = [T.cast(_model.output(_input), 'float32') for _model in model.get_models()]
     Y.append(T.cast(_target, 'float32'))

@@ -1,14 +1,14 @@
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from theano import shared, config
+from theano import config
 
-from deepensemble.utils import Serializable, jacobs
-from deepensemble.utils.utils_test import load_model
 from deepensemble.metrics import EnsembleRegressionMetrics
+from deepensemble.utils import Serializable, jacobs
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
+from deepensemble.utils.utils_test import load_model
 from test_models.test_regression.test_regression import test_regression
 
 #############################################################################################################
@@ -19,7 +19,7 @@ y = (y + 1.0) / 2.0
 y = np.array(y[:, np.newaxis], dtype=config.floatX)
 X = np.array(X, dtype=config.floatX)
 
-s = ITLFunctions.silverman(shared(y), y.shape[0], y.shape[1]).eval()
+s = ITLFunctions.silverman(y).eval()
 
 name_db = 'Jacobs'
 
@@ -37,7 +37,7 @@ if not os.path.exists(file_scores):
                              n_ensemble_models=4,
                              lamb_ncl=0.8,
                              beta_cip=0.3, lamb_cip=0.1, s=s, dist='CS',
-                             is_relevancy=True, bias_layer=False,
+                             bias_layer=False,
                              fn_activation1=ActivationFunctions.sigmoid,
                              fn_activation2=ActivationFunctions.sigmoid,
                              folds=10, lr_mse=0.01, lr_klg=0.01, max_epoch=300, batch_size=40)

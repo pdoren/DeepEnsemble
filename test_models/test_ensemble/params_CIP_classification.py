@@ -9,7 +9,7 @@ from deepensemble.utils.utils_test import get_mean_score, plot_graph2
 from deepensemble.utils.utils_test import make_dirs
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from theano import shared
-from sklearn import cross_validation
+from sklearn import model_selection
 
 plt.style.use('ggplot')
 
@@ -57,7 +57,6 @@ ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
                                  classes_labels=classes_labels,
                                  fn_activation1=fn_activation, fn_activation2=fn_activation,
                                  dist='CIP',
-                                 is_relevancy=False,
                                  beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
                                  params_update={'learning_rate': lr})
 
@@ -80,7 +79,7 @@ def get_ensemble_cip(_name, _beta, _lamb, _s):
 #############################################################################################################
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
-silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
+silverman = ITLFunctions.silverman(np.array(y)).eval()
 
 ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20])
 beta = [-10, -5.0, -3.0, -1.0, -0.5, 0, 0.5, 1.0, 3.0, 5.0, 10.0]
@@ -138,7 +137,7 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
             if not os.path.exists(file_sets_fold):
                 # Generate testing and training sets
                 input_train, input_test, target_train, target_test = \
-                    cross_validation.train_test_split(data_input, data_target, test_size=test_size)
+                    model_selection.train_test_split(data_input, data_target, test_size=test_size)
                 sets_data = Serializable((input_train, input_test, target_train, target_test))
                 sets_data.save(file_sets_fold)
             else:

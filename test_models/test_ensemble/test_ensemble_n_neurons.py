@@ -2,8 +2,7 @@ import os
 
 import matplotlib.pylab as plt
 import numpy as np
-from theano import shared
-from sklearn import cross_validation
+from sklearn import model_selection
 
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ActivationFunctions
@@ -16,7 +15,7 @@ plt.style.use('ggplot')
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale', data_home='../data')
 
 input_train, input_test, target_train, target_test = \
-    cross_validation.train_test_split(data_input, data_target, test_size=0.3)
+    model_selection.train_test_split(data_input, data_target, test_size=0.3)
 
 #############################################################################################################
 # Define Parameters nets
@@ -49,7 +48,7 @@ args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': Tr
               'improvement_threshold': 0.9995, 'update_sets': True}
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
-silverman = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
+silverman = ITLFunctions.silverman(np.array(y)).eval()
 
 s_beta = 5.0
 s_lambda = 5.0
@@ -79,7 +78,6 @@ def get_ensemble_cip(_name, _n_neurons, fast=True):
                                      classes_labels=classes_labels,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
                                      dist='CIP',
-                                     is_relevancy=False,
                                      beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
                                      params_update={'learning_rate': lr})
     ensemble.compile(fast=fast)

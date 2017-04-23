@@ -5,26 +5,34 @@
       <w>accu</w>
       <w>adadelta</w>
       <w>adagrad</w>
+      <w>ambigüedad</w>
       <w>cbar</w>
       <w>cdot</w>
       <w>cmap</w>
       <w>cnmem</w>
+      <w>conjunto</w>
       <w>conv</w>
       <w>conved</w>
       <w>convolutional</w>
       <w>correntropy</w>
       <w>corrpy</w>
       <w>costo</w>
+      <w>costos</w>
       <w>coursera</w>
       <w>cuningham</w>
       <w>datasets</w>
+      <w>ddxk</w>
       <w>deepensemble</w>
       <w>desempeño</w>
+      <w>diederik</w>
+      <w>diffx</w>
       <w>duchi</w>
       <w>ensamble</w>
+      <w>entrenamiento</w>
       <w>feedforward</w>
       <w>frac</w>
       <w>friendman</w>
+      <w>función</w>
       <w>germannumer</w>
       <w>ggplot</w>
       <w>gparams</w>
@@ -54,10 +62,13 @@
       <w>minibatch</w>
       <w>minibatches</w>
       <w>mldata</w>
+      <w>muestras</w>
       <w>ndim</w>
       <w>neuronas</w>
       <w>nfolds</w>
+      <w>normx</w>
       <w>numer</w>
+      <w>observaciones</w>
       <w>parzen</w>
       <w>pdoren</w>
       <w>perceptron</w>
@@ -66,7 +77,11 @@
       <w>prechelt</w>
       <w>pred</w>
       <w>preprint</w>
+      <w>probabilidad</w>
       <w>proc</w>
+      <w>prueba</w>
+      <w>pruebas</w>
+      <w>pydotprint</w>
       <w>rects</w>
       <w>regressor</w>
       <w>regularizer</w>

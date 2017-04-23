@@ -25,6 +25,7 @@ class ClassifierMetrics(BaseMetrics):
     def __init__(self, model):
         super(ClassifierMetrics, self).__init__(model=model)
 
+    # noinspection PyTypeChecker
     def classification_report(self, name_report="Classification Report"):
         """ Generate a classification report (wrapper classification_report scikit)
 

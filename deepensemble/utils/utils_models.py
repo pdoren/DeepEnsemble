@@ -1,15 +1,14 @@
 from theano import shared
-import theano.tensor as T
 
 from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, \
     kullback_leibler_generalized, cip_full
 from .logger import Logger
 from .regularizer_functions import L2
-from .score_functions import mutual_information_parzen, mutual_information_cs
+from .score_functions import mutual_information_cs
 from .update_functions import sgd, count_epoch, sgd_cip
-from ..combiner import AverageCombiner, PluralityVotingCombiner, TheBestVotingCombiner
-from ..models import EnsembleModel, Sequential
 from .utils_functions import ITLFunctions
+from ..combiner import AverageCombiner, PluralityVotingCombiner
+from ..models import EnsembleModel, Sequential
 
 __all__ = ["get_mlp_model",
            "get_ensemble_model",
@@ -170,6 +169,7 @@ def get_ensembleCIP_model(name,
     ensemble.set_update(update, name=name_update, **params_update)
 
     if annealing_enable:
+        # noinspection PyUnboundLocalVariable
         ensemble.append_update(count_epoch, 'Count Epoch', _i=current_epoch)
 
     return ensemble

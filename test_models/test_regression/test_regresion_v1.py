@@ -46,6 +46,7 @@ X_test = X[n_train:][:, np.newaxis]
 fx_train = fx[:n_train][:, np.newaxis]
 fx_test = fx[n_train:-w][:, np.newaxis]
 
+# noinspection PyTypeChecker
 SNR = float(np.mean(z) / np.std(z))
 
 print('SNR: %g' % SNR)
@@ -128,8 +129,7 @@ plt.tight_layout()
 
 def plot_pdf_error(pred, target, label_plot, _ax, n_points=1000, xmin=-3, xmax=3):
     error = pred - target
-    _N = len(error)
-    s = ITLFunctions.silverman(error, _N, 1).eval()  # Silverman
+    s = ITLFunctions.silverman(error).eval()  # Silverman
     kde = KernelDensity(kernel='gaussian', bandwidth=s)
     kde.fit(error)
     x_plot = np.linspace(xmin, xmax, n_points)[:, np.newaxis]

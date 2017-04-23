@@ -9,7 +9,8 @@ __all__ = [
     'score_ensemble_ambiguity',
     'score_rms',
     'score_silverman',
-    'mutual_information_cs'
+    'mutual_information_cs',
+    'mutual_information_parzen'
 ]
 
 
@@ -42,8 +43,9 @@ def dummy_score(_input, _output, _target, model):
 #
 # Classification Functions
 #
-def get_accuracy(Y, T):
-    return float(np.sum(Y == T)) / float(T.shape[0])
+def get_accuracy(Y, _target):
+    # noinspection PyTypeChecker,PyTypeChecker
+    return float(np.sum(Y == _target)) / float(_target.shape[0])
 
 
 # noinspection PyUnusedLocal
@@ -126,7 +128,7 @@ def score_silverman(_input, _output, _target, model):
     float
         Returns size kernel with Silverman Rule.
     """
-    return ITLFunctions.silverman(model.output(_input), _target.shape[0], model.get_dim_output())
+    return ITLFunctions.silverman(model.output(_input))
 
 
 #
@@ -185,7 +187,7 @@ def mutual_information_cs(_input, _output, _target, model, eps=0.00001):
     theano.tensor.matrix
         Returns Mutual Information Cauchy-Schwarz.
     """
-    s = ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()) + eps
+    s = ITLFunctions.silverman(_target) + eps
 
     return -T.log(ITLFunctions.cross_information_potential([_output, _target], np.sqrt(2) * s, dist='CS'))
 
@@ -215,6 +217,6 @@ def mutual_information_parzen(_input, _output, _target, model, eps=0.00001):
     theano.tensor.matrix
         Returns Mutual Information (Parzen Window).
     """
-    s = ITLFunctions.silverman(_target, _target.shape[0], model.get_dim_output()) + eps
+    s = ITLFunctions.silverman(_target) + eps
 
     return ITLFunctions.mutual_information_parzen(_output, _target, s)

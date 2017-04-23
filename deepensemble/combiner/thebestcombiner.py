@@ -1,11 +1,10 @@
 from collections import OrderedDict
 
-import numpy as np
 import theano.tensor as T
-from theano import shared, config
+from theano import shared
 
 from .modelcombiner import ModelCombiner
-from ..utils import translate_output, get_index_label_classes
+from ..utils import translate_output
 
 __all__ = ['TheBestCombiner', 'TheBestVotingCombiner']
 

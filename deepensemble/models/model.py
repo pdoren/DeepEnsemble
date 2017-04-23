@@ -300,6 +300,12 @@ class Model(Serializable):
         """
         return self.__type_model
 
+    def get_model_input(self):
+        return self._model_input
+
+    def get_model_target(self):
+        return self._model_target
+
     def copy_kind_of_model(self, model):
         """ Copy important data from model.
 
@@ -367,6 +373,7 @@ class Model(Serializable):
         """
         input_shape = list(self.__input_shape)
         input_shape[input_shape is None] = 1
+        # noinspection PyTypeChecker
         return int(np.prod(input_shape))
 
     def get_fan_out(self):
@@ -379,6 +386,7 @@ class Model(Serializable):
         """
         output_shape = list(self.__output_shape)
         output_shape[output_shape is None] = 1
+        # noinspection PyTypeChecker
         return int(np.prod(output_shape))
 
     def get_test_cost(self):
@@ -802,6 +810,7 @@ class Model(Serializable):
             value = self._params[i]['value']
             self._params[i] = copy.deepcopy(params[i])
             if isinstance(value, T.Variable):
+                # noinspection PyUnresolvedReferences
                 value.set_value(params[i]['value'].get_value())
             self._params[i]['value'] = value
 
@@ -1027,6 +1036,7 @@ class Model(Serializable):
         **kwargs
             Extra parameters of score function.
         """
+        # noinspection PyTypeChecker
         self._score_function_list['list'].append((fun_score, name, kwargs))
         self._score_function_list['changed'] = True
 
@@ -1044,6 +1054,7 @@ class Model(Serializable):
         **kwargs
             Extra parameters of cost function.
         """
+        # noinspection PyTypeChecker
         self._cost_function_list['list'].append((fun_cost, name, kwargs))
         self._cost_function_list['changed'] = True
 
@@ -1209,6 +1220,7 @@ class Model(Serializable):
         """
         if self._cost_function_list['changed']:
             self._cost_function_list['result'] = []
+            # noinspection PyTypeChecker
             for fun_cost, _, params in self._cost_function_list['list']:
                 self._cost_function_list['result'].append(fun_cost(model=self,
                                                                    _input=self._model_input,
@@ -1237,6 +1249,7 @@ class Model(Serializable):
                 if output is not None:  # TODO: for Wrapper model, changed in the future
                     output = translate_output(output, self.get_fan_out(), self.is_binary_classification())
 
+                # noinspection PyTypeChecker
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['result'].append(fun_score(_output=output,
                                                                          _input=self._model_input,
@@ -1246,6 +1259,7 @@ class Model(Serializable):
             else:
                 output = self.output(self._model_input)
 
+                # noinspection PyTypeChecker
                 for fun_score, _, params in self._score_function_list['list']:
                     self._score_function_list['result'].append(fun_score(_output=output,
                                                                          _input=self._model_input,
@@ -1275,6 +1289,7 @@ class Model(Serializable):
         list[]
             Returns a list score functions.
         """
+        # noinspection PyTypeChecker
         return [l for _, l, _ in self._score_function_list['list']]
 
     def get_update_function(self, cost, error):

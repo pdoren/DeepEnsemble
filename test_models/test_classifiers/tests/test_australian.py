@@ -1,15 +1,17 @@
 import os
 import sys
 
+import numpy as np
+
 sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
 
-
-import numpy as np
-from theano import shared
-
+# noinspection PyPep8
 from deepensemble.utils import load_data, Serializable
+# noinspection PyPep8
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
+# noinspection PyPep8
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
+# noinspection PyPep8
 from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
 
 #############################################################################################################
@@ -18,7 +20,7 @@ from test_models.test_classifiers.test_classifiers import test_classifiers, show
 data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale',
                                                                               data_home='../../data', normalize=False)
 y = get_index_label_classes(translate_target(data_target, classes_labels))
-s = ITLFunctions.silverman(shared(np.array(y)), len(y), len(classes_labels)).eval()
+s = ITLFunctions.silverman(np.array(y)).eval()
 
 #############################################################################################################
 # Testing
@@ -44,6 +46,5 @@ else:
     scores_data = Serializable()
     scores_data.load(file_scores)
     scores = scores_data.get_data()
-
 
 show_data_classification(name_db, scores, 500)

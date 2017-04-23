@@ -72,7 +72,8 @@ def adagrad(cost_function, params, learning_rate=0.1, epsilon=1e-6):
     return updates
 
 
-def sgd_cip(cost_function, params, learning_rate=0.1, error=1, eps=0.000001):
+# noinspection PyUnusedLocal
+def sgd_cip(cost_function, params, learning_rate=0.1, error=1):
     """ Stochastic Gradient Descent (SGD).
 
     Parameters
@@ -85,13 +86,15 @@ def sgd_cip(cost_function, params, learning_rate=0.1, error=1, eps=0.000001):
 
     learning_rate : float, 0.1 by default
         The learning rate controlling the size of update steps.
+    
+    error
+        Error of model.       
 
     Returns
     -------
     OrderedDict
         A dictionary mapping each parameter to its update expression.
     """
-    gparams = [T.grad(cost_function, param) for param in params]
     updates = OrderedDict()
     error_curr = shared(np.float32(0.0))
     error_curr_new = T.mean(T.sqr(error))
@@ -354,6 +357,7 @@ def adam(cost_function, params, learning_rate=0.001, beta1=0.9,
     return updates
 
 
+# noinspection PyUnusedLocal
 def count_epoch(error, _i=None):
     updates = OrderedDict()
     updates[_i] = _i + 1
