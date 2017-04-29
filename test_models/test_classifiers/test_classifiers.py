@@ -66,7 +66,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         dist=dist,
                                         beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
-                                        params_update={'learning_rate': lr})
+                                        params_update={'learning_rate': -lr})
 
     models.append(ensembleCIP)
 

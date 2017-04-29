@@ -689,7 +689,8 @@ class Model(Serializable):
             return fun_eval(_input, _target, 1.0)
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.1,
-            no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True):
+            no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True,
+            update_item='cost'):
         """ Function for training sequential model.
 
         Parameters
@@ -739,7 +740,18 @@ class Model(Serializable):
 
         # parameters early stopping
         best_params = None
-        best_validation_cost = np.inf
+
+        update_params_cond = 0.0
+        patience_cond = 0.0
+        validation_item = 0.0
+
+        if update_item == 'cost':
+            best_validation_item = np.inf
+        elif update_item == 'score':
+            best_validation_item = 0
+        else:
+            raise AssertionError('Update method params must be cost or score.')
+
         patience = max(max_epoch * n_train // 5, 5000)
         validation_jump = max(min(patience // 100, max_epoch // 50), 1)
         patience_increase = 2
@@ -762,14 +774,21 @@ class Model(Serializable):
                 self._current_data_valid = self.batch_eval(self._data_valid, batch_size=batch_size, train=False,
                                                            shuffle=update_sets)
                 metric_model.append_data(self._current_data_valid, epoch, type_set_data="test")
-                validation_cost = self.get_test_cost()
 
-                if validation_cost < best_validation_cost:
+                if update_item == 'cost':
+                    validation_item = self.get_test_cost()
+                    update_params_cond = validation_item < best_validation_item
+                    patience_cond = validation_item <= best_validation_item * improvement_threshold
+                elif update_item == 'score':
+                    validation_item = self.get_test_score()
+                    update_params_cond = validation_item > best_validation_item
+                    patience_cond = validation_item >= best_validation_item * improvement_threshold
 
-                    if validation_cost < best_validation_cost * improvement_threshold:
+                if update_params_cond:
+                    if patience_cond:
                         patience = max(patience, iteration * patience_increase)
 
-                    best_validation_cost = validation_cost
+                    best_validation_item = validation_item
                     best_params = self.save_params()
 
             if early_stop and patience <= iteration:

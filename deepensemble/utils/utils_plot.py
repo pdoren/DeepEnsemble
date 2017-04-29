@@ -436,8 +436,5 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
     metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
     metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
 
-    om_train = ensemble.output(input_train).eval()
-    om_test = ensemble.output(input_test).eval()
-
     plt.show()
 

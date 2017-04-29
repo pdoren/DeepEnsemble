@@ -1,27 +1,15 @@
-import os
-import sys
+import matplotlib
+matplotlib.use('Qt4Agg')  # debug
 
-# noinspection PyPep8
-import matplotlib.pyplot as plt
-# noinspection PyPep8
 import numpy as np
-# noinspection PyPep8
 from sklearn import model_selection
 
-# noinspection PyPep8
 from theano import shared, config
 
-sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
-
-# noinspection PyPep8
 from deepensemble.utils import load_data, plot_data_training_ensemble
-# noinspection PyPep8
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
-# noinspection PyPep8
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-# noinspection PyPep8
 from deepensemble.utils.utils_models import get_ensembleCIP_model
-# noinspection PyPep8
 from deepensemble.utils.update_functions import sgd
 
 config.optimizer = 'fast_compile'
@@ -52,9 +40,9 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 5
+n_ensemble_models = 3
 fn_activation1 = ActivationFunctions.sigmoid
-fn_activation2 = ActivationFunctions.tanh
+fn_activation2 = ActivationFunctions.sigmoid
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y))).eval()
@@ -71,18 +59,19 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     is_cip_full=True,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                    dist='ED-CIP',
+                                    dist='CS',
                                     beta=0, lamb=0, s=s,
-                                    bias_layer=True, mse_first_epoch=False, annealing_enable=True,
+                                    lsp=1.5, lsm=0.1,
+                                    bias_layer=False, mse_first_epoch=False, annealing_enable=True,
                                     update=sgd, name_update='SGD',
-                                    params_update={'learning_rate': -0.5}
+                                    params_update={'learning_rate': -0.1}
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
 args_train = {'max_epoch': max_epoch, 'batch_size': 32, 'early_stop': False,
-              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True, 'update_item': 'score'}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
 
