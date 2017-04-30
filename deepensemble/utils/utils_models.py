@@ -13,8 +13,8 @@ from ..models import EnsembleModel, Sequential
 __all__ = ["get_mlp_model",
            "get_ensemble_model",
            "get_ensembleCIP_model",
-           "get_ensembleNCL_model",
-           "get_ensembleCIP_KL_model"]
+           "get_ensembleNCL_model"
+           ]
 
 
 def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
@@ -72,7 +72,8 @@ def get_ensemble_model(name,
                        classification=False,
                        bias_layer=False,
                        cost=mse, name_cost="MSE", params_cost={},
-                       update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
+                       update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
+                       list_scores=[{'fun_score': mutual_information_cs, 'name': 'Mutual Information'}]):
     ensemble = EnsembleModel(name=name)
     for i in range(n_ensemble_models):
         net = get_mlp_model("net%d" % (i + 1),
@@ -91,7 +92,9 @@ def get_ensemble_model(name,
     else:
         ensemble.set_combiner(AverageCombiner())
 
-    ensemble.append_score(mutual_information_cs, name='Mutual Information')
+    for score in list_scores:
+        ensemble.append_score(score['fun_score'], score['name'])
+
 
     return ensemble
 
@@ -109,7 +112,8 @@ def get_ensembleCIP_model(name,
                           bias_layer=False, mse_first_epoch=False,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.01, annealing_enable=False,
-                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
+                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
+                          list_scores=[{'fun_score': mutual_information_cs, 'name': 'Mutual Information'}]):
     if annealing_enable:
         current_epoch = shared(0, 'current_epoch')  # count current epoch
         si = ITLFunctions.annealing(lsp * s, lsm * s, current_epoch, max_epoch * batch_size)
@@ -124,7 +128,7 @@ def get_ensembleCIP_model(name,
         update_models = None
     else:
         cost_models = cip_relevancy
-        name_cost_models = 'CIP Relevancy'
+        name_cost_models = 'Relevancy CIP(%s)' % dist
         params_cost_models = {'s': si, 'dist': dist}
 
     ensemble = get_ensemble_model(name,
@@ -136,7 +140,8 @@ def get_ensembleCIP_model(name,
                                   bias_layer=bias_layer,
                                   cost=cost_models, name_cost=name_cost_models,
                                   params_cost=params_cost_models,
-                                  update=update_models, name_update=name_update, params_update=params_update)
+                                  update=update_models, name_update=name_update, params_update=params_update,
+                                  list_scores=list_scores)
 
     if mse_first_epoch:
         Logger().log_disable()
@@ -153,16 +158,19 @@ def get_ensembleCIP_model(name,
         Logger().log_enable()
 
         ensemble.set_pre_training(proc_pre_training=_proc_pre_training,
-                                  params={'net0': net0, 'batch_size': batch_size, 'max_epoch': int(0.2 * max_epoch)})
+                                  params={'net0': net0, 'batch_size': batch_size,
+                                          'max_epoch': max(200, int(0.2 * max_epoch))})
 
     if is_cip_full:
         ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist)
     else:
         if beta != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=-beta, s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name='Redundancy CIP(%s)' % dist,
+                                       beta=-beta, s=s, dist=dist)
 
         if lamb != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name='Synergy CIP(%s)' % dist,
+                                       lamb=lamb, s=s, dist=dist)
 
     if update == sgd_cip:
         ensemble.update_io()
@@ -172,41 +180,6 @@ def get_ensembleCIP_model(name,
     if annealing_enable:
         # noinspection PyUnboundLocalVariable
         ensemble.append_update(count_iterations, 'Count Epoch', _i=current_epoch)
-
-    return ensemble
-
-
-# noinspection PyDefaultArgument
-def get_ensembleCIP_KL_model(name,
-                             n_input, n_output,
-                             n_ensemble_models, n_neurons_models,
-                             fn_activation1, fn_activation2,
-                             classes_labels=None,
-                             classification=False,
-                             dist='CS',
-                             beta=0.9, lamb=0.9, s=None,
-                             update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
-    cost_models = kullback_leibler_generalized
-    name_cost_models = 'KL'
-    params_cost_models = {}
-
-    ensemble = get_ensemble_model(name,
-                                  n_input=n_input, n_output=n_output,
-                                  n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_models,
-                                  fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                  classes_labels=classes_labels,
-                                  classification=classification,
-                                  cost=cost_models, name_cost=name_cost_models,
-                                  params_cost=params_cost_models,
-                                  update=update, name_update=name_update, params_update=params_update)
-
-    if beta != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta,
-                                   s=s, dist=dist)
-
-    if lamb != 0:
-        ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb,
-                                   s=s, dist=dist)
 
     return ensemble
 

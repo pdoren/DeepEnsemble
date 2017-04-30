@@ -690,7 +690,7 @@ class Model(Serializable):
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.1,
             no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True,
-            update_item='cost'):
+            criterion_update_params='cost', maximization_criterion=False):
         """ Function for training sequential model.
 
         Parameters
@@ -733,6 +733,9 @@ class Model(Serializable):
         if not self.is_compiled():
             raise AssertionError('The model need to be compiled before to be used.')
 
+        if criterion_update_params != 'cost' and criterion_update_params != 'score':
+            raise AssertionError("The update_item parameters must be only 'cost' or 'score'.")
+
         metric_model = FactoryMetrics().get_metric(self)
 
         # save data in shared variables
@@ -745,12 +748,10 @@ class Model(Serializable):
         patience_cond = 0.0
         validation_item = 0.0
 
-        if update_item == 'cost':
-            best_validation_item = np.inf
-        elif update_item == 'score':
+        if maximization_criterion:
             best_validation_item = 0
         else:
-            raise AssertionError('Update method params must be cost or score.')
+            best_validation_item = np.inf
 
         patience = max(max_epoch * n_train // 5, 5000)
         validation_jump = max(min(patience // 100, max_epoch // 50), 1)
@@ -775,14 +776,18 @@ class Model(Serializable):
                                                            shuffle=update_sets)
                 metric_model.append_data(self._current_data_valid, epoch, type_set_data="test")
 
-                if update_item == 'cost':
+                if criterion_update_params == 'cost':
                     validation_item = self.get_test_cost()
-                    update_params_cond = validation_item < best_validation_item
-                    patience_cond = validation_item <= best_validation_item * improvement_threshold
-                elif update_item == 'score':
+                elif criterion_update_params == 'score':
                     validation_item = self.get_test_score()
+
+
+                if maximization_criterion:
                     update_params_cond = validation_item > best_validation_item
                     patience_cond = validation_item >= best_validation_item * improvement_threshold
+                else:
+                    update_params_cond = validation_item < best_validation_item
+                    patience_cond = validation_item <= best_validation_item * improvement_threshold
 
                 if update_params_cond:
                     if patience_cond:

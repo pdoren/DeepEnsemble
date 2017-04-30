@@ -6,11 +6,12 @@ from sklearn import model_selection
 
 from theano import shared, config
 
-from deepensemble.utils import load_data, load_data_iris, load_data_segment, plot_data_training_ensemble
+from deepensemble.utils import load_data, plot_data_training_ensemble
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
 from deepensemble.utils.update_functions import sgd
+from deepensemble.utils.score_functions import mutual_information_cs, mutual_information_parzen
 
 config.optimizer = 'fast_compile'
 # config.exception_verbosity='high'
@@ -47,6 +48,11 @@ fn_activation2 = ActivationFunctions.sigmoid
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(shared(np.array(y))).eval()
 
+list_scores = [
+    {'fun_score': mutual_information_parzen, 'name': 'Mutual Information'},
+    {'fun_score': mutual_information_cs, 'name': 'QMI CS'}
+]
+
 #############################################################################################################
 # Testing
 #############################################################################################################
@@ -59,19 +65,21 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     is_cip_full=False,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                    dist='CS',
+                                    dist='ED',
                                     beta=0.3, lamb=0.3, s=s,
                                     lsp=1., lsm=0.1,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=True,
                                     update=sgd, name_update='SGD',
-                                    params_update={'learning_rate': -0.1}
+                                    params_update={'learning_rate': -0.1},  # maximization
+                                    list_scores=list_scores
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
 args_train = {'max_epoch': max_epoch, 'batch_size': 32, 'early_stop': False,
-              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True, 'update_item': 'score'}
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+              'criterion_update_params': 'cost', 'maximization_criterion': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
 
