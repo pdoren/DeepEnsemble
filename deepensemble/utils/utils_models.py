@@ -22,6 +22,7 @@ def _proc_pre_training(_ensemble, _input, _target, net0, batch_size, max_epoch):
     Logger().log_disable()
 
     for net in _ensemble.get_models():
+        net0.reset()
         net0.fit(_input, _target, batch_size=batch_size, max_epoch=max_epoch, early_stop=False)
         params = net0.save_params()
         net.load_params(params)
@@ -107,7 +108,7 @@ def get_ensembleCIP_model(name,
                           beta=0.9, lamb=0.9, s=None, lsp=1.5, lsm=0.5,
                           bias_layer=False, mse_first_epoch=False,
                           batch_size=40, max_epoch=300,
-                          cost=mse, name_cost="MSE", params_cost={}, lr=0.05, annealing_enable=False,
+                          cost=mse, name_cost="MSE", params_cost={}, lr=0.01, annealing_enable=False,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
     if annealing_enable:
         current_epoch = shared(0, 'current_epoch')  # count current epoch
@@ -152,16 +153,16 @@ def get_ensembleCIP_model(name,
         Logger().log_enable()
 
         ensemble.set_pre_training(proc_pre_training=_proc_pre_training,
-                                  params={'net0': net0, 'batch_size': batch_size, 'max_epoch': int(0.3 * max_epoch)})
+                                  params={'net0': net0, 'batch_size': batch_size, 'max_epoch': int(0.2 * max_epoch)})
 
     if is_cip_full:
         ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist)
     else:
         if beta != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=beta, s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name="CIP Redundancy", beta=-beta, s=s, dist=dist)
 
         if lamb != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=-lamb, s=s, dist=dist)
+            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name="CIP Synergy", lamb=lamb, s=s, dist=dist)
 
     if update == sgd_cip:
         ensemble.update_io()

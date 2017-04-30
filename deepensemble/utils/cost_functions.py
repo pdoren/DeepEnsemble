@@ -414,10 +414,10 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED'
             om_k = _model.output(_input)
             if dist == 'CS':
                 I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
-                redundancy.append(-I2)
+                redundancy.append(I2)
             elif dist == 'ED':
                 I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
-                redundancy.append(-I2)
+                redundancy.append(I2)
             else:
                 raise ValueError('the distance must be CS, ED.')
 

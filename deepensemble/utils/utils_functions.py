@@ -491,7 +491,9 @@ class ITLFunctions:
 
         kernel = ITLFunctions.kernel_gauss_diff
 
-        DY = ITLFunctions.get_diff(X + [y])
+        Xy = X + [y]
+
+        DY = ITLFunctions.get_diff(Xy)
 
         DYK = [kernel(dy, np.sqrt(2.0) * s) for dy in DY]
 
@@ -518,17 +520,23 @@ class ITLFunctions:
 
         DY = [T.squeeze(T.sum(ITLFunctions.get_prod(x, y), axis=-1))  for x in Xy]
 
-        DXK = [kernel(dx, np.sqrt(2.0) * s) * dy for dx, dy in zip(DX, DY)]
-
-        V_J = T.mean(np.prod(DXK))
+        DXK = [kernel(dx, np.sqrt(2.0) * s) * (1. - dy) for dx, dy in zip(DX, DY)]
 
         V_k_i = [T.mean(dxk, axis=-1) for dxk in DXK]
+
+        V_nc = T.mean(np.prod(V_k_i))
+
+        DX = ITLFunctions.get_diff(Xy)
+
+        DYK = [kernel(dx, np.sqrt(2.0) * s) for dx in DX]
+
+        V_J = T.mean(np.prod(DYK))
+
+        V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
 
         V_k = [T.mean(V_i) for V_i in V_k_i]
 
         V_M = np.prod(V_k)
-
-        V_nc = T.mean(np.prod(V_k_i))
 
         return V_nc, V_J, V_M
 
