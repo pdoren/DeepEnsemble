@@ -149,7 +149,7 @@ def load_ionosphere(classes_labels=None, normalize=True, data_home='data'):
     return data_input, data_target, classes_labels, db_name, db.DESCR, db.COL_NAMES
 
 
-def load_data_iris():
+def load_data_iris(normalize=True):
     """ Load data Iris.
 
     Returns
@@ -159,7 +159,12 @@ def load_data_iris():
         (input data, target data, labels classes, name data base)
     """
     iris = load_iris()
-    data_input = np.asarray(iris.data, dtype=theano.config.floatX)
+    data_input = iris.data
+    if normalize:
+        scaler = StandardScaler()
+        scaler.fit(data_input)
+        data_input = scaler.transform(data_input)
+    data_input = np.asarray(data_input, dtype=theano.config.floatX)
     data_target = iris.target_names[iris.target]
     classes_labels = iris.target_names
 
