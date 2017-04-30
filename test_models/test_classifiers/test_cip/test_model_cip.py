@@ -6,7 +6,7 @@ from sklearn import model_selection
 
 from theano import shared, config
 
-from deepensemble.utils import load_data, plot_data_training_ensemble
+from deepensemble.utils import load_data, load_data_segment, plot_data_training_ensemble
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
@@ -20,9 +20,8 @@ config.optimizer = 'fast_compile'
 #############################################################################################################
 # Load Data
 #############################################################################################################
-#data_db = load_data_segment(data_home='../../data', normalize=True)
+data_db1 = load_data_segment(data_home='../../data', normalize=True)
 data_db = load_data('australian_scale', data_home='../../data', normalize=False)
-#data_db = load_data_iris()
 data_input, data_target, classes_labels, name_db, desc, col_names = data_db
 
 # Generate testing and training sets
@@ -41,7 +40,7 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 3
+n_ensemble_models = 1
 fn_activation1 = ActivationFunctions.sigmoid
 fn_activation2 = ActivationFunctions.sigmoid
 
@@ -68,7 +67,7 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='CS',
                                     beta=0.3, lamb=0.3, s=s,
-                                    lsp=1., lsm=0.1,
+                                    lsp=1.5, lsm=0.1,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=True,
                                     update=sgd, name_update='SGD',
                                     params_update={'learning_rate': -0.1},  # maximization

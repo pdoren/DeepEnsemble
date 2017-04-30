@@ -1,5 +1,5 @@
 import theano.tensor as T
-from theano import shared
+from theano import shared, config
 import numpy as np
 
 __all__ = ['ActivationFunctions', 'ITLFunctions', 'DiversityFunctions']
@@ -518,9 +518,9 @@ class ITLFunctions:
 
         DX = ITLFunctions.get_diff(Xy)
 
-        DY = [T.squeeze(T.sum(ITLFunctions.get_prod(x, y), axis=-1))  for x in Xy]
+        DY = [T.cast(1. - T.squeeze(T.sum(ITLFunctions.get_prod(x, y), axis=-1)), dtype=config.floatX)  for x in Xy]
 
-        DXK = [kernel(dx, np.sqrt(2.0) * s) * (1. - dy) for dx, dy in zip(DX, DY)]
+        DXK = [kernel(dx, np.sqrt(2.0) * s) * dy for dx, dy in zip(DX, DY)]
 
         V_k_i = [T.mean(dxk, axis=-1) for dxk in DXK]
 
@@ -606,10 +606,10 @@ class ITLFunctions:
             raise ValueError('The dist must be CS or ED')
 
     @staticmethod
-    def mutual_information_cs(X, y, s):
+    def mutual_information_cs(X, y, s, eps=1e-6):
         V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
-        return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
+        return T.log(V_J + eps) - 2 * T.log(V_nc + eps) + T.log(V_M + eps)
 
     @staticmethod
     def mutual_information_ed(X, y, s):

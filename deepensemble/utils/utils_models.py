@@ -163,7 +163,7 @@ def get_ensembleCIP_model(name,
 
     if is_cip_full:
         ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist)
-    else:
+    elif n_ensemble_models != 1:
         if beta != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name='Redundancy CIP(%s)' % dist,
                                        beta=-beta, s=s, dist=dist)
