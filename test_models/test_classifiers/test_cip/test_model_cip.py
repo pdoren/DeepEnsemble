@@ -11,7 +11,7 @@ from deepensemble.utils.utils_classifiers import get_index_label_classes, transl
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from deepensemble.utils.utils_models import get_ensembleCIP_model
 from deepensemble.utils.update_functions import sgd
-from deepensemble.utils.score_functions import mutual_information_cs, mutual_information_parzen
+from deepensemble.utils.score_functions import mutual_information_cs, mutual_information_ed, mutual_information_parzen
 
 config.optimizer = 'fast_compile'
 # config.exception_verbosity='high'
@@ -50,7 +50,8 @@ s = ITLFunctions.silverman(shared(np.array(y))).eval()
 
 list_scores = [
     {'fun_score': mutual_information_parzen, 'name': 'Mutual Information'},
-    {'fun_score': mutual_information_cs, 'name': 'QMI CS'}
+    {'fun_score': mutual_information_cs, 'name': 'QMI CS'},
+    {'fun_score': mutual_information_ed, 'name': 'QMI ED'}
 ]
 
 #############################################################################################################
@@ -65,7 +66,7 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     is_cip_full=False,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                    dist='ED',
+                                    dist='CS',
                                     beta=0.3, lamb=0.3, s=s,
                                     lsp=1., lsm=0.1,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=True,

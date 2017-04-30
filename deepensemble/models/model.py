@@ -743,11 +743,7 @@ class Model(Serializable):
 
         # parameters early stopping
         best_params = None
-
-        update_params_cond = 0.0
-        patience_cond = 0.0
         validation_item = 0.0
-
         if maximization_criterion:
             best_validation_item = 0
         else:
@@ -780,7 +776,6 @@ class Model(Serializable):
                     validation_item = self.get_test_cost()
                 elif criterion_update_params == 'score':
                     validation_item = self.get_test_score()
-
 
                 if maximization_criterion:
                     update_params_cond = validation_item > best_validation_item
