@@ -250,8 +250,9 @@ def plot_list_data(list_data, x_max, title='Cost', log_xscale=False, log_yscale=
         rows = max(N // cols, 1)
         for j, (data, _type) in enumerate(list_data):
             ax = plt.subplot(rows, cols, j + 1)
+            str_title = '%s: %s' % (title, _type) if title != '' else _type
             plot_data(ax, data, x_max=x_max,
-                      title='%s: %s' % (title, _type),
+                      title=str_title,
                       log_xscale=log_xscale,
                       log_yscale=log_yscale)
 
@@ -312,6 +313,8 @@ def plot(ax, dps, label_prefix='', label=None):
         y = np.squeeze(y)
         if y.ndim <= 1:
             y = y[:, np.newaxis]
+        elif y.ndim > 2:
+            y = np.mean(y, axis=-1)
         _x = x[:, 0]
         _y = np.nanmean(y, axis=-1)
         _y_std = np.nanstd(y, axis=-1)
@@ -435,6 +438,9 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
     metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
     metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
     metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
+
+    metrics.append_prediction(input_test, target_test, append_last_pred=True)
+    metrics.plot_confusion_matrix()
 
     plt.show()
 

@@ -1,17 +1,11 @@
 import os
-import sys
 
 import numpy as np
 
-sys.path.insert(0, os.path.abspath('../../..'))  # load deepensemble library
 
-# noinspection PyPep8
 from deepensemble.utils import load_data, Serializable
-# noinspection PyPep8
 from deepensemble.utils.utils_classifiers import get_index_label_classes, translate_target
-# noinspection PyPep8
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
-# noinspection PyPep8
 from test_models.test_classifiers.test_classifiers import test_classifiers, show_data_classification
 
 #############################################################################################################
@@ -36,7 +30,8 @@ if not os.path.exists(file_scores):
                               n_ensemble_models=5,
                               lamb_ncl=0.8,
                               is_cip_full=False, bias_layer=False, mse_first_epoch=True,
-                              beta_cip=0, lamb_cip=0.3, s=s, dist='ED-CIP',
+                              annealing_enable=True,
+                              beta_cip=0.3, lamb_cip=0.3, s=s, dist='CS',
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
                               folds=10, lr=0.1, max_epoch=300, batch_size=40)
@@ -47,4 +42,4 @@ else:
     scores_data.load(file_scores)
     scores = scores_data.get_data()
 
-show_data_classification(name_db, scores, 500)
+show_data_classification(name_db, scores, 300)

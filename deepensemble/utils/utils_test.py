@@ -52,7 +52,7 @@ def test_model(cls, input_train, target_train, input_test, target_test, folds=25
         if score_test > best_score:
             best_params = cls.save_params()
             best_score = score_test
-        elif score_test == best_params:
+        elif score_test == best_score:
             score_curr = metrics.get_score_prediction(target_train, cls.predict(input_train))
             params_curr = cls.save_params()
             cls.load_params(best_params)
