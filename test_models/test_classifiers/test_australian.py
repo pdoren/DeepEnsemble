@@ -16,6 +16,8 @@ data_input, data_target, classes_labels, name_db, desc, col_names = load_data('a
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 s = ITLFunctions.silverman(np.array(y)).eval()
 
+max_epoch = 500
+
 #############################################################################################################
 # Testing
 #############################################################################################################
@@ -34,7 +36,7 @@ if not os.path.exists(file_scores):
                               beta_cip=0.3, lamb_cip=0.3, s=s, dist='CS',
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
-                              folds=10, lr=0.1, max_epoch=300, batch_size=40)
+                              folds=10, lr=0.1, max_epoch=max_epoch, batch_size=40)
     scores_data = Serializable(scores)
     scores_data.save(file_scores)
 else:
@@ -42,4 +44,4 @@ else:
     scores_data.load(file_scores)
     scores = scores_data.get_data()
 
-show_data_classification(name_db, scores, 300)
+show_data_classification(name_db, scores, max_epoch)

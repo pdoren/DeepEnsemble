@@ -24,8 +24,13 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                      fn_activation1=ActivationFunctions.sigmoid, fn_activation2=ActivationFunctions.sigmoid,
                      lr=0.01,
                      folds=10, max_epoch=300, batch_size=40):
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
-                  'improvement_threshold': 0.995, 'update_sets': True}
+
+    args_train_default = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+                          'improvement_threshold': 0.995, 'update_sets': True}
+
+    args_train_cip = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+                      'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+                      'criterion_update_params': 'cost', 'maximization_criterion': True}
 
     #############################################################################################################
     # Define Parameters nets
@@ -43,8 +48,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
     # Define Models
     #############################################################################################################
 
-    models = []
-
     # ==========< Ensemble        >==============================================================================
     ensemble = get_ensemble_model(name='Ensamble',
                                   n_input=n_features, n_output=n_output,
@@ -54,8 +57,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   cost=mse, name_cost="MSE",
                                   params_update={'learning_rate': lr})
-
-    models.append(ensemble)
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
@@ -70,8 +71,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
                                         params_update={'learning_rate': -lr})
 
-    models.append(ensembleCIP)
-
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = get_ensembleNCL_model(name='Ensamble NCL',
                                         n_input=n_features, n_output=n_output,
@@ -81,19 +80,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                         lamb=lamb_ncl, params_update={'learning_rate': lr})
 
-    models.append(ensembleNCL)
-
-    # ==========< MLP MSE  >======================================================================================
-    netMLP = get_mlp_model("MLP (%d neuronas)" % n_neurons_model,
-                           n_input=n_features, n_output=n_output,
-                           n_neurons=n_neurons_model,
-                           classification=True,
-                           classes_labels=classes_labels,
-                           fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
-
-    models.append(netMLP)
-
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
                                n_input=n_features, n_output=n_output,
@@ -102,8 +88,6 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                classes_labels=classes_labels,
                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
-
-    models.append(netMLP_MAX)
 
     plt.style.use('ggplot')
 
@@ -115,9 +99,19 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
 
     path_db = name_db + '/'
 
+    models = []
+    models.append(ensemble)
+    models.append(ensembleNCL)
+    models.append(netMLP_MAX)
+
     # noinspection PyUnusedLocal
     scores = cross_validation_score(models, data_input, data_target,
-                                    folds=folds, path_db=path_db, **args_train)
+                                    folds=folds, path_db=path_db, **args_train_default)
+
+    score_cip = cross_validation_score([ensembleCIP], data_input, data_target,
+                                       folds=folds, path_db=path_db, **args_train_cip)
+
+    scores[ensembleCIP.get_name()].append(score_cip)
 
     return scores
 

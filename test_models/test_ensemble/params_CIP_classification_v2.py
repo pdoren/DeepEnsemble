@@ -3,8 +3,7 @@ import os
 import matplotlib.pylab as plt
 import numpy as np
 
-from deepensemble.utils import get_ensembleCIP_model, Logger, get_index_label_classes, translate_target, get_scores, \
-    Serializable, load_data
+from deepensemble.utils import *
 from deepensemble.utils.utils_test import get_mean_score, plot_graph2
 from deepensemble.utils.utils_test import make_dirs
 from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
@@ -32,7 +31,7 @@ n_inputs = n_features
 
 fn_activation = ActivationFunctions.sigmoid
 
-n_ensemble_models = 1
+n_ensemble_models = 3
 n_neurons_model = (n_output + n_inputs)
 
 lr = 0.01
@@ -40,25 +39,34 @@ lr = 0.01
 #############################################################################################################
 # Define Parameters training
 #############################################################################################################
+max_epoch = 500
+batch_size = 32
 
 # 10-Cross Validation, 300 epoch and 40 size mini-batch
-args_train = {'max_epoch': 300, 'batch_size': 40, 'early_stop': False,
-              'improvement_threshold': 0.995, 'update_sets': True}
+args_train_cip = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+              'criterion_update_params': 'cost', 'maximization_criterion': True}
 
 # ==========< Ensemble CIP  >================================================================================
 s_beta = shared(np.cast['float32'](0))
 s_lambda = shared(np.cast['float32'](0))
 s_sigma = shared(np.cast['float32'](0))
 
-ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
-                                 n_input=n_features, n_output=n_output,
-                                 n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                 classification=True,
-                                 classes_labels=classes_labels,
-                                 fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                 dist='CIP',
-                                 beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
-                                 params_update={'learning_rate': lr})
+ensemble = get_ensembleCIP_model(name='Ensamble CIP',
+                                    n_input=n_features, n_output=n_output,
+                                    n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
+                                    classification=True,
+                                    is_cip_full=False,
+                                    classes_labels=classes_labels,
+                                    fn_activation1=fn_activation, fn_activation2=fn_activation,
+                                    dist='CS',
+                                    beta=s_beta, lamb=s_lambda, s=s_sigma,
+                                    lsp=1.5, lsm=0.5,
+                                    lr=0.1,
+                                    bias_layer=False, mse_first_epoch=True, annealing_enable=True,
+                                    update=sgd, name_update='SGD',
+                                    params_update={'learning_rate': -0.1}
+                                    )
 
 ensemble.compile(fast=True)
 default_params_ensemble = ensemble.save_params()
@@ -82,13 +90,13 @@ y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(np.array(y)).eval()
 
 ss = silverman * np.array([0.01, 0.1, 1, 5, 10, 20])
-beta = [-10, -5.0, -3.0, -1.0, -0.5, 0, 0.5, 1.0, 3.0, 5.0, 10.0]
-lamb = [-10, -5.0, -3.0, -1.0, -0.5, 0, 0.5, 1.0, 3.0, 5.0, 10.0]
+beta = [-3.0, -2.5, -2.0, -1.5, -1.0, -0.5, -0.1, 0, 0.5, 1.0]
+lamb = [-3.0, -2.5, -2.0, -1.5, -1.0, -0.5, -0.1, 0, 0.5, 1.0]
 
 bb, ll, sss = np.meshgrid(beta, lamb, ss)
 parameters = list(zip(bb.flatten(), ll.flatten(), sss.flatten()))
 
-path_data = 'test_params_cip/%s/' % name_db
+path_data = 'test_params_cip_v2/%s/' % name_db
 
 name = 'Ensemble CIP'
 scores = {}
@@ -149,7 +157,7 @@ for b, l, s in Logger().progressbar(it=parameters, end='Finish'):
 
             file_model_fold = _dir + 'data_fold_%d.pkl' % fold
             score_train, score_test, _ = get_scores(_model, file_model_fold,
-                                                    input_train, target_train, input_test, target_test, **args_train)
+                                                    input_train, target_train, input_test, target_test, **args_train_cip)
 
             m_scores.append((score_train, score_test))
 

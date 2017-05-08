@@ -15,7 +15,7 @@ plt.style.use('ggplot')
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_input, data_target, classes_labels, name_db, desc, col_names = load_data('australian_scale',
+data_input, data_target, classes_labels, name_db, desc, col_names = load_data('germannumer_scale',
                                                                               data_home='../data', normalize=False)
 
 input_train, input_test, target_train, target_test = \

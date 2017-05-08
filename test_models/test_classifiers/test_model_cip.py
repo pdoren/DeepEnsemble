@@ -41,7 +41,7 @@ n_inputs = n_features
 
 n_neurons_model = int(0.5 * (n_output + n_inputs))
 
-n_ensemble_models = 1
+n_ensemble_models = 3
 fn_activation1 = ActivationFunctions.sigmoid
 fn_activation2 = ActivationFunctions.sigmoid
 
@@ -66,12 +66,12 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     is_cip_full=False,
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                    dist='ED',
-                                    beta=0.3, lamb=0.3, s=s,
-                                    lsp=1.5, lsm=0.1,
-                                    bias_layer=False, mse_first_epoch=True, annealing_enable=True,
+                                    dist='CS',
+                                    beta=-1.0, lamb=-1.0, s=s,
+                                    lsp=1.5, lsm=0.5,
+                                    bias_layer=False, mse_first_epoch=False, annealing_enable=True,
                                     update=sgd, name_update='SGD',
-                                    params_update={'learning_rate': -0.5},  # maximization
+                                    params_update={'learning_rate': -0.1},  # maximization
                                     list_scores=list_scores
                                     )
 

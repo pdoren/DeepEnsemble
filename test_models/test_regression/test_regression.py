@@ -1,26 +1,37 @@
 import matplotlib.pylab as plt
+import numpy as np
+import pandas as pd
 
 from deepensemble.utils import cross_validation_score
-from deepensemble.utils.cost_functions import mse, kullback_leibler_generalized
+from deepensemble.utils.cost_functions import mse
 from deepensemble.utils.utils_functions import ActivationFunctions
 from deepensemble.utils.utils_models import get_ensemble_model, get_ensembleCIP_model, \
     get_ensembleNCL_model, get_mlp_model
+from deepensemble.utils.utils_test import load_model
+from deepensemble.metrics import EnsembleRegressionMetrics
+
 
 
 # noinspection PyDefaultArgument
 def test_regression(name_db, data_input, data_target,
-                    factor_number_neurons=0.75,
-                    early_stop=True, no_update_best_parameters=False,
-                    n_ensemble_models=4,
-                    lamb_ncl=0.6,
-                    beta_cip=0.6, lamb_cip=0.2, s=None, dist='CS',
-                    cost_cip=mse, name_cost_cip='MSE', params_cost_cip={},
-                    bias_layer=False, fn_activation1=ActivationFunctions.tanh,
-                    fn_activation2=ActivationFunctions.sigmoid,
-                    folds=10, lr_mse=0.01, lr_klg=0.001, max_epoch=300, batch_size=40):
-    args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': early_stop,
-                  'improvement_threshold': 0.995, 'update_sets': True,
-                  'no_update_best_parameters': no_update_best_parameters}
+                     factor_number_neurons=0.75,
+                     is_binary=False, early_stop=False,
+                     n_ensemble_models=4,
+                     lamb_ncl=0.6,
+                     is_cip_full=False,
+                     beta_cip=0.9, lamb_cip=0.9,
+                     s=None, dist='CS', bias_layer=False, mse_first_epoch=False,
+                     annealing_enable=True,
+                     fn_activation1=ActivationFunctions.sigmoid, fn_activation2=ActivationFunctions.sigmoid,
+                     lr=0.01,
+                     folds=10, max_epoch=300, batch_size=40):
+
+    args_train_default = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+                      'improvement_threshold': 0.995, 'update_sets': True}
+
+    args_train_cip = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+                      'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+                      'criterion_update_params': 'cost', 'maximization_criterion': True}
 
     #############################################################################################################
     # Define Parameters nets
@@ -35,95 +46,38 @@ def test_regression(name_db, data_input, data_target,
     # Define Models
     #############################################################################################################
 
-    models = []
-
     # ==========< Ensemble        >==============================================================================
     ensemble = get_ensemble_model(name='Ensamble',
                                   n_input=n_inputs, n_output=n_output,
                                   n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_model,
-                                  classification=False,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   cost=mse, name_cost="MSE",
-                                  params_update={'learning_rate': lr_mse})
-
-    models.append(ensemble)
-
-    # ==========< Ensemble        >==============================================================================
-    ensembleKLG = get_ensemble_model(name='Ensamble KLG',
-                                     n_input=n_inputs, n_output=n_output,
-                                     n_ensemble_models=n_ensemble_models, n_neurons_model=n_neurons_model,
-                                     classification=False,
-                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                     cost=kullback_leibler_generalized, name_cost="KLG",
-                                     params_update={'learning_rate': lr_klg})
-
-    models.append(ensembleKLG)
+                                  params_update={'learning_rate': lr})
 
     # ==========< Ensemble  CIP   >===============================================================================
     ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                         n_input=n_inputs, n_output=n_output,
                                         n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                        classification=False,
+                                        is_cip_full=is_cip_full, mse_first_epoch=mse_first_epoch,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
+                                        annealing_enable=annealing_enable,
                                         dist=dist,
-                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr_klg,
-                                        cost=cost_cip, name_cost=name_cost_cip,
-                                        params_cost=params_cost_cip,
-                                        params_update={'learning_rate': lr_klg})
-
-    models.append(ensembleCIP)
+                                        beta=beta_cip, lamb=lamb_cip, s=s, bias_layer=bias_layer, lr=lr,
+                                        params_update={'learning_rate': -lr})
 
     # ==========< Ensemble  NCL   >==============================================================================
     ensembleNCL = get_ensembleNCL_model(name='Ensamble NCL',
                                         n_input=n_inputs, n_output=n_output,
                                         n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
-                                        classification=False,
                                         fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                        lamb=lamb_ncl, params_update={'learning_rate': lr_mse})
-
-    models.append(ensembleNCL)
-
-    # ==========< MLP MSE  >======================================================================================
-    netMLP = get_mlp_model("MLP (%d neuronas)" % n_neurons_model,
-                           n_input=n_inputs, n_output=n_output,
-                           n_neurons=n_neurons_model,
-                           classification=False,
-                           fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                           cost=mse, name_cost="MSE", params_update={'learning_rate': lr_mse})
-
-    models.append(netMLP)
-
-    # ==========< MLP KLG  >======================================================================================
-    netMLP_KLG = get_mlp_model("MLP KLG (%d neuronas)" % n_neurons_model,
-                               n_input=n_inputs, n_output=n_output,
-                               n_neurons=n_neurons_model,
-                               classification=False,
-                               fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                               cost=kullback_leibler_generalized, name_cost="KLG",
-                               params_update={'learning_rate': lr_klg})
-
-    models.append(netMLP_KLG)
+                                        lamb=lamb_ncl, params_update={'learning_rate': lr})
 
     # ==========< MLP MSE MAX  >==================================================================================
     netMLP_MAX = get_mlp_model("MLP (%d neuronas)" % (n_ensemble_models * n_neurons_model),
                                n_input=n_inputs, n_output=n_output,
                                n_neurons=n_ensemble_models * n_neurons_model,
-                               classification=False,
                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                               cost=mse, name_cost="MSE", params_update={'learning_rate': lr_mse})
-
-    models.append(netMLP_MAX)
-
-    # ==========< MLP KLG MAX  >==================================================================================
-    netMLP_KLG_MAX = get_mlp_model("MLP KLG (%d neuronas)" % (n_ensemble_models * n_neurons_model),
-                                   n_input=n_inputs, n_output=n_output,
-                                   n_neurons=n_ensemble_models * n_neurons_model,
-                                   classification=False,
-                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
-                                   cost=kullback_leibler_generalized, name_cost="KLG",
-                                   params_update={'learning_rate': lr_klg})
-
-    models.append(netMLP_KLG_MAX)
+                               cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
 
     plt.style.use('ggplot')
 
@@ -135,8 +89,51 @@ def test_regression(name_db, data_input, data_target,
 
     path_db = name_db + '/'
 
+    models = []
+    models.append(ensemble)
+    models.append(ensembleNCL)
+    models.append(netMLP_MAX)
+
     # noinspection PyUnusedLocal
     scores = cross_validation_score(models, data_input, data_target,
-                                    folds=folds, path_db=path_db, **args_train)
+                                    folds=folds, path_db=path_db, **args_train_default)
+
+    score_cip = cross_validation_score([ensembleCIP], data_input, data_target,
+                                    folds=folds, path_db=path_db, **args_train_cip)
+
+    scores.update(score_cip)
 
     return scores
+
+def show_data_regression(name_db, scores, max_epoch):
+    plt.style.use('ggplot')
+    r_score = {}
+    for s in sorted(scores):
+        d_score = scores[s]
+        d = [(t1, t2) for t1, t2, _ in d_score]
+        if "Ensamble" in s:
+            d1 = [['%.4g, %.4g, %.4g' % f for f in t1.get_max_min_rms()] for _, _, t1 in d_score]
+            print(s)
+            print(d1)
+
+            _model = load_model(name_db, s)
+            metrics = EnsembleRegressionMetrics(_model)
+            for _, _, metric in d_score:
+                metrics.append_metric(metric)
+            # metrics.plot_cost(title='Costo %s' % s, max_epoch=max_epoch)
+            # metrics.plot_costs(name=s, title='Costos %s' % s, max_epoch=max_epoch)
+            metrics.plot_scores(title='Desempeño %s' % s, max_epoch=max_epoch)
+        _mean = np.mean(d, axis=0)
+        _std = np.std(d, axis=0)
+        max_score = np.max(d, axis=0)
+        min_score = np.min(d, axis=0)
+        s1 = ['%.2f +-%.2f' % (_mean[0], _std[0])]
+        s2 = ['%.2f +-%.2f' % (_mean[1], _std[1])]
+        s3 = ['%.2f / %.2f' % (max_score[1], 100 * min_score[1])]
+        r_score[s] = [s1, s2, s3]
+
+    df = pd.DataFrame(r_score)
+
+    print(df)
+
+    plt.show()
