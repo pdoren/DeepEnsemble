@@ -1,32 +1,757 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Fixed some mistake metrics classes.&#10;Updated test files.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v2.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/regresion/mackeyglass/test_regresion.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/regresion/mackeyglass/test_regresion_rnn.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/regresion/synthetic_series.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_grad.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_models/test_regression/test_regresion_v1.py" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_cip.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_australian.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_australian.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_cancer.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_cancer.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_diabetes.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_diabetes.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_german_numer.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_german_numer.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_ionosphere.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_ionosphere.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_satimage.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_satimage.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_segment.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_segment.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_classifiers/tests/test_wine.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_wine.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v1.py" />
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/control1/control1.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/tarea1.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea2/tarea2.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/d2" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/d2.exe" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/false_nearest" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/false_nearest.exe" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/mutual" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/mutual.exe" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/tarea3.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/BPTT_NH3.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_ffnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_firnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_firnet3.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/ffnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/firnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/firnet3.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexa64" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexglx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexw32" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexa64" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexglx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexw32" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexa64" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexglx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexw32" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexa64" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexglx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexw32" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_ffnet2.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_ffnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet2.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet3.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet3.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/ffnet2.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/ffnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet2.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet2.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet3.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet3.mexsol" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/jacobX.mexlx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/laser.mat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/tarea4.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/batches.meta" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/data_batch_1" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/data_batch_2" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/data_batch_3" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/data_batch_4" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/data_batch_5" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/test_batch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-100-python/meta" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-100-python/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-100-python/train" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.3 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -0.5 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.1 -1 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -0.3 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.3 -1 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.3 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -0.5 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 0.049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -0.5 -1 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.3 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 0.049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -0.5 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP -1 -1 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.3 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -0.5 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0 -1 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.3 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -0.5 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.1 -1 0.049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 0.0049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.3 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -0.5 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.3 -1 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.3 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -0.5 9.8/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 0.5 -1 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 0.49/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 2.4/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -0.5 4.9/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_0.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_1.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_2.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_3.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_4.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_5.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_6.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_7.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_8.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/data_fold_9.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_params_cip_v1/australian_scale/Ensemble CIP 1 -1 0.049/model.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/Plot CIP.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/Test theano.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/main.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/test CIP.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/test gradient CIP.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary/test gradient cip-Copy1.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary2/main-Copy1.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/boundary2/main.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/control1/control1_pregunta1.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/control1/control1_pregunta2.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/CE_lm0104n13162.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/CE_lm0135k22558.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/EB_lm0021k13770.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/EB_lm0114k26852.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/LPV_lm0094n19367.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/MIRA_lm0131n7107.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/MM_lm0100m7313.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/RR_lm0284k13358.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/NMF.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/slottedCorrentropy.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/spectra_gui.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n0_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n100_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr05.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr075.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr1.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr5.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n20_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n50_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n5_snr10.dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea2/tarea2.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea3/el7006_tarea3.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/FIR_NH3.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/Laser Series from SFI Competition (Competition data).dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/Laser Series from SFI Competition (Extended data).dat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_new_elman.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_new_wz.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_sim.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_sim_esn.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_bp.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_bptt.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_ekf_bptt.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_ekf_rtrl.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_rtrl.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_bp.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_bptt.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_ekf_bptt.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_ekf_rtrl.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_rtrl.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/laser.trs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/laser_training.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/reber.trs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/reber_training.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/setpath.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/createmg.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/createmgdde23.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/eval_mse.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/eval_nnl.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/loadseq.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/architecture.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/cv_net.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1ff2.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1fir2.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1fir3.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo_cv.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/ffnet.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_ffnet2.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet2.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/ffnet2.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet2.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.c" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/RUNMEFIRST.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/calc_error_time_series.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/pred_1step_fir.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/pred_iterate_fir.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/aux/examples/tarea4/weight_init.m" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/Test Regresion with CIP.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/Test1 - Mutual Information.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information CS.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information ED.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/Validate Gradient CIP.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/test_ITLfunctions.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/cip/test_I_ED_CS.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/boundary2/main-Copy1.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/boundary2/main.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/classification/cifar/cifar-10-batches-py/readme.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/regresion/RNN/test_regresion_rnn.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/regresion/mackeyglass/mackey_glass.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/regresion/test_jacob_regresion.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples/regresion/test_regresion.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/regressionmetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/regressionmetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_beta_classification.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_beta_classification.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_regression/test_jacobs.py" afterPath="$PROJECT_DIR$/test_models/test_regression/test_jacobs.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_regression/test_regression.py" afterPath="$PROJECT_DIR$/test_models/test_regression/test_regression.py" />
     </list>
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -103,7 +828,7 @@
       <file leaf-file-name="test_model_cip.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-796">
+            <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="33" />
               <folding />
             </state>
@@ -113,8 +838,8 @@
       <file leaf-file-name="test_jacobs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_jacobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="42" column="44" lean-forward="false" selection-start-line="42" selection-start-column="44" selection-end-line="42" selection-end-column="44" />
+            <state relative-caret-position="300">
+              <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -125,7 +850,7 @@
       <file leaf-file-name="test_regression.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_regression.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-195">
+            <state relative-caret-position="195">
               <caret line="23" column="43" lean-forward="false" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
@@ -137,7 +862,7 @@
       <file leaf-file-name="utils_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="413">
+            <state relative-caret-position="2835">
               <caret line="202" column="25" lean-forward="false" selection-start-line="202" selection-start-column="25" selection-end-line="202" selection-end-column="25" />
               <folding />
             </state>
@@ -147,7 +872,7 @@
       <file leaf-file-name="test_classifiers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
+            <state relative-caret-position="1290">
               <caret line="96" column="5" lean-forward="false" selection-start-line="96" selection-start-column="5" selection-end-line="96" selection-end-column="5" />
               <folding />
             </state>
@@ -279,10 +1004,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-4" />
     <option name="y" value="36" />
-    <option name="width" value="1928" />
-    <option name="height" value="1048" />
+    <option name="width" value="1920" />
+    <option name="height" value="1044" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -321,7 +1045,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -358,11 +1081,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test_models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_regression" />
+              <option name="myItemId" value="examples" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -408,6 +1127,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -871,13 +1591,6 @@
       <option name="presentableId" value="Default" />
       <updated>1470189942427</updated>
     </task>
-    <task id="LOCAL-00099" summary="Added delete cost function in model class.&#10;Fixed some mistake in weight average combiner.&#10;&#10;">
-      <created>1479037488060</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1479037488060</updated>
-    </task>
     <task id="LOCAL-00100" summary="Added RecurrentLayer.&#10;&#10;">
       <created>1479538510123</created>
       <option name="number" value="00100" />
@@ -1214,7 +1927,14 @@
       <option name="project" value="LOCAL" />
       <updated>1493691362120</updated>
     </task>
-    <option name="localTasksCounter" value="148" />
+    <task id="LOCAL-00148" summary="Fixed some mistake metrics classes.&#10;Updated test files.">
+      <created>1494234776286</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1494234776286</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1259,18 +1979,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="36" width="1928" height="1048" extended-state="6" />
+    <frame x="0" y="36" width="1920" height="1044" extended-state="6" />
     <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1307364" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30196938" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2713348" sideWeight="0.51280683" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3249453" sideWeight="0.4806867" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.49571276" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28884026" sideWeight="0.50428724" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12966916" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32275712" sideWeight="0.58484524" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.50428724" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29882604" sideWeight="0.50875276" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40153173" sideWeight="0.40928495" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32924226" sideWeight="0.49124727" order="7" side_tool="false" content_ui="tabs" />
@@ -1283,6 +2002,7 @@
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19010043" sideWeight="0.5167364" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24892396" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35995623" sideWeight="0.48719317" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32275712" sideWeight="0.58484524" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1319,7 +2039,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed some files :p.&#10;" />
     <MESSAGE value="Added CIP options in cost functions.&#10;" />
     <MESSAGE value="Fixed error definition synergy CIP.&#10;" />
     <MESSAGE value="Fixed function plot.&#10;" />
@@ -1344,7 +2063,8 @@
     <MESSAGE value="Added Quadratic Mutual Information Euclidean Score." />
     <MESSAGE value="Fixed some numerical error in CIP Cauchy-Schwartz functions." />
     <MESSAGE value="Fixed some mistake in test and plot files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some mistake in test and plot files." />
+    <MESSAGE value="Fixed some mistake metrics classes.&#10;Updated test files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed some mistake metrics classes.&#10;Updated test files." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1399,7 +2119,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="213">
           <caret line="558" column="8" lean-forward="false" selection-start-line="558" selection-start-column="8" selection-end-line="558" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1464,7 +2183,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1965">
           <caret line="134" column="11" lean-forward="false" selection-start-line="134" selection-start-column="11" selection-end-line="134" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1472,7 +2190,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="178" column="0" lean-forward="false" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1480,7 +2197,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="100" column="8" lean-forward="false" selection-start-line="100" selection-start-column="8" selection-end-line="100" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1488,9 +2204,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="70" column="8" lean-forward="false" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#33#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1498,9 +2211,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-14">
           <caret line="229" column="21" lean-forward="false" selection-start-line="229" selection-start-column="21" selection-end-line="229" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#35#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1508,7 +2218,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="124" column="0" lean-forward="false" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1516,7 +2225,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-91">
           <caret line="182" column="60" lean-forward="false" selection-start-line="182" selection-start-column="60" selection-end-line="182" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1532,9 +2240,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1">
           <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1542,7 +2247,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="135" column="18" lean-forward="false" selection-start-line="129" selection-start-column="4" selection-end-line="135" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1550,39 +2254,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-105">
           <caret line="690" column="81" lean-forward="false" selection-start-line="690" selection-start-column="65" selection-end-line="690" selection-end-column="81" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_CIP.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="108" column="59" lean-forward="true" selection-start-line="108" selection-start-column="59" selection-end-line="108" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_CIP.py" />
     <entry file="file://$PROJECT_DIR$/deepensemble/models/ensemblemodel.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-18">
           <caret line="380" column="8" lean-forward="false" selection-start-line="380" selection-start-column="8" selection-end-line="380" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="58" column="38" lean-forward="true" selection-start-line="58" selection-start-column="38" selection-end-line="58" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_models.py" />
     <entry file="file://$PROJECT_DIR$/test/test_theano.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="134">
           <caret line="139" column="54" lean-forward="false" selection-start-line="139" selection-start-column="54" selection-end-line="139" selection-end-column="54" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1590,7 +2277,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="449">
           <caret line="94" column="68" lean-forward="false" selection-start-line="94" selection-start-column="68" selection-end-line="94" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1598,7 +2284,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="517">
           <caret line="269" column="20" lean-forward="false" selection-start-line="269" selection-start-column="20" selection-end-line="269" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1631,7 +2316,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="4595" column="0" lean-forward="false" selection-start-line="4595" selection-start-column="0" selection-end-line="4595" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1639,7 +2323,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
           <caret line="845" column="0" lean-forward="false" selection-start-line="845" selection-start-column="0" selection-end-line="845" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1655,7 +2338,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="325" column="0" lean-forward="false" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1663,7 +2345,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="71">
           <caret line="418" column="40" lean-forward="false" selection-start-line="418" selection-start-column="40" selection-end-line="418" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1671,9 +2352,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="99" column="0" lean-forward="false" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1681,42 +2359,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="17" column="24" lean-forward="false" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_grad.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="31" column="37" lean-forward="false" selection-start-line="31" selection-start-column="37" selection-end-line="31" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-615">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_grad.py" />
+    <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_cip/test_model_ncl.py" />
     <entry file="file:///usr/lib64/python3.4/site-packages/numpy/lib/nanfunctions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="702" column="0" lean-forward="false" selection-start-line="702" selection-start-column="0" selection-end-line="702" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_regresion_v1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-226">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_regresion_v1.py" />
     <entry file="file://$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="334">
@@ -1731,9 +2386,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
           <caret line="27" column="7" lean-forward="true" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1741,7 +2393,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-873">
           <caret line="102" column="4" lean-forward="false" selection-start-line="102" selection-start-column="4" selection-end-line="102" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1749,7 +2400,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="229" column="0" lean-forward="false" selection-start-line="229" selection-start-column="0" selection-end-line="229" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1757,9 +2407,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="464">
           <caret line="42" column="27" lean-forward="false" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1767,13 +2414,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="51" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
+        <state relative-caret-position="1290">
           <caret line="96" column="5" lean-forward="false" selection-start-line="96" selection-start-column="5" selection-end-line="96" selection-end-column="5" />
           <folding />
         </state>
@@ -1789,7 +2435,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/deepensemble/utils/utils_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
+        <state relative-caret-position="2835">
           <caret line="202" column="25" lean-forward="false" selection-start-line="202" selection-start-column="25" selection-end-line="202" selection-end-column="25" />
           <folding />
         </state>
@@ -1797,7 +2443,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-796">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="33" />
           <folding />
         </state>
@@ -1805,7 +2451,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_regression.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-195">
+        <state relative-caret-position="195">
           <caret line="23" column="43" lean-forward="false" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
@@ -1815,8 +2461,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_regression/test_jacobs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="42" column="44" lean-forward="false" selection-start-line="42" selection-start-column="44" selection-end-line="42" selection-end-column="44" />
+        <state relative-caret-position="300">
+          <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
