@@ -1,162 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Added singleton class for translate messages or names in library.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/deepensemble/utils/languages/dict_language_es.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_translation.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_sim_esn.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_bptt.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_bptt.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_ekf_rtrl.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_ffnet2.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/ffnet2.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/MIRA_lm0131n7107.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/pred_1step_fir.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/pred_iterate_fir.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_rtrl.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo_cv.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1fir2.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/laser.trs" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr075.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1ff2.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/control1/control1_pregunta2.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr5.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet2.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/slottedCorrentropy.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/firnet3.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexa64" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/RR_lm0284k13358.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexw32" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/demo1fir3.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/d2.exe" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/ffnet.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_ffnet2.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr05.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/ffnet2.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_bp.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/NMF.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_sim.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/loadseq.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/ffnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexglx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/control1/control1.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/calc_error_time_series.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_firnet3.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/mutual.exe" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n50_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexglx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/Laser Series from SFI Competition (Competition data).dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_ffnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_bp.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexa64" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/bp_firnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/d2" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n20_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet3.mexw32" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/ffnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/weight_init.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet3.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/jacobX.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/FIR_NH3.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/RUNMEFIRST.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet2.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/MM_lm0100m7313.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea2/tarea2.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/reber_training.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/laser_training.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/BPTT_NH3.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexw32" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet3.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n10_snr1.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/el7006_tarea3.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/CE_lm0104n13162.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/firnet3.mexa64" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/eval_nnl.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_ekf_bptt.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/mutual" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_ffnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_new_wz.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet3.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n100_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n5_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexglx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexw32" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/createmgdde23.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobX.mexglx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea2/tarea2.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/spectra_gui.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/CE_lm0135k22558.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/eval_mse.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/EB_lm0114k26852.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/jacobW.mexa64" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_ekf_rtrl.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/laser.mat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/false_nearest" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_start_rtrl.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/bp_firnet3.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_train_ekf_bptt.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/control1/control1_pregunta1.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_train/rnn_new_elman.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/tools/createmg.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/architecture.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/tarea1.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/EB_lm0021k13770.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/tarea3.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/synth/lc_n0_snr10.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea1/LC/LPV_lm0094n19367.dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet2.mexsol" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/tarea4.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/reber.trs" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/BPTT/rnn_work/setpath.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/Laser Series from SFI Competition (Extended data).dat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/SOURCE/bp_firnet2.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/sol/firnet2.mexlx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea3/bin/false_nearest.exe" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/cv_net.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/examples/aux/examples/tarea4/NN/FIR/MATLAB4/firnet2.mexsol" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/aux/boundary/test gradient CIP.ipynb" afterPath="$PROJECT_DIR$/examples/aux/boundary/test gradient CIP.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/wrapper.py" afterPath="$PROJECT_DIR$/deepensemble/models/wrapper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/aux/boundary/test CIP.ipynb" afterPath="$PROJECT_DIR$/examples/aux/boundary/test CIP.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/basemetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/cip/Validate Gradient CIP.ipynb" afterPath="$PROJECT_DIR$/examples/cip/Validate Gradient CIP.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/classifiermetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_models.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" afterPath="$PROJECT_DIR$/deepensemble/metrics/diversitymetrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" afterPath="$PROJECT_DIR$/test_models/test_classifiers/test_classifiers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/regresion/mackeyglass/mackey_glass.ipynb" afterPath="$PROJECT_DIR$/examples/regresion/mackeyglass/mackey_glass.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/classification/Australian Credit Card Assessment/main.ipynb" afterPath="$PROJECT_DIR$/examples/classification/Australian Credit Card Assessment/main.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v2.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information ED.ipynb" afterPath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information ED.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" afterPath="$PROJECT_DIR$/deepensemble/models/ensemblemodel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/__init__.py" afterPath="$PROJECT_DIR$/deepensemble/utils/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/aux/boundary/Plot CIP.ipynb" afterPath="$PROJECT_DIR$/examples/aux/boundary/Plot CIP.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v1.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_classification_v1.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_regression/test_regression.py" afterPath="$PROJECT_DIR$/test_models/test_regression/test_regression.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/models/model.py" afterPath="$PROJECT_DIR$/deepensemble/models/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/utils_plot.py" afterPath="$PROJECT_DIR$/deepensemble/utils/utils_plot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/aux/boundary/test gradient cip-Copy1.ipynb" afterPath="$PROJECT_DIR$/examples/aux/boundary/test gradient cip-Copy1.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" afterPath="$PROJECT_DIR$/deepensemble/utils/cost_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/conv.py" afterPath="$PROJECT_DIR$/deepensemble/layers/conv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information CS.ipynb" afterPath="$PROJECT_DIR$/examples/cip/Test2 - Mutual Information CS.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/regresion/test_jacob_regresion.ipynb" afterPath="$PROJECT_DIR$/examples/regresion/test_jacob_regresion.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/cip/test_I_ED_CS.ipynb" afterPath="$PROJECT_DIR$/examples/cip/test_I_ED_CS.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" afterPath="$PROJECT_DIR$/deepensemble/layers/utils_layers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_beta_classification.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/params_CIP_beta_classification.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons_vs_models.py" afterPath="$PROJECT_DIR$/test_models/test_ensemble/test_ensemble_n_neurons_vs_models.py" />
-    </list>
+    <list default="true" id="5fc40a8b-bb05-44db-8b8e-f00796a62362" name="Default" comment="Added singleton class for translate messages or names in library." />
     <ignored path="correntropy-and-ensembles-in-deep-learning.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -229,11 +74,11 @@
     <favorites_list name="correntropy-and-ensembles-in-deep-learning" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="test_model_cip.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
+            <state relative-caret-position="445">
               <caret line="65" column="17" lean-forward="false" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
               <folding />
             </state>
@@ -497,6 +342,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="Scope">
         <subPane subId="Default">
           <PATH>
@@ -523,7 +369,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1301,43 +1146,29 @@
   <component name="ToolWindowManager">
     <frame x="0" y="36" width="1920" height="1044" extended-state="6" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13233724" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30196938" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40153173" sideWeight="0.55816436" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.50213444" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3249453" sideWeight="0.4806867" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.49786553" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.50213444" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1307364" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32275712" sideWeight="0.58217716" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29882604" sideWeight="0.50875276" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40153173" sideWeight="0.44183564" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32924226" sideWeight="0.49124727" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30196938" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40153173" sideWeight="0.55816436" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19010043" sideWeight="0.5167364" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3249453" sideWeight="0.4806867" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.49786553" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28884026" sideWeight="0.50213444" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28993437" sideWeight="0.47138768" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24892396" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1307364" sideWeight="0.49275362" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35995623" sideWeight="0.48719317" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18791209" sideWeight="0.4857768" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32275712" sideWeight="0.58217716" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29882604" sideWeight="0.50875276" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17066291" sideWeight="0.5072464" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40153173" sideWeight="0.44183564" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32924226" sideWeight="0.49124727" order="7" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1818,7 +1649,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_models/test_classifiers/test_model_cip.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
+        <state relative-caret-position="445">
           <caret line="65" column="17" lean-forward="false" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
           <folding />
         </state>
