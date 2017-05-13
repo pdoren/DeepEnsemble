@@ -2,6 +2,7 @@ import theano.tensor as T
 
 from .layer import Layer
 from ..utils.utils_functions import ActivationFunctions
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['Convolution1D', 'Convolution2D']
 
@@ -119,7 +120,7 @@ class ConvolutionBase(Layer):
         elif isinstance(pad, int):
             output_size = input_size + 2 * pad - filter_size + 1
         else:
-            raise ValueError('Invalid pad: %s' % pad)
+            raise ValueError(TextTranslation().get_str('Invalid_pad') + ' : %s' % pad)
 
         output_size = (output_size + stride - 1) // stride
 

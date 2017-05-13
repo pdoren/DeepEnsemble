@@ -4,6 +4,7 @@ import numpy as np
 import theano.tensor as T
 from theano import config
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+from ..utils.utils_translation import TextTranslation
 
 from .layer import Layer
 
@@ -128,7 +129,7 @@ class MaskLayer(Layer):
         elif dim_index == 2:
             return _input[:, np.squeeze(self.__index[:, 0]), np.squeeze(self.__index[:, 1])]
         else:
-            raise ValueError('Problem with dimension index mask')
+            raise ValueError(TextTranslation().get_str('Error_6'))
 
 
 class NoiseLayer(Layer):
@@ -229,7 +230,7 @@ class BiasLayer(Layer):
         self._b[0]['name'] = 'bias'
         self.set_include_b(False)
 
-        net.append_update(self.update, 'Update BiasLayer')
+        net.append_update(self.update, TextTranslation().get_str('Update_BiasLayer'))
         self._updates = OrderedDict()
 
     def update(self, error):

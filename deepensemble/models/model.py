@@ -17,6 +17,8 @@ from ..utils.update_functions import sgd
 from ..utils.utils_classifiers import get_index_label_classes, \
     translate_binary_target, translate_output, translate_target
 
+from ..utils.utils_translation import TextTranslation
+
 __all__ = ['Model']
 
 
@@ -91,9 +93,9 @@ class Model(Serializable):
         self._score_function_list = {'list': [], 'changed': True, 'result': []}
 
         if self.is_classifier():
-            self.append_score(score_accuracy, 'Accuracy')
+            self.append_score(score_accuracy, TextTranslation().get_str('Accuracy'))
         else:
-            self.append_score(score_rms, 'Root Mean Square')
+            self.append_score(score_rms, TextTranslation().get_str('RMS'))
 
         self._cost_function_list = {'list': [], 'changed': True, 'result': []}
         self._reg_function_list = []
@@ -113,7 +115,7 @@ class Model(Serializable):
         self._current_data_train = None
         self._current_data_valid = None
         self.__binary_classification = False
-        self._info_model = {'info': 'Nothing.', 'comment': None}
+        self._info_model = {'info': TextTranslation().get_str('Default_info_model'), 'comment': None}
         self._is_compiled = False
         self._is_fast_compile = False
 
@@ -920,15 +922,18 @@ class Model(Serializable):
             if args_fun.defaults is not None:
                 params_fun = dict(zip(args_fun.args[-len(args_fun.defaults):], args_fun.defaults))
                 params_fun.update(kwargs)
-                str_info += ' params: %s\n' % params_fun
+                str_info += ' %s: %s\n' % (TextTranslation().get_str('params'), params_fun)
 
         return str_info
 
     def _get_spec_model(self):
         """ Gets specific info about this model.
         """
-        return 'Info model:\n Type model: %s\n inputs: %d\n outputs: %d\n' % \
-               (self.__type_model, self.get_fan_in(), self.get_fan_out())
+        return '%s %s:\n %s %s: %s\n %s: %d\n %s: %d\n' % \
+        (TextTranslation().get_str('Info'), TextTranslation().get_str('model'),
+         TextTranslation().get_str('Type'), TextTranslation().get_str('model'), self.__type_model,
+         TextTranslation().get_str('Inputs'), self.get_fan_in(),
+         TextTranslation().get_str('Outputs'), self.get_fan_out())
 
     # noinspection PyMethodMayBeStatic
     def _get_extra_info(self):
@@ -953,15 +958,19 @@ class Model(Serializable):
         self._info_model['info'] = ''  # Reset info model
         self._info_model['info'] += self._get_spec_model() + '\n'
 
-        self._info_model['info'] += 'Update params:\n' + self.__extract_info([self._update_functions[0]]) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Update_params') + \
+                                    ':\n' + self.__extract_info([self._update_functions[0]]) + '\n'
 
-        self._info_model['info'] += 'Cost functions:\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Cost_functions') +\
+                                    ':\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
 
         if len(self._reg_function_list) > 0:
             self._info_model['info'] += \
-                'Regularization functions:\n' + self.__extract_info(self._reg_function_list) + '\n'
+                TextTranslation().get_str('Reg_functions') + \
+                ':\n' + self.__extract_info(self._reg_function_list) + '\n'
 
-        self._info_model['info'] += 'Score functions:\n' + self.__extract_info(self._score_function_list['list']) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Score_functions') + \
+                                    ':\n' + self.__extract_info(self._score_function_list['list']) + '\n'
 
     def review_shape_output(self):
         """ Review if this model its dimension output is wrong.
@@ -972,7 +981,7 @@ class Model(Serializable):
         """
         if self.is_classifier() and len(self.__target_labels) != self.get_fan_out() and \
                 not self.__binary_classification:  # no is binary classifier
-            raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
+            raise ValueError(TextTranslation().get_str('Error_1'))  # TODO: review translation
 
     def review_is_binary_classifier(self):
         """ Review this model is binary classifier
@@ -1328,7 +1337,7 @@ class Model(Serializable):
             A dictionary mapping each parameter to its update expression.
         """
         if cost is None or type(cost) == int or type(cost) == float:
-            raise ValueError('The cost function is not defined')
+            raise ValueError(TextTranslation().get_str('Error_2'))
 
         updates = OrderedDict()
         for i, f in enumerate(self._update_functions):

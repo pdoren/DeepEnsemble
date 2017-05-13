@@ -4,6 +4,7 @@ import matplotlib.pylab as plt
 from collections import OrderedDict
 from ..utils.serializable import Serializable
 from ..utils.utils_plot import add_point, add_data, plot_data, plot_list_data
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
@@ -163,7 +164,7 @@ class BaseMetrics(Serializable):
             Returns index of last item saved from data list.
         """
         if type_set_data != "train" and type_set_data != "test":
-            raise ValueError("The type set data must be 'train' or 'test'.")
+            raise ValueError(TextTranslation().get_str('Error_7'))
 
         labels = self._model.get_result_labels()
 
@@ -235,6 +236,8 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Cost':
+            title = TextTranslation().get_str('Cost')
         list_data = []
         for key in self.get_costs('train'):
             data_train = self.get_costs('train')[key]
@@ -261,6 +264,8 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Score':
+            title = TextTranslation().get_str('Score')
         list_data = []
         for key in self.get_scores('train'):
             data_train = self.get_scores('train')[key]
@@ -530,6 +535,9 @@ class EnsembleMetrics(BaseMetrics):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Cost':
+            title = TextTranslation().get_str('Cost')
+
         if name is None:
             name = self._model.get_name()
 

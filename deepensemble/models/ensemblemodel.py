@@ -6,6 +6,8 @@ from .wrapper import Wrapper
 from ..metrics import FactoryMetrics, EnsembleClassifierMetrics, EnsembleRegressionMetrics
 from ..utils import Logger, score_accuracy, score_rms
 
+from ..utils.utils_translation import TextTranslation
+
 __all__ = ['EnsembleModel']
 
 
@@ -118,7 +120,7 @@ class EnsembleModel(Model):
             self.__combiner = combiner
             self._params[0] = combiner.get_param()
         else:
-            raise ValueError("Combiner method must be same type, in this case %s." % self.__type_model)
+            raise ValueError(TextTranslation().get_str('Error_3') + " %s." % self.__type_model)
 
     def set_type_training(self, type_training):
         """ Setter type of training
@@ -155,24 +157,24 @@ class EnsembleModel(Model):
             self._score_function_list = {'list': [], 'changed': True, 'result': []}
 
             if self.is_classifier():
-                self.append_score(score_accuracy, 'Accuracy')
+                self.append_score(score_accuracy, TextTranslation().get_str('Accuracy'))
             else:
-                self.append_score(score_rms, 'Root Mean Square')
+                self.append_score(score_rms, TextTranslation().get_str('RMS'))
 
         elif self.__list_models_ensemble[0] == new_model:
             self.__list_models_ensemble.append(new_model)
         else:
             str_error = ''
             if self.__list_models_ensemble[0].model.get_input_shape() != new_model.get_input_shape():
-                str_error += 'different input, '
+                str_error += TextTranslation().get_str('Error_4_1')
             if self.__list_models_ensemble[0].model.get_output_shape() != new_model.get_output_shape():
-                str_error += 'different output, '
+                str_error += TextTranslation().get_str('Error_4_2')
             if self.__list_models_ensemble[0].model.type_model != new_model.get_type_model():
-                str_error += 'different type learner, '
+                str_error += TextTranslation().get_str('Error_4_3')
             if self.__list_models_ensemble[0].model.get_target_labels() is not new_model.get_target_labels():
-                str_error += 'different target labels, '
+                str_error += TextTranslation().get_str('Error_4_4')
 
-            raise ValueError('Incorrect Learner: ' + str_error[0:-2] + '.')
+            raise ValueError(TextTranslation().get_str('Error_4_5') + str_error[0:-2] + '.')
 
         self._params += new_model.get_params()
 
@@ -253,7 +255,7 @@ class EnsembleModel(Model):
             If the combiner method not exists.
         """
         if self.__combiner is None:
-            raise AssertionError("Not exists combiner method for %s." % self._name)
+            raise AssertionError(TextTranslation().get_str('Error_5') + " %s." % self._name)
 
         self.update_io()
 
@@ -367,7 +369,7 @@ class EnsembleModel(Model):
 
             super(EnsembleModel, self).compile(fast=fast, **kwargs)
         else:
-            Logger().start_measure_time("Start Compile %s" % self._name)
+            Logger().start_measure_time(TextTranslation().get_str('Start_Compile') + " %s" % self._name)
             Logger().log_disable()
 
             self.update_io()
@@ -449,13 +451,13 @@ class EnsembleModel(Model):
             Returns metrics got in training.
         """
         metrics = FactoryMetrics().get_metric(self)
-        Logger().log('Simple train ', flush=True)
+        Logger().log(TextTranslation().get_str('Simple_training'), flush=True)
         for model in self.__list_models_ensemble:
-            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log(TextTranslation().get_str('Training_model') + ' %s ... ' % model.get_name(), end='', flush=True)
             Logger().log_disable()
             metric = model.fit(_input, _target, **kwargs)
             Logger().log_enable()
-            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
+            Logger().log("| %s: %.4f / %.4f" % (TextTranslation().get_str('score'), model.get_train_score(), model.get_test_score()))
 
             metrics.append_metric(metric)
 
@@ -491,7 +493,7 @@ class EnsembleModel(Model):
         n_bootstrap = int(ratio_bootstrap * N)
 
         for i, model in enumerate(self.__list_models_ensemble):
-            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log(TextTranslation().get_str('Training_model') + ' %s ... ' % model.get_name(), end='', flush=True)
             Logger().log_disable()
 
             # Generate bootstrap
@@ -502,7 +504,7 @@ class EnsembleModel(Model):
             metric = model.fit(_input[index_bootstrap], _target[index_bootstrap], **kwargs)
 
             Logger().log_enable()
-            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
+            Logger().log("| %s: %.4f / %.4f" % (TextTranslation().get_str('score'), model.get_train_score(), model.get_test_score()))
 
             metrics.append_metric(metric)
 
@@ -528,13 +530,13 @@ class EnsembleModel(Model):
         """
         # TODO: need to be completed
         metrics = FactoryMetrics().get_metric(self)
-        Logger().log('Boosting train ', flush=True)
+        Logger().log(TextTranslation().get_str('Boosting_training'), flush=True)
         for model in self.__list_models_ensemble:
-            Logger().log('Training model %s ... ' % model.get_name(), end='', flush=True)
+            Logger().log(TextTranslation().get_str('Training_model') + ' %s ... ' % model.get_name(), end='', flush=True)
             Logger().log_disable()
             metric = model.fit(_input, _target, **kwargs)
             Logger().log_enable()
-            Logger().log("| score: %.4f / %.4f" % (model.get_train_score(), model.get_test_score()))
+            Logger().log("| %s: %.4f / %.4f" % (TextTranslation().get_str('score'), model.get_train_score(), model.get_test_score()))
 
             metrics.append_metric(metric)
 

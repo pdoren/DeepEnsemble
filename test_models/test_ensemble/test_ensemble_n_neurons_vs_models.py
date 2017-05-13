@@ -10,7 +10,7 @@ from deepensemble.models import *
 from deepensemble.utils import *
 from deepensemble.utils.utils_functions import ActivationFunctions
 
-plt.style.use('ggplot')
+plt.style.use('fivethirtyeight')
 
 #############################################################################################################
 # Load Data

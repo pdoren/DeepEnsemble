@@ -1,4 +1,5 @@
 import numpy as np
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['oracle', 'contingency_table', 'fails_dist',
            # pairwise
@@ -45,7 +46,7 @@ def oracle(y, c):
            A Wiley-Interscience publication, ISBN 0-471-21078-1 (cloth).
     """
     if y.shape != c.shape:
-        raise ValueError("Incorrect arrays size")
+        raise ValueError(TextTranslation().get_str('Error_9'))
     return (y == c).astype(int)
 
 

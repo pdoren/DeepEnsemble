@@ -10,7 +10,7 @@ from deepensemble.utils.utils_functions import ActivationFunctions, ITLFunctions
 from theano import shared
 from sklearn import model_selection
 
-plt.style.use('ggplot')
+plt.style.use('fivethirtyeight')
 
 #############################################################################################################
 # Load Data

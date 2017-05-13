@@ -26,7 +26,7 @@ setup(
     keywords="",
     include_package_data=False,
     zip_safe=False,
-    install_requires=['numpy', 'theano', 'scikit-learn', 'matplotlib', 'pandas'],
+    install_requires=['numpy', 'theano', 'scikit-learn', 'matplotlib', 'pandas', 'seaborn'],
     extras_require={
             'testing': [
             'mock',

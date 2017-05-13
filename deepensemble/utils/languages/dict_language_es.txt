@@ -1,0 +1,64 @@
+Accuracy: Precisión
+RMS: RMS
+Defaul_info_model: Nada.
+params: Parametros
+Info: Información
+Model: Modelo
+model: modelo
+Inputs: Entradas
+inputs: entradas
+input: entrada
+Outputs: Salidas
+outputs: salidas
+output: salida
+Type: Tipo
+Update_params: Actualización parametros
+Cost_functions: Funciones de costo
+Reg_functions: Funciones de Regularización
+Score_function: Funciones de Desempeño
+Error_1: Output model is not equals to number of classes.
+Error_2: The cost function is not defined.
+Error_3: Combiner method must be same type, in this case
+Error_4_1: different input,
+Error_4_2: different output,
+Error_4_3: different type learner,
+Error_4_4: different target labels,
+Error_4_5: Incorrect Learner:
+Error_5: Not exists combiner method for
+Error_6: Problem with dimension index mask
+Error_7: The type set data must be 'train' or 'test'.
+Error_8: The matrix must be square.
+Error_9: Incorrect arrays size.
+Error_10: The distance must be CS, ED.
+Start_Compile: Comienza la compilación
+Simple_training: Entrenamiento simple
+Training_model: Entrenando modelo
+Score: Desempeño
+score: desempeño
+Scores: Desempeños
+Boosting_training: Entrenamiento Boosting
+Cost: Costo
+Costs: Costos
+Error: Error
+Invalid_pad: Pad inválido
+Update_BiasLayer: Update BiasLayer
+Classification_Report: Classification Report
+Confusion_matrix: Matriz de Confusión
+diversity: Diversidad
+classifier: clasificador
+IM: Información Mutua
+Relevancy: Relevancia
+Redundancy: Redundancia
+Synergy: Sinergia
+Regularization: Regularization
+epoch: Epoca
+Accuracy_model: Precisión del Modelo
+Accuracy_ensemble: Precisión del Modelo
+Cost_CIP: Costo CIP
+Cost_CIP: Costos CIP
+Accuracy_CIP: Precisión CIP
+Ambiguity: Ambigüedad
+Load_Model: Cargar Modelo
+Load_Sets: Cargar Conjuntos
+Train: Entrenamiento
+Test: Prueba

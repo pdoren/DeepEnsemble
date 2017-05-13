@@ -1,7 +1,6 @@
 from theano import shared
 
-from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, \
-    kullback_leibler_generalized, cip_full
+from .cost_functions import mse, cip_relevancy, cip_redundancy, neg_corr, cip_synergy, cip_full
 from .logger import Logger
 from .regularizer_functions import L2
 from .score_functions import mutual_information_cs
@@ -9,6 +8,7 @@ from .update_functions import sgd, count_iterations, sgd_cip
 from .utils_functions import ITLFunctions
 from ..combiner import AverageCombiner, PluralityVotingCombiner
 from ..models import EnsembleModel, Sequential
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ["get_mlp_model",
            "get_ensemble_model",
@@ -73,7 +73,7 @@ def get_ensemble_model(name,
                        bias_layer=False,
                        cost=mse, name_cost="MSE", params_cost={},
                        update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                       list_scores=[{'fun_score': mutual_information_cs, 'name': 'Mutual Information'}]):
+                       list_scores=[{'fun_score': mutual_information_cs, 'name': TextTranslation().get_str('MI')}]):
     ensemble = EnsembleModel(name=name)
     for i in range(n_ensemble_models):
         net = get_mlp_model("net%d" % (i + 1),
@@ -113,7 +113,7 @@ def get_ensembleCIP_model(name,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.01, annealing_enable=False,
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
-                          list_scores=[{'fun_score': mutual_information_cs, 'name': 'Mutual Information'}]):
+                          list_scores=[{'fun_score': mutual_information_cs, 'name': TextTranslation().get_str('MI')}]):
     if annealing_enable:
         current_epoch = shared(0, 'current_epoch')  # count current epoch
         si = ITLFunctions.annealing(lsp * s, lsm * s, current_epoch, max_epoch * batch_size)
@@ -128,7 +128,7 @@ def get_ensembleCIP_model(name,
         update_models = None
     else:
         cost_models = cip_relevancy
-        name_cost_models = 'Relevancy CIP(%s)' % dist
+        name_cost_models = TextTranslation().get_str('Relevancy') + ' CIP(%s)' % dist
         params_cost_models = {'s': si, 'dist': dist}
 
     ensemble = get_ensemble_model(name,
@@ -165,11 +165,11 @@ def get_ensembleCIP_model(name,
         ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist)
     elif n_ensemble_models != 1:
         if beta != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name='Redundancy CIP(%s)' % dist,
+            ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name=TextTranslation().get_str('Redundancy') + ' CIP(%s)' % dist,
                                        beta=-beta, s=s, dist=dist)
 
         if lamb != 0:
-            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name='Synergy CIP(%s)' % dist,
+            ensemble.add_cost_ensemble(fun_cost=cip_synergy, name=TextTranslation().get_str('Synergy') + ' CIP(%s)' % dist,
                                        lamb=lamb, s=s, dist=dist)
 
     if update == sgd_cip:
@@ -205,7 +205,7 @@ def get_ensembleNCL_model(name,
 
     if lamb_L2 > 0:
         for net in ensemble.get_models():
-            net.append_reg(L2, name='Regularization L2', lamb=lamb_L2)
+            net.append_reg(L2, name=TextTranslation().get_str('Regularization') + ' L2', lamb=lamb_L2)
 
     ensemble.add_cost_ensemble(fun_cost=neg_corr, name="NCL", lamb=lamb)
 
