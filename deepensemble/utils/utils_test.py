@@ -12,6 +12,7 @@ from scipy.interpolate import griddata as griddata2
 from ..metrics import FactoryMetrics
 from ..models import Model, EnsembleModel
 from ..utils import Logger, Serializable, score_ensemble_ambiguity
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['cross_validation_score', 'test_model', 'load_model',
            'plot_hist_train_test',
@@ -94,8 +95,9 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
                 (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
                  'confusion_matrix_best_train'),
                 (metrics.plot_confusion_matrix_prediction(target_test, cls.predict(input_test)),
-                 'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), 'Cost'),
-                (metrics.plot_costs(max_epoch), 'Costs'), (metrics.plot_scores(max_epoch), 'Scores')]
+                 'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), TextTranslation().get_str('Cost')),
+                (metrics.plot_costs(max_epoch), TextTranslation().get_str('Costs')),
+                (metrics.plot_scores(max_epoch), TextTranslation().get_str('Scores'))]
 
         if isinstance(cls, EnsembleModel):
             for key in metrics.get_models_metric():
@@ -161,7 +163,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
         if not os.path.exists(file_model):
             # Extra Scores
             if isinstance(_model, EnsembleModel):
-                _model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
+                _model.append_score(score_ensemble_ambiguity, TextTranslation().get_str('Ambiguity'))
             # Compile
             if _compile:
                 _model.compile(fast=False)
@@ -169,7 +171,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
             _model.save(file_model)
         else:
             # Load model
-            Logger().log('Load Model: %s' % file_model)
+            Logger().log(TextTranslation().get_str('Load_Model') + ': %s' % file_model)
             _model.load(file_model)
 
         models_data.append((_model, _dir))
@@ -189,7 +191,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
             sets_data.save(file_sets_fold)
         else:
             # Load sets
-            Logger().log('Load sets: %s' % file_sets_fold)
+            Logger().log(TextTranslation().get_str('Load_Sets') + ': %s' % file_sets_fold)
             sets_data = Serializable()
             sets_data.load(file_sets_fold)
             input_train, input_test, target_train, target_test = sets_data.get_data()
@@ -336,7 +338,8 @@ def plot_hist_train_test2(train_means, train_std, test_means, test_std, ylabel, 
     plt.setp(xTickNames, rotation=45, fontsize=10)
 
     # add a legend
-    ax.legend((rects_1[0], rects_2[0]), ('Train', 'Test'))
+    ax.legend((rects_1[0], rects_2[0]), (TextTranslation().get_str('Train'),
+                                         TextTranslation().get_str('Test')))
     plt.tight_layout()
 
 

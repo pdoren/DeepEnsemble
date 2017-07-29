@@ -20,8 +20,8 @@ config.optimizer = 'fast_compile'
 #############################################################################################################
 # Load Data
 #############################################################################################################
-data_db1 = load_data_segment(data_home='../../data', normalize=True)
-data_db = load_data('australian_scale', data_home='../../data', normalize=False)
+data_db1 = load_data_segment(data_home='../data', normalize=True)
+data_db = load_data('australian_scale', data_home='../data', normalize=False)
 data_db2 = load_data_iris()
 data_input, data_target, classes_labels, name_db, desc, col_names = data_db
 
@@ -67,7 +67,7 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     classes_labels=classes_labels,
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='CS',
-                                    beta=-1.0, lamb=-1.0, s=s,
+                                    beta=1.0, lamb=1.0, s=s,
                                     lsp=1.5, lsm=0.5,
                                     bias_layer=False, mse_first_epoch=False, annealing_enable=True,
                                     update=sgd, name_update='SGD',

@@ -1,6 +1,7 @@
 import theano.tensor as T
 from theano import shared, config
 import numpy as np
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['ActivationFunctions', 'ITLFunctions', 'DiversityFunctions']
 
@@ -603,7 +604,7 @@ class ITLFunctions:
         elif dist == 'ED':
             return V_J - 2 * V_nc + V_M
         else:
-            raise ValueError('The dist must be CS or ED')
+            raise ValueError(TextTranslation().get_str('Error_10'))
 
     @staticmethod
     def mutual_information_cs(X, y, s, eps=1e-6):

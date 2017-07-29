@@ -4,6 +4,7 @@ import numpy as np
 
 from sklearn.metrics import accuracy_score
 from .serializable import Serializable
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['DataPlot', 'add_data', 'add_point', 'plot', 'plot_data', 'plot_list_data', 'plot_data_training_ensemble']
 
@@ -175,7 +176,7 @@ def add_data(labels, model_name, data_dict, n_data, index, data, epoch):
     return index
 
 
-def plot_data(ax, list_data_plots, x_max, x_min=0.0, title='Cost', log_xscale=False, log_yscale=False):
+def plot_data(ax, list_data_plots, x_max, x_min=0.0, title=None, log_xscale=False, log_yscale=False):
     """ Plot list data plots.
 
     Parameters
@@ -201,6 +202,9 @@ def plot_data(ax, list_data_plots, x_max, x_min=0.0, title='Cost', log_xscale=Fa
     log_yscale
         Flag for scaling y-axis plot.
     """
+    if title is None:
+        title = TextTranslation().get_str('Cost')
+
     plt.hold(True)
 
     for data_plot, prefix in list_data_plots:
@@ -215,11 +219,11 @@ def plot_data(ax, list_data_plots, x_max, x_min=0.0, title='Cost', log_xscale=Fa
         ax.set_yscale('log')
     ax.legend(loc='best')
     ax.set_xlim([x_min, x_max])
-    plt.xlabel('epoch')
+    plt.xlabel(TextTranslation().get_str('epoch'))
     plt.tight_layout()
 
 
-def plot_list_data(list_data, x_max, title='Cost', log_xscale=False, log_yscale=False):
+def plot_list_data(list_data, x_max, title=None, log_xscale=False, log_yscale=False):
     """ Generate plot of list data.
 
     Parameters
@@ -241,6 +245,9 @@ def plot_list_data(list_data, x_max, title='Cost', log_xscale=False, log_yscale=
     log_yscale : bool
         Flag for show plot y-axis in logarithmic scale.
     """
+    if title is None:
+        title = TextTranslation().get_str('Cost')
+
     N = len(list_data)
 
     if N > 0:
@@ -387,7 +394,7 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
 
     from deepensemble.utils import plot_pdf
 
-    plt.style.use('ggplot')
+    plt.style.use('fivethirtyeight')
     f = plt.figure()
 
     e_train = ensemble.error(input_train, ensemble.translate_target(target_train)).eval()
@@ -395,12 +402,12 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
 
     ax = plt.subplot(2, 1, 1)
     for i in range(ensemble.get_fan_out()):
-        plot_pdf(ax, e_test[:, i], label='Test output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+        plot_pdf(ax, e_test[:, i], label=TextTranslation().get_str('output') + ' %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
     plt.legend()
 
     ax = plt.subplot(2, 1, 2)
     for i in range(ensemble.get_fan_out()):
-        plot_pdf(ax, e_train[:, i], label='Train output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+        plot_pdf(ax, e_train[:, i], label=TextTranslation().get_str('output') + ' %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
     plt.legend()
 
     # noinspection PyRedeclaration
@@ -422,22 +429,26 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
         pred_test = model.predict(input_test)
         pred_train = model.predict(input_train)
 
-        msg_test += 'Accuracy model %s test: %.4g\n' % \
-                    (model.get_name(), accuracy_score(pred_test, target_test))
-        msg_train += 'Accuracy model %s train: %.4g\n' % \
-                     (model.get_name(), accuracy_score(pred_train, target_train))
+        msg_test += '%s %s test: %.4g\n' % \
+                    (TextTranslation().get_str('Accuracy_model'),
+                     model.get_name(), accuracy_score(pred_test, target_test))
+        msg_train += '%s %s train: %.4g\n' % \
+                     (TextTranslation().get_str('Accuracy_model'),
+                      model.get_name(), accuracy_score(pred_train, target_train))
 
     print(msg_test)
-    print('Accuracy Ensemble test: %.4g' % (accuracy_score(ensemble.predict(input_test), target_test)))
+    print('%s test: %.4g' % (TextTranslation().get_str('Accuracy_ensemble'),
+                                            accuracy_score(ensemble.predict(input_test), target_test)))
     print('--' * 10)
     print(msg_train)
-    print('Accuracy Ensemble train: %.4g' % (accuracy_score(ensemble.predict(input_train), target_train)))
+    print('%s train: %.4g' % (TextTranslation().get_str('Accuracy_ensemble'),
+                                             accuracy_score(ensemble.predict(input_train), target_train)))
 
     plt.tight_layout()
 
-    metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
-    metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
-    metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
+    metrics.plot_cost(max_epoch=max_epoch, title=TextTranslation().get_str('Cost_CIP'))
+    metrics.plot_costs(max_epoch=max_epoch, title=TextTranslation().get_str('Costs_CIP'))
+    metrics.plot_scores(max_epoch=max_epoch, title=TextTranslation().get_str('Accuracy_CIP'))
 
     metrics.append_prediction(input_test, target_test, append_last_pred=True)
     metrics.plot_confusion_matrix()

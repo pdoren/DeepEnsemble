@@ -89,7 +89,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
                                fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                cost=mse, name_cost="MSE", params_update={'learning_rate': lr})
 
-    plt.style.use('ggplot')
+    plt.style.use('fivethirtyeight')
 
     #############################################################################################################
     #
@@ -117,7 +117,7 @@ def test_classifiers(name_db, data_input, data_target, classes_labels,
 
 
 def show_data_classification(name_db, scores, max_epoch):
-    plt.style.use('ggplot')
+    plt.style.use('fivethirtyeight')
     r_score = {}
     for s in sorted(scores):
         d_score = scores[s]
