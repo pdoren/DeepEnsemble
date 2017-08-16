@@ -99,7 +99,7 @@ class GeometricVotingCombiner(ModelCombiner):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         voting = [{} for _ in range(_input.shape[0])]
         for model in ensemble_model.get_models():

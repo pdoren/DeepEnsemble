@@ -2,6 +2,7 @@ import theano.tensor as T
 from theano import config
 import numpy as np
 from .utils_functions import ITLFunctions
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['dummy_cost', 'mse', 'mcc', 'mee', 'neg_log_likelihood',
            'neg_corr', 'cross_entropy',
@@ -164,7 +165,7 @@ def kullback_leibler(model, _input, _target):
 
 
 def cross_entropy(model, _input, _target):
-    """ Compute Cross Entropy between target and output prediction.
+    """ Compute Cross Entropy between target and output diversity.
 
     Parameters
     ----------
@@ -186,7 +187,7 @@ def cross_entropy(model, _input, _target):
 
 
 def mse(model, _input, _target):
-    """ Compute MSE error between target and output prediction.
+    """ Compute MSE error between target and output diversity.
 
     Parameters
     ----------
@@ -269,7 +270,7 @@ def mee(model, _input, _target, s=None, kernel=ITLFunctions.kernel_gauss):
 
 
 def neg_log_likelihood(model, _input, _target):
-    """ Compute the negative means of errors between target and output prediction
+    """ Compute the negative means of errors between target and output diversity
 
     Parameters
     ----------
@@ -325,7 +326,7 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
     elif dist == 'ED':
         return ITLFunctions.mutual_information_ed([om], _target, s)
     else:
-        raise ValueError('the distance must be CS, ED.')
+        raise ValueError(TextTranslation().get_str('Error_10'))
 
 
 ############################################################################################################
@@ -413,13 +414,13 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED'
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
+                I2 = ITLFunctions.mutual_information_cs([om_k], om, s)
                 redundancy.append(I2)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
+                I2 = ITLFunctions.mutual_information_ed([om_k], om, s)
                 redundancy.append(I2)
             else:
-                raise ValueError('the distance must be CS, ED.')
+                raise ValueError(TextTranslation().get_str('Error_10'))
 
     if len(redundancy) > 0:
         return beta * np.sum(redundancy)
@@ -484,7 +485,7 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='ED'):
                 I3 = ITLFunctions.mutual_information_ed([om_k], om, s)
                 synergy.append(I2 - I3)
             else:
-                raise ValueError('the distance must be CS, ED.')
+                raise ValueError(TextTranslation().get_str('Error_10'))
 
     if len(synergy) > 0:
         return lamb * np.sum(synergy)
@@ -529,5 +530,5 @@ def cip_full(model, _input, _target, s=None, dist='ED'):
     elif dist == 'ED':
         return ITLFunctions.mutual_information_cs(X, y, s)
     else:
-        raise ValueError('The dist must be CS or ED.')
+        raise ValueError(TextTranslation().get_str('Error_10'))
 

@@ -199,7 +199,7 @@ class WeightedVotingCombiner(WeightAverageCombiner):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         voting = [{} for _ in range(_input.shape[0])]
         for i, model in enumerate(ensemble_model.get_models()):
@@ -295,7 +295,7 @@ class SoftWeightVotingCombiner(WeightAverageCombiner):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         output = ensemble_model.output(_input, prob=False)
         labels = ensemble_model.get_target_labels()

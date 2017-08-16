@@ -54,7 +54,7 @@ class ModelCombiner(Serializable):
             return self._param['value']
 
     def output(self, ensemble_model, _input, prob):
-        """ Mixing the output or prediction of ensemble's models.
+        """ Mixing the output or diversity of ensemble's models.
 
         Parameters
         ----------
@@ -71,12 +71,12 @@ class ModelCombiner(Serializable):
         Returns
         -------
         theano.tensor.matrix
-            Returns the mixing prediction of ensemble's models.
+            Returns the mixing diversity of ensemble's models.
         """
         raise NotImplementedError
 
     def predict(self, ensemble_model, _input):
-        """ Compute the prediction of model.
+        """ Compute the diversity of model.
 
         Parameters
         ----------
@@ -89,7 +89,7 @@ class ModelCombiner(Serializable):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         return self.output(ensemble_model, _input, prob=False).eval()
 

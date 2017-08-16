@@ -1,4 +1,5 @@
 import numpy as np
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['oracle', 'contingency_table', 'fails_dist',
            # pairwise
@@ -7,7 +8,9 @@ __all__ = ['oracle', 'contingency_table', 'fails_dist',
            # non pairwise
            'kohavi_wolpert_variance', 'interrater_agreement',
            'entropy_cc', 'entropy_sk',
-           'coincident_failure', 'difficulty', 'generalized_diversity']
+           'coincident_failure', 'difficulty', 'generalized_diversity',
+           'ambiguity'
+           ]
 
 """
 Different metrics for compute diversity
@@ -45,7 +48,7 @@ def oracle(y, c):
            A Wiley-Interscience publication, ISBN 0-471-21078-1 (cloth).
     """
     if y.shape != c.shape:
-        raise ValueError("Incorrect arrays size")
+        raise ValueError(TextTranslation().get_str('Error_9'))
     return (y == c).astype(int)
 
 
@@ -519,3 +522,10 @@ def test_non_pairwise():
     metrics = np.around(metrics, decimals=2)
     assert (metrics == [0.16, 0.03, 0.70, 0.08, 0.58, 0.64]).all()
     print(metrics)
+
+
+# Regression
+
+def ambiguity(target, list_regressors, o):
+    err =np.array([np.mean((om - o) ** 2) for om in list_regressors])
+    return np.mean(err)

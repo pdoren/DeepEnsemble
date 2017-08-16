@@ -17,6 +17,8 @@ from ..utils.update_functions import sgd
 from ..utils.utils_classifiers import get_index_label_classes, \
     translate_binary_target, translate_output, translate_target
 
+from ..utils.utils_translation import TextTranslation
+
 __all__ = ['Model']
 
 
@@ -91,9 +93,9 @@ class Model(Serializable):
         self._score_function_list = {'list': [], 'changed': True, 'result': []}
 
         if self.is_classifier():
-            self.append_score(score_accuracy, 'Accuracy')
+            self.append_score(score_accuracy, TextTranslation().get_str('Accuracy'))
         else:
-            self.append_score(score_rms, 'Root Mean Square')
+            self.append_score(score_rms, TextTranslation().get_str('RMS'))
 
         self._cost_function_list = {'list': [], 'changed': True, 'result': []}
         self._reg_function_list = []
@@ -113,7 +115,7 @@ class Model(Serializable):
         self._current_data_train = None
         self._current_data_valid = None
         self.__binary_classification = False
-        self._info_model = {'info': 'Nothing.', 'comment': None}
+        self._info_model = {'info': TextTranslation().get_str('Default_info_model'), 'comment': None}
         self._is_compiled = False
         self._is_fast_compile = False
 
@@ -527,7 +529,7 @@ class Model(Serializable):
         raise NotImplementedError
 
     def error(self, _input, _target, prob=True):
-        """ Compute the error prediction of model.
+        """ Compute the error diversity of model.
 
         Parameters
         ----------
@@ -544,7 +546,7 @@ class Model(Serializable):
         Returns
         -------
         theano.tensor.matrix or numpy.array
-            Returns error of model prediction.
+            Returns error of model diversity.
 
         """
         return self.output(_input, prob=prob) - _target
@@ -621,7 +623,7 @@ class Model(Serializable):
         raise NotImplementedError
 
     def predict(self, _input):
-        """ Compute the prediction of model.
+        """ Compute the diversity of model.
 
         Parameters
         ----------
@@ -631,7 +633,7 @@ class Model(Serializable):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         output = self.output(_input, prob=False)
 
@@ -690,7 +692,7 @@ class Model(Serializable):
 
     def fit(self, _input, _target, max_epoch=100, batch_size=32, early_stop=True, valid_size=0.1,
             no_update_best_parameters=False, improvement_threshold=0.995, minibatch=True, update_sets=True,
-            update_item='cost'):
+            criterion_update_params='cost', maximization_criterion=False):
         """ Function for training sequential model.
 
         Parameters
@@ -733,6 +735,9 @@ class Model(Serializable):
         if not self.is_compiled():
             raise AssertionError('The model need to be compiled before to be used.')
 
+        if criterion_update_params != 'cost' and criterion_update_params != 'score':
+            raise AssertionError("The update_item parameters must be only 'cost' or 'score'.")
+
         metric_model = FactoryMetrics().get_metric(self)
 
         # save data in shared variables
@@ -740,17 +745,11 @@ class Model(Serializable):
 
         # parameters early stopping
         best_params = None
-
-        update_params_cond = 0.0
-        patience_cond = 0.0
         validation_item = 0.0
-
-        if update_item == 'cost':
-            best_validation_item = np.inf
-        elif update_item == 'score':
+        if maximization_criterion:
             best_validation_item = 0
         else:
-            raise AssertionError('Update method params must be cost or score.')
+            best_validation_item = np.inf
 
         patience = max(max_epoch * n_train // 5, 5000)
         validation_jump = max(min(patience // 100, max_epoch // 50), 1)
@@ -775,14 +774,17 @@ class Model(Serializable):
                                                            shuffle=update_sets)
                 metric_model.append_data(self._current_data_valid, epoch, type_set_data="test")
 
-                if update_item == 'cost':
+                if criterion_update_params == 'cost':
                     validation_item = self.get_test_cost()
-                    update_params_cond = validation_item < best_validation_item
-                    patience_cond = validation_item <= best_validation_item * improvement_threshold
-                elif update_item == 'score':
+                elif criterion_update_params == 'score':
                     validation_item = self.get_test_score()
+
+                if maximization_criterion:
                     update_params_cond = validation_item > best_validation_item
                     patience_cond = validation_item >= best_validation_item * improvement_threshold
+                else:
+                    update_params_cond = validation_item < best_validation_item
+                    patience_cond = validation_item <= best_validation_item * improvement_threshold
 
                 if update_params_cond:
                     if patience_cond:
@@ -857,7 +859,7 @@ class Model(Serializable):
         ------
         If exist an inconsistency between output and count classes
         """
-        Logger().start_measure_time("Start Compile %s" % self._name)
+        Logger().start_measure_time(TextTranslation().get_str('Start_Compile') + " %s" % self._name)
         self._is_fast_compile = fast
 
         # review possibles mistakes
@@ -920,15 +922,18 @@ class Model(Serializable):
             if args_fun.defaults is not None:
                 params_fun = dict(zip(args_fun.args[-len(args_fun.defaults):], args_fun.defaults))
                 params_fun.update(kwargs)
-                str_info += ' params: %s\n' % params_fun
+                str_info += ' %s: %s\n' % (TextTranslation().get_str('params'), params_fun)
 
         return str_info
 
     def _get_spec_model(self):
         """ Gets specific info about this model.
         """
-        return 'Info model:\n Type model: %s\n inputs: %d\n outputs: %d\n' % \
-               (self.__type_model, self.get_fan_in(), self.get_fan_out())
+        return '%s %s:\n %s %s: %s\n %s: %d\n %s: %d\n' % \
+        (TextTranslation().get_str('Info'), TextTranslation().get_str('model'),
+         TextTranslation().get_str('Type'), TextTranslation().get_str('model'), self.__type_model,
+         TextTranslation().get_str('Inputs'), self.get_fan_in(),
+         TextTranslation().get_str('Outputs'), self.get_fan_out())
 
     # noinspection PyMethodMayBeStatic
     def _get_extra_info(self):
@@ -953,15 +958,19 @@ class Model(Serializable):
         self._info_model['info'] = ''  # Reset info model
         self._info_model['info'] += self._get_spec_model() + '\n'
 
-        self._info_model['info'] += 'Update params:\n' + self.__extract_info([self._update_functions[0]]) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Update_params') + \
+                                    ':\n' + self.__extract_info([self._update_functions[0]]) + '\n'
 
-        self._info_model['info'] += 'Cost functions:\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Cost_functions') +\
+                                    ':\n' + self.__extract_info(self._cost_function_list['list']) + '\n'
 
         if len(self._reg_function_list) > 0:
             self._info_model['info'] += \
-                'Regularization functions:\n' + self.__extract_info(self._reg_function_list) + '\n'
+                TextTranslation().get_str('Reg_functions') + \
+                ':\n' + self.__extract_info(self._reg_function_list) + '\n'
 
-        self._info_model['info'] += 'Score functions:\n' + self.__extract_info(self._score_function_list['list']) + '\n'
+        self._info_model['info'] += TextTranslation().get_str('Score_functions') + \
+                                    ':\n' + self.__extract_info(self._score_function_list['list']) + '\n'
 
     def review_shape_output(self):
         """ Review if this model its dimension output is wrong.
@@ -972,7 +981,7 @@ class Model(Serializable):
         """
         if self.is_classifier() and len(self.__target_labels) != self.get_fan_out() and \
                 not self.__binary_classification:  # no is binary classifier
-            raise ValueError("Output model is not equals to number of classes.")  # TODO: review translation
+            raise ValueError(TextTranslation().get_str('Error_1'))  # TODO: review translation
 
     def review_is_binary_classifier(self):
         """ Review this model is binary classifier
@@ -1320,7 +1329,7 @@ class Model(Serializable):
             Cost function.
 
         error : theano.tensor.TensorVariable
-            Error prediction (computed between output model and target).
+            Error diversity (computed between output model and target).
 
         Returns
         -------
@@ -1328,7 +1337,7 @@ class Model(Serializable):
             A dictionary mapping each parameter to its update expression.
         """
         if cost is None or type(cost) == int or type(cost) == float:
-            raise ValueError('The cost function is not defined')
+            raise ValueError(TextTranslation().get_str('Error_2'))
 
         updates = OrderedDict()
         for i, f in enumerate(self._update_functions):
@@ -1340,7 +1349,7 @@ class Model(Serializable):
         return updates
 
     def score(self, _input, _target):
-        """ Gets score prediction.
+        """ Gets score diversity.
 
         Parameters
         ----------
@@ -1353,7 +1362,7 @@ class Model(Serializable):
         Returns
         -------
         float
-            Returns score prediction.
+            Returns score diversity.
         """
         if self.is_classifier():
             return accuracy_score(np.squeeze(_target), np.squeeze(self.predict(_input)))

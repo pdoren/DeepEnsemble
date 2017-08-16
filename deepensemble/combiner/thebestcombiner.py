@@ -145,7 +145,7 @@ class TheBestVotingCombiner(TheBestCombiner):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         index = self.get_param(only_values=True).get_value()
         for i, model in enumerate(ensemble_model.get_models()):

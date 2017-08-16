@@ -9,6 +9,7 @@ from .basemetrics import BaseMetrics, EnsembleMetrics
 from .diversitymetrics import correlation_coefficient, kappa_statistic, q_statistic,\
     double_fault_measure, disagreement_measure, generalized_diversity
 from ..utils import Logger
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['ClassifierMetrics', 'EnsembleClassifierMetrics']
 
@@ -26,13 +27,16 @@ class ClassifierMetrics(BaseMetrics):
         super(ClassifierMetrics, self).__init__(model=model)
 
     # noinspection PyTypeChecker
-    def classification_report(self, name_report="Classification Report"):
+    def classification_report(self, name_report=None):
         """ Generate a classification report (wrapper classification_report scikit)
 
         Returns
         -------
         None
         """
+        if name_report is None:
+            name_report = TextTranslation().get_str("Classification_Report")
+
         precision = None
         recall = None
         f1_score = None
@@ -145,7 +149,7 @@ class ClassifierMetrics(BaseMetrics):
         """
 
         if cm.shape[0] != cm.shape[1]:
-            raise ValueError('The matrix must be square.')
+            raise ValueError(TextTranslation().get_str('Error_8'))
 
         ax.set_aspect(1)
         res = ax.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -164,7 +168,7 @@ class ClassifierMetrics(BaseMetrics):
         plt.grid()
         plt.colorbar(res)
 
-    def plot_confusion_matrix_prediction(self, y_true, y_pred, title='Confusion matrix', cmap=plt.cm.Blues):
+    def plot_confusion_matrix_prediction(self, y_true, y_pred, title=None, cmap=plt.cm.Blues):
         """ Generate Confusion Matrix plot.
 
         .. note:: Show Confusion Matrix plot.
@@ -183,6 +187,8 @@ class ClassifierMetrics(BaseMetrics):
         cmap : plt.cm
             Plot Color.
         """
+        if title is None:
+            title = TextTranslation().get_str('Confusion_matrix')
         f, ax = plt.subplots()
 
         cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=self._model.get_target_labels())
@@ -339,7 +345,7 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
             data += [metric(target, list_classifiers[:, i, :])]
         return np.mean(data), np.std(data)
 
-    def plot_diversity(self, input_test, target_test, prefix='diversity'):
+    def plot_diversity(self, input_test, target_test, prefix=None):
         """ Generate a plot for different diversity metrics.
 
         Parameters
@@ -358,6 +364,8 @@ class EnsembleClassifierMetrics(ClassifierMetrics, EnsembleMetrics):
         list
             Returns a list of tuple where each tuple has the figure and a label that identify the figure.
         """
+        if prefix is None:
+            prefix = TextTranslation().get_str('diversity')
         metrics = {'Correlation Coefficient': correlation_coefficient,
                    'Kappa statistic': kappa_statistic,
                    'Q statistic': q_statistic,

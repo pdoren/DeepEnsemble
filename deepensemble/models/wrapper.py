@@ -7,6 +7,7 @@ from ..utils.cost_functions import dummy_cost
 from ..utils.logger import Logger
 from ..utils.score_functions import dummy_score
 from ..utils.update_functions import dummy_update
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['Wrapper']
 
@@ -38,11 +39,11 @@ class Wrapper(Model):
 
         # Reset score default
         self._score_function_list = {'list': [], 'changed': True, 'result': []}
-        self.append_score(dummy_score, 'Accuracy')
+        self.append_score(dummy_score, TextTranslation().get_str('Accuracy'))
 
         # Default cost
-        self.append_cost(dummy_cost, 'Cost')
-        self._labels_result_train = ['Error', 'Cost'] + self.get_labels_costs() + self.get_labels_scores()
+        self.append_cost(dummy_cost, TextTranslation().get_str('Cost'))
+        self._labels_result_train = [TextTranslation().get_str('Error'), TextTranslation().get_str('Cost')] + self.get_labels_costs() + self.get_labels_scores()
 
         # Default update function
         self.set_update(dummy_update, name='dummy update')
@@ -109,7 +110,7 @@ class Wrapper(Model):
         return None
 
     def predict(self, _input):
-        """ Compute the prediction of model.
+        """ Compute the diversity of model.
 
         Parameters
         ----------
@@ -119,7 +120,7 @@ class Wrapper(Model):
         Returns
         -------
         numpy.array
-            Return the prediction of model.
+            Return the diversity of model.
         """
         if self.__clf is None:
             return self.__model.predict(_input)
@@ -134,7 +135,7 @@ class Wrapper(Model):
     def compile(self, fast=True, **kwargs):
         """ Update intern parameters.
         """
-        Logger().start_measure_time("Start Compile %s" % self._name)
+        Logger().start_measure_time(TextTranslation().get_str('Start_Compile') + " %s" % self._name)
 
         # review possibles mistakes
         self.review_is_binary_classifier()

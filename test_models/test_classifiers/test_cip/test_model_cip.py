@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Qt4Agg')  # debug
+# matplotlib.use('Qt4Agg')  # debug
 
 import numpy as np
 from sklearn import model_selection

@@ -12,11 +12,13 @@ from scipy.interpolate import griddata as griddata2
 from ..metrics import FactoryMetrics
 from ..models import Model, EnsembleModel
 from ..utils import Logger, Serializable, score_ensemble_ambiguity
+from ..utils.utils_translation import TextTranslation
+from ..utils.utils_plot import ConfigPlot
 
 __all__ = ['cross_validation_score', 'test_model', 'load_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
-           'plot_pdf', 'make_dirs', 'get_scores']
+           'plot_pdf', 'make_dirs', 'get_scores', 'get_best_score', 'get_mean_score', 'get_min_score']
 
 
 def make_dirs(_dir):
@@ -52,7 +54,7 @@ def test_model(cls, input_train, target_train, input_test, target_test, folds=25
         if score_test > best_score:
             best_params = cls.save_params()
             best_score = score_test
-        elif score_test == best_params:
+        elif score_test == best_score:
             score_curr = metrics.get_score_prediction(target_train, cls.predict(input_train))
             params_curr = cls.save_params()
             cls.load_params(best_params)
@@ -94,8 +96,9 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
                 (metrics.plot_confusion_matrix_prediction(target_train, cls.predict(input_train)),
                  'confusion_matrix_best_train'),
                 (metrics.plot_confusion_matrix_prediction(target_test, cls.predict(input_test)),
-                 'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), 'Cost'),
-                (metrics.plot_costs(max_epoch), 'Costs'), (metrics.plot_scores(max_epoch), 'Scores')]
+                 'confusion_matrix_best_test'), (metrics.plot_cost(max_epoch), TextTranslation().get_str('Cost')),
+                (metrics.plot_costs(max_epoch), TextTranslation().get_str('Costs')),
+                (metrics.plot_scores(max_epoch), TextTranslation().get_str('Scores'))]
 
         if isinstance(cls, EnsembleModel):
             for key in metrics.get_models_metric():
@@ -161,7 +164,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
         if not os.path.exists(file_model):
             # Extra Scores
             if isinstance(_model, EnsembleModel):
-                _model.append_score(score_ensemble_ambiguity, 'Ambigüedad')
+                _model.append_score(score_ensemble_ambiguity, TextTranslation().get_str('Ambiguity'))
             # Compile
             if _compile:
                 _model.compile(fast=False)
@@ -169,7 +172,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
             _model.save(file_model)
         else:
             # Load model
-            Logger().log('Load Model: %s' % file_model)
+            Logger().log(TextTranslation().get_str('Load_Model') + ': %s' % file_model)
             _model.load(file_model)
 
         models_data.append((_model, _dir))
@@ -189,7 +192,7 @@ def cross_validation_score(models, data_input, data_target, _compile=True, test_
             sets_data.save(file_sets_fold)
         else:
             # Load sets
-            Logger().log('Load sets: %s' % file_sets_fold)
+            Logger().log(TextTranslation().get_str('Load_Sets') + ': %s' % file_sets_fold)
             sets_data = Serializable()
             sets_data.load(file_sets_fold)
             input_train, input_test, target_train, target_test = sets_data.get_data()
@@ -249,16 +252,16 @@ def plot_hist_train_test(train_means, test_means, ylabel, title, labels):
     title
     labels
     """
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
 
     ind = np.arange(len(labels))
     width = 0.25
 
     # the bars
-    rects_1 = ax.bar(ind, train_means, width,
+    rects_1 = plt.bar(ind, train_means, width,
                      color='blue', alpha=0.5)
 
-    rects_2 = ax.bar(ind + width, test_means, width,
+    rects_2 = plt.bar(ind + width, test_means, width,
                      color='red', alpha=0.5)
 
     # axes and labels
@@ -272,7 +275,7 @@ def plot_hist_train_test(train_means, test_means, ylabel, title, labels):
     plt.setp(xTickNames, rotation=45, fontsize=10)
 
     # add a legend
-    ax.legend((rects_1[0], rects_2[0]), ('Train', 'Test'))
+    plt.legend((rects_1[0], rects_2[0]), ('Train', 'Test'))
 
     def auto_label(rects):
         """ Generate labels.
@@ -284,7 +287,7 @@ def plot_hist_train_test(train_means, test_means, ylabel, title, labels):
         # attach some text labels
         for rect in rects:
             height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width() / 2., 1.05 * height,
+            plt.text(rect.get_x() + rect.get_width() / 2., 1.05 * height,
                     '%.2f' % (height * 100),
                     ha='center', va='bottom')
 
@@ -308,7 +311,7 @@ def plot_hist_train_test2(train_means, train_std, test_means, test_std, ylabel, 
     title
     labels
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
     ax = fig.add_subplot(111)
 
     ind = np.arange(len(train_means))
@@ -336,7 +339,8 @@ def plot_hist_train_test2(train_means, train_std, test_means, test_std, ylabel, 
     plt.setp(xTickNames, rotation=45, fontsize=10)
 
     # add a legend
-    ax.legend((rects_1[0], rects_2[0]), ('Train', 'Test'))
+    ax.legend((rects_1[0], rects_2[0]), (TextTranslation().get_str('Train'),
+                                         TextTranslation().get_str('Test')))
     plt.tight_layout()
 
 
@@ -398,6 +402,19 @@ def plot_pdf(ax, x, label, x_min=-1, x_max=1, n_points=1000):
     ax.plot(x_plot, y / np.sum(y), label=label)
 
 
+def get_min_score(_scores, _s, train=False):
+    best_scores = []
+    beta = []
+    lamb = []
+    i = 0 if train else 1
+    for key, value in _scores.items():
+        if abs(key[2] - _s) < 0.0001:
+            best_scores.append(np.min(value, axis=0)[i])
+            beta.append(key[0])
+            lamb.append(key[1])
+    return beta, lamb, best_scores
+
+
 def get_best_score(_scores, _s, train=False):
     best_scores = []
     beta = []
@@ -425,18 +442,17 @@ def get_mean_score(_scores, _s, train=False):
     return beta, lamb, best_scores
 
 
-def get_mean_diversity(_predictions, _s, train=False):
-    best_scores = []
+def get_mean_diversity(_diversity, _s):
+    best_diversity = []
     beta = []
     lamb = []
-    i = 0 if train else 1
-    for key, value in _predictions.items():
+    for key, value in _diversity.items():
         if abs(key[2] - _s) < 0.0001:
-            d = np.mean(value, axis=0)
-            best_scores.append(d[i])
+            d = value[0][0]
+            best_diversity.append(d)
             beta.append(key[0])
             lamb.append(key[1])
-    return beta, lamb, best_scores
+    return beta, lamb, best_diversity
 
 
 def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
@@ -471,7 +487,7 @@ def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
 
     xx, yy = np.meshgrid(x, y)
     # noinspection PyTypeChecker,PyTypeChecker
-    zz = griddata2((X, Y), Z, (xx, yy), method='cubic')
+    zz = griddata2((X, Y), Z, (xx, yy), method='cubic', rescale=True)
 
     p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())
     ax.title.set_text(s_title)

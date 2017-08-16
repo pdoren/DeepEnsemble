@@ -73,9 +73,9 @@ def get_index_label_classes(_output, is_binary_classification=False):
         Returns index of labels from output model.
     """
     if is_binary_classification:
-        return T.ge(_output, 0.0).eval()
+        return np.array(T.ge(_output, 0.0).eval(), dtype=int)
     else:
-        return T.argmax(_output, axis=-1).eval()
+        return np.array(T.argmax(_output, axis=-1).eval(), dtype=int)
 
 
 def translate_output(_output, n_classes, is_binary_classification=False):

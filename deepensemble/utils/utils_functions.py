@@ -1,6 +1,7 @@
 import theano.tensor as T
-from theano import shared
+from theano import shared, config
 import numpy as np
+from ..utils.utils_translation import TextTranslation
 
 __all__ = ['ActivationFunctions', 'ITLFunctions', 'DiversityFunctions']
 
@@ -392,7 +393,7 @@ class ITLFunctions:
         """
         dx = T.tile(x, (x.shape[0], 1, 1))
         dy = T.tile(y, (y.shape[0], 1, 1))
-        dt = dx * dy
+        dt = T.transpose(dx, axes=(1, 0, 2)) * dy
         return dt
 
     # noinspection PyUnresolvedReferences
@@ -518,25 +519,22 @@ class ITLFunctions:
 
         DX = ITLFunctions.get_diff(Xy)
 
-        DY = [T.squeeze(T.sum(ITLFunctions.get_prod(x, y), axis=-1))  for x in Xy]
+        py = T.squeeze(ITLFunctions.get_prod(y, y))
 
-        DXK = [kernel(dx, np.sqrt(2.0) * s) * (1. - dy) for dx, dy in zip(DX, DY)]
+        DYK0 = [kernel(dx, np.sqrt(2.0) * s) for dx in DX]
+        DYK1 = [kernel(py * dx, np.sqrt(2.0) * s) for dx in DX]
+        DYK2 = [kernel((1. - py) * dx, np.sqrt(2.0) * s) for dx in DX]
 
-        V_k_i = [T.mean(dxk, axis=-1) for dxk in DXK]
+        V_J = T.mean(np.prod(DYK1))
 
-        V_nc = T.mean(np.prod(V_k_i))
+        V_k_i1 = [T.mean(dyk, axis=-1) for dyk in DYK0]
+        V_k_i2 = [T.mean(dyk, axis=-1) for dyk in DYK2]
 
-        DX = ITLFunctions.get_diff(Xy)
-
-        DYK = [kernel(dx, np.sqrt(2.0) * s) for dx in DX]
-
-        V_J = T.mean(np.prod(DYK))
-
-        V_k_i = [T.mean(dyk, axis=-1) for dyk in DYK]
-
-        V_k = [T.mean(V_i) for V_i in V_k_i]
+        V_k = [T.mean(V_i) for V_i in V_k_i1]
 
         V_M = np.prod(V_k)
+
+        V_nc = T.mean(np.prod(V_k_i1))
 
         return V_nc, V_J, V_M
 
@@ -603,13 +601,13 @@ class ITLFunctions:
         elif dist == 'ED':
             return V_J - 2 * V_nc + V_M
         else:
-            raise ValueError('The dist must be CS or ED')
+            raise ValueError(TextTranslation().get_str('Error_10'))
 
     @staticmethod
-    def mutual_information_cs(X, y, s):
+    def mutual_information_cs(X, y, s, eps=1e-6):
         V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
-        return T.log(V_J) - 2 * T.log(V_nc) + T.log(V_M)
+        return T.log(V_J + eps) - 2 * T.log(V_nc + eps) + T.log(V_M + eps)
 
     @staticmethod
     def mutual_information_ed(X, y, s):

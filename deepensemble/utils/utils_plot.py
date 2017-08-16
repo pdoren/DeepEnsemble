@@ -1,11 +1,63 @@
 import math
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 
 from sklearn.metrics import accuracy_score
 from .serializable import Serializable
+from ..utils.utils_translation import TextTranslation
 
-__all__ = ['DataPlot', 'add_data', 'add_point', 'plot', 'plot_data', 'plot_list_data', 'plot_data_training_ensemble']
+from .singleton import Singleton
+
+__all__ = ['ConfigPlot', 'DataPlot', 'add_data', 'add_point', 'plot', 'plot_data', 'plot_list_data', 'plot_data_training_ensemble']
+
+class ConfigPlot(Singleton):
+
+    def __init__(self):
+        self._fig_size = (7, 5)
+        self._dpi = 80
+        self._style = 'fivethirtyeight'
+        self._hold = True
+        self.loc = 'best'
+        self.size_font = 10
+
+        matplotlib.rcParams.update({'font.size': self.size_font})
+        plt.style.use(self._style)
+
+    def set_fig_size(self, fig_size):
+        self._fig_size = fig_size
+
+    def set_dpi(self, dpi):
+        self._dpi = dpi
+
+    def set_style(self, style):
+        self._style = style
+        plt.style.use(self._style)
+
+    def set_hold(self, hold):
+        self._hold = hold
+
+    def set_loc(self, loc):
+        self._loc = loc
+
+    def set_size_font(self, size):
+        self.size_font = size
+        matplotlib.rcParams.update({'font.size': size})
+
+    def get_fig_size(self):
+        return self._fig_size
+
+    def get_dpi(self):
+        return self._dpi
+
+    def get_style(self):
+        return self._style
+
+    def get_hold(self):
+        return self._hold
+
+    def get_loc(self):
+        return self.loc
 
 
 class DataPlot(Serializable):
@@ -175,7 +227,7 @@ def add_data(labels, model_name, data_dict, n_data, index, data, epoch):
     return index
 
 
-def plot_data(ax, list_data_plots, x_max, x_min=0.0, title='Cost', log_xscale=False, log_yscale=False):
+def plot_data(ax, list_data_plots, x_max, x_min=0.0, title=None, log_xscale=False, log_yscale=False):
     """ Plot list data plots.
 
     Parameters
@@ -201,25 +253,25 @@ def plot_data(ax, list_data_plots, x_max, x_min=0.0, title='Cost', log_xscale=Fa
     log_yscale
         Flag for scaling y-axis plot.
     """
-    plt.hold(True)
+    if title is None:
+        title = TextTranslation().get_str('Cost')
 
-    for data_plot, prefix in list_data_plots:
-        plot(ax, data_plot, prefix)
-
-    # plt.hold(False)
+    linestyles = ['-', '--', '-.', ':']
+    for i, (data_plot, prefix) in enumerate(list_data_plots):
+        plot(ax, data_plot, prefix, linestyle=linestyles[(i + 4) % 4])
 
     ax.set_title(title)
     if log_xscale:
         ax.set_xscale('log')
     if log_yscale:
         ax.set_yscale('log')
-    ax.legend(loc='best')
+    ax.legend(loc=ConfigPlot().get_loc())
     ax.set_xlim([x_min, x_max])
-    plt.xlabel('epoch')
+    plt.xlabel(TextTranslation().get_str('epoch'))
     plt.tight_layout()
 
 
-def plot_list_data(list_data, x_max, title='Cost', log_xscale=False, log_yscale=False):
+def plot_list_data(list_data, x_max, title=None, log_xscale=False, log_yscale=False):
     """ Generate plot of list data.
 
     Parameters
@@ -241,17 +293,27 @@ def plot_list_data(list_data, x_max, title='Cost', log_xscale=False, log_yscale=
     log_yscale : bool
         Flag for show plot y-axis in logarithmic scale.
     """
+    if title is None:
+        title = TextTranslation().get_str('Cost')
+
     N = len(list_data)
 
     if N > 0:
-        f, _ = plt.subplots()
+        f = None
+        if ConfigPlot().get_hold():
+            f = plt.figure(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
 
         cols = max(N // 2, 1)
         rows = max(N // cols, 1)
         for j, (data, _type) in enumerate(list_data):
-            ax = plt.subplot(rows, cols, j + 1)
+            if (rows * cols == 1) or not ConfigPlot().get_hold():
+                plt.figure(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
+                ax = plt.gca()
+            else:
+                ax = plt.subplot(rows, cols, j + 1)
+            str_title = '%s: %s' % (title, _type) if title != '' else _type
             plot_data(ax, data, x_max=x_max,
-                      title='%s: %s' % (title, _type),
+                      title=str_title,
                       log_xscale=log_xscale,
                       log_yscale=log_yscale)
 
@@ -287,7 +349,7 @@ def add_point(list_points, x, y, _type, name):
     list_points[0].add_point(x, y)
 
 
-def plot(ax, dps, label_prefix='', label=None):
+def plot(ax, dps, label_prefix='', label=None, linestyle='-'):
     """ Generate plot.
 
     Parameters
@@ -303,6 +365,9 @@ def plot(ax, dps, label_prefix='', label=None):
 
     label : str
         This string is the principal text in title plot.
+
+    linestyle: str
+        Style of plot line.
     """
     # Get average plots
     if len(dps) > 0:
@@ -312,10 +377,12 @@ def plot(ax, dps, label_prefix='', label=None):
         y = np.squeeze(y)
         if y.ndim <= 1:
             y = y[:, np.newaxis]
+        elif y.ndim > 2:
+            y = np.mean(y, axis=-1)
         _x = x[:, 0]
         _y = np.nanmean(y, axis=-1)
         _y_std = np.nanstd(y, axis=-1)
-        p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3)
+        p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3, linestyle=linestyle)
 
         yn = _y - _y_std
         yp = _y + _y_std
@@ -384,30 +451,30 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
 
     from deepensemble.utils import plot_pdf
 
-    plt.style.use('ggplot')
-    f = plt.figure()
+    plt.style.use(ConfigPlot().get_style())
+
+    f = plt.figure(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
 
     e_train = ensemble.error(input_train, ensemble.translate_target(target_train)).eval()
     e_test = ensemble.error(input_test, ensemble.translate_target(target_test)).eval()
 
     ax = plt.subplot(2, 1, 1)
     for i in range(ensemble.get_fan_out()):
-        plot_pdf(ax, e_test[:, i], label='Test output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+        plot_pdf(ax, e_test[:, i], label=TextTranslation().get_str('output') + ' %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
     plt.legend()
 
     ax = plt.subplot(2, 1, 2)
     for i in range(ensemble.get_fan_out()):
-        plot_pdf(ax, e_train[:, i], label='Train output %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
+        plot_pdf(ax, e_train[:, i], label=TextTranslation().get_str('output') + ' %d' % (i + 1), x_min=-3, x_max=3, n_points=1000)
     plt.legend()
 
     # noinspection PyRedeclaration
-    f = plt.figure()
+    f = plt.figure(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
     msg_train = ''
     msg_test = ''
     row = math.ceil(ensemble.get_num_models() / 2.0)
     col = 2
     for i, model in enumerate(ensemble.get_models()):
-        e_train = model.error(input_train, model.translate_target(target_train)).eval()
         e_test = model.error(input_test, model.translate_target(target_test)).eval()
 
         ax = plt.subplot(row, col, i + 1)
@@ -419,22 +486,29 @@ def plot_data_training_ensemble(ensemble, max_epoch, input_train, input_test, ta
         pred_test = model.predict(input_test)
         pred_train = model.predict(input_train)
 
-        msg_test += 'Accuracy model %s test: %.4g\n' % \
-                    (model.get_name(), accuracy_score(pred_test, target_test))
-        msg_train += 'Accuracy model %s train: %.4g\n' % \
-                     (model.get_name(), accuracy_score(pred_train, target_train))
+        msg_test += '%s %s test: %.4g\n' % \
+                    (TextTranslation().get_str('Accuracy_model'),
+                     model.get_name(), accuracy_score(pred_test, target_test))
+        msg_train += '%s %s train: %.4g\n' % \
+                     (TextTranslation().get_str('Accuracy_model'),
+                      model.get_name(), accuracy_score(pred_train, target_train))
 
     print(msg_test)
-    print('Accuracy Ensemble test: %.4g' % (accuracy_score(ensemble.predict(input_test), target_test)))
+    print('%s test: %.4g' % (TextTranslation().get_str('Accuracy_ensemble'),
+                                            accuracy_score(ensemble.predict(input_test), target_test)))
     print('--' * 10)
     print(msg_train)
-    print('Accuracy Ensemble train: %.4g' % (accuracy_score(ensemble.predict(input_train), target_train)))
+    print('%s train: %.4g' % (TextTranslation().get_str('Accuracy_ensemble'),
+                                             accuracy_score(ensemble.predict(input_train), target_train)))
 
     plt.tight_layout()
 
-    metrics.plot_cost(max_epoch=max_epoch, title='Costo CIP')
-    metrics.plot_costs(max_epoch=max_epoch, title='Costo CIP')
-    metrics.plot_scores(max_epoch=max_epoch, title='Desempeño CIP')
+    metrics.plot_cost(max_epoch=max_epoch, title=TextTranslation().get_str('Cost_CIP'))
+    metrics.plot_costs(max_epoch=max_epoch, title=TextTranslation().get_str('Costs_CIP'))
+    metrics.plot_scores(max_epoch=max_epoch, title=TextTranslation().get_str('Accuracy_CIP'))
+
+    metrics.append_prediction(input_test, target_test, append_last_pred=True)
+    metrics.plot_confusion_matrix()
 
     plt.show()
 

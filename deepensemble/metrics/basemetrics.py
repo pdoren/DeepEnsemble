@@ -4,6 +4,8 @@ import matplotlib.pylab as plt
 from collections import OrderedDict
 from ..utils.serializable import Serializable
 from ..utils.utils_plot import add_point, add_data, plot_data, plot_list_data
+from ..utils.utils_translation import TextTranslation
+from ..utils.utils_plot import ConfigPlot
 
 __all__ = ['BaseMetrics', 'EnsembleMetrics', 'FactoryMetrics']
 
@@ -62,7 +64,7 @@ class BaseMetrics(Serializable):
         List of array with target samples.
 
     _y_pred : list[numpy.array]
-        List of array with output or prediction of model.
+        List of array with output or diversity of model.
 
     Parameters
     ----------
@@ -163,7 +165,7 @@ class BaseMetrics(Serializable):
             Returns index of last item saved from data list.
         """
         if type_set_data != "train" and type_set_data != "test":
-            raise ValueError("The type set data must be 'train' or 'test'.")
+            raise ValueError(TextTranslation().get_str('Error_7'))
 
         labels = self._model.get_result_labels()
 
@@ -206,7 +208,7 @@ class BaseMetrics(Serializable):
         data_test = self.get_cost('test')
 
         if len(data_train) > 0:
-            f, ax = plt.subplots()
+            f, ax = plt.subplots(figsize=ConfigPlot().get_fig_size(), dpi=ConfigPlot().get_dpi())
 
             data = [(data_train, 'Train'), (data_test, 'Test')]
 
@@ -235,6 +237,8 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Cost':
+            title = TextTranslation().get_str('Cost')
         list_data = []
         for key in self.get_costs('train'):
             data_train = self.get_costs('train')[key]
@@ -261,6 +265,8 @@ class BaseMetrics(Serializable):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Score':
+            title = TextTranslation().get_str('Score')
         list_data = []
         for key in self.get_scores('train'):
             data_train = self.get_scores('train')[key]
@@ -293,7 +299,7 @@ class BaseMetrics(Serializable):
                     self._scores[type_set_data][key] = metric.get_scores(type_set_data)[key]
 
     def append_prediction(self, _input, _target, append_last_pred=False):
-        """ Add a sample of prediction and target for generating metrics.
+        """ Add a sample of diversity and target for generating metrics.
 
         Parameters
         ----------
@@ -304,7 +310,7 @@ class BaseMetrics(Serializable):
             Target sample.
 
         append_last_pred : bool
-            This flag indicates that the current prediction is append in the last saved prediction.
+            This flag indicates that the current diversity is append in the last saved diversity.
 
         Returns
         -------
@@ -324,7 +330,7 @@ class BaseMetrics(Serializable):
         return self.get_score_prediction(_target, _output)
 
     def get_score_prediction(self, _target, _prediction):
-        """ Get score the prediction.
+        """ Get score the diversity.
 
         Parameters
         ----------
@@ -337,7 +343,7 @@ class BaseMetrics(Serializable):
         Returns
         -------
         float
-            Returns prediction od model, in case of classifier model return accuracy and in case of regressor model
+            Returns diversity od model, in case of classifier model return accuracy and in case of regressor model
             return mean square error.
         """
         if self._model.is_classifier():
@@ -358,7 +364,7 @@ class EnsembleMetrics(BaseMetrics):
         Array for saving target of sample.
 
     _y_pred_per_model : dict[numpy.array]
-        Dictionary for saving prediction of ensemble models.
+        Dictionary for saving diversity of ensemble models.
 
     Parameters
     ----------
@@ -428,7 +434,7 @@ class EnsembleMetrics(BaseMetrics):
         return n
 
     def append_prediction(self, _input, _target, append_last_pred=False):
-        """ Append prediction (using for generate reports).
+        """ Append diversity (using for generate reports).
 
         Parameters
         ----------
@@ -439,18 +445,18 @@ class EnsembleMetrics(BaseMetrics):
             Target sample.
 
         append_last_pred : bool
-            This flag indicates that the current prediction is append in the last saved prediction.
+            This flag indicates that the current diversity is append in the last saved diversity.
 
         Returns
         -------
         float
-            Returns the score prediction.
+            Returns the score diversity.
         """
         self.append_prediction_per_model(_input, _target, append_last_pred)
         return super(EnsembleMetrics, self).append_prediction(_input, _target, append_last_pred)
 
     def append_prediction_per_model(self, _input, _target, append_last_pred=False):
-        """ Append prediction for each model in ensemble.
+        """ Append diversity for each model in ensemble.
 
         Parameters
         ----------
@@ -461,7 +467,7 @@ class EnsembleMetrics(BaseMetrics):
             Target sample.
 
         append_last_pred : bool
-            This flag indicates that the current prediction is append in the last saved prediction.
+            This flag indicates that the current diversity is append in the last saved diversity.
 
         Returns
         -------
@@ -530,6 +536,9 @@ class EnsembleMetrics(BaseMetrics):
         log_yscale : bool
             Flag for show plot y-axis in logarithmic scale.
         """
+        if title == 'Cost':
+            title = TextTranslation().get_str('Cost')
+
         if name is None:
             name = self._model.get_name()
 

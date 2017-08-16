@@ -10,6 +10,7 @@ __all__ = [
     'score_rms',
     'score_silverman',
     'mutual_information_cs',
+    'mutual_information_ed',
     'mutual_information_parzen'
 ]
 
@@ -160,7 +161,7 @@ def score_rms(_input, _output, _target, model):
 
 # noinspection PyUnusedLocal
 def mutual_information_cs(_input, _output, _target, model):
-    """ Mutual Information Cauchy-Schwarz
+    """ Quadratic Mutual Information Cauchy-Schwarz
 
     Parameters
     ----------
@@ -179,11 +180,39 @@ def mutual_information_cs(_input, _output, _target, model):
     Returns
     -------
     theano.tensor.matrix
-        Returns Mutual Information Cauchy-Schwarz.
+        Returns Quadratic Mutual Information Cauchy-Schwarz.
     """
     s = ITLFunctions.silverman(_target)
 
-    return -T.log(ITLFunctions.cross_information_potential([_output], _target, s, dist='CS'))
+    return ITLFunctions.mutual_information_cs([_output], _target, s)
+
+
+# noinspection PyUnusedLocal
+def mutual_information_ed(_input, _output, _target, model):
+    """ Quadratic Mutual Information Euclidean.
+
+    Parameters
+    ----------
+    _input : theano.tensor.matrix
+        Input sample.
+
+    _output : theano.tensor.matrix
+        Output sample.
+
+    _target : theano.tensor.matrix
+        Target sample.
+
+    model : Model
+        Model.
+
+    Returns
+    -------
+    theano.tensor.matrix
+        Returns Quadratic Mutual Information Euclidean.
+    """
+    s = ITLFunctions.silverman(_target)
+
+    return ITLFunctions.mutual_information_ed([_output], _target, s)
 
 
 # noinspection PyUnusedLocal
