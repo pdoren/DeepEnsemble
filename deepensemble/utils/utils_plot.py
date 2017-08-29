@@ -255,6 +255,8 @@ def plot_data(ax, list_data_plots, x_max, x_min=0.0, title=None, log_xscale=Fals
     """
     if title is None:
         title = TextTranslation().get_str('Cost')
+    else:
+        plt.ylabel(title)
 
     linestyles = ['-', '--', '-.', ':']
     for i, (data_plot, prefix) in enumerate(list_data_plots):

@@ -18,7 +18,7 @@ class TextTranslation(Singleton):
         import os
         dir = os.path.dirname(os.path.abspath(__file__))
 
-        with open(dir + "/languages/dict_language_%s.txt" % self.current_language) as f:
+        with open(dir + "/languages/dict_language_%s.txt" % self.current_language, encoding="utf-8") as f:
             for line in f:
                 (key, val) = line.split(':', 1)
                 self.dict_trans[key.strip()] = val.strip()

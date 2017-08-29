@@ -52,7 +52,7 @@ s = ITLFunctions.silverman(shared(np.array(y))).eval()
 #############################################################################################################
 
 # ==========< Ensemble  CIP   >===============================================================================
-ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
+ensembleCIP = get_ensembleCIP_model(name='Ensamble CIPL',
                                     n_input=n_features, n_output=n_output,
                                     n_ensemble_models=n_ensemble_models, n_neurons_models=n_neurons_model,
                                     classification=True,
@@ -61,17 +61,19 @@ ensembleCIP = get_ensembleCIP_model(name='Ensamble CIP',
                                     fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                     dist='CS',
                                     beta=0.3, lamb=0.3, s=s,
-                                    lsp=1., lsm=0.1,
-                                    bias_layer=False, mse_first_epoch=False, annealing_enable=True,
-                                    update=sgd, name_update='SGD',
-                                    params_update={'learning_rate': -0.1}
+                                    lsp=1.5, lsm=0.5,
+                                    bias_layer=False, mse_first_epoch=True, annealing_enable=True,
+                                    update=sgd, name_update='SGD', type='jenssen',
+                                    params_update={'learning_rate': -0.5}
                                     )
 
 ensembleCIP.compile(fast=False)
 
 max_epoch = 500
+
 args_train = {'max_epoch': max_epoch, 'batch_size': 32, 'early_stop': False,
-              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True, 'update_item': 'score'}
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+              'criterion_update_params': 'cost', 'maximization_criterion': True}
 
 metrics = ensembleCIP.fit(input_train, target_train, **args_train)
 

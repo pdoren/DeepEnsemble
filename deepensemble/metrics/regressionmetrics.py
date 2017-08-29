@@ -49,13 +49,13 @@ class EnsembleRegressionMetrics(RegressionMetrics, EnsembleMetrics):
         return data
 
     def get_diversity(self, metric=ambiguity):
-        list_classifiers = []
+        list_regressors = []
         for _model in self._model.get_models():
-            list_classifiers.append(self._y_pred_per_model[_model.get_name()])
+            list_regressors.append(self._y_pred_per_model[_model.get_name()])
 
         return self.statistic_metric_non_pairwise(metric,
                                                   self._y_true_per_model,
-                                                  np.array(list_classifiers),
+                                                  np.array(list_regressors),
                                                   self._y_pred)
 
     @staticmethod

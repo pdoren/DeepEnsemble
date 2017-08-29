@@ -36,7 +36,7 @@ if not os.path.exists(file_scores):
                               n_ensemble_models=5,
                               lamb_ncl=0.8,
                               is_cip_full=False, bias_layer=False, mse_first_epoch=True,
-                              beta_cip=0, lamb_cip=0.3, s=s, dist='ED-CIP',
+                              beta_cip=0.3, lamb_cip=0.3, s=s, dist='CS',
                               fn_activation1=ActivationFunctions.sigmoid,
                               fn_activation2=ActivationFunctions.sigmoid,
                               folds=10, lr=0.1, max_epoch=300, batch_size=40)

@@ -331,6 +331,14 @@ class ITLFunctions:
         return T.squeeze(T.cast(T.exp(-normx.sum(axis=-1) / divisor) * z, T.config.floatX))
 
     @staticmethod
+    def kernel_laplace_diff(diff_x, s):
+        divisor = T.cast(2.0 * T.sqr(s), T.config.floatX)
+
+        z = 1. / (T.power(sqrt2pi, diff_x.shape[-1]) * s)
+
+        return T.squeeze(T.cast(T.exp(-diff_x.sum(axis=-1) / divisor) * z, T.config.floatX))
+
+    @staticmethod
     def silverman(x):
         """ Silverman
 
@@ -534,7 +542,7 @@ class ITLFunctions:
 
         V_M = np.prod(V_k)
 
-        V_nc = T.mean(np.prod(V_k_i1))
+        V_nc = T.mean(np.prod(V_k_i2))
 
         return V_nc, V_J, V_M
 
@@ -593,8 +601,11 @@ class ITLFunctions:
         return V_nc, V_J, V_M
 
     @staticmethod
-    def cross_information_potential(X, y, s, dist='ED'):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
+    def cross_information_potential(X, y, s, dist='ED', type=''):
+        if type == 'jenssen':
+            V_nc, V_J, V_M = ITLFunctions.get_cip_jenssen(X, y, s)
+        else:
+            V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         if dist == 'CS':
             return T.power(V_nc, 2) / (V_J * V_M)
@@ -604,14 +615,20 @@ class ITLFunctions:
             raise ValueError(TextTranslation().get_str('Error_10'))
 
     @staticmethod
-    def mutual_information_cs(X, y, s, eps=1e-6):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
+    def mutual_information_cs(X, y, s, type='', eps=1e-6):
+        if type == 'jenssen':
+            V_nc, V_J, V_M = ITLFunctions.get_cip_jenssen(X, y, s)
+        else:
+            V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         return T.log(V_J + eps) - 2 * T.log(V_nc + eps) + T.log(V_M + eps)
 
     @staticmethod
-    def mutual_information_ed(X, y, s):
-        V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
+    def mutual_information_ed(X, y, s, type=''):
+        if type == 'jenssen':
+            V_nc, V_J, V_M = ITLFunctions.get_cip_jenssen(X, y, s)
+        else:
+            V_nc, V_J, V_M = ITLFunctions.get_cip(X, y, s)
 
         return V_J - 2 * V_nc + V_M
 

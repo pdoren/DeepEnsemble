@@ -112,7 +112,7 @@ def get_ensembleCIP_model(name,
                           bias_layer=False, mse_first_epoch=False,
                           batch_size=40, max_epoch=300,
                           cost=mse, name_cost="MSE", params_cost={}, lr=0.01, annealing_enable=False,
-                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
+                          update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}, type='',
                           list_scores=[{'fun_score': mutual_information_cs, 'name': TextTranslation().get_str('MI')}]):
     if annealing_enable:
         current_epoch = shared(0, 'current_epoch')  # count current epoch
@@ -129,7 +129,7 @@ def get_ensembleCIP_model(name,
     else:
         cost_models = cip_relevancy
         name_cost_models = TextTranslation().get_str('Relevancy') + ' CIP(%s)' % dist
-        params_cost_models = {'s': si, 'dist': dist}
+        params_cost_models = {'s': si, 'dist': dist, 'type': type}
 
     ensemble = get_ensemble_model(name,
                                   n_input=n_input, n_output=n_output,
@@ -162,15 +162,15 @@ def get_ensembleCIP_model(name,
                                           'max_epoch': max(200, int(0.2 * max_epoch))})
 
     if is_cip_full:
-        ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist)
+        ensemble.append_cost(fun_cost=cip_full, name="CIP Full", s=s, dist=dist, type=type)
     elif n_ensemble_models != 1:
         if beta != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_redundancy, name=TextTranslation().get_str('Redundancy') + ' CIP(%s)' % dist,
-                                       beta=-beta, s=s, dist=dist)
+                                       beta=-beta, s=s, dist=dist, type=type)
 
         if lamb != 0:
             ensemble.add_cost_ensemble(fun_cost=cip_synergy, name=TextTranslation().get_str('Synergy') + ' CIP(%s)' % dist,
-                                       lamb=lamb, s=s, dist=dist)
+                                       lamb=lamb, s=s, dist=dist, type=type)
 
     if update == sgd_cip:
         ensemble.update_io()

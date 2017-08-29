@@ -292,7 +292,7 @@ def neg_log_likelihood(model, _input, _target):
     return -T.mean(T.log(model.output(_input))[T.arange(_target.shape[0]), labels])
 
 
-def cip_relevancy(model, _input, _target, s=None, dist='CS'):
+def cip_relevancy(model, _input, _target, s=None, dist='CS', type=''):
     """ Cross Information Potential between model output and target.
 
     Parameters
@@ -322,9 +322,9 @@ def cip_relevancy(model, _input, _target, s=None, dist='CS'):
         s = T.max(ITLFunctions.silverman(_target), eps)
 
     if dist == 'CS':
-        return ITLFunctions.mutual_information_cs([om], _target, s)
+        return ITLFunctions.mutual_information_cs([om], _target, s, type=type)
     elif dist == 'ED':
-        return ITLFunctions.mutual_information_ed([om], _target, s)
+        return ITLFunctions.mutual_information_ed([om], _target, s, type=type)
     else:
         raise ValueError(TextTranslation().get_str('Error_10'))
 
@@ -365,7 +365,7 @@ def neg_corr(model, _input, _target, ensemble, lamb=0.5):
     return T.mean(T.constant(-lamb) * T.power(model.output(_input) - ensemble.output(_input), 2.0))
 
 
-def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED'):
+def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED', type=''):
     """ Cross Information Potential Diversity.
 
     Parameters
@@ -414,10 +414,10 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED'
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om_k], om, s)
+                I2 = ITLFunctions.mutual_information_cs([om_k], om, s, type=type)
                 redundancy.append(I2)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om_k], om, s)
+                I2 = ITLFunctions.mutual_information_ed([om_k], om, s, type=type)
                 redundancy.append(I2)
             else:
                 raise ValueError(TextTranslation().get_str('Error_10'))
@@ -428,7 +428,7 @@ def cip_redundancy(model, _input, _target, ensemble, beta=0.9, s=None, dist='ED'
         return T.constant(0.0, dtype=config.floatX)
 
 
-def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='ED'):
+def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='ED', type=''):
     """ Cross Information Potential Synergy.
 
     Parameters
@@ -477,12 +477,12 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='ED'):
         if _model is not model:
             om_k = _model.output(_input)
             if dist == 'CS':
-                I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s)
-                I3 = ITLFunctions.mutual_information_cs([om_k], om, s)
+                I2 = ITLFunctions.mutual_information_cs([om, om_k], _target, s, type=type)
+                I3 = ITLFunctions.mutual_information_cs([om_k], om, s, type=type)
                 synergy.append(I2 - I3)
             elif dist == 'ED':
-                I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s)
-                I3 = ITLFunctions.mutual_information_ed([om_k], om, s)
+                I2 = ITLFunctions.mutual_information_ed([om, om_k], _target, s, type=type)
+                I3 = ITLFunctions.mutual_information_ed([om_k], om, s, type=type)
                 synergy.append(I2 - I3)
             else:
                 raise ValueError(TextTranslation().get_str('Error_10'))
@@ -493,7 +493,7 @@ def cip_synergy(model, _input, _target, ensemble, lamb=0.9, s=None, dist='ED'):
         return T.constant(0.0, dtype=config.floatX)
 
 
-def cip_full(model, _input, _target, s=None, dist='ED'):
+def cip_full(model, _input, _target, s=None, dist='ED', type=''):
     """ Cross Information Potential among all models ensemble.
 
     Parameters
@@ -526,9 +526,9 @@ def cip_full(model, _input, _target, s=None, dist='ED'):
     y = T.cast(_target, 'float32')
 
     if dist == 'CS':
-        return ITLFunctions.mutual_information_ed(X, y, s)
+        return ITLFunctions.mutual_information_cs(X, y, s, type=type)
     elif dist == 'ED':
-        return ITLFunctions.mutual_information_cs(X, y, s)
+        return ITLFunctions.mutual_information_ed(X, y, s, type=type)
     else:
         raise ValueError(TextTranslation().get_str('Error_10'))
 
