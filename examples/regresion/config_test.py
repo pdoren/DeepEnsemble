@@ -37,7 +37,7 @@ config.optimizer = 'fast_compile'
 # config.exception_verbosity='high'
 # config.compute_test_value='warn'
 
-def plot_pdf_error(models, _input, _target, label_plot, ax, fig, n_points=500, xmin=-3, xmax=3, lim_y=0.05):
+def plot_pdf_error(models, _input, _target, label_plot, ax, fig, n_points=500, xmin=-3, xmax=3, lim_y=0.05, title=''):
 
     linestyles = ['-', '--', '-.', ':']
     for j, model in enumerate(models):
@@ -50,7 +50,33 @@ def plot_pdf_error(models, _input, _target, label_plot, ax, fig, n_points=500, x
         kde = KernelDensity(kernel='gaussian', bandwidth=s)
         kde.fit(error)
         y = np.exp(kde.score_samples(x_plot[:, np.newaxis]))
-        ax.plot(x_plot, y / np.sum(y), linestyle=linestyles[(j + 4) % 4], label=model.get_name())
+        if title != '':
+            ax.plot(x_plot, y / np.sum(y), linestyle=linestyles[(j + 4) % 4], label=title)
+        else:
+            ax.plot(x_plot, y / np.sum(y), linestyle=linestyles[(j + 4) % 4], label=model.get_name())
+
+    plt.legend()
+    plt.title(label_plot)
+    plt.xlabel('Error')
+    plt.ylabel('PDF del error')
+    ax.set_ylim([0, lim_y])
+    plt.tight_layout()
+
+def plot_pdf_error_1(model, _input, _target, label_plot, ax, fig, n_points=500, xmin=-3, xmax=3, lim_y=0.05, title='', linestyle='-'):
+
+    error = model.error(_input, _target).eval()
+    N = len(error)
+    s = 1.06 * np.std(error) / np.power(N, 0.2)  # Silverman
+
+    x_plot = np.linspace(xmin, xmax, n_points)
+
+    kde = KernelDensity(kernel='gaussian', bandwidth=s)
+    kde.fit(error)
+    y = np.exp(kde.score_samples(x_plot[:, np.newaxis]))
+    if title != '':
+        ax.plot(x_plot, y / np.sum(y), linestyle=linestyle, label=title)
+    else:
+        ax.plot(x_plot, y / np.sum(y), linestyle=linestyle, label=model.get_name())
 
     plt.legend()
     plt.title(label_plot)

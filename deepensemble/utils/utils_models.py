@@ -70,6 +70,8 @@ def get_ensemble_model(name,
                        fn_activation1, fn_activation2,
                        classes_labels=None,
                        classification=False,
+                       fn_combiner=None,
+                       args_combiner={},
                        bias_layer=False,
                        cost=mse, name_cost="MSE", params_cost={},
                        update=sgd, name_update='SGD', params_update={'learning_rate': 0.01},
@@ -87,10 +89,13 @@ def get_ensemble_model(name,
                             update=update, name_update=name_update, params_update=params_update)
         ensemble.append_model(net)
 
-    if classification:
-        ensemble.set_combiner(PluralityVotingCombiner())
+    if fn_combiner is None:
+        if classification:
+            ensemble.set_combiner(PluralityVotingCombiner())
+        else:
+            ensemble.set_combiner(AverageCombiner())
     else:
-        ensemble.set_combiner(AverageCombiner())
+        ensemble.set_combiner(fn_combiner(**args_combiner))
 
     for score in list_scores:
         ensemble.append_score(score['fun_score'], score['name'])
@@ -106,6 +111,8 @@ def get_ensembleCIP_model(name,
                           fn_activation1, fn_activation2,
                           classes_labels=None,
                           classification=False,
+                          fn_combiner=None,
+                          args_combiner={},
                           dist='CS',
                           is_cip_full=False,
                           beta=0.9, lamb=0.9, s=None, lsp=1.5, lsm=0.5,
@@ -137,6 +144,8 @@ def get_ensembleCIP_model(name,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   classes_labels=classes_labels,
                                   classification=classification,
+                                  fn_combiner=fn_combiner,
+                                  args_combiner=args_combiner,
                                   bias_layer=bias_layer,
                                   cost=cost_models, name_cost=name_cost_models,
                                   params_cost=params_cost_models,
@@ -191,6 +200,8 @@ def get_ensembleNCL_model(name,
                           fn_activation1, fn_activation2,
                           classes_labels=None,
                           classification=False,
+                          fn_combiner=None,
+                          args_combiner={},
                           lamb=0.6, lamb_L2=0,
                           cost=mse, name_cost="MSE", params_cost={},
                           update=sgd, name_update='SGD', params_update={'learning_rate': 0.01}):
@@ -200,6 +211,8 @@ def get_ensembleNCL_model(name,
                                   fn_activation1=fn_activation1, fn_activation2=fn_activation2,
                                   classes_labels=classes_labels,
                                   classification=classification,
+                                  fn_combiner=fn_combiner,
+                                  args_combiner=args_combiner,
                                   cost=cost, name_cost=name_cost, params_cost=params_cost,
                                   update=update, name_update=name_update, params_update=params_update)
 
