@@ -18,7 +18,9 @@ from ..utils.utils_plot import ConfigPlot
 __all__ = ['cross_validation_score', 'test_model', 'load_model',
            'plot_hist_train_test',
            'plot_scores_classifications',
-           'plot_pdf', 'make_dirs', 'get_scores', 'get_best_score', 'get_mean_score', 'get_min_score']
+           'plot_pdf', 'make_dirs', 'get_scores',
+           'get_best_score', 'get_mean_score', 'get_min_score',
+           'get_mean_diversity']
 
 
 def make_dirs(_dir):
@@ -133,14 +135,15 @@ def testing_model(_dir, cls, input_train, target_train, input_test, target_test,
     return {'best_score': best_score, 'metrics': metrics, 'model': cls, 'list_score': list_score}
 
 
-def get_scores(_model, file_model_fold, input_train, target_train, input_test, target_test, **kwargs):
-    if not os.path.exists(file_model_fold):
+def get_scores(_model, file_model_fold, input_train, target_train, input_test, target_test, save=True, **kwargs):
+    if save or not os.path.exists(file_model_fold):
         metric = _model.fit(input_train, target_train, **kwargs)
         # Compute metrics
         score_train = metric.append_prediction(input_train, target_train)
         score_test = metric.append_prediction(input_test, target_test, append_last_pred=True)
-        s_data = Serializable((score_train, score_test, metric, _model.save_params()))
-        s_data.save(file_model_fold)
+        if save:
+            s_data = Serializable((score_train, score_test, metric, _model.save_params()))
+            s_data.save(file_model_fold)
     else:
         # Load sets
         Logger().log('Load file: %s' % file_model_fold)
@@ -448,7 +451,7 @@ def get_mean_diversity(_diversity, _s):
     lamb = []
     for key, value in _diversity.items():
         if abs(key[2] - _s) < 0.0001:
-            d = value[0][0]
+            d = np.mean(value)
             best_diversity.append(d)
             beta.append(key[0])
             lamb.append(key[1])
@@ -481,7 +484,7 @@ def plot_graph(fig, ax, X, Y, Z, xlabel, ylabel, zlabel):
 
 
 # noinspection PyUnusedLocal
-def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
+def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title, vmin=0, vmax=1):
     x = np.linspace(min(X), max(X), 200)
     y = np.linspace(min(Y), max(Y), 200)
 
@@ -489,7 +492,7 @@ def plot_graph2(ax, X, Y, Z, xlabel, ylabel, zlabel, s_title):
     # noinspection PyTypeChecker,PyTypeChecker
     zz = griddata2((X, Y), Z, (xx, yy), method='cubic', rescale=True)
 
-    p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=abs(zz).min(), vmax=abs(zz).max())
+    p = ax.pcolor(xx, yy, zz, cmap=cm.jet, vmin=vmin, vmax=vmax)
     ax.title.set_text(s_title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)

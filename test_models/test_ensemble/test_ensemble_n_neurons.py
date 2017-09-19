@@ -1,13 +1,42 @@
+import sys
 import os
+sys.path.insert(0, os.path.abspath('../../'))
 
-import matplotlib.pylab as plt
-import numpy as np
+from theano import config
+from deepensemble.utils import *
+
+# import matplotlib.pylab as plt
 from sklearn import model_selection
 
-from deepensemble.utils import *
-from deepensemble.utils.utils_functions import ActivationFunctions
+import matplotlib.pyplot as plt
 
-plt.style.use('ggplot')
+plt.style.use('fivethirtyeight')
+
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = 'Ubuntu'
+plt.rcParams['font.monospace'] = 'Ubuntu Mono'
+plt.rcParams['font.size'] = 12
+plt.rcParams['axes.labelsize'] = 12
+plt.rcParams['axes.labelweight'] = 'bold'
+plt.rcParams['axes.titlesize'] = 14
+plt.rcParams['xtick.labelsize'] = 10
+plt.rcParams['ytick.labelsize'] = 10
+plt.rcParams['legend.fontsize'] = 12
+plt.rcParams['figure.titlesize'] = 14
+plt.rcParams['lines.linewidth'] = 3
+
+ConfigPlot().set_size_font(10)
+ConfigPlot().set_dpi(80)
+ConfigPlot().set_fig_size((7, 5))
+ConfigPlot().set_hold(False)
+
+from sklearn.neighbors.kde import KernelDensity
+from pylab import *
+
+config.optimizer = 'fast_compile'
+config.gcc.cxxflags = "-fbracket-depth=16000"
+# config.exception_verbosity='high'
+# config.compute_test_value='warn'
 
 #############################################################################################################
 # Load Data
@@ -29,7 +58,7 @@ n_inputs = n_features
 
 fn_activation = ActivationFunctions.sigmoid
 
-n_neurons = n_inputs + n_output
+n_neurons = (n_inputs + n_output) // 2
 
 lr = 0.01
 reg_l1 = 0.0001
@@ -41,29 +70,32 @@ reg_l2 = 0.0001
 
 max_epoch = 300
 folds = 5
-batch_size = 32
+batch_size = 50
 training = True
 
-args_train = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': True,
-              'improvement_threshold': 0.9995, 'update_sets': True}
+args_train_default = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True}
+
+args_train_cip = {'max_epoch': max_epoch, 'batch_size': batch_size, 'early_stop': False,
+              'improvement_threshold': 0.995, 'update_sets': True, 'minibatch': True,
+              'criterion_update_params': 'cost', 'maximization_criterion': True}
 
 y = get_index_label_classes(translate_target(data_target, classes_labels))
 silverman = ITLFunctions.silverman(np.array(y)).eval()
 
-s_beta = 5.0
-s_lambda = 5.0
-s_sigma = silverman
+update_fn = sgd
+name_update = 'SGD'
 
 
 # ==========< Ensemble   >===================================================================================
 def get_ensemble_ncl(_name, _n_neurons, fast=True):
-    ensemble = get_ensembleNCL_model(name=_name,
+    ensemble = get_ensembleNCL_model(name=_name, classification=True, classes_labels=classes_labels,
                                      n_input=n_features, n_output=n_output,
-                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
-                                     classification=True,
-                                     classes_labels=classes_labels,
+                                     n_ensemble_models=4, n_neurons_models=_n_neurons,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                     lamb=1.0, params_update={'learning_rate': lr})
+                                     update=update_fn, name_update=name_update,
+                                     lamb=0.3, params_update={'learning_rate': 0.03}
+                                     )
     ensemble.compile(fast=fast)
 
     return ensemble
@@ -71,15 +103,18 @@ def get_ensemble_ncl(_name, _n_neurons, fast=True):
 
 # noinspection PyUnusedLocal
 def get_ensemble_cip(_name, _n_neurons, fast=True):
-    ensemble = get_ensembleCIP_model(name='Ensamble CIP KL',
+    ensemble = get_ensembleCIP_model(name=_name, classification=True, classes_labels=classes_labels,
                                      n_input=n_features, n_output=n_output,
-                                     n_ensemble_models=3, n_neurons_models=_n_neurons,
-                                     classification=True,
-                                     classes_labels=classes_labels,
+                                     n_ensemble_models=4, n_neurons_models=_n_neurons,
+                                     is_cip_full=False,
                                      fn_activation1=fn_activation, fn_activation2=fn_activation,
-                                     dist='CIP',
-                                     beta=s_beta, lamb=s_lambda, s=s_sigma, lr=lr,
-                                     params_update={'learning_rate': lr})
+                                     dist='CS',
+                                     beta=0.1, lamb=0.5, s=silverman,
+                                     lsp=1.5, lsm=0.5,
+                                     lr=0.005,
+                                     bias_layer=False, mse_first_epoch=True, annealing_enable=True,
+                                     update=update_fn, name_update=name_update,
+                                     params_update={'learning_rate': -0.03})
     ensemble.compile(fast=fast)
 
     return ensemble
@@ -88,15 +123,15 @@ def get_ensemble_cip(_name, _n_neurons, fast=True):
 #############################################################################################################
 #  TEST
 #############################################################################################################
-parameters = [n for n in range(3, 2 * n_neurons, 2)]
+parameters = [n for n in range(2, 2 * n_neurons, 2)]
 
-list_ensemble = [(get_ensemble_ncl, 'Ensemble NCL'), (get_ensemble_cip, 'Ensemble CIP')]
+list_ensemble = [(get_ensemble_ncl, args_train_default, 'Ensamble NCL'), (get_ensemble_cip, args_train_cip, 'Ensamble CIPL CS')]
 path_data = 'test_ensemble_n_neurons/'
 
 f, ax = plt.subplots()
-plt.hold(True)
+f.patch.set_visible(False)
 
-for get_ensemble, name in list_ensemble:
+for get_ensemble, args_train, name in list_ensemble:
 
     data = {}
     scores = []
@@ -104,31 +139,34 @@ for get_ensemble, name in list_ensemble:
     if not os.path.exists(path_data):
         os.makedirs(path_data)
     Logger().log('Processing %s' % name)
-    file_data = path_data + '%s_%s.pkl' % (name, name_db)
 
-    if not os.path.exists(file_data):
-        Logger().reset()
-        for _p in Logger().progressbar(it=parameters, end='Finish'):
-            Logger().log_disable()
-            model = get_ensemble(_name=name, _n_models=_p)
+    Logger().reset()
+    for _p in Logger().progressbar(it=parameters, end='Finish'):
+        file_data = path_data + '%s_%s_%d.pkl' % (name, name_db, _p)
+        if not os.path.exists(file_data):
 
-            metrics, best_score, list_score = test_model(cls=model,
-                                                         input_train=input_train, target_train=target_train,
-                                                         input_test=input_test, target_test=target_test,
-                                                         folds=folds, **args_train)
+                Logger().log_disable()
+                model = get_ensemble(_name=name, _n_neurons=_p)
 
-            scores.append(best_score)
-            data[_p] = {'list_score': list_score}
-            Logger().log_enable()
+                metrics, best_score, list_score = test_model(cls=model,
+                                                             input_train=input_train, target_train=target_train,
+                                                             input_test=input_test, target_test=target_test,
+                                                             folds=folds, **args_train)
 
-        scores = np.array(scores)
-        s_data = Serializable((data, parameters, scores))
-        s_data.save(file_data)
-    else:
-        Logger().log('Load file: %s' % file_data)
-        s_data = Serializable()
-        s_data.load(file_data)
-        data, parameters, scores = s_data.get_data()
+                Logger().log_enable()
+
+                s_data = Serializable((list_score, _p, best_score))
+                s_data.save(file_data)
+        else:
+            Logger().log('Load file: %s' % file_data)
+            s_data = Serializable()
+            s_data.load(file_data)
+            list_score, p, best_score = s_data.get_data()
+
+        data[_p] = list_score
+        scores.append(best_score)
+
+    scores = np.array(scores)
 
     #############################################################################################################
     #
@@ -138,18 +176,19 @@ for get_ensemble, name in list_ensemble:
 
     list_dp = []
     for i in range(folds):
-        y = list([data[l]['list_score'][i] for l in parameters])
-        x = list(np.array(parameters) / n_features)
+        y = list([data[l][i][0] for l in parameters])
+        x = list(np.array(parameters) / n_inputs)
         dp = DataPlot(name=name, _type='score')
         dp.set_data(x, y)
         list_dp.append(dp)
 
-    plot_data(ax, [(list_dp, 'score')],
-              x_max=max(parameters) / n_features, x_min=min(parameters) / n_features,
-              title='%s Accuracy' % name)
+    plot_data(ax, [(list_dp, 'Precisión')],
+              x_max=(max(parameters) + 1) / n_inputs, x_min=(min(parameters) - 1) / n_inputs,
+              title='Precisión por neuronas\n(Conjunto de Entrenamiento)')
 
-plt.xlabel('$n^o neurons / n^o features$')
-plt.ylabel('score')
+plt.legend()
+plt.xlabel('$n^o$ neuronas / $n^o$ caracteristicas')
+plt.ylabel('Precisión')
 plt.tight_layout()
 
 plt.show()

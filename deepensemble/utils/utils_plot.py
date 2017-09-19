@@ -384,12 +384,8 @@ def plot(ax, dps, label_prefix='', label=None, linestyle='-'):
         _x = x[:, 0]
         _y = np.nanmean(y, axis=-1)
         _y_std = np.nanstd(y, axis=-1)
-        p = ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3, linestyle=linestyle)
-
-        yn = _y - _y_std
-        yp = _y + _y_std
-
-        ax.fill_between(_x, yn, yp, alpha=0.1, color=p[0].get_color())
+        ax.plot(_x, _y, label='%s %s' % (label_prefix, label), lw=3, linestyle=linestyle)
+        ax.errorbar(_x, _y, _y_std, linestyle='None', marker='o', lw=2, ecolor='k', capsize=5, color='k')
 
 
 def _get_data_per_col(dps):
